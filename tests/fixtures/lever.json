@@ -1,0 +1,8 @@
+[
+ {"id": "abc", "text": "Korean Life Sciences Expert Reviewer", "hostedUrl": "https://jobs.lever.co/lilt/abc",
+  "createdAt": 1790000000000, "categories": {"commitment": "Contract", "location": "Remote - Korea"}, "workplaceType": "remote",
+  "descriptionPlain": "Review Korean-English biomedical and life science content. Freelance, flexible hours.",
+  "salaryRange": {"currency": "USD", "interval": "per-hour-wage", "min": 45, "max": 70}, "salaryDescriptionPlain": "$45-70 per hour"},
+ {"id": "def", "text": "Account Executive", "hostedUrl": "https://jobs.lever.co/lilt/def", "createdAt": 1790000000000,
+  "categories": {"commitment": "Full-time", "location": "US"}, "descriptionPlain": "Sales."}
+]

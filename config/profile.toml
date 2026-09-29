@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────
+# Revenue Agent – 교수님 프로필 & 목표 설정
+# 이 파일의 값이 적합도 점수, 지원서 초안, 대시보드 목표에 쓰입니다.
+# [ ] 로 표시된 칸은 사실만 채워 주세요 (지원서 초안에 그대로 들어갑니다).
+# ─────────────────────────────────────────────────────────────
+
+[identity]
+name = "[Your Name], PhD"
+title = "Professor, Department of Clinical Laboratory Science"
+institution = "[University Name], Republic of Korea"
+email = "[email]"
+timezone = "GMT+9 (Korea)"
+
+[positioning]
+headline = "Biomedical / Laboratory Medicine Subject Matter Expert + Academic Course Architect + Medical AI / Scientific Content Expert"
+premium_bio = """University Professor and Biomedical Subject Matter Expert specializing in laboratory medicine, \
+cytogenetics, molecular diagnostics, cancer genomics, hematologic malignancies, and medical AI. \
+Experienced in academic curriculum development, online course production, scientific publication, \
+research review, assessment design, and AI-enhanced education. Capable of translating complex biomedical \
+science into structured professional learning content, case-based education, assessment frameworks, \
+and evidence-based digital curricula."""
+
+# 실제 경력을 국제 컨설팅 용어로 재구성할 때 쓰는 역할명 (사실에 맞는 것만 사용)
+reframed_roles = [
+  "Subject Matter Expert",
+  "Curriculum Developer",
+  "Course Author",
+  "Academic Course Architect",
+  "Assessment Designer",
+  "Online Learning Developer",
+  "AI-enhanced Learning Designer",
+  "Learning Content Reviewer",
+  "Biomedical Education Consultant",
+]
+
+# 증빙 가능한 수치만 입력하세요. 비워 두면 초안에 [ ] 로 남습니다.
+[evidence]
+years_teaching = ""
+years_elearning = ""
+elearning_courses = ""
+sci_publications = ""
+learners_reached = ""
+elearning_clients = "[e.g., KOREATECH, university e-learning centre]"
+
+# ── 적합도 판단용 키워드 ─────────────────────────────────────
+[expertise]
+core = [
+  "laboratory medicine", "clinical laboratory", "medical laboratory", "laboratory science",
+  "cytogenetic", "karyotyp", "fish ", "molecular diagnos", "molecular biology", "pcr",
+  "next-generation sequencing", "ngs", "genomic", "cancer genomic", "oncology", "cancer",
+  "hematolog", "haematolog", "leukemia", "leukaemia", "lymphoma", "myeloma", "hematologic malignan",
+  "pathology", "histolog", "histopatholog", "biomedical", "diagnostic", "in vitro diagnostic", "ivd",
+  "medical ai", "health ai", "ai in healthcare", "digital pathology", "bioinformatic", "biobank",
+  "laboratory quality", "biosafety",
+  "임상병리", "진단검사", "분자진단", "세포유전", "유전체", "혈액", "병리", "조직학", "의생명", "바이오", "체외진단", "의료 ai", "의료ai",
+]
+adjacent = [
+  "health", "medical", "medicine", "biology", "life science", "public health", "clinical",
+  "genetics", "laboratory", "science", "stem", "research", "scientific", "biotech", "pharma",
+  "curriculum", "course development", "course author", "e-learning", "elearning", "online course",
+  "instructional", "learning design", "assessment", "exam item", "item writ", "question writ",
+  "capacity building", "training", "education", "subject matter expert", "sme", "content expert",
+  "peer review", "manuscript", "scientific writing", "medical writing", "editing", "statistic",
+  "ai training", "rlhf", "model evaluation", "ai evaluation", "llm", "expert review",
+  "보건", "의료", "교육과정", "이러닝", "콘텐츠", "교재", "평가위원", "심사위원", "논문", "연구용역", "강의",
+]
+# 역할이 이 단어를 포함하면 "나에게 맞는 참여 형태"로 표시
+sme_roles = [
+  "subject matter expert", "sme", "content expert", "technical expert", "academic expert",
+  "course author", "curriculum", "assessment", "reviewer", "scientific advisor", "advisor",
+  "consultant", "expert", "evaluator", "trainer", "faculty", "author", "editor",
+]
+
+# ── 요율 기준 (지원서 초안의 제안 요율에 사용; 교수님이 직접 조정) ──
+# basis: 모두 ESTIMATE – 시장 통상 범위에 대한 추정이며 공고 사실이 아님
+[rates]
+min_hourly_usd = 50
+target_hourly_usd = 100
+premium_hourly_usd = 150
+intl_consultant_daily_usd = [400, 600]   # 국제기구 개인 컨설턴트 제안 일당 (추정)
+expert_call_hourly_usd = [150, 300]      # 전문가 네트워크 자문 콜 (추정)
+ai_expert_hourly_usd = [60, 120]         # AI 전문가 평가/학습데이터 (추정)
+domestic_project_min_krw = 500000
+domestic_project_target_krw = 1000000
+
+[goals]
+monthly_revenue_krw = 10000000
+
+# 환율 – ESTIMATE (설정값). 필요 시 갱신하세요.
+[fx]
+as_of = "2026-09-29"
+basis = "estimate"
+KRW_per_USD = 1380
+USD_per_EUR = 1.08
+USD_per_GBP = 1.27
+USD_per_CHF = 1.14

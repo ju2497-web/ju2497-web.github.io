@@ -1,0 +1,184 @@
+# ─────────────────────────────────────────────────────────────
+# Revenue Agent – 수집 소스 설정
+#
+# type 종류
+#   seeds      : data/seeds/*.json (사람이 검증한 공고·플랫폼)       – 네트워크 불필요
+#   reliefweb  : ReliefWeb 공식 API (UN·국제NGO 컨설턴시 공고)       – env RELIEFWEB_APPNAME 필요
+#   worldbank  : World Bank 조달공고 공개 API                        – 키 불필요
+#   g2b        : 조달청 나라장터 입찰공고 (공공데이터포털 API)       – env DATA_GO_KR_KEY 필요
+#   greenhouse / lever / ashby : 기업 채용 게시판 공개 API          – 키 불필요
+#   rss        : RSS/Atom 피드 (Google Alerts RSS 권장)
+#   pagewatch  : 공식 공고 목록 페이지의 링크 변화 감시 (robots.txt 준수, 저빈도)
+#
+# enabled=false 인 소스는 건너뜁니다. 실패한 소스는 대시보드 "소스 상태"에 표시됩니다.
+# ─────────────────────────────────────────────────────────────
+
+[defaults]
+user_agent = "RevenueAgent/1.0 (personal opportunity monitor; +https://github.com/ju2497-web/ju2497-web.github.io)"
+timeout_seconds = 25
+per_host_delay_seconds = 2.0
+max_items_per_source = 60
+max_detail_fetches_per_source = 6
+
+# 공통 검색어 – 국제기구·조달 소스에 사용
+search_terms = [
+  "subject matter expert", "laboratory medicine", "clinical laboratory", "molecular diagnostics",
+  "cytogenetics", "genomics", "hematology", "medical AI", "health AI",
+  "curriculum development", "instructional design consultant", "course development",
+  "e-learning consultant", "online course", "digital learning", "capacity building consultant",
+  "training consultant", "learning consultant", "content expert", "medical education consultant",
+  "health education consultant", "individual consultant", "consultant roster",
+]
+
+# ── 1. 검증된 시드 (항상 실행) ─────────────────────────────────
+[[source]]
+id = "seeds"
+type = "seeds"
+enabled = true
+path = "data/seeds"
+
+# ── 2. 국제기구 / 글로벌 헬스 (GLOBAL HIGH-TICKET LEARNING) ───────
+[[source]]
+id = "reliefweb"
+type = "reliefweb"
+enabled = true
+# ReliefWeb 는 2025년부터 사전 승인된 appname 을 요구합니다.
+# https://apidoc.reliefweb.int 에서 신청 후 GitHub Secret RELIEFWEB_APPNAME 에 저장.
+appname_env = "RELIEFWEB_APPNAME"
+query = '("subject matter expert" OR "e-learning" OR elearning OR "online course" OR curriculum OR "course development" OR "instructional design" OR "capacity building") AND (laboratory OR diagnostic OR genomic OR health OR medical OR training) AND (consultant OR consultancy OR roster OR expert)'
+limit = 80
+
+[[source]]
+id = "worldbank-procurement"
+type = "worldbank"
+enabled = true
+terms = ["e-learning", "curriculum development", "laboratory", "training of health workers", "capacity building health"]
+rows = 40
+
+[[source]]
+id = "aslm-opportunities"
+type = "pagewatch"
+enabled = true
+organization = "ASLM (African Society for Laboratory Medicine)"
+url = "https://aslm.org/opportunities/"
+include = ["rfp", "consult", "expression of interest", "eoi", "subject matter", "sme", "curriculum", "course", "e-learning", "training", "expert", "call for"]
+
+[[source]]
+id = "aslm-professionals"
+type = "pagewatch"
+enabled = true
+organization = "ASLM Professionals Database"
+url = "https://professionals.aslm.org/"
+include = ["expression of interest", "eoi", "subject matter", "expert", "consult", "call"]
+
+[[source]]
+id = "acbf-consultancies"
+type = "pagewatch"
+enabled = true
+organization = "African Capacity Building Foundation (ACBF)"
+url = "https://theacbf.org/consultancies/"
+include = ["consult", "e-learning", "instructional", "ubora", "course", "training", "expression of interest", "curriculum"]
+
+[[source]]
+id = "unitar-vacancies"
+type = "pagewatch"
+enabled = true
+organization = "UNITAR"
+url = "https://unitar.org/vacancy-announcements"
+include = ["consultant", "roster", "instructional", "learning", "e-learning", "course", "content", "health", "individual contractor"]
+
+[[source]]
+id = "afdb-consultants"
+type = "pagewatch"
+enabled = true
+organization = "African Development Bank (AfDB)"
+url = "https://www.afdb.org/en/about-us/corporate-procurement/procurement-notices/current-solicitations"
+include = ["learning", "training", "e-learning", "capacity", "curriculum", "health", "consult"]
+
+[[source]]
+id = "undp-procurement"
+type = "pagewatch"
+enabled = true
+organization = "UNDP"
+url = "https://procurement-notices.undp.org/"
+include = ["individual consultant", "ic ", "e-learning", "curriculum", "course", "training", "laboratory", "health"]
+
+[[source]]
+id = "unicef-consultancies"
+type = "pagewatch"
+enabled = true
+organization = "UNICEF"
+url = "https://jobs.unicef.org/en-us/listing/"
+include = ["consultan", "e-learning", "course", "curriculum", "learning", "health", "laboratory"]
+
+[[source]]
+id = "africacdc-tenders"
+type = "pagewatch"
+enabled = true
+organization = "Africa CDC"
+url = "https://africacdc.org/tenders/"
+include = ["e-learning", "training", "course", "curriculum", "laboratory", "consult", "expression of interest", "genomic"]
+
+[[source]]
+id = "multicampus-experthub"
+type = "pagewatch"
+enabled = false   # 로그인 기반 – 자동 수집하지 않음 (seed 로 등록만 관리)
+organization = "Multicampus Expert Hub"
+url = "https://experthub.multicampus.com/"
+include = ["강사", "모집", "전문가"]
+
+# ── 3. 국내 공공 (G. 평가위원·연구용역 / E. 이러닝) ───────────────
+[[source]]
+id = "g2b-services"
+type = "g2b"
+enabled = true
+key_env = "DATA_GO_KR_KEY"
+# 조달청_나라장터 입찰공고정보서비스 (용역) – 기관 개편 시 base_url 만 바꾸면 됩니다.
+base_url = "https://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoServcPPSSrch"
+keywords = ["이러닝", "교육과정 개발", "콘텐츠 개발", "임상병리", "진단검사", "유전체", "보건의료 교육", "의료 인공지능", "교재 개발"]
+lookback_days = 7
+
+# ── 4. AI 전문가 / 모델 학습 (B) – 기업 공개 채용 API ──────────────
+# 게시판 토큰이 바뀌면 소스 상태에 404 로 표시됩니다 → 토큰만 수정하세요.
+[[source]]
+id = "scale-ai"
+type = "greenhouse"
+enabled = true
+organization = "Scale AI (Outlier)"
+board = "scaleai"
+include_title = ["expert", "biology", "medical", "medicine", "health", "science", "phd", "writer", "trainer", "korean"]
+
+[[source]]
+id = "lilt"
+type = "lever"
+enabled = true
+organization = "LILT"
+company = "lilt"
+include_title = ["expert", "medical", "life science", "linguist", "korean", "reviewer", "evaluator"]
+
+[[source]]
+id = "mercor"
+type = "ashby"
+enabled = true
+organization = "Mercor"
+board = "mercor"
+include_title = ["expert", "medical", "biology", "pathology", "laboratory", "clinical", "health", "science", "phd", "professor", "korean"]
+
+[[source]]
+id = "micro1"
+type = "ashby"
+enabled = true
+organization = "micro1"
+board = "micro1"
+include_title = ["expert", "medical", "biology", "health", "science", "phd", "korean"]
+
+# ── 5. RSS – Google Alerts 를 RSS 로 받아 등록하면 가장 안정적 ──────
+# Google Alerts(https://www.google.com/alerts) → 검색어 입력 → 옵션 "전송 대상: RSS 피드"
+# 권장 검색어: "subject matter expert" laboratory consultancy / "e-learning" "laboratory" consultant /
+#              "expert network" "laboratory medicine" / 임상병리 이러닝 / 평가위원 모집 보건의료
+[[source]]
+id = "google-alerts-example"
+type = "rss"
+enabled = false
+organization = "Google Alerts"
+url = "https://www.google.com/alerts/feeds/REPLACE_WITH_YOUR_FEED_ID"

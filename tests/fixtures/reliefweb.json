@@ -1,0 +1,14 @@
+{"totalCount": 2, "data": [
+ {"id": 4100001, "fields": {"title": "International Consultant – Laboratory Medicine e-Learning Course Author (home-based)",
+   "url": "https://reliefweb.int/job/4100001/international-consultant", "url_alias": "https://reliefweb.int/job/4100001/international-consultant-laboratory-medicine",
+   "date": {"created": "2026-09-27T00:00:00+00:00", "closing": "2026-10-20T00:00:00+00:00"},
+   "source": [{"name": "World Health Organization", "shortname": "WHO"}], "country": [{"name": "World"}],
+   "type": [{"name": "Consultancy"}],
+   "body": "<p>WHO seeks an international consultant (Subject Matter Expert) to author an e-learning course on molecular diagnostics and laboratory quality for the WHO Academy. Home-based, remote. Duration: 60 working days over 6 months. Remuneration: USD 500 per day. Open to all nationalities. Advanced university degree in laboratory medicine or biomedical science; at least 10 years experience. English required.</p>",
+   "how_to_apply": "Apply online."}},
+ {"id": 4100002, "fields": {"title": "National Consultant – Health Training Coordinator",
+   "url": "https://reliefweb.int/job/4100002/national-consultant",
+   "date": {"created": "2026-09-28T00:00:00+00:00", "closing": "2026-10-05T00:00:00+00:00"},
+   "source": [{"name": "UNICEF"}], "country": [{"name": "Kenya"}], "type": [{"name": "Consultancy"}],
+   "body": "National consultant, open to Kenyan nationals only. Duty station Nairobi, on-site only. Training coordination."}}
+]}

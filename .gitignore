@@ -1,0 +1,6 @@
+# Revenue Agent – personal/private data never goes to git (public repo)
+data/private/
+output/
+__pycache__/
+*.pyc
+.env

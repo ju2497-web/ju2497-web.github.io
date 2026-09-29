@@ -1,0 +1,46 @@
+name: Revenue Agent – daily scan
+
+on:
+  schedule:
+    - cron: "7 21 * * *"   # 매일 06:07 KST
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: revenue-agent
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Unit tests (offline fixtures)
+        run: python -m unittest discover -s tests -t .
+
+      - name: Collect, score, build public dashboard
+        env:
+          RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+        # --public-only: 지원 상태·수익 등 개인 기록은 절대 커밋하지 않음 (공개 저장소)
+        run: python -m revenue_agent run --public-only
+
+      - name: Commit updated opportunities + dashboard
+        run: |
+          git config user.name "revenue-agent-bot"
+          git config user.email "revenue-agent-bot@users.noreply.github.com"
+          git add data/opportunities.json data/run_log.json revenue/index.html
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "Revenue Agent daily scan $(date -u +%Y-%m-%d)"
+            git push
+          fi

@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Revenue Agent</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f6f4; --surface: #fcfcfb; --surface-2: #f0efec; --border: #e2e1dc;
+  --text: #0b0b0b; --text-2: #52514e; --text-3: #7a7974;
+  --accent: #2a78d6; --accent-ink: #1c5cab;
+  --p-s: #184f95; --p-a: #2a78d6; --p-b: #86b6ef; --p-c: #c9c8c2;
+  --good: #0ca30c; --good-ink: #006300; --warn: #fab219; --serious: #ec835a; --critical: #d03b3b;
+  --bar: #2a78d6; --track: #e8e7e3;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+    --text: #ffffff; --text-2: #c3c2b7; --text-3: #8d8c84;
+    --accent: #3987e5; --accent-ink: #86b6ef;
+    --p-s: #86b6ef; --p-a: #3987e5; --p-b: #256abf; --p-c: #55544f;
+    --good-ink: #5fd35f; --bar: #3987e5; --track: #2c2c29;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface: #1a1a19; --surface-2: #232321; --border: #33332f;
+  --text: #ffffff; --text-2: #c3c2b7; --text-3: #8d8c84;
+  --accent: #3987e5; --accent-ink: #86b6ef;
+  --p-s: #86b6ef; --p-a: #3987e5; --p-b: #256abf; --p-c: #55544f;
+  --good-ink: #5fd35f; --bar: #3987e5; --track: #2c2c29;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", "Segoe UI", sans-serif; }
+a { color: var(--accent-ink); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 20px 16px 64px; }
+header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 17px; margin: 28px 0 10px; }
+.sub { color: var(--text-2); font-size: 13px; }
+.tools { display: flex; gap: 6px; flex-wrap: wrap; }
+button, select { font: inherit; font-size: 13px; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+.notice { background: var(--surface-2); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--text-2); margin-top: 12px; }
+/* KPI tiles */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-top: 16px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.tile .k { font-size: 12px; color: var(--text-2); }
+.tile .v { font-size: 22px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.tile .h { font-size: 12px; color: var(--text-3); }
+.goal { grid-column: 1 / -1; }
+.meter { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; margin: 8px 0 4px; display: flex; gap: 2px; }
+.meter span { display: block; height: 100%; }
+.meter .actual { background: var(--bar); border-radius: 5px 0 0 5px; }
+.meter .confirmed { background: var(--p-b); }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--text-2); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+/* cards */
+.cards { display: grid; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+.card.top { border-left: 4px solid var(--p-a); }
+.card.top.S { border-left-color: var(--p-s); }
+.row1 { display: flex; gap: 10px; align-items: flex-start; }
+.prio { flex: none; min-width: 34px; text-align: center; font-weight: 700; border-radius: 8px; padding: 2px 6px; font-size: 14px; color: #fff; }
+.prio.S { background: var(--p-s); } .prio.A { background: var(--p-a); }
+.prio.B { background: var(--p-b); color: #0b0b0b; } .prio.C { background: var(--p-c); color: #0b0b0b; }
+.prio.W { background: var(--surface-2); color: var(--text-2); border: 1px dashed var(--border); }
+.prio.X { background: transparent; color: var(--critical); border: 1px solid var(--critical); }
+.prio.closed { background: var(--surface-2); color: var(--text-3); }
+:root[data-theme="dark"] .prio.S, :root[data-theme="dark"] .prio.B { color: #0b0b0b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .prio.S { color: #0b0b0b; } :root:not([data-theme="light"]) .prio.B { color: #fff; } }
+.title { font-weight: 620; }
+.title a { color: var(--text); text-decoration: none; }
+.title a:hover { text-decoration: underline; }
+.org { color: var(--text-2); font-size: 13px; }
+.score { margin-left: auto; flex: none; text-align: right; font-size: 12px; color: var(--text-2); }
+.score b { font-size: 18px; color: var(--text); font-variant-numeric: tabular-nums; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 4px 18px; margin: 10px 0 6px; font-size: 13px; }
+.facts div { display: flex; gap: 6px; align-items: baseline; min-width: 0; }
+.facts .lab { color: var(--text-3); flex: none; width: 64px; }
+.b { font-size: 11px; border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+.b.fact { background: var(--surface-2); color: var(--good-ink); border: 1px solid var(--border); }
+.b.estimate { border: 1px dashed var(--text-3); color: var(--text-2); }
+.b.unknown { color: var(--text-3); border: 1px solid var(--border); }
+.why { margin: 4px 0; padding-left: 18px; font-size: 13px; color: var(--text-2); }
+.next { font-size: 13.5px; background: var(--surface-2); border-radius: 8px; padding: 6px 10px; margin-top: 6px; }
+.next b { color: var(--accent-ink); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 13px; }
+.apply { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 5px 12px; text-decoration: none; font-weight: 600; }
+.nr { color: var(--critical); font-size: 13px; margin-top: 6px; }
+.chip { font-size: 11px; color: var(--text-2); background: var(--surface-2); border-radius: 999px; padding: 1px 8px; }
+details summary { cursor: pointer; color: var(--text-3); font-size: 12px; }
+.desc { font-size: 12.5px; color: var(--text-2); margin-top: 6px; }
+/* tabs */
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-top: 8px; scrollbar-width: thin; }
+.tab { flex: none; border-radius: 999px; padding: 5px 12px; }
+.tab[aria-selected="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.tab .n { font-variant-numeric: tabular-nums; opacity: .7; margin-left: 4px; }
+.empty { color: var(--text-3); padding: 24px; text-align: center; background: var(--surface); border-radius: 12px; border: 1px dashed var(--border); }
+/* bars */
+.bars { display: grid; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.barrow { display: grid; grid-template-columns: 150px 1fr 110px; gap: 10px; align-items: center; font-size: 13px; }
+.barrow .track { background: var(--track); height: 12px; border-radius: 0 4px 4px 0; position: relative; }
+.barrow .fill { background: var(--bar); height: 100%; border-radius: 0 4px 4px 0; min-width: 2px; }
+.barrow .val { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-2); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--surface); border-radius: 12px; overflow: hidden; }
+th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--text-2); font-weight: 600; background: var(--surface-2); }
+.ok { color: var(--good-ink); } .err { color: var(--critical); } .skip { color: var(--text-3); }
+@media (max-width: 640px) {
+  .barrow { grid-template-columns: 96px 1fr 80px; }
+  .facts .lab { width: 56px; }
+  .score b { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Revenue Agent · 오늘의 수익 기회</h1>
+      <div class="sub" id="meta"></div>
+    </div>
+    <div class="tools">
+      <button id="theme" title="라이트/다크 전환">◐ 테마</button>
+      <button id="export" title="내 트래커(브라우저 저장)를 JSON으로 내보내기">⤓ 트래커 내보내기</button>
+      <label><button id="importBtn" type="button">⤒ 가져오기</button><input id="import" type="file" accept="application/json" hidden></label>
+    </div>
+  </header>
+  <div class="notice" id="notice"></div>
+
+  <section class="kpis" id="kpis" aria-label="수익 지표"></section>
+
+  <h2>오늘 지원할 TOP 기회</h2>
+  <div class="cards" id="top"></div>
+
+  <h2>전체 보기</h2>
+  <nav class="tabs" id="tabs" role="tablist"></nav>
+  <div class="cards" id="list"></div>
+</div>
+
+<script id="data" type="application/json">{"generated": "2026-09-29", "public": true, "goal": 10000000, "fx": {"KRW_per_USD": 1380, "as_of": "2026-09-29"}, "pipelines": {"A": {"en": "GLOBAL HIGH-TICKET LEARNING", "ko": "글로벌 고단가 러닝"}, "B": {"en": "AI EXPERT / MODEL TRAINING", "ko": "AI 전문가·모델 학습"}, "C": {"en": "MEDICAL / BIOMEDICAL SME", "ko": "의생명 SME"}, "D": {"en": "EXPERT NETWORK CONSULTING", "ko": "전문가 네트워크 자문"}, "E": {"en": "E-LEARNING / CURRICULUM DEVELOPMENT", "ko": "이러닝·커리큘럼"}, "F": {"en": "ACADEMIC EDITING / RESEARCH CONSULTING", "ko": "학술 편집·연구 컨설팅"}, "G": {"en": "GOVERNMENT / PUBLIC EVALUATOR & REVIEWER", "ko": "공공 평가·심사위원"}, "H": {"en": "CORPORATE TRAINING / B2B EDUCATION", "ko": "기업교육 B2B"}, "I": {"en": "MEDICAL AI / BIOTECH ADVISORY", "ko": "의료AI·바이오 자문"}, "J": {"en": "FREELANCE PROFESSIONAL SERVICES", "ko": "프리랜서 전문서비스"}}, "labels": {"interview": {"none": "면접 없음", "live": "실시간 면접 있음", "ai_or_async": "AI·비동기 면접", "screening_call": "짧은 스크리닝 콜 (추정)", "possible": "면접 가능성 있음 (추정)", "unknown": "미확인"}, "remote": {"remote": "원격", "hybrid": "하이브리드", "onsite": "현장 근무", "unknown": "미확인"}, "korea": {"yes": "가능", "no": "불가", "unknown": "미확인"}, "ptype": {"individual": "개인 컨설턴트", "firm_only": "업체 전용 입찰", "consortium": "컨소시엄", "roster": "컨설턴트 로스터", "platform": "상시 등록 플랫폼", "job": "채용 공고", "watch": "관찰 대상", "unknown": "미확인"}, "basis": {"fact": "사실", "estimate": "추정", "unknown": "미확인"}}, "stages": ["FOUND", "VERIFIED", "HIGH PRIORITY", "PREPARING", "APPLIED", "ASSESSMENT", "INTERVIEW", "OFFER", "PAID", "REPEAT CLIENT", "REJECTED", "NOT SUITABLE", "DECLINED", "WITHDRAWN"], "stage_prob": {"FOUND": 0.02, "VERIFIED": 0.03, "HIGH PRIORITY": 0.05, "PREPARING": 0.1, "APPLIED": 0.15, "ASSESSMENT": 0.3, "INTERVIEW": 0.45, "OFFER": 0.8}, "opps": [{"id": "1a885e7bba", "priority": "A", "score": 73, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 3, "recurring": 5}, "org": "Guidepoint", "title": "Guidepoint Advisor – paid expert consultations", "url": "https://www.guidepoint.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "screening_call", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: health, life science, science", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["D"], "pipe": "D", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network: remote paid consultations for investment and corporate clients; healthcare and life sciences advisors. Hourly compensation per consultation.", "source": "seed:platforms"}, {"id": "3557e8c1eb", "priority": "A", "score": 73, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 3, "recurring": 5}, "org": "Coleman Research", "title": "Coleman Research Expert – paid consultations", "url": "https://www.colemanrg.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "screening_call", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: health, life science, science, research", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["D"], "pipe": "D", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network: paid remote consultations with healthcare and life sciences experts. Hourly compensation.", "source": "seed:platforms"}, {"id": "51f8b0479d", "priority": "A", "score": 73, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 3, "recurring": 5}, "org": "NewtonX", "title": "NewtonX Expert – B2B expert consultations and surveys", "url": "https://www.newtonx.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "screening_call", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: health, research, biotech", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["D", "H"], "pipe": "D", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network: paid remote consultations and surveys for B2B research, including healthcare and biotech.", "source": "seed:platforms"}, {"id": "81d64b5063", "priority": "A", "score": 73, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 3, "recurring": 5}, "org": "AlphaSights", "title": "AlphaSights Expert – paid expert calls", "url": "https://www.alphasights.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "screening_call", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["참여 역할: Subject Matter Expert", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["D"], "pipe": "D", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network connecting investors and consultants with industry experts for remote paid calls. Hourly compensation.", "source": "seed:platforms"}, {"id": "ad58b4c476", "priority": "A", "score": 73, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 3, "recurring": 5}, "org": "GLG (Gerson Lehrman Group)", "title": "GLG Network Member – paid expert consultations (healthcare / life sciences)", "url": "https://glginsights.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "screening_call", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: diagnostics", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["C", "D"], "pipe": "C", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network: paid phone consultations, surveys and advisory for investors and companies. Healthcare, diagnostics, life sciences experts. Remote, per-call hourly compensation.", "source": "seed:platforms"}, {"id": "a62cef7135", "priority": "A", "score": 72, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 4, "recurring": 5}, "org": "Mercor", "title": "Mercor – domain expert roles for AI model training and evaluation", "url": "https://work.mercor.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "ai_or_async", "interview_basis": "fact", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: medicine, biology, research, training", "참여 역할: Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Platform matching domain experts (medicine, biology, PhD researchers) to hourly contract work training and evaluating AI models. Remote, asynchronous, AI interview.", "source": "seed:platforms"}, {"id": "c8e0c05bd1", "priority": "A", "score": 72, "breakdown": {"fit": 25, "compensation": 8, "korea": 5, "remote": 10, "conversion": 8.0, "speed": 4, "effort": 4, "interview": 3, "recurring": 5}, "org": "ASLM Professionals Database", "title": "ASLM Professionals Database – expert profile registration (laboratory medicine SME pool)", "url": "https://professionals.aslm.org/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 400–600/일 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 60, "prep_hours": 1, "payment_speed_days": 90, "fit_chance_pct": 80, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: laboratory medicine, cytogenetics, molecular diagnostics, genomics, diagnostics", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)", "pipes": ["A", "C", "I"], "pipe": "A", "ptype": "roster", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["ASLM SME 공고의 입구 – 교수님 전공과 가장 직결"], "category": null, "potential_krw": 6900000, "desc": "Database through which ASLM and Africa CDC calls for laboratory medicine subject matter experts, trainers and consultants are issued. Register an expert profile in molecular diagnostics, genomics, cytogenetics, laboratory quality, AI in laboratory medicine.", "source": "seed:verified_leads"}, {"id": "e01d115798", "priority": "A", "score": 72, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 4, "recurring": 5}, "org": "micro1", "title": "micro1 – expert contractor for AI training data (medical / science)", "url": "https://www.micro1.ai/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "ai_or_async", "interview_basis": "fact", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: medical, science, training, ai training", "참여 역할: Biomedical SME, Medical Content Reviewer, Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B", "C"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Platform recruiting domain experts as remote contractors for AI training data and evaluation; AI interviewer screening. Hourly contract.", "source": "seed:platforms"}, {"id": "1ac4a1480b", "priority": "A", "score": 71, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 3, "recurring": 5}, "org": "LILT", "title": "LILT – expert linguist / domain reviewer (Korean–English, life sciences)", "url": "https://lilt.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: life science, science", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B", "C"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "AI-powered translation company working with freelance linguists and domain reviewers; Korean-English life sciences content review. Remote.", "source": "seed:platforms"}, {"id": "1d8577e8ff", "priority": "A", "score": 71, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 3, "recurring": 5}, "org": "OpenTrain AI", "title": "OpenTrain AI – freelance AI training expert marketplace", "url": "https://www.opentrain.ai/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: training, ai training", "참여 역할: Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B", "J"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Freelance marketplace for AI training data experts; set own rate; remote project work.", "source": "seed:platforms"}, {"id": "68a95df54c", "priority": "A", "score": 71, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 3, "recurring": 5}, "org": "AfterQuery", "title": "AfterQuery – expert contributor for AI research datasets", "url": "https://www.afterquery.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: research", "참여 역할: Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Recruits domain experts to create and review high-quality datasets for frontier AI labs. Remote contract work.", "source": "seed:platforms"}, {"id": "922f6bfc89", "priority": "A", "score": 71, "breakdown": {"fit": 15, "compensation": 14.4, "korea": 5, "remote": 10, "conversion": 7.8, "speed": 8, "effort": 5, "interview": 1, "recurring": 5}, "org": "Third Bridge", "title": "Third Bridge Specialist – expert interviews and forums", "url": "https://www.thirdbridge.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 150–300/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "live", "interview_basis": "fact", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 21, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: diagnostics", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 150–300 (ESTIMATE)"], "next": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시", "pipes": ["D"], "pipe": "D", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "expert_network", "potential_krw": 6210000, "desc": "Expert network: paid remote interviews, forums and research calls with specialists including healthcare and diagnostics.", "source": "seed:platforms"}, {"id": "9319b4b30c", "priority": "A", "score": 71, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 3, "recurring": 5}, "org": "Outlier (Scale AI)", "title": "Outlier – expert AI trainer (biology / medicine / PhD)", "url": "https://outlier.ai/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "unknown", "interview_basis": "unknown", "assessment": "yes", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: medicine, biology, assessment, training, sme", "참여 역할: Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Remote asynchronous AI training for subject experts; skills assessment onboarding; hourly pay.", "source": "seed:platforms"}, {"id": "d9535ed2fe", "priority": "A", "score": 71, "breakdown": {"fit": 12, "compensation": 12, "korea": 10, "remote": 10, "conversion": 9.4, "speed": 7, "effort": 3, "interview": 3, "recurring": 5}, "org": "Soomgo (숨고)", "title": "숨고 – 논문 컨설팅·통계·강의 견적 요청 대응", "url": "https://soomgo.com/", "comp": "지원자 제안 요율 (APPLICANT-PROPOSED RATE)", "comp_basis": "fact", "comp_status": "APPLICANT-PROPOSED RATE", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "yes", "korea_basis": "fact", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 60, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: 의생명", "참여 역할: Scientific Reviewer", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "요율을 직접 제안 (APPLICANT-PROPOSED)"], "next": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)", "pipes": ["F", "J"], "pipe": "F", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "freelance", "potential_krw": 0.0, "desc": "국내 고수 매칭 플랫폼. 논문 컨설팅, 통계 분석, 의생명 과외·강의 요청에 견적 발송. 견적 발송 비용 발생 가능.", "source": "seed:platforms"}, {"id": "268c2fee0c", "priority": "A", "score": 69, "breakdown": {"fit": 12, "compensation": 8, "korea": 10, "remote": 10, "conversion": 9.4, "speed": 7, "effort": 5, "interview": 3, "recurring": 5}, "org": "Talentbank (탤런트뱅크)", "title": "탤런트뱅크 – 전문가 프로젝트 매칭 (자문·교육)", "url": "https://www.talentbank.co.kr/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "yes", "korea_basis": "fact", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 60, "recurring": true, "basis": "estimate"}, "why": ["참여 역할: Subject Matter Expert", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)", "pipes": ["I", "J"], "pipe": "I", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "freelance", "potential_krw": 0.0, "desc": "국내 전문가 프로젝트 매칭 플랫폼. 기업 자문·교육 프로젝트 단위 계약.", "source": "seed:platforms"}, {"id": "900c3669a7", "priority": "A", "score": 69, "breakdown": {"fit": 13, "compensation": 11.2, "korea": 5, "remote": 10, "conversion": 9.6, "speed": 9, "effort": 5, "interview": 1, "recurring": 5}, "org": "DataAnnotation", "title": "DataAnnotation – expert AI training (science / professional track)", "url": "https://www.dataannotation.tech/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 60–120/시간 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "live", "interview_basis": "fact", "assessment": "yes", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 62, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: science, assessment, training, sme, ai training", "참여 역할: Domain Expert (AI evaluation)", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "추정 시급 USD 60–120 (ESTIMATE)"], "next": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드", "pipes": ["B"], "pipe": "B", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "ai_expert", "potential_krw": 2484000, "desc": "Remote asynchronous AI training work: writing and evaluating AI responses; qualification assessment instead of live interview. Hourly pay.", "source": "seed:platforms"}, {"id": "9ca3f82d56", "priority": "A", "score": 69, "breakdown": {"fit": 12, "compensation": 8, "korea": 10, "remote": 10, "conversion": 9.4, "speed": 7, "effort": 5, "interview": 3, "recurring": 5}, "org": "Kmong (크몽)", "title": "크몽 – 논문 진단·학술 편집·연구 컨설팅 서비스 판매", "url": "https://kmong.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "yes", "korea_basis": "fact", "korea_evidence": "", "remote": "remote", "remote_basis": "fact", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 14, "fit_chance_pct": 60, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: 논문", "참여 역할: Biomedical SME, Medical Content Reviewer, Scientific Reviewer", "원격 가능", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)", "pipes": ["F", "J"], "pipe": "F", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "freelance", "potential_krw": 0.0, "desc": "국내 프리랜서 마켓. 학위논문 정밀진단, 학술 원고 편집, 통계 해석, 연구 설계 자문 상품 판매. 원격, 건당 결제.", "source": "seed:platforms"}, {"id": "d0c8fd20f4", "priority": "A", "score": 67, "breakdown": {"fit": 12, "compensation": 8, "korea": 10, "remote": 10, "conversion": 9.4, "speed": 5, "effort": 5, "interview": 3, "recurring": 5}, "org": "Multicampus (Samsung)", "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)", "url": "https://experthub.multicampus.com/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "yes", "korea_basis": "fact", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 30, "prep_hours": 0.5, "payment_speed_days": 45, "fit_chance_pct": 60, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: 바이오, 의료 ai", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "전문강사 프로필 등록 (약 20분)", "pipes": ["H", "I"], "pipe": "H", "ptype": "platform", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 홈페이지 (상시 등록형)", "notes": [], "category": "corporate_training", "potential_krw": 0.0, "desc": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록. 바이오·헬스케어, 의료 AI, 보고서 작성, 리더십 강의. 강사료 비공개.", "source": "seed:platforms"}, {"id": "ca1330f511", "priority": "B", "score": 55, "breakdown": {"fit": 10, "compensation": 8, "korea": 5, "remote": 10, "conversion": 6.2, "speed": 4, "effort": 4, "interview": 3, "recurring": 5}, "org": "ASLM / Africa CDC", "title": "Expression of Interest To be An Africa Region Subject Matter Expert (Af-RSME) – ASLM/ACDC/EOI/Af-RSME/03/23/26", "url": "https://professionals.aslm.org/expression-of-interest-to-be-an-africa-region-subject-matter-expert-af-rsme-aslm-acdc-eoi-af-rsme-03-23-26/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 400–600/일 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 60, "prep_hours": 1, "payment_speed_days": 90, "fit_chance_pct": 48, "recurring": true, "basis": "estimate"}, "why": ["핵심 전공 일치: biosafety", "참여 역할: Biomedical SME, Medical Content Reviewer", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)", "pipes": ["A", "C"], "pipe": "A", "ptype": "roster", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["'Africa Region' 명칭 → 아프리카 거주/국적 제한 가능성 (미확인)", "생물안전·생물보안 전용"], "category": null, "potential_krw": 6900000, "desc": "Africa CDC Regional Training and Certification Program for Biosafety and Biosecurity Professionals (RTCP-BBP): certified Africa Region Subject Matter Experts in biosafety and biosecurity laboratory practice. Submitted through the ASLM Professionals Database.", "source": "seed:verified_leads"}, {"id": "9d4a6785d7", "priority": "B", "score": 51, "breakdown": {"fit": 6, "compensation": 12, "korea": 5, "remote": 5, "conversion": 6.7, "speed": 6, "effort": 2, "interview": 3, "recurring": 5}, "org": "African Capacity Building Foundation (ACBF)", "title": "Consultancy Services for Instructional Design Consultant – E-Learning Module Development (UBORA Academy)", "url": "https://theacbf.org/consultancies/", "comp": "지원자 제안 요율 (APPLICANT-PROPOSED RATE)", "comp_basis": "fact", "comp_status": "APPLICANT-PROPOSED RATE", "comp_est": "USD 400–600/일 (추정)", "deadline": "2026-10-02", "deadline_note": "17:00 Harare time (= 2026-10-03 00:00 KST)", "days_left": 3, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "unknown", "remote_basis": "unknown", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 240, "prep_hours": 4, "payment_speed_days": 45, "fit_chance_pct": 43, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: e-learning, instructional, capacity building", "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "반복 수입 가능 (로스터·리테이너·플랫폼)", "요율을 직접 제안 (APPLICANT-PROPOSED)"], "next": "D-3: TOR 확인 → 기술·재무 제안서 작성 → 마감 전 제출 (제출은 교수님 승인 후)", "pipes": ["A", "E"], "pipe": "A", "ptype": "individual", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["계약 형태(30일 vs 2년 retainer)가 출처마다 다름 – TOR 원문 확인 필수", "모듈 주제가 거버넌스 분야 → 교수님은 SME가 아닌 순수 ID로 평가됨"], "category": null, "potential_krw": 6900000, "desc": "Individual consultant to design, pilot, refine, validate and package UBORA Academy e-learning modules (Resource Mobilization, Partnership Development). ADDIE, Bloom's taxonomy, quizzes, assignments, LMS upload. Search results indicate ~30 days of work between July and October 2026; another source described a 2-year retainer — conflicting, verify TOR. Minimum instructional-design experience requirement not verified.", "source": "seed:verified_leads"}, {"id": "ce29cbf0b4", "priority": "closed", "score": 51, "breakdown": {"fit": 11, "compensation": 10, "korea": 5, "remote": 5, "conversion": 7.3, "speed": 6, "effort": 2, "interview": 3, "recurring": 2}, "org": "ASLM (African Society for Laboratory Medicine)", "title": "RFP for Course Content Development Consultancy: Subject Matter Experts (SMEs) on Economic Evaluation of AMR Interventions in a One Health Context", "url": "https://aslm.org/opportunities/rfp-for-course-content-development-consultancy-subject-mater-experts-smes-on-economic-evaluation-of-amr-interventions-in-a-one-health-context/", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 400–600/일 (추정)", "deadline": "2026-04-22", "deadline_note": null, "days_left": -160, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "unknown", "remote_basis": "unknown", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 240, "prep_hours": 4, "payment_speed_days": 45, "fit_chance_pct": 53, "recurring": false, "basis": "estimate"}, "why": ["핵심 전공 일치: laboratory medicine", "참여 역할: Biomedical SME, Medical Content Reviewer", "보수 비공개 – 유형 기준 추정"], "next": "마감됨 – 다음 회차 공고 모니터링", "pipes": ["A", "C"], "pipe": "A", "ptype": "individual", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "closed", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["마감된 참고용 – ASLM SME RFP 형식 확인용"], "category": null, "potential_krw": 6900000, "desc": "BEACOI-Africa project: SME consultants develop learner-centred, bilingual-ready course content modules on economic evaluation of AMR interventions. Closed — kept as a reference for ASLM SME RFP format.", "source": "seed:verified_leads"}, {"id": "9620e11f2a", "priority": "B", "score": 50, "breakdown": {"fit": 5, "compensation": 8, "korea": 5, "remote": 10, "conversion": 5.6, "speed": 4, "effort": 4, "interview": 3, "recurring": 5}, "org": "UNITAR", "title": "Consultant - Instructional design (Roster)", "url": "https://unitar.org/vacancy-announcements/roster/consultant-instructional-design/60", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 400–600/일 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 60, "prep_hours": 1, "payment_speed_days": 90, "fit_chance_pct": 38, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: e-learning, instructional", "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)", "pipes": ["A", "E"], "pipe": "A", "ptype": "roster", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["로스터 등록 = 즉시 계약 아님. 과제 발생 시 연락"], "category": null, "potential_krw": 6900000, "desc": "Roster of qualified consultants supporting instructional design and technical development of e-learning courses and microlearning: learning objectives, course structures, interactive modules. Periodic assignments for UNITAR programmes.", "source": "seed:verified_leads"}, {"id": "6941aa81f6", "priority": "W", "score": 45, "breakdown": {"fit": 14, "compensation": 6, "korea": 5, "remote": 5, "conversion": 3.7, "speed": 1, "effort": 5, "interview": 3, "recurring": 2}, "org": "WHO Academy", "title": "WHO Academy course production pipeline (50–80 new courses per year, 2025–2028) – monitor consultant calls", "url": "https://www.who.int/news/item/05-08-2025-who-academy-scaling-up-critical-global-health-workforce-learning-opportunities", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "unknown", "remote_basis": "unknown", "interview": "unknown", "interview_basis": "unknown", "assessment": "unknown", "est": {"application_minutes": 5, "prep_hours": 0, "payment_speed_days": 180, "fit_chance_pct": 49, "recurring": false, "basis": "estimate"}, "why": ["핵심 전공 일치: genomics, diagnostics", "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "보수 비공개 – 유형 기준 추정"], "next": "조치 불필요 – 관련 컨설턴트 공고 모니터링", "pipes": ["A", "C", "E"], "pipe": "A", "ptype": "watch", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "공식 페이지 확인 (VERIFIED)", "notes": ["공고가 아닌 시장 신호 – WATCHLIST"], "category": null, "potential_krw": 0.0, "desc": "WHO Academy plans 50 to 80 courses annually 2025-2028 (~260 new courses). Monitor WHO consultant calls for laboratory, diagnostics, genomics and course development SMEs.", "source": "seed:verified_leads"}, {"id": "19b456dcb2", "priority": "C", "score": 44, "breakdown": {"fit": 0, "compensation": 8, "korea": 5, "remote": 10, "conversion": 5.0, "speed": 4, "effort": 4, "interview": 3, "recurring": 5}, "org": "UNITAR", "title": "Consultant - Learning Solutions Roster - Educational Technology, Information Technology and Artificial Intelligence for Learning", "url": "https://unitar.org/vacancy-announcements/roster/consultant-learning-solutions-roster-educational-technology-information-technology-and-artificial/356", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": "USD 400–600/일 (추정)", "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "remote", "remote_basis": "estimate", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 60, "prep_hours": 1, "payment_speed_days": 90, "fit_chance_pct": 28, "recurring": true, "basis": "estimate"}, "why": ["관련 분야: education", "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "원격 가능 (추정)", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)", "pipes": ["A", "E"], "pipe": "A", "ptype": "roster", "sub": null, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["ML 개발·프로그래밍 경력 요구 → 적합도 낮음"], "category": null, "potential_krw": 6900000, "desc": "AI for Learning Specialist: advanced degree in Artificial Intelligence, Machine Learning or related field, proven experience in AI development and deployment for education, strong programming skills in Python or R, TensorFlow, Keras, PyTorch.", "source": "seed:verified_leads"}, {"id": "0fffd88936", "priority": "C", "score": 34, "breakdown": {"fit": 0, "compensation": 8, "korea": 5, "remote": 5, "conversion": 3.0, "speed": 2, "effort": 3, "interview": 3, "recurring": 5}, "org": "African Development Bank (AfDB)", "title": "EOI - Framework Agreement for the Provision of Learning and Development Services (Categories A-E) - PTCE", "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-provision-learning-and-development-services-categories-e-ptce-97080", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "unknown", "remote_basis": "unknown", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 45, "prep_hours": 1, "payment_speed_days": 180, "fit_chance_pct": 22, "recurring": true, "basis": "estimate"}, "why": ["참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "SME 하도급 제안: 원청 후보(Deloitte, PwC, KPMG)에 협력 메일 – 초안 자동 생성, 발송은 승인 후", "pipes": ["A", "E"], "pipe": "A", "ptype": "firm_only", "sub": {"label": "POTENTIAL SME SUBCONTRACTING LEAD", "likely_primes": ["Deloitte", "PwC", "KPMG", "EY", "Kineo", "LEO Learning", "Chemonics", "DAI Global"], "basis": "estimate", "note": "원청 후보는 발주 분야 기준 추정입니다. 과거 낙찰 공고(Contract Award)로 확인하세요."}, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["마감 11/6 은 미확인 – 공고 원문 확인", "개인 지원 불가 → 원청 업체 SME 로 참여"], "category": null, "potential_krw": 0.0, "desc": "Pre-qualification of learning providers (firms) to co-design and deliver programmes covering leadership, development banking, digital and data skills, organisational effectiveness and professional certification pathways. Multi-year framework agreement.", "source": "seed:verified_leads"}, {"id": "7c4cb108e1", "priority": "C", "score": 34, "breakdown": {"fit": 0, "compensation": 8, "korea": 5, "remote": 5, "conversion": 3.0, "speed": 2, "effort": 3, "interview": 3, "recurring": 5}, "org": "African Development Bank (AfDB)", "title": "EOI - Framework Agreement for Digital Learning Platforms and Content Libraries (Category F) - PTCE", "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-digital-learning-platforms-and-content-libraries-category-f-ptce-97081", "comp": "보수 비공개 (COMPENSATION NOT DISCLOSED)", "comp_basis": "unknown", "comp_status": "COMPENSATION NOT DISCLOSED", "comp_est": null, "deadline": null, "deadline_note": null, "days_left": null, "korea": "unknown", "korea_basis": "unknown", "korea_evidence": "", "remote": "unknown", "remote_basis": "unknown", "interview": "possible", "interview_basis": "estimate", "assessment": "unknown", "est": {"application_minutes": 45, "prep_hours": 1, "payment_speed_days": 180, "fit_chance_pct": 22, "recurring": true, "basis": "estimate"}, "why": ["참여 역할: Subject Matter Expert, Course Author, Curriculum Architect", "반복 수입 가능 (로스터·리테이너·플랫폼)", "보수 비공개 – 유형 기준 추정"], "next": "SME 하도급 제안: 원청 후보(Deloitte, PwC, KPMG)에 협력 메일 – 초안 자동 생성, 발송은 승인 후", "pipes": ["A", "E"], "pipe": "A", "ptype": "firm_only", "sub": {"label": "POTENTIAL SME SUBCONTRACTING LEAD", "likely_primes": ["Deloitte", "PwC", "KPMG", "EY", "Kineo", "LEO Learning", "Chemonics", "DAI Global"], "basis": "estimate", "note": "원청 후보는 발주 분야 기준 추정입니다. 과거 낙찰 공고(Contract Award)로 확인하세요."}, "first_seen": "2026-09-29", "last_changed": "2026-09-29", "history": [], "status": "open", "nr": "", "verif": "검색으로 존재 확인 – 세부조건은 원문 확인 필요", "notes": ["플랫폼 공급사 대상 – 개인 SME 참여 여지 작음"], "category": null, "potential_krw": 0.0, "desc": "Pre-qualification of digital learning platform providers offering subscription or licence-based access to curated content catalogues, platform services, analytics and LMS integration.", "source": "seed:verified_leads"}], "sources": [{"id": "seeds", "type": "seeds", "status": "ok", "items": 26, "message": "", "seconds": 0.0}], "run_date": "2026-09-29", "tracker": null, "packages": []}</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById("data").textContent);
+  const L = D.labels;
+  const STORE_KEY = "ra-tracker-v1";
+  const APPLIED_PLUS = ["APPLIED", "ASSESSMENT", "INTERVIEW", "OFFER", "PAID", "REPEAT CLIENT"];
+  const CLOSED = ["REJECTED", "NOT SUITABLE", "DECLINED", "WITHDRAWN"];
+  const ACTIVE = D.stages.slice(0, D.stages.indexOf("OFFER") + 1);
+  const today = D.generated;
+
+  // ── tracker (browser-only; never uploaded) ──
+  function loadTracker() {
+    let local = null;
+    try { local = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) { local = null; }
+    const embedded = D.tracker;
+    if (embedded && (!local || (embedded.updated || "") > (local.updated || ""))) return embedded;
+    return local || { version: 1, updated: null, goal_monthly_krw: D.goal, entries: {} };
+  }
+  let T = loadTracker();
+  function saveTracker() {
+    T.updated = new Date().toISOString().slice(0, 10);
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(T)); } catch (e) { /* storage blocked – session only */ }
+    renderAll();
+  }
+  const addDays = (iso, n) => { const d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+
+  function setStatus(o, status) {
+    const day = new Date().toISOString().slice(0, 10);
+    const e = T.entries[o.id] || (T.entries[o.id] = { title: o.title, organization: o.org, pipeline: o.pipe,
+      date_discovered: o.first_seen || day, history: [], payments: [] });
+    e.status = status;
+    e.history.push({ date: day, status, note: "dashboard" });
+    if (status === "APPLIED") { e.date_applied = e.date_applied || day; e.follow_up = e.follow_up || addDays(day, 10); }
+    saveTracker();
+  }
+  function recordPayment(o) {
+    const amt = parseFloat(prompt("입금액 (숫자만)", ""));
+    if (!amt) return;
+    const cur = (prompt("통화 (KRW / USD / EUR)", "KRW") || "KRW").toUpperCase();
+    const hours = parseFloat(prompt("투입 시간 (평균 시급 계산용, 모르면 비워두기)", "")) || null;
+    const rate = cur === "KRW" ? 1 : cur === "USD" ? D.fx.KRW_per_USD : cur === "EUR" ? D.fx.KRW_per_USD * 1.08 : 1;
+    const day = new Date().toISOString().slice(0, 10);
+    const e = T.entries[o.id] || (T.entries[o.id] = { title: o.title, organization: o.org, pipeline: o.pipe,
+      date_discovered: o.first_seen || day, history: [], payments: [] });
+    const repeat = (e.payments || []).length > 0;
+    (e.payments = e.payments || []).push({ date: day, amount: amt, currency: cur, krw: Math.round(amt * rate), hours });
+    e.status = repeat ? "REPEAT CLIENT" : "PAID";
+    e.history.push({ date: day, status: e.status, note: "payment" });
+    saveTracker();
+  }
+  function setExpected(o) {
+    const amt = parseFloat(prompt("예상 수입 (KRW, 이 건 전체 또는 월 기준)", ""));
+    if (!amt) return;
+    const e = T.entries[o.id];
+    if (!e) return;
+    e.expected = { amount: amt, currency: "KRW", krw: amt };
+    saveTracker();
+  }
+
+  // ── metrics (mirrors revenue_agent/tracker.py) ──
+  const byId = Object.fromEntries(D.opps.map(o => [o.id, o]));
+  function metrics() {
+    const month = today.slice(0, 7), weekAgo = addDays(today, -7);
+    const m = { goal: T.goal_monthly_krw || D.goal, actualMonth: 0, actualTotal: 0, confirmed: 0, pipeline: 0, expected: 0,
+      appsWeek: 0, active: 0, byPipe: {}, hours: 0, paidWithHours: 0, followUps: [] };
+    let applied = 0, paid = 0; const leads = [];
+    for (const [id, e] of Object.entries(T.entries)) {
+      const o = byId[id] || {};
+      const value = (e.expected && e.expected.krw) || o.potential_krw || 0;
+      const st = e.status, hist = e.history || [];
+      if (ACTIVE.includes(st)) {
+        m.active++;
+        if (st !== "FOUND" && st !== "VERIFIED") { m.pipeline += value; m.expected += value * (D.stage_prob[st] || 0); }
+      }
+      if (st === "OFFER") m.confirmed += value;
+      if (hist.some(h => h.status === "APPLIED" && h.date >= weekAgo)) m.appsWeek++;
+      if (APPLIED_PLUS.includes(st) || hist.some(h => APPLIED_PLUS.includes(h.status))) applied++;
+      const pays = e.payments || [];
+      if (pays.length) {
+        paid++;
+        const first = pays.map(p => p.date).sort()[0];
+        if (e.date_discovered) leads.push((new Date(first) - new Date(e.date_discovered)) / 864e5);
+      }
+      for (const p of pays) {
+        m.actualTotal += p.krw;
+        if (p.date.startsWith(month)) m.actualMonth += p.krw;
+        const k = e.pipeline || "?"; m.byPipe[k] = (m.byPipe[k] || 0) + p.krw;
+        if (p.hours) { m.hours += p.hours; m.paidWithHours += p.krw; }
+      }
+      if (e.follow_up && e.follow_up <= today && ACTIVE.includes(st)) m.followUps.push(e);
+    }
+    m.avgHourly = m.hours ? m.paidWithHours / m.hours : null;
+    m.conversion = applied ? paid / applied : null;
+    m.daysToPay = leads.length ? leads.reduce((a, b) => a + b, 0) / leads.length : null;
+    m.gap = Math.max(0, m.goal - m.actualMonth);
+    m.gapAfterConfirmed = Math.max(0, m.goal - m.actualMonth - m.confirmed);
+    return m;
+  }
+
+  // ── formatting ──
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const won = n => n == null ? "–" : (n >= 1e8 ? (n / 1e8).toFixed(2) + "억원" : n >= 1e4 ? Math.round(n / 1e4).toLocaleString("ko-KR") + "만원" : Math.round(n).toLocaleString("ko-KR") + "원");
+  const badge = basis => `<span class="b ${esc(basis || "unknown")}">${esc(L.basis[basis] || "미확인")}</span>`;
+  function dl(o) {
+    if (!o.deadline) return `상시·미확인 ${badge("unknown")}`;
+    const d = o.days_left;
+    const tag = d < 0 ? "마감" : d === 0 ? "오늘 마감" : `D-${d}`;
+    return `<b>${esc(tag)}</b> ${esc(o.deadline)}${o.deadline_note ? " · " + esc(o.deadline_note) : ""} ${badge("fact")}`;
+  }
+  const statusOf = o => (T.entries[o.id] || {}).status || null;
+
+  function card(o, top) {
+    const st = statusOf(o);
+    const opts = ['<option value="">상태 선택…</option>'].concat(D.stages.map(s => `<option ${s === st ? "selected" : ""}>${s}</option>`)).join("");
+    const pipes = o.pipes.map(p => `<span class="chip" title="${esc(D.pipelines[p].en)}">${p} ${esc(D.pipelines[p].ko)}</span>`).join(" ");
+    const pkg = D.packages.includes(o.id) ? `<a href="packages/${esc(o.id)}.md">📄 지원 패키지 초안</a>` : "";
+    const sub = o.sub ? `<div class="desc"><b>POTENTIAL SME SUBCONTRACTING LEAD</b> · 원청 후보 ${badge("estimate")}: ${esc(o.sub.likely_primes.join(", "))}</div>` : "";
+    const est = o.est || {};
+    return `<article class="card ${top ? "top " + esc(o.priority) : ""}">
+      <div class="row1">
+        <span class="prio ${esc(o.priority)}" title="우선순위">${o.priority === "X" ? "✕" : o.priority === "closed" ? "마감" : esc(o.priority)}</span>
+        <div style="min-width:0">
+          <div class="title"><a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.title)}</a></div>
+          <div class="org">${esc(o.org)} · ${esc(L.ptype[o.ptype] || o.ptype)} ${pipes}</div>
+        </div>
+        <div class="score"><b>${o.score}</b>/100</div>
+      </div>
+      <div class="facts">
+        <div><span class="lab">보수</span><span>${esc(o.comp)} ${badge(o.comp_basis)}${o.comp_est ? `<br><span class="sub">${esc(o.comp_est)}</span>` : ""}</span></div>
+        <div><span class="lab">마감</span><span>${dl(o)}</span></div>
+        <div><span class="lab">한국 지원</span><span>${esc(L.korea[o.korea])} ${badge(o.korea_basis)}</span></div>
+        <div><span class="lab">근무</span><span>${esc(L.remote[o.remote])} ${badge(o.remote_basis)}</span></div>
+        <div><span class="lab">면접</span><span>${esc(L.interview[o.interview] || o.interview)}${o.assessment === "yes" ? " · 평가 있음" : ""} ${badge(o.interview_basis)}</span></div>
+        <div><span class="lab">지원 시간</span><span>약 ${est.application_minutes ?? "?"}분 · 첫 입금 ~${est.payment_speed_days ?? "?"}일 ${badge("estimate")}</span></div>
+      </div>
+      ${o.priority === "X" ? `<div class="nr">NOT RECOMMENDED – ${esc(o.nr)}</div>` : `<ul class="why">${o.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>`}
+      <div class="next">👉 <b>다음 행동</b> ${esc(o.next)}</div>
+      ${sub}
+      <div class="actions">
+        ${o.url ? `<a class="apply" href="${esc(o.url)}" target="_blank" rel="noopener">지원 링크 ↗</a>` : ""}
+        <select data-id="${esc(o.id)}" class="st" aria-label="진행 상태">${opts}</select>
+        ${["OFFER", "PAID", "REPEAT CLIENT"].includes(st) ? `<button data-pay="${esc(o.id)}">₩ 입금 기록</button>` : ""}
+        ${st && ACTIVE.includes(st) ? `<button data-exp="${esc(o.id)}">예상 수입 입력</button>` : ""}
+        ${pkg}
+        <span class="sub">${esc(o.verif || "")}</span>
+      </div>
+      <details><summary>세부 정보 · 점수 근거</summary>
+        <div class="desc">${Object.entries(o.breakdown || {}).map(([k, v]) => `${esc(k)} ${v}`).join(" · ")}</div>
+        ${o.notes.length ? `<ul class="why">${o.notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
+        ${o.korea_evidence ? `<div class="desc">한국 지원 근거: “${esc(o.korea_evidence)}”</div>` : ""}
+        <div class="desc">${esc(o.desc)}</div>
+        <div class="desc">발견 ${esc(o.first_seen)} · 최근 변경 ${esc(o.last_changed)} · 출처 ${esc(o.source)}
+        ${o.history.map(h => ` · ${esc(h.date)} ${esc(h.field)}: ${esc(h.old)} → ${esc(h.new)}`).join("")}</div>
+      </details>
+    </article>`;
+  }
+
+  // ── sections ──
+  const open = o => o.status !== "closed" && o.priority !== "closed";
+  const rec = o => o.priority !== "X";
+  const byScore = (a, b) => b.score - a.score;
+  function pickTop() {
+    const pool = D.opps.filter(o => open(o) && rec(o) && ["S", "A"].includes(o.priority) && o.ptype !== "watch"
+      && !APPLIED_PLUS.includes(statusOf(o)) && !CLOSED.includes(statusOf(o)));
+    const boosted = pool.map(o => ({ o, s: o.score + (o.days_left != null && o.days_left >= 0 && o.days_left <= 7 ? 6 : 0) }))
+      .sort((a, b) => b.s - a.s);
+    const perGroup = {}, out = [];
+    for (const { o } of boosted) {
+      const g = o.category || o.ptype;
+      const cap = o.ptype === "platform" ? 1 : 2;  // near-identical sign-ups shouldn't crowd the top
+      if ((perGroup[g] || 0) >= cap) continue;
+      perGroup[g] = (perGroup[g] || 0) + 1;
+      out.push(o);
+      if (out.length === 5) break;
+    }
+    return out;
+  }
+  const SECTIONS = [
+    ["apply", "지금 지원 (APPLY NOW)", o => open(o) && ["S", "A"].includes(o.priority) && !APPLIED_PLUS.includes(statusOf(o)) && !CLOSED.includes(statusOf(o))],
+    ["new", "오늘 신규 (NEW TODAY)", o => o.first_seen === today && o.priority !== "closed"],
+    ["soon", "마감 임박 (DEADLINE SOON)", o => rec(o) && o.days_left != null && o.days_left >= 0 && o.days_left <= 14, (a, b) => a.days_left - b.days_left],
+    ["A", "글로벌 고단가 러닝", o => open(o) && o.pipes.includes("A")],
+    ["B", "AI 전문가 업무", o => open(o) && o.pipes.includes("B")],
+    ["D", "전문가 자문", o => open(o) && o.pipes.includes("D")],
+    ["E", "이러닝", o => open(o) && o.pipes.includes("E")],
+    ["C", "의생명 SME", o => open(o) && o.pipes.includes("C")],
+    ["other", "기타 (F–J)", o => open(o) && o.pipes.some(p => "FGHIJ".includes(p)) && !o.pipes.some(p => "ABCDE".includes(p))],
+    ["subk", "하도급 리드 (SUBCONTRACTING)", o => open(o) && !!o.sub],
+    ["watch", "관찰 (WATCHLIST)", o => open(o) && ["W", "B", "C"].includes(o.priority)],
+    ["applied", "지원함 (APPLIED)", o => APPLIED_PLUS.includes(statusOf(o))],
+    ["rejected", "제외 (REJECTED / NOT SUITABLE)", o => o.priority === "X" || CLOSED.includes(statusOf(o)) || o.priority === "closed"],
+    ["sources", "소스 상태", null],
+    ["revenue", "수익 분석", null],
+  ];
+  let current = "apply";
+  try { current = localStorage.getItem("ra-tab") || "apply"; } catch (e) {}
+
+  function renderKpis() {
+    const m = metrics();
+    const pct = x => Math.min(100, Math.max(0, x / m.goal * 100));
+    const k = (label, value, hint) => `<div class="tile"><div class="k">${label}</div><div class="v">${value}</div><div class="h">${hint || ""}</div></div>`;
+    document.getElementById("kpis").innerHTML = `
+      <div class="tile goal">
+        <div class="k">이번 달 목표 ${won(m.goal)} · 실제 입금 <b>${won(m.actualMonth)}</b> · 확정(OFFER) ${won(m.confirmed)}</div>
+        <div class="meter" role="img" aria-label="목표 대비 실제 ${Math.round(pct(m.actualMonth))}%">
+          <span class="actual" style="width:${pct(m.actualMonth)}%"></span><span class="confirmed" style="width:${pct(m.confirmed)}%"></span></div>
+        <div class="legend"><span><i style="background:var(--bar)"></i>실제 입금</span><span><i style="background:var(--p-b)"></i>확정(OFFER)</span>
+          <span>목표까지 부족: <b>${won(m.gap)}</b> (확정분 반영 시 ${won(m.gapAfterConfirmed)})</span></div>
+      </div>
+      ${k("잠재 파이프라인", won(m.pipeline), "준비 이상 단계 합계 · 추정")}
+      ${k("기대 수익", won(m.expected), "단계별 전환확률 반영 · 추정")}
+      ${k("확정 수익", won(m.confirmed), "OFFER 단계")}
+      ${k("누적 실제 수익", won(m.actualTotal), "입금 기록 합계")}
+      ${k("이번 주 지원", m.appsWeek + "건", "최근 7일 APPLIED")}
+      ${k("활성 기회", m.active + "건", "FOUND ~ OFFER")}
+      ${k("평균 시급", m.avgHourly ? won(m.avgHourly) : "–", "입금 ÷ 투입시간")}
+      ${k("전환율", m.conversion != null ? (m.conversion * 100).toFixed(0) + "%" : "–", "입금 ÷ 지원")}
+      ${k("발견→입금", m.daysToPay != null ? m.daysToPay.toFixed(0) + "일" : "–", "평균 소요")}
+      ${m.followUps.length ? k("팔로업 필요", m.followUps.length + "건", esc(m.followUps.map(e => e.title).slice(0, 2).join(" / "))) : ""}`;
+    return m;
+  }
+
+  function renderRevenue(m) {
+    const rows = Object.keys(D.pipelines).map(p => [p, m.byPipe[p] || 0]);
+    const max = Math.max(1, ...rows.map(r => r[1]));
+    const bars = rows.map(([p, v]) => `<div class="barrow" title="${esc(D.pipelines[p].en)}: ${won(v)}">
+      <span>${p} ${esc(D.pipelines[p].ko)}</span><span class="track"><span class="fill" style="display:block;width:${v / max * 100}%"></span></span><span class="val">${won(v)}</span></div>`).join("");
+    const tableRows = Object.entries(T.entries).map(([id, e]) => `<tr><td>${esc(e.title)}</td><td>${esc(e.status)}</td><td>${esc(e.date_discovered || "")}</td>
+      <td>${esc(e.date_applied || "")}</td><td>${esc(e.follow_up || "")}</td><td>${won((e.expected || {}).krw)}</td><td>${won((e.payments || []).reduce((a, p) => a + p.krw, 0))}</td></tr>`).join("");
+    return `<h2 style="margin-top:6px">파이프라인별 실제 수익</h2><div class="bars">${bars}</div>
+      <h2>지원 트래커 (이 브라우저에만 저장)</h2>
+      <table><thead><tr><th>기회</th><th>상태</th><th>발견</th><th>지원</th><th>팔로업</th><th>예상</th><th>입금</th></tr></thead>
+      <tbody>${tableRows || '<tr><td colspan="7" class="sub">아직 기록이 없습니다. 카드의 상태 선택으로 시작하세요.</td></tr>'}</tbody></table>`;
+  }
+
+  function renderSources() {
+    const cls = { ok: "ok", error: "err", skipped: "skip", disabled: "skip" };
+    const ko = { ok: "정상", error: "오류", skipped: "건너뜀", disabled: "비활성" };
+    return `<table><thead><tr><th>소스</th><th>유형</th><th>상태</th><th>수집</th><th>메시지</th></tr></thead><tbody>${
+      D.sources.map(s => `<tr><td>${esc(s.id)}</td><td>${esc(s.type)}</td><td class="${cls[s.status] || ""}">${ko[s.status] || esc(s.status)}</td><td>${s.items}</td><td class="sub">${esc(s.message || "")}</td></tr>`).join("")
+    }</tbody></table><p class="sub">마지막 수집: ${esc(D.run_date || "–")}</p>`;
+  }
+
+  function renderAll() {
+    const m = renderKpis();
+    const top = pickTop();
+    document.getElementById("top").innerHTML = top.length ? top.map(o => card(o, true)).join("") : `<div class="empty">지금 바로 지원할 S/A 기회가 없습니다. 아래 관찰 목록을 확인하세요.</div>`;
+    const counts = {};
+    for (const [id, , f] of SECTIONS) if (f) counts[id] = D.opps.filter(f).length;
+    document.getElementById("tabs").innerHTML = SECTIONS.map(([id, label]) =>
+      `<button class="tab" role="tab" data-tab="${id}" aria-selected="${id === current}">${esc(label)}${counts[id] != null ? `<span class="n">${counts[id]}</span>` : ""}</button>`).join("");
+    const sec = SECTIONS.find(s => s[0] === current) || SECTIONS[0];
+    const list = document.getElementById("list");
+    if (sec[0] === "sources") list.innerHTML = renderSources();
+    else if (sec[0] === "revenue") list.innerHTML = renderRevenue(m);
+    else {
+      const items = D.opps.filter(sec[2]).sort(sec[3] || byScore);
+      list.innerHTML = items.length ? items.map(o => card(o, false)).join("") : `<div class="empty">해당 항목이 없습니다.</div>`;
+    }
+  }
+
+  document.addEventListener("change", ev => {
+    const t = ev.target;
+    if (t.classList && t.classList.contains("st") && t.value) setStatus(byId[t.dataset.id], t.value);
+  });
+  document.addEventListener("click", ev => {
+    const t = ev.target.closest("button");
+    if (!t) return;
+    if (t.dataset.tab) { current = t.dataset.tab; try { localStorage.setItem("ra-tab", current); } catch (e) {} renderAll(); }
+    if (t.dataset.pay) recordPayment(byId[t.dataset.pay]);
+    if (t.dataset.exp) setExpected(byId[t.dataset.exp]);
+  });
+  document.getElementById("theme").onclick = () => {
+    const r = document.documentElement;
+    const dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    r.dataset.theme = dark ? "light" : "dark";
+  };
+  document.getElementById("export").onclick = () => {
+    const blob = new Blob([JSON.stringify(T, null, 1)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = `revenue-tracker-${today}.json`; a.click();
+  };
+  document.getElementById("importBtn").onclick = () => document.getElementById("import").click();
+  document.getElementById("import").onchange = async ev => {
+    const f = ev.target.files[0]; if (!f) return;
+    try { T = JSON.parse(await f.text()); saveTracker(); } catch (e) { alert("트래커 파일을 읽을 수 없습니다."); }
+  };
+
+  const recN = D.opps.filter(o => open(o) && rec(o)).length;
+  document.getElementById("meta").textContent =
+    `기준일 ${D.generated} · 추천 ${recN}건 / 전체 ${D.opps.length}건 · 환율 1 USD = ${D.fx.KRW_per_USD}원 (추정, ${D.fx.as_of})`;
+  document.getElementById("notice").innerHTML = (D.public
+    ? "공개 대시보드: 지원 상태·수익 기록은 <b>이 브라우저에만</b> 저장되며 서버·깃에 올라가지 않습니다. 기기를 바꿀 때는 '트래커 내보내기/가져오기'를 쓰세요. "
+    : "로컬 대시보드: data/private/tracker.json 과 브라우저 기록 중 최신 것을 사용합니다. ")
+    + "배지 구분 — <span class='b fact'>사실</span> 공고·API에 명시 · <span class='b estimate'>추정</span> 규칙 기반 추정 · <span class='b unknown'>미확인</span> 정보 없음. 지원·발송은 항상 교수님이 직접 합니다.";
+  renderAll();
+})();
+</script>
+</body>
+</html>

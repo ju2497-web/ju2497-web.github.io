@@ -1,0 +1,10 @@
+{"apiVersion": "1", "jobs": [
+ {"title": "Hematology Expert (Professor / PhD) – AI Evaluation", "location": "Remote", "isRemote": true, "isListed": true,
+  "employmentType": "Contract", "jobUrl": "https://jobs.ashbyhq.com/mercor/111", "publishedAt": "2026-09-28T00:00:00Z",
+  "descriptionPlain": "Hourly contract. Domain experts in hematology, leukemia and lymphoma evaluate AI outputs. AI interview only. US citizens only, must be authorized to work in the United States.",
+  "compensation": {"compensationTierSummary": "$120 – $160 per hour", "summaryComponents": [{"compensationType": "Salary", "interval": "1 HOUR", "currencyCode": "USD", "minValue": 120, "maxValue": 160}]}},
+ {"title": "Biology PhD Expert – AI Training", "location": "Remote", "isRemote": true, "isListed": true, "employmentType": "Contract",
+  "jobUrl": "https://jobs.ashbyhq.com/mercor/222", "publishedAt": "2026-09-28T00:00:00Z",
+  "descriptionPlain": "Molecular biology and genomics experts create and grade reasoning tasks for AI models. Remote, asynchronous, AI interview. Open to experts worldwide.",
+  "compensation": {"compensationTierSummary": "$80 – $110 per hour", "summaryComponents": [{"compensationType": "Salary", "interval": "1 HOUR", "currencyCode": "USD", "minValue": 80, "maxValue": 110}]}}
+]}

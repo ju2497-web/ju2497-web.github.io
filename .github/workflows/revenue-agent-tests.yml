@@ -1,0 +1,22 @@
+name: Revenue Agent – tests
+
+on:
+  push:
+    paths: ["revenue_agent/**", "tests/**", "config/**", "data/seeds/**", ".github/workflows/revenue-agent*.yml"]
+  pull_request:
+    paths: ["revenue_agent/**", "tests/**", "config/**", "data/seeds/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check revenue_agent tests --select E,F,W,B --ignore E501,E701,E702
+      - run: python -m unittest discover -s tests -t . -v

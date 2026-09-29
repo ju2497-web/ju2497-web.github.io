@@ -1,0 +1,3119 @@
+{
+ "version": 1,
+ "updated": "2026-09-29",
+ "opportunities": {
+  "1a885e7bba": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Guidepoint",
+   "title": "Guidepoint Advisor – paid expert consultations",
+   "url": "https://www.guidepoint.com/",
+   "category": "expert_network",
+   "description": "Expert network: remote paid consultations for investment and corporate clients; healthcare and life sciences advisors. Hourly compensation per consultation.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "D"
+   ],
+   "primary_pipeline": "D",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "screening_call",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "health",
+     "life science",
+     "science"
+    ],
+    "roles": [
+     "advisor",
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 73,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: health, life science, science",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "guidepoint|guidepoint advisor paid expert consultations",
+   "id": "1a885e7bba",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "3557e8c1eb": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Coleman Research",
+   "title": "Coleman Research Expert – paid consultations",
+   "url": "https://www.colemanrg.com/",
+   "category": "expert_network",
+   "description": "Expert network: paid remote consultations with healthcare and life sciences experts. Hourly compensation.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "D"
+   ],
+   "primary_pipeline": "D",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "screening_call",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "health",
+     "life science",
+     "science",
+     "research"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 73,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: health, life science, science, research",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "coleman research|coleman research expert paid consultations",
+   "id": "3557e8c1eb",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "51f8b0479d": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "NewtonX",
+   "title": "NewtonX Expert – B2B expert consultations and surveys",
+   "url": "https://www.newtonx.com/",
+   "category": "expert_network",
+   "description": "Expert network: paid remote consultations and surveys for B2B research, including healthcare and biotech.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "D",
+    "H"
+   ],
+   "primary_pipeline": "D",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "screening_call",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "health",
+     "research",
+     "biotech"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 73,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: health, research, biotech",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "newtonx|newtonx expert b2b expert consultations and surveys",
+   "id": "51f8b0479d",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "81d64b5063": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "AlphaSights",
+   "title": "AlphaSights Expert – paid expert calls",
+   "url": "https://www.alphasights.com/",
+   "category": "expert_network",
+   "description": "Expert network connecting investors and consultants with industry experts for remote paid calls. Hourly compensation.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "D"
+   ],
+   "primary_pipeline": "D",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "screening_call",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 73,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "참여 역할: Subject Matter Expert",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "alphasights|alphasights expert paid expert calls",
+   "id": "81d64b5063",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "ad58b4c476": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "GLG (Gerson Lehrman Group)",
+   "title": "GLG Network Member – paid expert consultations (healthcare / life sciences)",
+   "url": "https://glginsights.com/",
+   "category": "expert_network",
+   "description": "Expert network: paid phone consultations, surveys and advisory for investors and companies. Healthcare, diagnostics, life sciences experts. Remote, per-call hourly compensation.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "C",
+    "D"
+   ],
+   "primary_pipeline": "C",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "screening_call",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "diagnostics"
+    ],
+    "adjacent": [
+     "health",
+     "life science",
+     "science"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 73,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: diagnostics",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "glg gerson lehrman|glg network member paid expert consultations healthcare life sciences",
+   "id": "ad58b4c476",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "a62cef7135": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Mercor",
+   "title": "Mercor – domain expert roles for AI model training and evaluation",
+   "url": "https://work.mercor.com/",
+   "category": "ai_expert",
+   "description": "Platform matching domain experts (medicine, biology, PhD researchers) to hourly contract work training and evaluating AI models. Remote, asynchronous, AI interview.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "ai_or_async",
+   "interview_basis": "fact",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [
+     "PhD"
+    ],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "medicine",
+     "biology",
+     "research",
+     "training"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 72,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 4,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: medicine, biology, research, training",
+    "참여 역할: Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "mercor|mercor domain expert roles for ai model training and evaluation",
+   "id": "a62cef7135",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "c8e0c05bd1": {
+   "organization": "ASLM Professionals Database",
+   "title": "ASLM Professionals Database – expert profile registration (laboratory medicine SME pool)",
+   "url": "https://professionals.aslm.org/",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "roster",
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "description": "Database through which ASLM and Africa CDC calls for laboratory medicine subject matter experts, trainers and consultants are issued. Register an expert profile in molecular diagnostics, genomics, cytogenetics, laboratory quality, AI in laboratory medicine.",
+   "notes": [
+    "ASLM SME 공고의 입구 – 교수님 전공과 가장 직결"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "C",
+    "I"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "laboratory medicine",
+     "cytogenetics",
+     "molecular diagnostics",
+     "genomics",
+     "diagnostics",
+     "laboratory quality"
+    ],
+    "adjacent": [
+     "medicine",
+     "genetics",
+     "laboratory",
+     "subject matter expert",
+     "sme"
+    ],
+    "roles": [
+     "sme",
+     "expert"
+    ],
+    "title_core": [
+     "laboratory medicine"
+    ]
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 72,
+   "score_breakdown": {
+    "fit": 25,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 8.0,
+    "speed": 4,
+    "effort": 4,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 90,
+    "fit_chance_pct": 80,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: laboratory medicine, cytogenetics, molecular diagnostics, genomics, diagnostics",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)",
+   "procurement_type_seed": "roster",
+   "key": "aslm professionals database|aslm professionals database expert profile registration laboratory medicine sme pool",
+   "id": "c8e0c05bd1",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "e01d115798": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "micro1",
+   "title": "micro1 – expert contractor for AI training data (medical / science)",
+   "url": "https://www.micro1.ai/",
+   "category": "ai_expert",
+   "description": "Platform recruiting domain experts as remote contractors for AI training data and evaluation; AI interviewer screening. Hourly contract.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B",
+    "C"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "ai_or_async",
+   "interview_basis": "fact",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "medical",
+     "science",
+     "training",
+     "ai training"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer",
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 72,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 4,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: medical, science, training, ai training",
+    "참여 역할: Biomedical SME, Medical Content Reviewer, Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "micro1|micro1 expert contractor for ai training data medical science",
+   "id": "e01d115798",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "1ac4a1480b": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "LILT",
+   "title": "LILT – expert linguist / domain reviewer (Korean–English, life sciences)",
+   "url": "https://lilt.com/",
+   "category": "ai_expert",
+   "description": "AI-powered translation company working with freelance linguists and domain reviewers; Korean-English life sciences content review. Remote.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B",
+    "C"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": [
+     "English",
+     "Korean"
+    ]
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "life science",
+     "science"
+    ],
+    "roles": [
+     "reviewer",
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 71,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: life science, science",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "lilt|lilt expert linguist domain reviewer korean english life sciences",
+   "id": "1ac4a1480b",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "1d8577e8ff": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "OpenTrain AI",
+   "title": "OpenTrain AI – freelance AI training expert marketplace",
+   "url": "https://www.opentrain.ai/",
+   "category": "ai_expert",
+   "description": "Freelance marketplace for AI training data experts; set own rate; remote project work.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B",
+    "J"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "training",
+     "ai training"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 71,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: training, ai training",
+    "참여 역할: Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "opentrain ai|opentrain ai freelance ai training expert marketplace",
+   "id": "1d8577e8ff",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "68a95df54c": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "AfterQuery",
+   "title": "AfterQuery – expert contributor for AI research datasets",
+   "url": "https://www.afterquery.com/",
+   "category": "ai_expert",
+   "description": "Recruits domain experts to create and review high-quality datasets for frontier AI labs. Remote contract work.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "research"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 71,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: research",
+    "참여 역할: Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "afterquery|afterquery expert contributor for ai research datasets",
+   "id": "68a95df54c",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "922f6bfc89": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Third Bridge",
+   "title": "Third Bridge Specialist – expert interviews and forums",
+   "url": "https://www.thirdbridge.com/",
+   "category": "expert_network",
+   "description": "Expert network: paid remote interviews, forums and research calls with specialists including healthcare and diagnostics.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "D"
+   ],
+   "primary_pipeline": "D",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "live",
+   "interview_basis": "fact",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "diagnostics"
+    ],
+    "adjacent": [
+     "health",
+     "research"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 150,
+    "max": 300,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 71,
+   "score_breakdown": {
+    "fit": 15,
+    "compensation": 14.4,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 7.8,
+    "speed": 8,
+    "effort": 5,
+    "interview": 1,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 150–300 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 21,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: diagnostics",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 150–300 (ESTIMATE)"
+   ],
+   "next_action": "오늘 전문가 프로필 등록 (약 30분). 요청 시 시급 USD 150+ 제시",
+   "procurement_type_seed": "platform",
+   "key": "third bridge|third bridge specialist expert interviews and forums",
+   "id": "922f6bfc89",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "9319b4b30c": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Outlier (Scale AI)",
+   "title": "Outlier – expert AI trainer (biology / medicine / PhD)",
+   "url": "https://outlier.ai/",
+   "category": "ai_expert",
+   "description": "Remote asynchronous AI training for subject experts; skills assessment onboarding; hourly pay.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "yes",
+   "travel": "no",
+   "requirements": {
+    "degree": [
+     "PhD"
+    ],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "medicine",
+     "biology",
+     "assessment",
+     "training",
+     "sme",
+     "ai training"
+    ],
+    "roles": [
+     "assessment",
+     "expert",
+     "trainer"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 71,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: medicine, biology, assessment, training, sme",
+    "참여 역할: Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "outlier scale ai|outlier expert ai trainer biology medicine phd",
+   "id": "9319b4b30c",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "d9535ed2fe": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Soomgo (숨고)",
+   "title": "숨고 – 논문 컨설팅·통계·강의 견적 요청 대응",
+   "url": "https://soomgo.com/",
+   "category": "freelance",
+   "korea_eligible": "yes",
+   "description": "국내 고수 매칭 플랫폼. 논문 컨설팅, 통계 분석, 의생명 과외·강의 요청에 견적 발송. 견적 발송 비용 발생 가능.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "APPLICANT-PROPOSED RATE",
+    "text": "Applicant proposes the rate",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "fact",
+    "unpaid": false
+   },
+   "compensation_text": "Applicant proposes the rate",
+   "pipelines": [
+    "F",
+    "J"
+   ],
+   "primary_pipeline": "F",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": true,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "의생명"
+    ],
+    "adjacent": [
+     "논문",
+     "강의"
+    ],
+    "roles": [],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Scientific Reviewer"
+   ],
+   "comp_estimate": null,
+   "score": 71,
+   "score_breakdown": {
+    "fit": 12,
+    "compensation": 12,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 9.4,
+    "speed": 7,
+    "effort": 3,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "요율을 직접 제안 (APPLICANT-PROPOSED)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 60,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: 의생명",
+    "참여 역할: Scientific Reviewer",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "요율을 직접 제안 (APPLICANT-PROPOSED)"
+   ],
+   "next_action": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)",
+   "procurement_type_seed": "platform",
+   "key": "soomgo 숨고|숨고 논문 컨설팅 통계 강의 견적 요청 대응",
+   "id": "d9535ed2fe",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "268c2fee0c": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Talentbank (탤런트뱅크)",
+   "title": "탤런트뱅크 – 전문가 프로젝트 매칭 (자문·교육)",
+   "url": "https://www.talentbank.co.kr/",
+   "category": "freelance",
+   "korea_eligible": "yes",
+   "description": "국내 전문가 프로젝트 매칭 플랫폼. 기업 자문·교육 프로젝트 단위 계약.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "I",
+    "J"
+   ],
+   "primary_pipeline": "I",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [],
+    "roles": [],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert"
+   ],
+   "comp_estimate": null,
+   "score": 69,
+   "score_breakdown": {
+    "fit": 12,
+    "compensation": 8,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 9.4,
+    "speed": 7,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 60,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "참여 역할: Subject Matter Expert",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)",
+   "procurement_type_seed": "platform",
+   "key": "talentbank 탤런트뱅크|탤런트뱅크 전문가 프로젝트 매칭 자문 교육",
+   "id": "268c2fee0c",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "900c3669a7": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "DataAnnotation",
+   "title": "DataAnnotation – expert AI training (science / professional track)",
+   "url": "https://www.dataannotation.tech/",
+   "category": "ai_expert",
+   "description": "Remote asynchronous AI training work: writing and evaluating AI responses; qualification assessment instead of live interview. Hourly pay.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "B"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "live",
+   "interview_basis": "fact",
+   "assessment": "yes",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "science",
+     "assessment",
+     "training",
+     "sme",
+     "ai training"
+    ],
+    "roles": [
+     "assessment",
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": {
+    "min": 60,
+    "max": 120,
+    "unit": "hour",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "공고 수치 아님 – 업계 통상 범위 추정 (config/profile.toml [rates])"
+   },
+   "score": 69,
+   "score_breakdown": {
+    "fit": 13,
+    "compensation": 11.2,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 9.6,
+    "speed": 9,
+    "effort": 5,
+    "interview": 1,
+    "recurring": 5
+   },
+   "comp_reason": "추정 시급 USD 60–120 (ESTIMATE)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 62,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: science, assessment, training, sme, ai training",
+    "참여 역할: Domain Expert (AI evaluation)",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "추정 시급 USD 60–120 (ESTIMATE)"
+   ],
+   "next_action": "가입 → 의생명 도메인 평가 응시 (약 30~60분). 영문 CV 업로드",
+   "procurement_type_seed": "platform",
+   "key": "dataannotation|dataannotation expert ai training science professional track",
+   "id": "900c3669a7",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "9ca3f82d56": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Kmong (크몽)",
+   "title": "크몽 – 논문 진단·학술 편집·연구 컨설팅 서비스 판매",
+   "url": "https://kmong.com/",
+   "category": "freelance",
+   "korea_eligible": "yes",
+   "remote": "remote",
+   "description": "국내 프리랜서 마켓. 학위논문 정밀진단, 학술 원고 편집, 통계 해석, 연구 설계 자문 상품 판매. 원격, 건당 결제.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "F",
+    "J"
+   ],
+   "primary_pipeline": "F",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote_basis": "fact",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "논문"
+    ],
+    "roles": [],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer",
+    "Scientific Reviewer"
+   ],
+   "comp_estimate": null,
+   "score": 69,
+   "score_breakdown": {
+    "fit": 12,
+    "compensation": 8,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 9.4,
+    "speed": 7,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 14,
+    "fit_chance_pct": 60,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: 논문",
+    "참여 역할: Biomedical SME, Medical Content Reviewer, Scientific Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "상품·프로필 등록 또는 갱신 (고단가 패키지 우선)",
+   "procurement_type_seed": "platform",
+   "key": "kmong 크몽|크몽 논문 진단 학술 편집 연구 컨설팅 서비스 판매",
+   "id": "9ca3f82d56",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "d0c8fd20f4": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Multicampus (Samsung)",
+   "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)",
+   "url": "https://experthub.multicampus.com/",
+   "category": "corporate_training",
+   "korea_eligible": "yes",
+   "description": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록. 바이오·헬스케어, 의료 AI, 보고서 작성, 리더십 강의. 강사료 비공개.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "H",
+    "I"
+   ],
+   "primary_pipeline": "H",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "바이오",
+     "의료 ai"
+    ],
+    "adjacent": [
+     "의료",
+     "강의"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": null,
+   "score": 67,
+   "score_breakdown": {
+    "fit": 12,
+    "compensation": 8,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 9.4,
+    "speed": 5,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 45,
+    "fit_chance_pct": 60,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: 바이오, 의료 ai",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "전문강사 프로필 등록 (약 20분)",
+   "procurement_type_seed": "platform",
+   "key": "multicampus samsung|multicampus expert hub 전문강사 상시 등록 기업교육",
+   "id": "d0c8fd20f4",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "ca1330f511": {
+   "organization": "ASLM / Africa CDC",
+   "title": "Expression of Interest To be An Africa Region Subject Matter Expert (Af-RSME) – ASLM/ACDC/EOI/Af-RSME/03/23/26",
+   "url": "https://professionals.aslm.org/expression-of-interest-to-be-an-africa-region-subject-matter-expert-af-rsme-aslm-acdc-eoi-af-rsme-03-23-26/",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "roster",
+   "description": "Africa CDC Regional Training and Certification Program for Biosafety and Biosecurity Professionals (RTCP-BBP): certified Africa Region Subject Matter Experts in biosafety and biosecurity laboratory practice. Submitted through the ASLM Professionals Database.",
+   "notes": [
+    "'Africa Region' 명칭 → 아프리카 거주/국적 제한 가능성 (미확인)",
+    "생물안전·생물보안 전용"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "C"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": true,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "biosafety"
+    ],
+    "adjacent": [
+     "laboratory",
+     "training",
+     "subject matter expert",
+     "sme"
+    ],
+    "roles": [
+     "subject matter expert",
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 55,
+   "score_breakdown": {
+    "fit": 10,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 6.2,
+    "speed": 4,
+    "effort": 4,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "B",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 90,
+    "fit_chance_pct": 48,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: biosafety",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)",
+   "procurement_type_seed": "roster",
+   "key": "aslm africa cdc|expression of interest to be an africa region subject matter expert af rsme aslm acdc eoi af rsme 03 23 26",
+   "id": "ca1330f511",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "9d4a6785d7": {
+   "organization": "African Capacity Building Foundation (ACBF)",
+   "title": "Consultancy Services for Instructional Design Consultant – E-Learning Module Development (UBORA Academy)",
+   "url": "https://theacbf.org/consultancies/",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "deadline": "2026-10-02",
+   "deadline_note": "17:00 Harare time (= 2026-10-03 00:00 KST)",
+   "procurement_type": "individual",
+   "compensation_text": "Applicant proposes the rate",
+   "how_to_apply": "Technical + financial proposals to submission@theacbf.org",
+   "description": "Individual consultant to design, pilot, refine, validate and package UBORA Academy e-learning modules (Resource Mobilization, Partnership Development). ADDIE, Bloom's taxonomy, quizzes, assignments, LMS upload. Search results indicate ~30 days of work between July and October 2026; another source described a 2-year retainer — conflicting, verify TOR. Minimum instructional-design experience requirement not verified.",
+   "notes": [
+    "계약 형태(30일 vs 2년 retainer)가 출처마다 다름 – TOR 원문 확인 필수",
+    "모듈 주제가 거버넌스 분야 → 교수님은 SME가 아닌 순수 ID로 평가됨"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "APPLICANT-PROPOSED RATE",
+    "text": "Applicant proposes the rate",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "fact",
+    "unpaid": false
+   },
+   "pipelines": [
+    "A",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "unknown",
+   "remote_basis": "unknown",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "unknown",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": "30 days",
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "e-learning",
+     "instructional",
+     "capacity building"
+    ],
+    "roles": [
+     "consultant"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 51,
+   "score_breakdown": {
+    "fit": 6,
+    "compensation": 12,
+    "korea": 5,
+    "remote": 5,
+    "conversion": 6.7,
+    "speed": 6,
+    "effort": 2,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "요율을 직접 제안 (APPLICANT-PROPOSED)",
+   "priority": "B",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 240,
+    "prep_hours": 4,
+    "payment_speed_days": 45,
+    "fit_chance_pct": 43,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: e-learning, instructional, capacity building",
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "요율을 직접 제안 (APPLICANT-PROPOSED)"
+   ],
+   "next_action": "D-3: TOR 확인 → 기술·재무 제안서 작성 → 마감 전 제출 (제출은 교수님 승인 후)",
+   "procurement_type_seed": "individual",
+   "key": "african capacity building foundation acbf|consultancy services for instructional design consultant e learning module development ubora academy",
+   "id": "9d4a6785d7",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "ce29cbf0b4": {
+   "organization": "ASLM (African Society for Laboratory Medicine)",
+   "title": "RFP for Course Content Development Consultancy: Subject Matter Experts (SMEs) on Economic Evaluation of AMR Interventions in a One Health Context",
+   "url": "https://aslm.org/opportunities/rfp-for-course-content-development-consultancy-subject-mater-experts-smes-on-economic-evaluation-of-amr-interventions-in-a-one-health-context/",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "individual",
+   "deadline": "2026-04-22",
+   "status": "closed",
+   "description": "BEACOI-Africa project: SME consultants develop learner-centred, bilingual-ready course content modules on economic evaluation of AMR interventions. Closed — kept as a reference for ASLM SME RFP format.",
+   "notes": [
+    "마감된 참고용 – ASLM SME RFP 형식 확인용"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "posted_date": null,
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "C"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "unknown",
+   "remote_basis": "unknown",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "unknown",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": false,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "laboratory medicine"
+    ],
+    "adjacent": [
+     "health",
+     "medicine",
+     "laboratory",
+     "subject matter expert",
+     "sme"
+    ],
+    "roles": [
+     "sme"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 51,
+   "score_breakdown": {
+    "fit": 11,
+    "compensation": 10,
+    "korea": 5,
+    "remote": 5,
+    "conversion": 7.3,
+    "speed": 6,
+    "effort": 2,
+    "interview": 3,
+    "recurring": 2
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "closed",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 240,
+    "prep_hours": 4,
+    "payment_speed_days": 45,
+    "fit_chance_pct": 53,
+    "recurring": false,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: laboratory medicine",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "마감됨 – 다음 회차 공고 모니터링",
+   "procurement_type_seed": "individual",
+   "key": "aslm african society for laboratory medicine|rfp for course content development consultancy subject matter experts smes on economic evaluation of amr interventions in a one health context",
+   "id": "ce29cbf0b4",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "9620e11f2a": {
+   "organization": "UNITAR",
+   "title": "Consultant - Instructional design (Roster)",
+   "url": "https://unitar.org/vacancy-announcements/roster/consultant-instructional-design/60",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "roster",
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "description": "Roster of qualified consultants supporting instructional design and technical development of e-learning courses and microlearning: learning objectives, course structures, interactive modules. Periodic assignments for UNITAR programmes.",
+   "notes": [
+    "로스터 등록 = 즉시 계약 아님. 과제 발생 시 연락"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "e-learning",
+     "instructional"
+    ],
+    "roles": [
+     "consultant"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 50,
+   "score_breakdown": {
+    "fit": 5,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 5.6,
+    "speed": 4,
+    "effort": 4,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "B",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 90,
+    "fit_chance_pct": 38,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: e-learning, instructional",
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)",
+   "procurement_type_seed": "roster",
+   "key": "unitar|consultant instructional design",
+   "id": "9620e11f2a",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "6941aa81f6": {
+   "organization": "WHO Academy",
+   "title": "WHO Academy course production pipeline (50–80 new courses per year, 2025–2028) – monitor consultant calls",
+   "url": "https://www.who.int/news/item/05-08-2025-who-academy-scaling-up-critical-global-health-workforce-learning-opportunities",
+   "verified_on": "2026-09-29",
+   "verification": "official_page_verified",
+   "procurement_type": "watch",
+   "watch": true,
+   "description": "WHO Academy plans 50 to 80 courses annually 2025-2028 (~260 new courses). Monitor WHO consultant calls for laboratory, diagnostics, genomics and course development SMEs.",
+   "notes": [
+    "공고가 아닌 시장 신호 – WATCHLIST"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 페이지 확인 (VERIFIED)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "C",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "unknown",
+   "remote_basis": "unknown",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "unknown",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": false,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "genomics",
+     "diagnostics"
+    ],
+    "adjacent": [
+     "laboratory",
+     "course development",
+     "sme"
+    ],
+    "roles": [
+     "consultant"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer",
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": null,
+   "score": 45,
+   "score_breakdown": {
+    "fit": 14,
+    "compensation": 6,
+    "korea": 5,
+    "remote": 5,
+    "conversion": 3.7,
+    "speed": 1,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 2
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "W",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 5,
+    "prep_hours": 0,
+    "payment_speed_days": 180,
+    "fit_chance_pct": 49,
+    "recurring": false,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: genomics, diagnostics",
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "조치 불필요 – 관련 컨설턴트 공고 모니터링",
+   "procurement_type_seed": "watch",
+   "key": "who academy|who academy course production pipeline 50 80 new courses per year 2025 2028 monitor consultant calls",
+   "id": "6941aa81f6",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "19b456dcb2": {
+   "organization": "UNITAR",
+   "title": "Consultant - Learning Solutions Roster - Educational Technology, Information Technology and Artificial Intelligence for Learning",
+   "url": "https://unitar.org/vacancy-announcements/roster/consultant-learning-solutions-roster-educational-technology-information-technology-and-artificial/356",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "roster",
+   "description": "AI for Learning Specialist: advanced degree in Artificial Intelligence, Machine Learning or related field, proven experience in AI development and deployment for education, strong programming skills in Python or R, TensorFlow, Keras, PyTorch.",
+   "notes": [
+    "ML 개발·프로그래밍 경력 요구 → 적합도 낮음"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [
+     "advanced degree"
+    ],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [
+    "keras",
+    "programming skills",
+    "python",
+    "pytorch"
+   ],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "education"
+    ],
+    "roles": [
+     "consultant"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 44,
+   "score_breakdown": {
+    "fit": 0,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 5.0,
+    "speed": 4,
+    "effort": 4,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "C",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 90,
+    "fit_chance_pct": 28,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: education",
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)",
+   "procurement_type_seed": "roster",
+   "key": "unitar|consultant learning solutions roster educational technology information technology and artificial intelligence for learning",
+   "id": "19b456dcb2",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "0fffd88936": {
+   "organization": "African Development Bank (AfDB)",
+   "title": "EOI - Framework Agreement for the Provision of Learning and Development Services (Categories A-E) - PTCE",
+   "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-provision-learning-and-development-services-categories-e-ptce-97080",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "firm_only",
+   "description": "Pre-qualification of learning providers (firms) to co-design and deliver programmes covering leadership, development banking, digital and data skills, organisational effectiveness and professional certification pathways. Multi-year framework agreement.",
+   "notes": [
+    "마감 11/6 은 미확인 – 공고 원문 확인",
+    "개인 지원 불가 → 원청 업체 SME 로 참여"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": {
+    "label": "POTENTIAL SME SUBCONTRACTING LEAD",
+    "likely_primes": [
+     "Deloitte",
+     "PwC",
+     "KPMG",
+     "EY",
+     "Kineo",
+     "LEO Learning",
+     "Chemonics",
+     "DAI Global"
+    ],
+    "basis": "estimate",
+    "note": "원청 후보는 발주 분야 기준 추정입니다. 과거 낙찰 공고(Contract Award)로 확인하세요."
+   },
+   "remote": "unknown",
+   "remote_basis": "unknown",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "unknown",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [],
+    "roles": [],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer",
+    "SME subcontractor",
+    "Consultant team member"
+   ],
+   "comp_estimate": null,
+   "score": 34,
+   "score_breakdown": {
+    "fit": 0,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 5,
+    "conversion": 3.0,
+    "speed": 2,
+    "effort": 3,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "C",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 45,
+    "prep_hours": 1,
+    "payment_speed_days": 180,
+    "fit_chance_pct": 22,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "SME 하도급 제안: 원청 후보(Deloitte, PwC, KPMG)에 협력 메일 – 초안 자동 생성, 발송은 승인 후",
+   "procurement_type_seed": "firm_only",
+   "key": "african development bank afdb|eoi framework agreement for the provision of learning and development services categories a e ptce",
+   "id": "0fffd88936",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "7c4cb108e1": {
+   "organization": "African Development Bank (AfDB)",
+   "title": "EOI - Framework Agreement for Digital Learning Platforms and Content Libraries (Category F) - PTCE",
+   "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-digital-learning-platforms-and-content-libraries-category-f-ptce-97081",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "firm_only",
+   "description": "Pre-qualification of digital learning platform providers offering subscription or licence-based access to curated content catalogues, platform services, analytics and LMS integration.",
+   "notes": [
+    "플랫폼 공급사 대상 – 개인 SME 참여 여지 작음"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "A",
+    "E"
+   ],
+   "primary_pipeline": "A",
+   "procurement_type_basis": "fact",
+   "subcontract": {
+    "label": "POTENTIAL SME SUBCONTRACTING LEAD",
+    "likely_primes": [
+     "Deloitte",
+     "PwC",
+     "KPMG",
+     "EY",
+     "Kineo",
+     "LEO Learning",
+     "Chemonics",
+     "DAI Global"
+    ],
+    "basis": "estimate",
+    "note": "원청 후보는 발주 분야 기준 추정입니다. 과거 낙찰 공고(Contract Award)로 확인하세요."
+   },
+   "remote": "unknown",
+   "remote_basis": "unknown",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "unknown",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": true,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [],
+    "roles": [],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer",
+    "SME subcontractor",
+    "Consultant team member"
+   ],
+   "comp_estimate": null,
+   "score": 34,
+   "score_breakdown": {
+    "fit": 0,
+    "compensation": 8,
+    "korea": 5,
+    "remote": 5,
+    "conversion": 3.0,
+    "speed": 2,
+    "effort": 3,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "C",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 45,
+    "prep_hours": 1,
+    "payment_speed_days": 180,
+    "fit_chance_pct": 22,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "SME 하도급 제안: 원청 후보(Deloitte, PwC, KPMG)에 협력 메일 – 초안 자동 생성, 발송은 승인 후",
+   "procurement_type_seed": "firm_only",
+   "key": "african development bank afdb|eoi framework agreement for digital learning platforms and content libraries category f ptce",
+   "id": "7c4cb108e1",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  }
+ }
+}

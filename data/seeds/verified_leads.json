@@ -1,0 +1,106 @@
+{
+  "_comment": "사람이 검증한 공고. verified_on = 공식 페이지/검색 결과로 존재를 확인한 날짜. 확인되지 않은 필드는 비워 두면 UNKNOWN 으로 표시됩니다. 절대 추측값을 넣지 마세요.",
+  "items": [
+    {
+      "organization": "African Capacity Building Foundation (ACBF)",
+      "title": "Consultancy Services for Instructional Design Consultant – E-Learning Module Development (UBORA Academy)",
+      "url": "https://theacbf.org/consultancies/",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "deadline": "2026-10-02",
+      "deadline_note": "17:00 Harare time (= 2026-10-03 00:00 KST)",
+      "procurement_type": "individual",
+      "compensation_text": "Applicant proposes a daily consultancy fee in the financial proposal",
+      "how_to_apply": "Technical + financial proposals to submission@theacbf.org",
+      "description": "Individual consultant to design, pilot, refine, validate and package UBORA Academy e-learning modules (Resource Mobilization, Partnership Development). ADDIE, Bloom's taxonomy, quizzes, assignments, LMS upload. Search results indicate ~30 days of work between July and October 2026; another source described a 2-year retainer — conflicting, verify TOR. Minimum instructional-design experience requirement not verified.",
+      "notes": ["계약 형태(30일 vs 2년 retainer)가 출처마다 다름 – TOR 원문 확인 필수", "모듈 주제가 거버넌스 분야 → 교수님은 SME가 아닌 순수 ID로 평가됨"]
+    },
+    {
+      "organization": "UNITAR",
+      "title": "Consultant - Instructional design (Roster)",
+      "url": "https://unitar.org/vacancy-announcements/roster/consultant-instructional-design/60",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "roster",
+      "remote": "remote",
+      "remote_basis": "estimate",
+      "description": "Roster of qualified consultants supporting instructional design and technical development of e-learning courses and microlearning: learning objectives, course structures, interactive modules. Periodic assignments for UNITAR programmes.",
+      "notes": ["로스터 등록 = 즉시 계약 아님. 과제 발생 시 연락"]
+    },
+    {
+      "organization": "UNITAR",
+      "title": "Consultant - Learning Solutions Roster - Educational Technology, Information Technology and Artificial Intelligence for Learning",
+      "url": "https://unitar.org/vacancy-announcements/roster/consultant-learning-solutions-roster-educational-technology-information-technology-and-artificial/356",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "roster",
+      "description": "AI for Learning Specialist: advanced degree in Artificial Intelligence, Machine Learning or related field, proven experience in AI development and deployment for education, strong programming skills in Python or R, TensorFlow, Keras, PyTorch.",
+      "notes": ["ML 개발·프로그래밍 경력 요구 → 적합도 낮음"]
+    },
+    {
+      "organization": "African Development Bank (AfDB)",
+      "title": "EOI - Framework Agreement for the Provision of Learning and Development Services (Categories A-E) - PTCE",
+      "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-provision-learning-and-development-services-categories-e-ptce-97080",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "firm_only",
+      "description": "Pre-qualification of learning providers (firms) to co-design and deliver programmes covering leadership, development banking, digital and data skills, organisational effectiveness and professional certification pathways. Multi-year framework agreement.",
+      "notes": ["마감 11/6 은 미확인 – 공고 원문 확인", "개인 지원 불가 → 원청 업체 SME 로 참여"]
+    },
+    {
+      "organization": "African Development Bank (AfDB)",
+      "title": "EOI - Framework Agreement for Digital Learning Platforms and Content Libraries (Category F) - PTCE",
+      "url": "https://www.afdb.org/en/consultants/eoi-framework-agreement-digital-learning-platforms-and-content-libraries-category-f-ptce-97081",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "firm_only",
+      "description": "Pre-qualification of digital learning platform providers offering subscription or licence-based access to curated content catalogues, platform services, analytics and LMS integration.",
+      "notes": ["플랫폼 공급사 대상 – 개인 SME 참여 여지 작음"]
+    },
+    {
+      "organization": "ASLM / Africa CDC",
+      "title": "Expression of Interest To be An Africa Region Subject Matter Expert (Af-RSME) – ASLM/ACDC/EOI/Af-RSME/03/23/26",
+      "url": "https://professionals.aslm.org/expression-of-interest-to-be-an-africa-region-subject-matter-expert-af-rsme-aslm-acdc-eoi-af-rsme-03-23-26/",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "roster",
+      "description": "Africa CDC Regional Training and Certification Program for Biosafety and Biosecurity Professionals (RTCP-BBP): certified Africa Region Subject Matter Experts in biosafety and biosecurity laboratory practice. Submitted through the ASLM Professionals Database.",
+      "notes": ["'Africa Region' 명칭 → 아프리카 거주/국적 제한 가능성 (미확인)", "생물안전·생물보안 전용"]
+    },
+    {
+      "organization": "ASLM Professionals Database",
+      "title": "ASLM Professionals Database – expert profile registration (laboratory medicine SME pool)",
+      "url": "https://professionals.aslm.org/",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "roster",
+      "remote": "remote",
+      "remote_basis": "estimate",
+      "description": "Database through which ASLM and Africa CDC calls for laboratory medicine subject matter experts, trainers and consultants are issued. Register an expert profile in molecular diagnostics, genomics, cytogenetics, laboratory quality, AI in laboratory medicine.",
+      "notes": ["ASLM SME 공고의 입구 – 교수님 전공과 가장 직결"]
+    },
+    {
+      "organization": "WHO Academy",
+      "title": "WHO Academy course production pipeline (50–80 new courses per year, 2025–2028) – monitor consultant calls",
+      "url": "https://www.who.int/news/item/05-08-2025-who-academy-scaling-up-critical-global-health-workforce-learning-opportunities",
+      "verified_on": "2026-09-29",
+      "verification": "official_page_verified",
+      "procurement_type": "watch",
+      "watch": true,
+      "description": "WHO Academy plans 50 to 80 courses annually 2025-2028 (~260 new courses). Monitor WHO consultant calls for laboratory, diagnostics, genomics and course development SMEs.",
+      "notes": ["공고가 아닌 시장 신호 – WATCHLIST"]
+    },
+    {
+      "organization": "ASLM (African Society for Laboratory Medicine)",
+      "title": "RFP for Course Content Development Consultancy: Subject Matter Experts (SMEs) on Economic Evaluation of AMR Interventions in a One Health Context",
+      "url": "https://aslm.org/opportunities/rfp-for-course-content-development-consultancy-subject-mater-experts-smes-on-economic-evaluation-of-amr-interventions-in-a-one-health-context/",
+      "verified_on": "2026-09-29",
+      "verification": "search_result_verified",
+      "procurement_type": "individual",
+      "deadline": "2026-04-22",
+      "status": "closed",
+      "description": "BEACOI-Africa project: SME consultants develop learner-centred, bilingual-ready course content modules on economic evaluation of AMR interventions. Closed — kept as a reference for ASLM SME RFP format.",
+      "notes": ["마감된 참고용 – ASLM SME RFP 형식 확인용"]
+    }
+  ]
+}

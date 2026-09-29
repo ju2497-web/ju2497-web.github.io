@@ -1,0 +1,20 @@
+{
+ "date": "2026-09-29",
+ "sources": [
+  {
+   "id": "seeds",
+   "type": "seeds",
+   "status": "ok",
+   "items": 26,
+   "message": "",
+   "seconds": 0.0
+  }
+ ],
+ "counts": {
+  "new": 26,
+  "changed": 0,
+  "unchanged": 0,
+  "new_cycle": 0
+ },
+ "expired": 0
+}

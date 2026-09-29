@@ -1,0 +1,12 @@
+{"rows": 2, "total": 2, "procnotices": [
+ {"id": "OP00412345", "bid_description": "Consultancy Services for Development of E-learning Curriculum for Laboratory Personnel",
+  "project_name": "Regional Disease Surveillance Systems Enhancement", "project_id": "P167817",
+  "notice_type": "Request for Expression of Interest", "noticedate": "2026-09-20", "submission_deadline_date": "2026-10-25T00:00:00Z",
+  "project_ctry_name": "Western and Central Africa", "procurement_method_name": "Quality And Cost-Based Selection",
+  "procurement_group": "CS", "notice_status": "Published",
+  "notice_text": "The Ministry invites eligible consulting firms to indicate their interest in providing the services. Firms may associate in a joint venture or sub-consultancy."},
+ {"id": "OP00419999", "bid_description": "Individual Consultant – Laboratory Training Specialist",
+  "project_name": "Health Systems Strengthening", "notice_type": "Request for Expression of Interest", "noticedate": "2026-09-25",
+  "submission_deadline_date": "2026-10-10T00:00:00Z", "project_ctry_name": "Ethiopia", "procurement_method_name": "Individual Consultant Selection",
+  "procurement_group": "CS", "notice_status": "Published", "notice_text": "Individual consultant for laboratory training curriculum."}
+]}

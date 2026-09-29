@@ -1,0 +1,5 @@
+{"response": {"header": {"resultCode": "00", "resultMsg": "정상"}, "body": {"items": [
+ {"bidNtceNo": "R26BK00012345", "bidNtceOrd": "000", "bidNtceNm": "2026년 임상병리 직무 이러닝 콘텐츠 개발 용역", "ntceInsttNm": "조달청 서울지방조달청",
+  "dminsttNm": "한국보건의료인국가시험원", "bidNtceDt": "2026-09-25 10:00:00", "bidClseDt": "2026-10-14 10:00:00",
+  "bidNtceDtlUrl": "https://www.g2b.go.kr/link/R26BK00012345", "presmptPrce": "80000000"}
+], "numOfRows": 100, "pageNo": 1, "totalCount": 1}}}
