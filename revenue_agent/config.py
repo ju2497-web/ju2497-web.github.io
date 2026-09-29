@@ -43,6 +43,14 @@ class Settings:
 def load_settings(root: Path | None = None) -> Settings:
     root = Path(root or ROOT)
     profile = _load(root / "config" / "profile.toml")
+    # Private overlay (contract rates, evidence, identity) – never committed
+    local = Path(os.environ.get("RA_PROFILE_LOCAL", root / "data" / "private" / "profile.local.toml"))
+    if local.exists():
+        for key, value in _load(local).items():
+            if isinstance(value, dict) and isinstance(profile.get(key), dict):
+                profile[key] = {**profile[key], **value}
+            else:
+                profile[key] = value
     src = _load(root / "config" / "sources.toml")
     s = Settings(profile=profile, sources=src.get("source", []), source_defaults=src.get("defaults", {}), root=root)
     s.store_path = root / "data" / "opportunities.json"

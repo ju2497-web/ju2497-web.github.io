@@ -13,6 +13,7 @@
   python -m revenue_agent packages [--id ID ...]
   python -m revenue_agent dashboard [--public]
   python -m revenue_agent rescore
+  python -m revenue_agent economics           # 채널별 실효 시급 + 월 목표 시나리오
 """
 from __future__ import annotations
 
@@ -84,6 +85,7 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("packages"); p.add_argument("--id", nargs="*")
     p = sub.add_parser("dashboard"); p.add_argument("--public", action="store_true")
     sub.add_parser("rescore")
+    sub.add_parser("economics")
     args = ap.parse_args(argv)
     s = load_settings()
 
@@ -94,6 +96,21 @@ def main(argv: list[str] | None = None) -> int:
             print(f"  {src['status']:8} {src['id']:24} items={src['items']:<4} {src.get('message', '')}")
         for line in build_outputs(s, public_only=args.public_only):
             print("  →", line)
+        return 0
+
+    if args.cmd == "economics":
+        from .economics import channel_rows, monthly_mix
+        rows = channel_rows(s.profile, s.fx)
+        if not rows:
+            print("채널 설정 없음 – config/profile.local.example.toml 을 data/private/profile.local.toml 로 복사해 채우세요")
+            return 1
+        print(f"{'채널':40} {'단가':>18} {'단위당 시간':>12} {'실효 시급(원)':>22}  근거")
+        for r in rows:
+            print(f"{r['name'][:40]:40} {r['currency']} {r['rate']:>12,} {r['hours_per_unit'][0]:>5}~{r['hours_per_unit'][1]:<5}h "
+                  f"{r['hourly_krw'][0]:>10,}~{r['hourly_krw'][1]:<10,} {r['basis']}")
+        m = monthly_mix(s.profile, s.fx, s.goal_krw)
+        print(f"\n월 시나리오: {m['total_krw']:,}원 / 목표 {m['goal_krw']:,}원 (부족 {m['gap_krw']:,}원), "
+              f"소요 {m['hours'][0]}~{m['hours'][1]}시간, 평균 {m['blended_hourly_krw'][0]:,}~{m['blended_hourly_krw'][1]:,}원/시간")
         return 0
 
     store = Store(s.store_path)

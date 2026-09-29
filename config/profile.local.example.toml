@@ -1,0 +1,92 @@
+# data/private/profile.local.toml 로 복사해 실제 값을 넣으세요 (git 제외 경로).
+# ─────────────────────────────────────────────────────────────
+# 수입 구조 (채널별 단가 → 실효 시급)
+# basis: fact = 교수님 계약 경험/공식 자료, estimate = 시장 추정 (반드시 본인 실적으로 갱신)
+# prep_hours = 납품 1단위당 준비·제작·수정에 드는 시간 [최소, 최대] (AI 활용 시 최소 쪽)
+# delivery_hours = 1단위를 실제로 강의·출연·통화하는 시간
+# ─────────────────────────────────────────────────────────────
+[[channels]]
+id = "koreatech"
+name = "한기대 온라인평생교육원 이러닝 (내용전문가)"
+pipeline = "E"
+rate = 0   # ← 실제 차시당 단가 (KRW)
+currency = "KRW"
+unit = "차시(25분)"
+delivery_hours = 0.42
+prep_hours = [5, 11]
+basis = "fact"
+source = "본인 계약 단가 입력"
+cap = "1인당 최대 3개 과정 (모집 공고 기준, 사실)"
+
+[[channels]]
+id = "corporate_new"
+name = "기업교육 강의 – 신규 과정 첫 강의 (멀티캠퍼스 등)"
+pipeline = "H"
+rate = 450000
+currency = "KRW"
+unit = "강의 1시간"
+delivery_hours = 1
+prep_hours = [3, 5]
+basis = "estimate"
+source = "희망 강사료 시간당 40만~50만원 (추정). 8시간 과정 개발 30~40시간을 강의 시간에 배분"
+cap = "청탁금지법 외부강의 사례금 상한: 학교 교직원 시간당 100만원"
+
+[[channels]]
+id = "corporate_repeat"
+name = "기업교육 강의 – 같은 과정 반복 강의"
+pipeline = "H"
+rate = 450000
+currency = "KRW"
+unit = "강의 1시간"
+delivery_hours = 1
+prep_hours = [0.3, 0.8]
+basis = "estimate"
+source = "과정 개발 후 재강의 시 준비는 맞춤 수정 정도 (추정)"
+cap = "의뢰 빈도가 변수"
+
+[[channels]]
+id = "expert_call"
+name = "전문가 네트워크 자문 콜 (GLG·Guidepoint 등)"
+pipeline = "D"
+rate = 225
+currency = "USD"
+unit = "콜 1시간"
+delivery_hours = 1
+prep_hours = [0.2, 0.5]
+basis = "estimate"
+source = "업계 통상 USD 150~300/시간 (추정, 비공개)"
+cap = "진단·검사 분야 콜 빈도는 불확실"
+
+[[channels]]
+id = "ai_expert"
+name = "AI 전문가 평가·학습데이터 (Mercor·Outlier 등)"
+pipeline = "B"
+rate = 90
+currency = "USD"
+unit = "작업 1시간"
+delivery_hours = 1
+prep_hours = [0, 0.1]
+basis = "estimate"
+source = "통상 USD 60~120/시간 (추정). 플랫폼이 요율 결정"
+cap = "프로젝트 단위로 물량 변동"
+
+[[channels]]
+id = "intl_consultant"
+name = "국제기구 개인 컨설턴트 SME (WHO·ASLM 등)"
+pipeline = "A"
+rate = 500
+currency = "USD"
+unit = "근무 1일"
+delivery_hours = 8
+prep_hours = [0, 1]
+basis = "estimate"
+source = "통상 일당 USD 400~600 (추정). 제안서 작성 시간은 수주 전 비용"
+cap = "수주까지 수개월, 대신 계약 1건 규모가 큼"
+
+# 월 목표 달성 시나리오 (채널 id = 월 단위 수량). 교수님 가용 시간에 맞게 조정.
+[mix]
+koreatech = 5
+corporate_new = 4
+corporate_repeat = 4
+expert_call = 4
+ai_expert = 10

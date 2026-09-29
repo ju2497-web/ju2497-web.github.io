@@ -2128,6 +2128,135 @@
    "last_changed": "2026-09-29",
    "history": []
   },
+  "fde09789b2": {
+   "organization": "한국기술교육대학교 온라인평생교육원",
+   "title": "이러닝 콘텐츠 내용전문가 모집 (STEP 연례 공모, 1인 최대 3개 과정)",
+   "url": "https://portal.e-koreatech.ac.kr/page/lms",
+   "verified_on": "2026-09-29",
+   "verification": "search_result_verified",
+   "procurement_type": "roster",
+   "korea_eligible": "yes",
+   "remote": "remote",
+   "remote_basis": "estimate",
+   "description": "한기대 온라인평생교육원이 STEP 이러닝 콘텐츠(4차 산업·기술공학·디지털 기초역량 등 약 200개 과정)의 내용전문가를 모집. 1인당 최대 3개 과정. 강의형 1시수 = 25분 기준. 자격: 관련 박사 또는 석사+경력 3년 등. 이러닝 교육과정 개발 SME. 연례 반복 모집.",
+   "notes": [
+    "단가는 개인 계약 정보라 공개 데이터에 넣지 않음 – data/private/profile.local.toml 참고",
+    "1인 최대 3개 과정 제한 → 연간 수입 상한 존재",
+    "다음 모집 공고 시기 모니터링 (Google Alerts: 한기대 온라인평생교육원 내용전문가 모집)"
+   ],
+   "source": "seed:verified_leads",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "검색으로 존재 확인 – 세부조건은 원문 확인 필요",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "E"
+   ],
+   "primary_pipeline": "E",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "possible",
+   "interview_basis": "estimate",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [
+     "박사",
+     "석사"
+    ],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "sme",
+     "교육과정",
+     "이러닝",
+     "콘텐츠",
+     "강의"
+    ],
+    "roles": [
+     "sme"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert",
+    "Course Author",
+    "Curriculum Architect",
+    "Assessment Designer"
+   ],
+   "comp_estimate": {
+    "min": 400,
+    "max": 600,
+    "unit": "day",
+    "currency": "USD",
+    "basis": "estimate",
+    "note": "제안 요율 가이드 – 국제기구 개인 컨설턴트 통상 일당 추정"
+   },
+   "score": 58,
+   "score_breakdown": {
+    "fit": 8,
+    "compensation": 8,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 6.0,
+    "speed": 4,
+    "effort": 4,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "B",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 90,
+    "fit_chance_pct": 44,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: sme, 교육과정, 이러닝, 콘텐츠, 강의",
+    "참여 역할: Subject Matter Expert, Course Author, Curriculum Architect",
+    "원격 가능 (추정)",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "로스터 등록 신청 (SME CV + 동기서 – 자동 초안 사용)",
+   "procurement_type_seed": "roster",
+   "key": "한국기술교육대학교 온라인평생교육원|이러닝 콘텐츠 내용전문가 모집 step 연례 공모 1인 최대 3개 과정",
+   "id": "fde09789b2",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
   "ca1330f511": {
    "organization": "ASLM / Africa CDC",
    "title": "Expression of Interest To be An Africa Region Subject Matter Expert (Af-RSME) – ASLM/ACDC/EOI/Af-RSME/03/23/26",

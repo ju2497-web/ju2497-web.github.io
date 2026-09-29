@@ -5,13 +5,13 @@
    "id": "seeds",
    "type": "seeds",
    "status": "ok",
-   "items": 26,
+   "items": 27,
    "message": "",
-   "seconds": 0.0
+   "seconds": 0.1
   }
  ],
  "counts": {
-  "new": 0,
+  "new": 1,
   "changed": 0,
   "unchanged": 26,
   "new_cycle": 0

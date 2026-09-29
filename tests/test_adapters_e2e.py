@@ -103,6 +103,7 @@ class EndToEndTests(unittest.TestCase):
         local = self.s.local_dashboard.read_text(encoding="utf-8")
         payload = json.loads(public.split('<script id="data" type="application/json">')[1].split("</script>")[0])
         self.assertIsNone(payload["tracker"])  # personal data never in the public file
+        self.assertIsNone(payload["economics"])  # contract rates stay local
         self.assertNotIn("123456", public)
         self.assertIn("123456", local)
         for label in ("지금 지원", "오늘 신규", "마감 임박", "글로벌 고단가 러닝", "AI 전문가", "전문가 자문", "이러닝",

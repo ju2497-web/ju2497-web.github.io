@@ -109,8 +109,15 @@ python -m revenue_agent metrics                 # 수익 지표
 python -m revenue_agent import-tracker revenue-tracker-2026-09-29.json   # 대시보드에서 내보낸 기록 병합
 python -m revenue_agent packages --id <id>      # 특정 기회 지원 패키지
 python -m revenue_agent rescore                 # profile.toml 수정 후 전체 재채점
+python -m revenue_agent economics               # 채널별 실효 시급 + 월 1,000만원 시나리오
 python -m unittest discover -s tests -t .       # 테스트
 ```
+
+### 수입 구조 (실효 시급)
+- 채널별 단가를 **준비·제작 시간까지 포함한 실효 시급**으로 바꿔 비교합니다.
+  - 예: 25분짜리 차시 단가를 녹화 시간으로만 나누면 시급이 크게 부풀려 보입니다. 원고·촬영·수정까지 5~11시간이 들면 실효 시급은 그 몇 분의 1로 줄어듭니다.
+- 개인 계약 단가는 `data/private/profile.local.toml`(git 제외)에 둡니다. 양식은 `config/profile.local.example.toml`입니다.
+- 로컬 대시보드의 "수입 구조" 탭과 `economics` 명령에서만 보입니다. 공개 대시보드에는 들어가지 않습니다.
 
 Python 3.11 이상이면 되고, 외부 패키지는 필요 없습니다.
 

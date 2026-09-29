@@ -336,6 +336,7 @@ th { color: var(--text-2); font-weight: 600; background: var(--surface-2); }
     ["watch", "관찰 (WATCHLIST)", o => open(o) && ["W", "B", "C"].includes(o.priority)],
     ["applied", "지원함 (APPLIED)", o => APPLIED_PLUS.includes(statusOf(o))],
     ["rejected", "제외 (REJECTED / NOT SUITABLE)", o => o.priority === "X" || CLOSED.includes(statusOf(o)) || o.priority === "closed"],
+    ["econ", "수입 구조", null],
     ["sources", "소스 상태", null],
     ["revenue", "수익 분석", null],
   ];
@@ -380,6 +381,26 @@ th { color: var(--text-2); font-weight: 600; background: var(--surface-2); }
       <tbody>${tableRows || '<tr><td colspan="7" class="sub">아직 기록이 없습니다. 카드의 상태 선택으로 시작하세요.</td></tr>'}</tbody></table>`;
   }
 
+  function renderEconomics() {
+    const E = D.economics;
+    if (!E) return `<div class="empty">수입 구조는 로컬 대시보드에서만 보입니다 (개인 계약 단가 보호).<br>data/private/profile.local.toml 에 채널 단가를 넣고 <code>python -m revenue_agent dashboard</code> 를 실행하세요.</div>`;
+    const max = Math.max(...E.channels.map(c => c.hourly_krw[1]));
+    const rows = E.channels.map(c => `<div class="barrow" title="${esc(c.source)}">
+      <span>${esc(c.name)}</span>
+      <span class="track"><span class="fill" style="display:block;margin-left:${c.hourly_krw[0] / max * 100}%;width:${Math.max(1, (c.hourly_krw[1] - c.hourly_krw[0]) / max * 100)}%;border-radius:4px"></span></span>
+      <span class="val">${won(c.hourly_krw[0])}~${won(c.hourly_krw[1])}</span></div>`).join("");
+    const table = E.channels.map(c => `<tr><td>${esc(c.name)}</td><td>${esc(c.currency)} ${Number(c.rate).toLocaleString("ko-KR")} / ${esc(c.unit)} ${badge(c.basis)}</td>
+      <td>${c.hours_per_unit[0]}~${c.hours_per_unit[1]}h</td><td><b>${won(c.hourly_krw[0])}~${won(c.hourly_krw[1])}</b></td><td class="sub">${esc(c.cap)}</td></tr>`).join("");
+    const m = E.mix;
+    const mix = m.lines.map(l => `<tr><td>${esc(l.name)}</td><td>${l.qty} × ${esc(l.unit)}</td><td>${won(l.revenue_krw)} ${badge(l.basis)}</td><td>${l.hours[0]}~${l.hours[1]}h</td></tr>`).join("");
+    return `<h2 style="margin-top:6px">채널별 실효 시급 (준비·제작 시간 포함, 막대 = 범위)</h2><div class="bars">${rows}</div>
+      <table style="margin-top:10px"><thead><tr><th>채널</th><th>단가</th><th>단위당 총 소요</th><th>실효 시급</th><th>제약</th></tr></thead><tbody>${table}</tbody></table>
+      <h2>월 목표 시나리오</h2>
+      <table><thead><tr><th>채널</th><th>수량/월</th><th>수입</th><th>소요 시간</th></tr></thead><tbody>${mix}
+      <tr><td><b>합계</b></td><td></td><td><b>${won(m.total_krw)}</b> / 목표 ${won(m.goal_krw)}${m.gap_krw ? ` (부족 ${won(m.gap_krw)})` : " ✓"}</td><td><b>${m.hours[0]}~${m.hours[1]}h</b> · 평균 ${won(m.blended_hourly_krw[0])}~${won(m.blended_hourly_krw[1])}/h</td></tr></tbody></table>
+      <p class="sub">단가·준비시간·시나리오는 data/private/profile.local.toml 에서 수정합니다. ‘추정’ 값은 실제 실적으로 바꿔 주세요.</p>`;
+  }
+
   function renderSources() {
     const cls = { ok: "ok", error: "err", skipped: "skip", disabled: "skip" };
     const ko = { ok: "정상", error: "오류", skipped: "건너뜀", disabled: "비활성" };
@@ -399,6 +420,7 @@ th { color: var(--text-2); font-weight: 600; background: var(--surface-2); }
     const sec = SECTIONS.find(s => s[0] === current) || SECTIONS[0];
     const list = document.getElementById("list");
     if (sec[0] === "sources") list.innerHTML = renderSources();
+    else if (sec[0] === "econ") list.innerHTML = renderEconomics();
     else if (sec[0] === "revenue") list.innerHTML = renderRevenue(m);
     else {
       const items = D.opps.filter(sec[2]).sort(sec[3] || byScore);

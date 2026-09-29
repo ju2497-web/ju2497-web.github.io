@@ -19,7 +19,7 @@ _PAT_SINGLE = re.compile(_CUR_PRE + r"\s?" + _NUM + r"(?:\+)?(?:" + _UNIT + r")?
 _PAT_POST = re.compile(_NUM + r"\s*(USD|EUR|GBP|CHF|KRW)(?:" + _UNIT + r")?", re.I)
 _PAT_HOURLY_WORD = re.compile(r"(hourly|daily|monthly) (?:rate|fee|pay)[^.\d]{0,20}" + _CUR_PRE + r"\s?" + _NUM, re.I)
 # Korean: 시간당 5만원 / 건당 100만원 / 1,000,000원 / 3억원
-_PAT_KR = re.compile(r"(시간당|시급|일당|월|건당|회당|과제당|총)?\s*(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)\s*(억|천만|백만|만)?\s*원")
+_PAT_KR = re.compile(r"(시간당|시급|일당|월|건당|회당|과제당|차시당|총)?\s*(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)\s*(억|천만|백만|만)?\s*원")
 
 _PROPOSED = re.compile(
     r"(propose|proposal|quote|indicate|state|submit)\w*\s+(?:your\s+|a\s+|the\s+)?(?:\w+\s+){0,3}(?:daily|hourly|monthly)?\s*(?:consultancy\s+)?(?:fee|rate|price|financial offer)"
@@ -113,7 +113,7 @@ def parse_compensation(text: str, fx: dict, structured: dict | None = None) -> d
         mult = {"억": 1e8, "천만": 1e7, "백만": 1e6, "만": 1e4, None: 1}[m[3]]
         v = float(m[2].replace(",", "")) * mult
         unit = {"시간당": "hour", "시급": "hour", "일당": "day", "월": "month", "건당": "project",
-                "회당": "project", "과제당": "project", "총": "project"}.get(m[1] or "", "project")
+                "회당": "project", "과제당": "project", "차시당": "project", "총": "project"}.get(m[1] or "", "project")
         if v >= 10_000:
             candidates.append((m.group(0).strip(), "KRW", v, v, unit))
 

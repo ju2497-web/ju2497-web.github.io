@@ -7,6 +7,7 @@ from pathlib import Path
 from .classify import PIPELINES, PIPELINES_KO
 from .compensation import format_comp
 from .textutil import days_until, today
+from .economics import channel_rows, monthly_mix
 from .tracker import ALL_STAGES, STAGE_PROBABILITY, potential_krw
 
 TEMPLATE = Path(__file__).with_name("dashboard_template.html")
@@ -58,6 +59,9 @@ def render(opps: list[dict], settings, run_log: dict | None, tracker: dict | Non
         "run_date": (run_log or {}).get("date"),
         "tracker": None if public else tracker,
         "packages": [] if public else sorted(package_ids),
+        # 수입 구조는 개인 계약 단가를 포함하므로 로컬 대시보드에만 넣음
+        "economics": None if public or not settings.profile.get("channels") else {
+            "channels": channel_rows(settings.profile, fx), "mix": monthly_mix(settings.profile, fx, settings.goal_krw)},
     }
     data = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     return TEMPLATE.read_text(encoding="utf-8").replace("__DATA__", data)

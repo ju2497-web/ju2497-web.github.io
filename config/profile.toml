@@ -94,3 +94,7 @@ KRW_per_USD = 1380
 USD_per_EUR = 1.08
 USD_per_GBP = 1.27
 USD_per_CHF = 1.14
+
+
+# 수입 구조(채널 단가·월 시나리오)는 개인 계약 정보라 공개 저장소에 두지 않습니다.
+# → data/private/profile.local.toml (git 제외). 예시: config/profile.local.example.toml
