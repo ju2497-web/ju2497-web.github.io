@@ -1674,6 +1674,120 @@
    "last_changed": "2026-09-29",
    "history": []
   },
+  "13b8c4f59f": {
+   "organization": "Mercor",
+   "title": "Biomedical Scientist",
+   "url": "https://remotive.com/remote/jobs/medical/biomedical-scientist-4499686",
+   "compensation_text": "USD 85-93 per hour",
+   "description": "Hourly contract, remote, worldwide. 20 hours/week commitment. Resume upload and form; AI interview. Weekly payment via Stripe or Wise. Biomedical science expert for AI model training. USD 85-93 per hour",
+   "source": "manual",
+   "source_type": "manual",
+   "verification": "manual",
+   "procurement_type": "job",
+   "korea_eligible": "yes",
+   "remote": "remote",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "직접 입력",
+   "compensation": {
+    "status": "DISCLOSED",
+    "text": "USD 85-93 per hour",
+    "min": 85.0,
+    "max": 93.0,
+    "currency": "USD",
+    "unit": "hour",
+    "hourly_usd": 89.0,
+    "project_usd": null,
+    "basis": "fact",
+    "unpaid": false
+   },
+   "pipelines": [
+    "B",
+    "C"
+   ],
+   "primary_pipeline": "B",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote_basis": "fact",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "ai_or_async",
+   "interview_basis": "fact",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": false,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "biomedical"
+    ],
+    "adjacent": [
+     "medical",
+     "science",
+     "training"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": [
+     "biomedical"
+    ]
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer",
+    "Domain Expert (AI evaluation)"
+   ],
+   "comp_estimate": null,
+   "score": 70,
+   "score_breakdown": {
+    "fit": 14,
+    "compensation": 15,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 6.7,
+    "speed": 5,
+    "effort": 3,
+    "interview": 4,
+    "recurring": 2
+   },
+   "comp_reason": "시급 환산 USD 89 (공고 사실)",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 30,
+    "fit_chance_pct": 57,
+    "recurring": false,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: biomedical",
+    "참여 역할: Biomedical SME, Medical Content Reviewer, Domain Expert (AI evaluation)",
+    "원격 가능",
+    "시급 환산 USD 89 (공고 사실)"
+   ],
+   "next_action": "공고 원문 확인 후 지원서 제출 (승인 후)",
+   "procurement_type_seed": "job",
+   "key": "mercor|biomedical scientist",
+   "id": "13b8c4f59f",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
   "d0c8fd20f4": {
    "procurement_type": "platform",
    "verification": "platform_homepage",
@@ -2378,6 +2492,113 @@
    "procurement_type_seed": "roster",
    "key": "aslm africa cdc|expression of interest to be an africa region subject matter expert af rsme aslm acdc eoi af rsme 03 23 26",
    "id": "ca1330f511",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": []
+  },
+  "db0641962b": {
+   "organization": "Mercor",
+   "title": "Biology Expert (PhD)",
+   "url": "https://work.mercor.com/jobs/list_AAABmLVYnVTwkO35CFBCcZML/biology-expert-phd",
+   "compensation_text": "USD 65-85 per hour",
+   "description": "Hourly contract, remote, 10-20 hours/week. PhD biology expert for a top AI lab project. Location restrictions not verified. USD 65-85 per hour",
+   "source": "manual",
+   "source_type": "manual",
+   "verification": "manual",
+   "procurement_type": "job",
+   "remote": "remote",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "직접 입력",
+   "compensation": {
+    "status": "DISCLOSED",
+    "text": "USD 65-85 per hour",
+    "min": 65.0,
+    "max": 85.0,
+    "currency": "USD",
+    "unit": "hour",
+    "hourly_usd": 75.0,
+    "project_usd": null,
+    "basis": "fact",
+    "unpaid": false
+   },
+   "pipelines": [
+    "J"
+   ],
+   "primary_pipeline": "J",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote_basis": "fact",
+   "korea_eligible": "unknown",
+   "korea_basis": "unknown",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [
+     "PhD"
+    ],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": false,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [],
+    "adjacent": [
+     "biology"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Subject Matter Expert"
+   ],
+   "comp_estimate": null,
+   "score": 52,
+   "score_breakdown": {
+    "fit": 4,
+    "compensation": 15,
+    "korea": 5,
+    "remote": 10,
+    "conversion": 5.5,
+    "speed": 5,
+    "effort": 3,
+    "interview": 3,
+    "recurring": 2
+   },
+   "comp_reason": "시급 환산 USD 75 (공고 사실)",
+   "priority": "B",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 60,
+    "prep_hours": 1,
+    "payment_speed_days": 30,
+    "fit_chance_pct": 36,
+    "recurring": false,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "관련 분야: biology",
+    "참여 역할: Subject Matter Expert",
+    "원격 가능",
+    "시급 환산 USD 75 (공고 사실)"
+   ],
+   "next_action": "공고 원문 확인 후 지원서 제출 (승인 후)",
+   "procurement_type_seed": "job",
+   "key": "mercor|biology expert phd",
+   "id": "db0641962b",
    "first_seen": "2026-09-29",
    "last_seen": "2026-09-29",
    "last_changed": "2026-09-29",
