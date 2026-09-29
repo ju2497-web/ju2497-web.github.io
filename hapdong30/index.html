@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>작도와 합동 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 수학 · 작도와 합동 · STEP 2 A등급 대비</div>
+    <h1>작도와 합동 30제</h1>
+    <p class="lede">강의 p.38~39의 23~34번과 같은 수준으로 만든 변형 문항입니다. 정삼각형·정사각형 회전 합동, 이등변삼각형, K자 합동, 작도와 삼각형의 결정 조건까지 담았습니다. 모두 풀고 채점하면, 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>객관식</b> 번호를 누르세요</span><span><b>주관식</b> 숫자만 입력하세요 (단위 제외)</span><span><b>그림</b>은 문제 조건에 맞게 그렸습니다</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 기하 도우미 ---------- */
+const G = {
+  add: (a, b) => [a[0] + b[0], a[1] + b[1]],
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1]],
+  mul: (a, k) => [a[0] * k, a[1] * k],
+  len: (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]),
+  unit: (a, b) => { const d = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[0] - a[0]) / d, (b[1] - a[1]) / d]; },
+  rad: d => d * Math.PI / 180,
+  rot(p, deg, c = [0, 0]) {
+    const t = deg * Math.PI / 180, x = p[0] - c[0], y = p[1] - c[1];
+    return [c[0] + x * Math.cos(t) - y * Math.sin(t), c[1] + x * Math.sin(t) + y * Math.cos(t)];
+  },
+  inter(p1, p2, p3, p4) {
+    const d1 = [p2[0] - p1[0], p2[1] - p1[1]], d2 = [p4[0] - p3[0], p4[1] - p3[1]];
+    const den = d1[0] * d2[1] - d1[1] * d2[0];
+    const t = ((p3[0] - p1[0]) * d2[1] - (p3[1] - p1[1]) * d2[0]) / den;
+    return [p1[0] + t * d1[0], p1[1] + t * d1[1]];
+  },
+  foot(p, a, b) {
+    const d = [b[0] - a[0], b[1] - a[1]];
+    const t = ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]);
+    return [a[0] + t * d[0], a[1] + t * d[1]];
+  },
+  angle(a, v, b) {
+    const u = [a[0] - v[0], a[1] - v[1]], w = [b[0] - v[0], b[1] - v[1]];
+    const c = (u[0] * w[0] + u[1] * w[1]) / Math.hypot(...u) / Math.hypot(...w);
+    return Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI;
+  },
+  circ(c1, r1, c2, r2) {
+    const d = G.len(c1, c2), a = (r1 * r1 - r2 * r2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, r1 * r1 - a * a));
+    const m = [c1[0] + a * (c2[0] - c1[0]) / d, c1[1] + a * (c2[1] - c1[1]) / d];
+    const o = [-(c2[1] - c1[1]) * h / d, (c2[0] - c1[0]) * h / d];
+    return [[m[0] + o[0], m[1] + o[1]], [m[0] - o[0], m[1] - o[1]]];
+  },
+  area(...ps) {
+    let s = 0;
+    for (let i = 0; i < ps.length; i++) { const p = ps[i], q = ps[(i + 1) % ps.length]; s += p[0] * q[1] - q[0] * p[1]; }
+    return Math.abs(s) / 2;
+  },
+  tan: d => Math.tan(d * Math.PI / 180),
+  sin: d => Math.sin(d * Math.PI / 180),
+  cos: d => Math.cos(d * Math.PI / 180)
+};
+const S3 = Math.sqrt(3);
+
+/* ---------- 도형 빌더 ---------- */
+function figEqTri() { return { B: [0, 0], C: [10, 0], A: [5, 5 * S3] }; }
+
+function fig23(opt = {}) {
+  const B = [0, 0], C = [8, 0], A = [4, 4 * S3];
+  const k = Math.sqrt(64 / 93), AD = 7 * k, r = 4 * k;
+  const D = G.circ(A, AD, C, r).sort((p, q) => p[0] - q[0])[0];
+  const E = G.rot(D, 60, C);
+  const P = G.inter(A, E, B, C);
+  return {
+    pts: { A, B, C, D, E, P },
+    segs: ['AB', 'BC', 'CA', 'AE', 'DC', 'CE', 'BE'],
+    lab: { A: 'n', B: 'w', C: 'e', D: 'ne', E: 's', P: 'se' }
+  };
+}
+
+function fig24(withR) {
+  const a = 6, b = a * S3 / (2 * G.tan(40)) - a / 2;
+  const A = [0, 0], C = [a, 0], B = [a + b, 0], D = [a / 2, a * S3 / 2], E = [a + b / 2, b * S3 / 2];
+  const P = G.inter(D, C, A, E), Q = G.inter(D, B, C, E), R = G.inter(A, E, D, B);
+  const pts = { A, B, C, D, E, P, Q };
+  if (withR) pts.R = R;
+  return {
+    pts,
+    segs: ['AB', 'AD', 'DC', 'CE', 'EB', 'AE', 'DB'],
+    angs: [['Q', 'B', 'E', '20°', 26]],
+    lab: { A: 'w', B: 'e', C: 's', D: 'n', E: 'n', P: 'nw', Q: 's', R: 'n' }
+  };
+}
+
+function fig25(th) {
+  const B = [0, 0], C = [10, 0], A = [5, 5 * G.tan(90 - th)];
+  const D = G.foot(B, A, C), E = G.sub(G.mul(D, 2), C);
+  const F = G.add(B, G.mul(G.unit(B, A), G.len(C, E)));
+  return {
+    pts: { A, B, C, D, E, F },
+    segs: ['AB', 'BC', 'CA', 'BD', 'BE', 'CF'],
+    right: [['D', 'B', 'C']],
+    ticks: [['C', 'D', 1], ['D', 'E', 1]],
+    angs: [['C', 'B', 'D', th + '°', 34]],
+    lab: { A: 'n', B: 'sw', C: 'se', D: 'e', E: 'e', F: 'w' }
+  };
+}
+
+function fig27(angB) {
+  const C = [0, 0], B = [8, 0], A = [0, 8 * G.tan(angB)], M = [4, 4 * G.tan(angB)];
+  return {
+    pts: { A, B, C, M },
+    segs: ['AC', 'CB', 'BA', 'CM'],
+    right: [['C', 'A', 'B']],
+    ticks: [['A', 'M', 2], ['M', 'B', 2]],
+    lab: { A: 'n', B: 'e', C: 'sw', M: 'ne' }
+  };
+}
+
+function fig28() {
+  const { A, B, C } = figEqTri();
+  const D = G.mul([G.cos(40), G.sin(40)], 5 / G.cos(20));
+  const E = G.mul([G.cos(80), G.sin(80)], 10);
+  return {
+    pts: { A, B, C, D, E },
+    segs: ['AB', 'BC', 'CA', 'BE', 'ED', 'AD', 'BD', 'DC'],
+    ticks: [['B', 'A', 2], ['B', 'E', 2], ['B', 'D', 1], ['A', 'D', 1]],
+    angs: [['E', 'B', 'A', '•', 40], ['A', 'B', 'D', '•', 40]],
+    lab: { A: 'n', B: 'sw', C: 'se', D: 's', E: 'n' }
+  };
+}
+
+function fig30() {
+  const A = [0, 8], B = [0, 0], C = [8, 0], D = [8, 8], E = [8, 6], F = [14, 0], Gp = [14, 6], H = [0, 6];
+  return {
+    pts: { A, B, C, D, E, F, G: Gp, H },
+    segs: ['AB', 'BC', 'CD', 'DA', 'CF', 'FG', 'HG', 'HC', 'DF'],
+    lab: { A: 'nw', B: 'sw', C: 's', D: 'n', E: 'se', F: 'se', G: 'ne', H: 'w' },
+    text: [{ at: [4, -0.9], t: '8' }, { at: [8.7, 7], t: '2' }]
+  };
+}
+
+function fig32() {
+  const ce = 6;
+  // FC = DH 를 만족하는 한 변의 길이 s 를 이분법으로 구함
+  let lo = 1, hi = 100;
+  const f = s => s * s * (s + ce) * (s + ce) - ce * ce * (s * s + (s + ce) * (s + ce));
+  for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; (f(lo) * f(m) <= 0) ? hi = m : lo = m; }
+  const s = (lo + hi) / 2;
+  const A = [0, s], B = [0, 0], C = [s, 0], D = [s, s], E = [s + ce, 0];
+  const F = G.inter(A, E, C, D), Gp = G.foot(B, A, E), H = G.foot(D, A, E);
+  return {
+    pts: { A, B, C, D, E, F, G: Gp, H },
+    polys: [['A', 'B', 'H']],
+    segs: ['AB', 'BC', 'CD', 'DA', 'CE', 'AE', 'BG', 'DH', 'BH'],
+    right: [['G', 'A', 'B'], ['H', 'D', 'F']],
+    ticks: [['D', 'H', 1], ['F', 'C', 1]],
+    lab: { A: 'nw', B: 'sw', C: 's', D: 'ne', E: 'se', F: 'e', G: 'n', H: 'n' },
+    text: [{ at: [s + ce / 2, -0.9], t: '6' }]
+  };
+}
+
+function fig33(withG, labelAngle) {
+  const A = [0, 10], B = [0, 0], C = [10, 0], D = [10, 10];
+  const E = [10 * G.tan(20), 0], F = [10, 10 - 10 * G.tan(25)], Gp = [10, 10 + 10 * G.tan(20)];
+  const pts = { A, B, C, D, E, F };
+  const segs = ['AB', 'BC', 'CD', 'DA', 'AE', 'AF', 'EF'];
+  if (withG) { pts.G = Gp; segs.push('AG', 'DG'); }
+  const f = { pts, segs, lab: { A: 'nw', B: 'sw', C: 'se', D: 'e', E: 's', F: 'e', G: 'ne' } };
+  if (labelAngle) f.angs = [['B', 'A', 'E', '20°', 40]];
+  return f;
+}
+
+function fig34() {
+  const A = [0, 10], B = [0, 0], C = [10, 0], D = [10, 10], E = [4, 10], F = [2, 12], Gp = [0, 2], H = [12, 10];
+  return {
+    pts: { A, B, C, D, E, F, G: Gp, H },
+    segs: ['AB', 'BC', 'CD', 'DA', 'AF', 'FE', 'FG', 'GC', 'CH', 'HF', 'DH'],
+    right: [['F', 'A', 'E'], ['B', 'G', 'C']],
+    ticks: [['A', 'F', 1], ['F', 'E', 1]],
+    lab: { A: 'w', B: 'sw', C: 'se', D: 'n', E: 's', F: 'n', G: 'w', H: 'e' },
+    text: [{ at: [5, -1], t: '10' }]
+  };
+}
+
+/* ---------- 30문항 ---------- */
+const PROBLEMS = [
+  {
+    tag: '작도', type: 'mc',
+    q: '아래 그림은 ∠XOY와 크기가 같은 각을 반직선 PQ를 한 변으로 하여 작도한 것이다. 다음 중 옳지 않은 것은?',
+    opts: ['OA = PC', 'AB = CD', 'OB = PD', 'OA = AB', '∠AOB = ∠CPD'], ans: 4,
+    fig() {
+      const O = [0, 0], X = [5.2, 0], Y = G.rot([5.2, 0], 42), A = [2.6, 0], B = G.rot(A, 42);
+      const P = [6.8, 0], Q = [12, 0], C = [9.4, 0], D = G.add(P, G.rot([2.6, 0], 42)), R = G.add(P, G.rot([5.2, 0], 42));
+      const ab = G.len(A, B), dAng = Math.atan2(D[1] - C[1], D[0] - C[0]) * 180 / Math.PI;
+      return {
+        pts: { O, X, Y, A, B, P, Q, C, D, _R: R },
+        segs: ['OX', 'OY', 'PQ', ['P', '_R'], { a: 'A', b: 'B', st: 'dash' }, { a: 'C', b: 'D', st: 'dash' }],
+        arcs: [{ c: O, r: 2.6, a1: -10, a2: 55 }, { c: P, r: 2.6, a1: -10, a2: 55 }, { c: C, r: ab, a1: dAng - 14, a2: dAng + 14 }],
+        lab: { O: 'sw', X: 's', Y: 'n', A: 's', B: 'nw', P: 'sw', Q: 's', C: 's', D: 'nw' }
+      };
+    },
+    hint: '컴퍼스로 "같은 반지름"을 옮긴 곳과 "선분 AB의 길이"를 옮긴 곳을 구분해 보세요.',
+    sol: '점 O, P를 중심으로 반지름이 같은 원을 그렸으므로 OA = OB = PC = PD, 점 C를 중심으로 반지름이 AB인 원을 그렸으므로 AB = CD. 따라서 △AOB ≡ △CPD (SSS 합동)이고 ∠AOB = ∠CPD. 그러나 OA = AB는 알 수 없다.'
+  },
+  {
+    tag: '삼각형의 결정', type: 'mc',
+    q: '다음 중 △ABC가 하나로 정해지지 <b>않는</b> 것은?',
+    opts: ['AB = 5, BC = 7, CA = 9', 'AB = 4, BC = 6, ∠B = 50°', 'BC = 8, ∠B = 40°, ∠C = 70°', 'AC = 6, ∠A = 30°, ∠B = 80°', 'AB = 5, AC = 7, ∠C = 40°'], ans: 5,
+    hint: '두 변과 한 각이 주어질 때, 그 각이 "두 변의 끼인각"인지 확인하세요. 두 각이 주어지면 나머지 한 각도 구할 수 있습니다.',
+    sol: '① 세 변(9 < 5 + 7) ② 두 변과 끼인각 ③ 한 변과 양 끝 각 ④ ∠C = 70°이므로 AC와 양 끝 각 ∠A, ∠C → 하나로 정해진다. ⑤ ∠C는 AB와 AC의 끼인각이 아니므로 하나로 정해지지 않는다.'
+  },
+  {
+    tag: '삼각형의 세 변', type: 'num',
+    q: '세 변의 길이가 4 cm, 9 cm, <i>x</i> cm인 삼각형을 만들려고 한다. <i>x</i>가 자연수일 때, 가능한 <i>x</i>의 값은 모두 몇 개인가?',
+    ans: 7, unit: '개',
+    hint: '(두 변의 길이의 차) < 나머지 한 변 < (두 변의 길이의 합)',
+    sol: '9 − 4 < x < 9 + 4 이므로 5 < x < 13. 자연수 x = 6, 7, 8, 9, 10, 11, 12 → 7개.'
+  },
+  {
+    tag: '합동 조건', type: 'mc',
+    q: '△ABC와 △DEF에서 AB = DE, ∠A = ∠D일 때, 다음 중 △ABC ≡ △DEF가 되기 위한 조건이 <b>아닌</b> 것은?',
+    opts: ['AC = DF', '∠B = ∠E', '∠C = ∠F', 'BC = EF', '∠A + ∠B = ∠D + ∠E'], ans: 4,
+    hint: '주어진 각 ∠A가 추가되는 변과 어떤 위치 관계인지 보세요.',
+    sol: '① SAS ② ASA ③ ∠B = ∠E가 되어 ASA ⑤ ∠A = ∠D이므로 ∠B = ∠E → ASA. ④는 ∠A가 AB, BC의 끼인각이 아니므로 합동이라 할 수 없다.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'mc',
+    q: '그림에서 △ABC, △DCE는 모두 정삼각형이고, 네 점 A, D, P, E는 한 직선 위에 있다. ∠AEB의 크기는?',
+    opts: ['45°', '50°', '55°', '60°', '65°'], ans: 4,
+    fig: () => fig23(),
+    verify: f => G.angle(f.pts.A, f.pts.E, f.pts.B),
+    hint: '△ACD와 △BCE에서 AC = BC, CD = CE이고 끼인각이 같습니다.',
+    sol: '△ACD ≡ △BCE (SAS)이므로 ∠BEC = ∠ADC = 180° − ∠CDE = 180° − 60° = 120°. ∴ ∠AEB = ∠BEC − ∠DEC = 120° − 60° = 60°.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'num',
+    q: '그림에서 △ABC, △DCE는 모두 정삼각형이고, 네 점 A, D, P, E는 한 직선 위에 있다. AE = 11 cm, CE = 4 cm일 때, BE의 길이를 구하시오.',
+    ans: 7, unit: 'cm',
+    fig: () => fig23(),
+    verify: f => 11 * G.len(f.pts.B, f.pts.E) / G.len(f.pts.A, f.pts.E),
+    hint: '△ACD ≡ △BCE 이므로 BE와 길이가 같은 선분을 찾아보세요.',
+    sol: 'DE = CE = 4 cm이므로 AD = 11 − 4 = 7 (cm). △ACD ≡ △BCE (SAS)이므로 BE = AD = 7 cm.'
+  },
+  {
+    tag: '두 정삼각형', type: 'num',
+    q: '그림은 선분 AB 위에 점 C를 잡아 AC, CB를 각각 한 변으로 하는 정삼각형 DAC, ECB를 그린 것이다. DC와 AE의 교점을 P, DB와 CE의 교점을 Q라 하자. ∠QBE = 20°일 때, ∠APC의 크기를 구하시오.',
+    ans: 100, unit: '°',
+    fig: () => fig24(false),
+    verify: f => G.angle(f.pts.A, f.pts.P, f.pts.C),
+    hint: '△ACE와 △DCB는 SAS 합동입니다. ∠DCB = ∠ACE = 120°.',
+    sol: '∠CBD = 60° − 20° = 40°. △ACE ≡ △DCB (SAS)이므로 ∠CAE = ∠CDB = 180° − 120° − 40° = 20°. △APC에서 ∠APC = 180° − 60° − 20° = 100°.'
+  },
+  {
+    tag: '두 정삼각형', type: 'mc',
+    q: '그림은 선분 AB 위에 점 C를 잡아 정삼각형 DAC, ECB를 그린 것이다. AE와 DB의 교점을 R이라 하자. ∠QBE = 20°일 때, ∠ARB의 크기는?',
+    opts: ['100°', '110°', '115°', '120°', '130°'], ans: 4,
+    fig: () => fig24(true),
+    verify: f => G.angle(f.pts.A, f.pts.R, f.pts.B),
+    hint: '△ACE ≡ △DCB 이므로 ∠CAE = ∠CDB, ∠CEA = ∠CBD 입니다. △ARB의 두 밑각을 구해 보세요.',
+    sol: '∠RBA = ∠CBD = 40°, ∠RAB = ∠CAE = ∠CDB = 20°. ∴ ∠ARB = 180° − 40° − 20° = 120°. (∠QBE의 크기와 관계없이 항상 120°이다.)'
+  },
+  {
+    tag: '이등변삼각형과 합동', type: 'num',
+    q: 'AB = AC인 이등변삼각형 ABC의 꼭짓점 B에서 변 AC에 내린 수선의 발을 D라 하자. 변 AC 위에 CD = ED가 되도록 점 E를, 변 AB 위에 BF = CE가 되도록 점 F를 잡았다. ∠CBD = 20°일 때, ∠BCF의 크기를 구하시오.',
+    ans: 40, unit: '°',
+    fig: () => fig25(20),
+    verify: f => G.angle(f.pts.B, f.pts.C, f.pts.F),
+    hint: '먼저 △BCD ≡ △BED 로 BC = BE, 다음으로 △FBC ≡ △ECB 를 이용하세요.',
+    sol: '∠C = 90° − 20° = 70° = ∠ABC. △BCD ≡ △BED (SAS)이므로 ∠EBC = 40°. △FBC와 △ECB에서 BF = CE, BC 공통, ∠FBC = ∠ECB → SAS 합동. ∴ ∠BCF = ∠CBE = 40°.'
+  },
+  {
+    tag: '이등변삼각형과 합동', type: 'mc',
+    q: 'AB = AC인 이등변삼각형 ABC에서 BD ⊥ AC이고, 변 AC 위에 CD = ED인 점 E, 변 AB 위에 BF = CE인 점 F를 잡았다. ∠CBD = 15°일 때, ∠BFC의 크기는?',
+    opts: ['65°', '70°', '75°', '80°', '85°'], ans: 3,
+    fig: () => fig25(15),
+    verify: f => G.angle(f.pts.B, f.pts.F, f.pts.C),
+    hint: '△FBC ≡ △ECB 이면 ∠BFC는 어떤 각과 같을까요?',
+    sol: '∠ACB = 90° − 15° = 75°. △BCD ≡ △BED이므로 ∠BEC = ∠BCE = 75°. △FBC ≡ △ECB (SAS)이므로 ∠BFC = ∠CEB = 75°.'
+  },
+  {
+    tag: '직각삼각형의 빗변', type: 'mc',
+    q: '∠C = 90°인 직각삼각형 ABC에서 변 AB 위에 AM = BM이 되도록 점 M을 잡았다. ∠B = 35°일 때, ∠AMC의 크기는?',
+    opts: ['55°', '60°', '65°', '70°', '75°'], ans: 4,
+    fig() { const f = fig27(35); f.angs = [['A', 'B', 'C', '35°', 34]]; return f; },
+    verify: f => G.angle(f.pts.A, f.pts.M, f.pts.C),
+    hint: '점 M에서 BC에 수선을 그어 합동인 두 삼각형을 만들면 MC = MB임을 알 수 있습니다.',
+    sol: '점 M에서 BC에 내린 수선의 발을 N이라 하면 △MNC ≡ △MNB (SAS)이므로 MC = MB. ∠MCB = ∠B = 35°이고 ∠AMC는 △MBC의 외각이므로 35° + 35° = 70°.'
+  },
+  {
+    tag: '직각삼각형의 빗변', type: 'num',
+    q: '∠C = 90°인 직각삼각형 ABC에서 빗변 AB의 중점을 M이라 하자. ∠A = 58°일 때, ∠BMC의 크기를 구하시오.',
+    ans: 116, unit: '°',
+    fig() { const f = fig27(32); f.angs = [['C', 'A', 'B', '58°', 30]]; return f; },
+    verify: f => G.angle(f.pts.B, f.pts.M, f.pts.C),
+    hint: 'MA = MB = MC 입니다. 이등변삼각형 MAC를 보세요.',
+    sol: 'MA = MC이므로 ∠MCA = ∠A = 58°. ∠BMC는 △AMC의 외각이므로 58° + 58° = 116°.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'mc',
+    q: '정삼각형 ABC에서 BA = BE, BD = AD, ∠ABE = ∠ABD = 20°일 때, ∠AED의 크기는?',
+    opts: ['40°', '45°', '50°', '55°', '60°'], ans: 3,
+    fig: fig28,
+    verify: f => G.angle(f.pts.A, f.pts.E, f.pts.D),
+    hint: '△EBD와 △CBD에서 BE = BC, BD 공통, ∠EBD와 ∠CBD를 비교하세요.',
+    sol: 'BE = BA = BC, ∠EBD = 40°, ∠CBD = 60° − 20° = 40°, BD 공통 → △EBD ≡ △CBD (SAS). DA = DB, CA = CB이므로 △ADC ≡ △BDC (SSS), ∠BCD = 30°. 따라서 ∠BED = ∠BCD = 30°. BA = BE, ∠ABE = 20°이므로 ∠BEA = 80°. ∴ ∠AED = 80° − 30° = 50°.'
+  },
+  {
+    tag: '두 정사각형', type: 'num',
+    q: '두 정사각형 ABCD와 ECFG가 있다. 정사각형 ECFG의 한 변 EG의 연장선이 AB와 만나는 점을 H라 하자. BC = 8, DE = 2, CH = 10일 때, 오각형 AHCFD의 둘레의 길이를 구하시오.',
+    ans: 36, unit: '',
+    fig: fig30,
+    verify: f => { const p = f.pts; return G.len(p.A, p.H) + G.len(p.H, p.C) + G.len(p.C, p.F) + G.len(p.F, p.D) + G.len(p.D, p.A); },
+    hint: '△HEC와 △DCF에서 HE = DC, EC = CF, 끼인각이 90°로 같습니다.',
+    sol: 'EC = 8 − 2 = 6 = CF, AH = DE = 2, HE = BC = 8 = DC. △HEC ≡ △DCF (SAS)이므로 DF = HC = 10. 둘레 = 2 + 10 + 6 + 10 + 8 = 36.'
+  },
+  {
+    tag: '정사각형과 수선', type: 'num',
+    q: '정사각형 ABCD에서 BC의 연장선 위에 CE = 6이 되도록 점 E를 잡을 때, AE와 DC의 교점을 F라 하자. 두 점 B, D에서 AF에 내린 수선의 발을 각각 G, H라 할 때, DH = FC이다. △ABH의 넓이를 구하시오.',
+    ans: 18, unit: '',
+    fig: fig32,
+    verify: f => G.area(f.pts.A, f.pts.B, f.pts.H),
+    hint: '△FCE와 △DHA는 합동(ASA)입니다. 또 △ABG ≡ △DAH 입니다.',
+    sol: 'AD ∥ BE이므로 ∠CEF = ∠DAH(엇각), DH = FC, 두 삼각형 모두 직각 → △FCE ≡ △DHA, AH = CE = 6. △ABG ≡ △DAH이므로 BG = AH = 6. △ABH의 넓이 = ½ × AH × BG = ½ × 6 × 6 = 18.'
+  },
+  {
+    tag: '정사각형 회전 합동', type: 'mc',
+    q: '한 변의 길이가 10인 정사각형 ABCD에서 변 BC 위의 점 E, 변 CD 위의 점 F, 변 CD의 연장선 위의 점 G에 대하여 △ABE ≡ △ADG이다. △CEF의 둘레의 길이가 20이고 ∠BAE = 20°일 때, ∠AFD의 크기는?',
+    opts: ['55°', '60°', '65°', '70°', '75°'], ans: 3,
+    fig: () => fig33(true, true),
+    verify: f => G.angle(f.pts.A, f.pts.F, f.pts.D),
+    hint: 'EF = BE + DF = GF 가 되어 △AEF ≡ △AGF (SSS) 입니다.',
+    sol: 'CE + CF + EF = 20 = BC + CD이므로 EF = BE + DF = DG + DF = GF. AE = AG, AF 공통 → △AEF ≡ △AGF (SSS), ∠EAF = ∠GAF = ½ × 90° = 45°. ∠DAF = 90° − 20° − 45° = 25°, ∠AFD = 90° − 25° = 65°.'
+  },
+  {
+    tag: '정사각형 회전 합동', type: 'mc',
+    q: '정사각형 ABCD에서 변 BC 위에 점 E, 변 CD 위에 점 F가 있다. △CEF의 둘레의 길이가 정사각형 ABCD의 둘레의 길이의 ½일 때, 보기에서 항상 옳은 것을 모두 고른 것은?<div class="bogi"><span>보기</span>ㄱ. EF = BE + DF<br>ㄴ. ∠EAF = 45°<br>ㄷ. △ABE ≡ △AEF</div>',
+    opts: ['ㄱ', 'ㄱ, ㄴ', 'ㄱ, ㄷ', 'ㄴ, ㄷ', 'ㄱ, ㄴ, ㄷ'], ans: 2,
+    fig: () => fig33(false, false),
+    hint: 'CD의 연장선 위에 DG = BE인 점 G를 잡아 △ABE ≡ △ADG를 만들어 보세요.',
+    sol: '둘레 조건에서 CE + CF + EF = BC + CD → EF = BE + DF (ㄱ). DG = BE인 G를 잡으면 △ABE ≡ △ADG, 그리고 △AEF ≡ △AGF (SSS)이므로 ∠EAF = 45° (ㄴ). ㄷ은 일반적으로 성립하지 않는다.'
+  },
+  {
+    tag: '직각이등변삼각형과 정사각형', type: 'num',
+    q: '한 변의 길이가 10인 정사각형 ABCD의 변 AD 위에 AE : ED = 2 : 3이 되도록 점 E를 잡고, AE를 빗변으로 하는 직각이등변삼각형 AEF를 그렸다. 변 AB 위의 점 G에 대하여 사각형 FGCH가 정사각형일 때, 선분 EH의 길이를 구하시오. (단, 점 H는 변 AD의 연장선 위에 있다.)',
+    ans: 8, unit: '',
+    fig: fig34,
+    verify: f => { const p = f.pts; const ok = Math.abs(G.len(p.F, p.G) - G.len(p.G, p.C)) < 1e-9 && Math.abs(G.angle(p.F, p.G, p.C) - 90) < 1e-9; return ok ? G.len(p.E, p.H) : NaN; },
+    hint: '점 F에서 AB의 연장선, AD에 수선을 내려 보세요. 정사각형의 이웃한 변을 빗변으로 하는 직각삼각형들이 합동입니다.',
+    sol: 'AE = 4, ED = 6. F에서 AB의 연장선에 내린 수선의 발을 K라 하면 FK = AK = 2. △FKG ≡ △GBC (ASA: FG = GC, ∠FGK = ∠GCB)이므로 BG = FK = 2. 또 H에서 BC의 연장선에 내린 수선의 발을 N이라 하면 △GBC ≡ △CNH (ASA)이므로 CN = BG = 2, 즉 DH = 2. ∴ EH = ED + DH = 6 + 2 = 8.'
+  },
+  {
+    tag: '두 정사각형', type: 'num',
+    q: '두 정사각형 ABCD와 GCEF에서 점 G는 변 CD 위에, 점 E는 변 BC의 연장선 위에 있다. BG의 연장선과 DE의 교점을 H라 하자. ∠CBG = 25°일 때, ∠CED의 크기를 구하시오.',
+    ans: 65, unit: '°',
+    fig() {
+      const g = 6 * G.tan(25);
+      const A = [0, 6], B = [0, 0], C = [6, 0], D = [6, 6], Gp = [6, g], E = [6 + g, 0], F = [6 + g, g];
+      const H = G.inter(B, Gp, D, E);
+      return {
+        pts: { A, B, C, D, G: Gp, E, F, H },
+        segs: ['AB', 'BC', 'CD', 'DA', 'CE', 'EF', 'FG', 'BH', 'DE'],
+        angs: [['C', 'B', 'G', '25°', 38]],
+        lab: { A: 'nw', B: 'sw', C: 's', D: 'ne', G: 'w', E: 'se', F: 'e', H: 'ne' }
+      };
+    },
+    verify: f => G.angle(f.pts.C, f.pts.E, f.pts.D),
+    hint: '△BCG와 △DCE에서 BC = DC, CG = CE, ∠BCG = ∠DCE = 90°.',
+    sol: '△BCG ≡ △DCE (SAS)이므로 ∠CDE = ∠CBG = 25°. ∴ ∠CED = 90° − 25° = 65°.'
+  },
+  {
+    tag: '정사각형과 합동', type: 'mc',
+    q: '정사각형 ABCD의 변 BC, CD 위에 BE = CF가 되도록 두 점 E, F를 잡았다. ∠BAE = 28°일 때, ∠BFC의 크기는?',
+    opts: ['56°', '58°', '60°', '62°', '64°'], ans: 4,
+    fig() {
+      const t = 8 * G.tan(28);
+      const A = [0, 8], B = [0, 0], C = [8, 0], D = [8, 8], E = [t, 0], F = [8, t];
+      const P = G.inter(A, E, B, F);
+      return {
+        pts: { A, B, C, D, E, F, P },
+        segs: ['AB', 'BC', 'CD', 'DA', 'AE', 'BF'],
+        ticks: [['B', 'E', 1], ['C', 'F', 1]],
+        angs: [['B', 'A', 'E', '28°', 40]],
+        lab: { A: 'nw', B: 'sw', C: 'se', D: 'ne', E: 's', F: 'e', P: 'n' }
+      };
+    },
+    verify: f => G.angle(f.pts.B, f.pts.F, f.pts.C),
+    hint: '△ABE와 △BCF는 SAS 합동입니다.',
+    sol: 'AB = BC, BE = CF, ∠ABE = ∠BCF = 90° → △ABE ≡ △BCF (SAS). ∠CBF = ∠BAE = 28°이므로 ∠BFC = 90° − 28° = 62°. (이때 AE ⊥ BF도 성립한다.)'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'num',
+    q: '한 변의 길이가 9인 정삼각형 ABC의 변 BC 위에 BD = 4인 점 D를 잡고, AD를 한 변으로 하는 정삼각형 ADE를 그렸다. CD + CE의 값을 구하시오.',
+    ans: 9, unit: '',
+    fig() {
+      const B = [0, 0], C = [9, 0], A = [4.5, 4.5 * S3], D = [4, 0], E = G.rot(D, 60, A);
+      return {
+        pts: { A, B, C, D, E },
+        segs: ['AB', 'BC', 'CA', 'AD', 'AE', 'DE', 'CE'],
+        lab: { A: 'n', B: 'sw', C: 's', D: 's', E: 'e' },
+        text: [{ at: [2, -0.8], t: '4' }]
+      };
+    },
+    verify: f => G.len(f.pts.C, f.pts.D) + G.len(f.pts.C, f.pts.E),
+    hint: '△ABD와 △ACE에서 AB = AC, AD = AE, ∠BAD = ∠CAE.',
+    sol: '∠BAD = 60° − ∠DAC = ∠CAE, AB = AC, AD = AE → △ABD ≡ △ACE (SAS), CE = BD = 4. CD = 9 − 4 = 5. ∴ CD + CE = 9.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'mc',
+    q: '정삼각형 ABC의 변 AB, BC 위에 AD = BE가 되도록 두 점 D, E를 잡았다. AE와 CD의 교점을 P라 할 때, ∠APC의 크기는?',
+    opts: ['100°', '110°', '120°', '130°', '140°'], ans: 3,
+    fig() {
+      const { A, B, C } = figEqTri();
+      const D = G.add(A, G.mul(G.unit(A, B), 3)), E = [3, 0], P = G.inter(A, E, C, D);
+      return {
+        pts: { A, B, C, D, E, P },
+        segs: ['AB', 'BC', 'CA', 'AE', 'CD'],
+        ticks: [['A', 'D', 1], ['B', 'E', 1]],
+        lab: { A: 'n', B: 'sw', C: 'se', D: 'w', E: 's', P: 'n' }
+      };
+    },
+    verify: f => G.angle(f.pts.A, f.pts.P, f.pts.C),
+    hint: '△ABE ≡ △CAD (SAS)이므로 ∠BAE = ∠ACD 입니다. △APC의 두 각을 더해 보세요.',
+    sol: 'AB = CA, BE = AD, ∠ABE = ∠CAD = 60° → △ABE ≡ △CAD. ∠PAC + ∠PCA = ∠PAC + ∠BAE = 60°. ∴ ∠APC = 180° − 60° = 120°.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'num',
+    q: '정삼각형 ABC의 세 변 AB, BC, CA 위에 AD = BE = CF가 되도록 세 점 D, E, F를 잡았다. ∠ADF = 40°일 때, ∠BDE의 크기를 구하시오.',
+    ans: 80, unit: '°',
+    fig() {
+      const { A, B, C } = figEqTri();
+      const t = 10 * G.sin(80) / (G.sin(40) + G.sin(80));
+      const D = G.add(A, G.mul(G.unit(A, B), t)), E = G.add(B, G.mul(G.unit(B, C), t)), F = G.add(C, G.mul(G.unit(C, A), t));
+      return {
+        pts: { A, B, C, D, E, F },
+        segs: ['AB', 'BC', 'CA', 'DE', 'EF', 'FD'],
+        ticks: [['A', 'D', 1], ['B', 'E', 1], ['C', 'F', 1]],
+        angs: [['A', 'D', 'F', '40°', 26]],
+        lab: { A: 'n', B: 'sw', C: 'se', D: 'w', E: 's', F: 'e' }
+      };
+    },
+    verify: f => G.angle(f.pts.B, f.pts.D, f.pts.E),
+    hint: '△ADF ≡ △BED ≡ △CFE 이므로 △DEF는 정삼각형입니다.',
+    sol: 'AD = BE = CF이면 AF = BD = CE이므로 △ADF ≡ △BED ≡ △CFE (SAS), DF = ED = FE → △DEF는 정삼각형, ∠EDF = 60°. ∴ ∠BDE = 180° − 40° − 60° = 80°.'
+  },
+  {
+    tag: '직각이등변삼각형 (K자)', type: 'num',
+    q: '∠BAC = 90°이고 AB = AC인 직각이등변삼각형 ABC의 꼭짓점 A를 지나는 직선 l에 두 점 B, C에서 내린 수선의 발을 각각 D, E라 하자. BD = 5 cm, CE = 3 cm일 때, DE의 길이를 구하시오.',
+    ans: 8, unit: 'cm',
+    fig() {
+      const A = [0, 0], D = [-3, 0], B = [-3, -5], E = [5, 0], C = [5, -3];
+      return {
+        pts: { A, B, C, D, E, _l1: [-5, 0], _l2: [7, 0] },
+        segs: [['_l1', '_l2'], 'AB', 'AC', 'BC', 'BD', 'CE'],
+        right: [['A', 'B', 'C'], ['D', 'B', 'A'], ['E', 'A', 'C']],
+        ticks: [['A', 'B', 1], ['A', 'C', 1]],
+        lab: { A: 'n', B: 'sw', C: 'se', D: 'n', E: 'n' },
+        text: [{ at: [7.4, 0.2], t: 'l', it: 1 }]
+      };
+    },
+    verify: f => G.len(f.pts.D, f.pts.E),
+    hint: '∠DBA와 ∠EAC가 같습니다(∠BAD와 ∠CAE를 더하면 90°). 빗변이 같은 두 삼각형을 비교하세요.',
+    sol: '∠DBA = 90° − ∠BAD = ∠EAC, ∠BAD = ∠ACE, AB = CA → △ABD ≡ △CAE (ASA). AD = CE = 3, AE = BD = 5. ∴ DE = 3 + 5 = 8 (cm).'
+  },
+  {
+    tag: '직각이등변삼각형 (K자)', type: 'num',
+    q: '∠BAC = 90°, AB = AC인 직각이등변삼각형 ABC의 꼭짓점 A를 지나는 직선 l에 두 점 B, C에서 내린 수선의 발을 D, E라 하자. BD = 6 cm, CE = 4 cm일 때, 사각형 BDEC의 넓이를 구하시오.',
+    ans: 50, unit: 'cm²',
+    fig() {
+      const A = [0, 0], D = [-4, 0], B = [-4, -6], E = [6, 0], C = [6, -4];
+      return {
+        pts: { A, B, C, D, E, _l1: [-6, 0], _l2: [8, 0] },
+        polys: [['B', 'D', 'E', 'C']],
+        segs: [['_l1', '_l2'], 'AB', 'AC', 'BC', 'BD', 'CE'],
+        right: [['A', 'B', 'C'], ['D', 'B', 'A'], ['E', 'A', 'C']],
+        ticks: [['A', 'B', 1], ['A', 'C', 1]],
+        lab: { A: 'n', B: 'sw', C: 'se', D: 'n', E: 'n' },
+        text: [{ at: [8.4, 0.2], t: 'l', it: 1 }]
+      };
+    },
+    verify: f => G.area(f.pts.B, f.pts.D, f.pts.E, f.pts.C),
+    hint: '먼저 DE의 길이를 구하면 사각형 BDEC는 사다리꼴입니다.',
+    sol: '△ABD ≡ △CAE (ASA)이므로 AD = CE = 4, AE = BD = 6, DE = 10. 사다리꼴 BDEC의 넓이 = ½ × (6 + 4) × 10 = 50 (cm²).'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'num',
+    q: '정삼각형 ABC의 변 BC, CA 위에 BD = CE가 되도록 두 점 D, E를 잡고, AD와 BE의 교점을 P라 하자. ∠BAD = 18°일 때, ∠AEB의 크기를 구하시오.',
+    ans: 78, unit: '°',
+    fig() {
+      const { A, B, C } = figEqTri();
+      const bd = 10 * G.sin(18) / G.sin(102), D = [bd, 0], E = G.add(C, G.mul(G.unit(C, A), bd)), P = G.inter(A, D, B, E);
+      return {
+        pts: { A, B, C, D, E, P },
+        segs: ['AB', 'BC', 'CA', 'AD', 'BE'],
+        ticks: [['B', 'D', 1], ['C', 'E', 1]],
+        angs: [['B', 'A', 'D', '18°', 44]],
+        lab: { A: 'n', B: 'sw', C: 'se', D: 's', E: 'e', P: 'e' }
+      };
+    },
+    verify: f => G.angle(f.pts.A, f.pts.E, f.pts.B),
+    hint: '△ABD ≡ △BCE (SAS)이므로 ∠CBE = ∠BAD 입니다.',
+    sol: 'AB = BC, BD = CE, ∠ABD = ∠BCE = 60° → △ABD ≡ △BCE. ∠CBE = 18°, ∠ABE = 60° − 18° = 42°. △ABE에서 ∠AEB = 180° − 60° − 42° = 78°.'
+  },
+  {
+    tag: '두 정사각형', type: 'mc',
+    q: '그림과 같이 두 정사각형 ABCD와 AEFG가 꼭짓점 A를 공유하고 있다. △ABE와 합동인 삼각형과 그 합동 조건을 바르게 짝지은 것은?',
+    opts: ['△ADG, SSS 합동', '△ADG, SAS 합동', '△ADG, ASA 합동', '△AGF, SAS 합동', '△ACF, SAS 합동'], ans: 2,
+    fig() {
+      const A = [0, 0], B = [5, 0], C = [5, 5], D = [0, 5], E = [-3.2, 1.2], F = [-4.4, -2], Gp = [-1.2, -3.2];
+      return {
+        pts: { A, B, C, D, E, F, G: Gp },
+        segs: ['AB', 'BC', 'CD', 'DA', 'AE', 'EF', 'FG', 'GA', 'BE', 'DG'],
+        lab: { A: 'se', B: 'se', C: 'ne', D: 'n', E: 'nw', F: 'sw', G: 's' }
+      };
+    },
+    verify: f => G.len(f.pts.B, f.pts.E) - G.len(f.pts.D, f.pts.G),
+    verifyAns: 0,
+    hint: '∠BAE와 ∠DAG는 모두 ∠DAE에 90°를 더한 각입니다.',
+    sol: 'AB = AD, AE = AG이고 ∠BAE = 90° + ∠DAE = ∠DAG이므로 △ABE ≡ △ADG (SAS 합동). 따라서 BE = DG이다. (BE = DG는 합동의 결과이므로 SSS를 근거로 쓸 수 없다.)'
+  },
+  {
+    tag: '각의 이등분선', type: 'num',
+    q: '∠XOY의 이등분선 위의 한 점 P에서 두 변 OX, OY에 내린 수선의 발을 각각 A, B라 하자. OA = 8 cm, PA = 3 cm일 때, 사각형 OAPB의 넓이를 구하시오.',
+    ans: 24, unit: 'cm²',
+    fig() {
+      const h = Math.atan(3 / 8) * 180 / Math.PI;
+      const O = [0, 0], X = [11, 0], Y = G.rot([11, 0], 2 * h), A = [8, 0], P = [8, 3], B = G.rot(A, 2 * h);
+      return {
+        pts: { O, X, Y, A, P, B },
+        polys: [['O', 'A', 'P', 'B']],
+        segs: ['OX', 'OY', { a: 'O', b: 'P', st: 'dash' }, 'PA', 'PB'],
+        right: [['A', 'O', 'P'], ['B', 'O', 'P']],
+        angs: [['A', 'O', 'P', '•', 46], ['P', 'O', 'B', '•', 46]],
+        lab: { O: 'w', X: 's', Y: 'n', A: 's', P: 'e', B: 'n' }
+      };
+    },
+    verify: f => G.area(f.pts.O, f.pts.A, f.pts.P, f.pts.B),
+    hint: '△AOP와 △BOP가 어떤 합동 조건으로 합동인지 생각해 보세요.',
+    sol: '∠AOP = ∠BOP, ∠OAP = ∠OBP = 90°이므로 ∠APO = ∠BPO. OP 공통 → △AOP ≡ △BOP (ASA). 넓이 = 2 × ½ × 8 × 3 = 24 (cm²).'
+  },
+  {
+    tag: '작도', type: 'mc',
+    q: '그림은 직선 l 밖의 한 점 P를 지나고 직선 l에 평행한 직선 m을 작도한 것이다. 이 작도에 이용된 성질은?',
+    opts: ['맞꼭지각의 크기는 서로 같다.', '삼각형의 세 내각의 크기의 합은 180°이다.', '동위각의 크기가 같으면 두 직선은 평행하다.', '두 점을 지나는 직선은 오직 하나뿐이다.', '평행한 두 직선은 만나지 않는다.'], ans: 3,
+    fig() {
+      const Q = [3, 0], P = [5.5, 4], r = 1.7, u = G.unit(Q, P), al = Math.atan2(u[1], u[0]) * 180 / Math.PI;
+      const A = [Q[0] + r, 0], B = G.add(Q, G.mul(u, r)), C = G.add(P, G.mul(u, r)), D = [P[0] + r, P[1]];
+      const ab = G.len(A, B), dAng = Math.atan2(D[1] - C[1], D[0] - C[0]) * 180 / Math.PI;
+      return {
+        pts: { Q, P, A, B, C, D, _l1: [-0.5, 0], _l2: [10, 0], _m1: [1.5, 4], _m2: [10, 4], _t: G.add(Q, G.mul(u, 7.2)), _s: G.add(Q, G.mul(u, -1.2)) },
+        segs: [['_l1', '_l2'], { a: '_m1', b: '_m2', st: 'red' }, ['_s', '_t'], { a: 'A', b: 'B', st: 'dash' }, { a: 'C', b: 'D', st: 'dash' }],
+        arcs: [{ c: Q, r, a1: -12, a2: al + 14 }, { c: P, r, a1: -12, a2: al + 14 }, { c: C, r: ab, a1: dAng - 14, a2: dAng + 14 }],
+        lab: { Q: 'sw', P: 'nw', A: 's', B: 'nw', C: 'nw', D: 's' },
+        text: [{ at: [10.4, 0.1], t: 'l', it: 1 }, { at: [10.4, 4.1], t: 'm', it: 1 }]
+      };
+    },
+    hint: '점 Q에서의 각을 점 P로 "같은 위치"에 옮겼습니다.',
+    sol: '점 Q에서 생긴 각과 크기가 같은 각을 점 P에서 같은 위치(동위각)에 작도하였으므로 "동위각의 크기가 같으면 두 직선은 평행하다"는 성질을 이용한 것이다.'
+  },
+  {
+    tag: '정삼각형과 합동', type: 'num',
+    q: '정삼각형 ABC에서 BA = BE, BD = AD, ∠ABE = ∠ABD = 20°일 때, ∠ADE의 크기를 구하시오.',
+    ans: 30, unit: '°',
+    fig: fig28,
+    verify: f => G.angle(f.pts.A, f.pts.D, f.pts.E),
+    hint: '△EBD ≡ △CBD (SAS) 이므로 ∠BDE = ∠BDC 입니다. 점 D 주위의 각을 보세요.',
+    sol: 'BE = BC, ∠EBD = ∠CBD = 40°, BD 공통 → △EBD ≡ △CBD, ∠BDE = ∠BDC. ∠DCB = 30°이므로 ∠BDC = 180° − 40° − 30° = 110°. DA = DB, ∠DAB = ∠DBA = 20°이므로 ∠ADB = 140°. ∴ ∠ADE = ∠ADB − ∠BDE = 140° − 110° = 30°.'
+  }
+];
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'hapdong30-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
