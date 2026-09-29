@@ -1,23 +1,140 @@
 {
   "_comment": "상시 등록형 플랫폼(전문가 네트워크·AI 전문가·국내 프리랜서). URL 은 공식 홈페이지. 보수는 공개되지 않았으면 비워 둡니다(=COMPENSATION NOT DISCLOSED). 추정 요율은 config/profile.toml [rates] 에서 ESTIMATE 로만 사용됩니다.",
-  "defaults": {"procurement_type": "platform", "verification": "platform_homepage", "verified_on": "2026-09-29"},
+  "defaults": {
+    "procurement_type": "platform",
+    "verification": "platform_homepage",
+    "verified_on": "2026-09-29"
+  },
   "items": [
-    {"organization": "GLG (Gerson Lehrman Group)", "title": "GLG Network Member – paid expert consultations (healthcare / life sciences)", "url": "https://glginsights.com/", "category": "expert_network", "description": "Expert network: paid phone consultations, surveys and advisory for investors and companies. Healthcare, diagnostics, life sciences experts. Remote, per-call hourly compensation."},
-    {"organization": "Guidepoint", "title": "Guidepoint Advisor – paid expert consultations", "url": "https://www.guidepoint.com/", "category": "expert_network", "description": "Expert network: remote paid consultations for investment and corporate clients; healthcare and life sciences advisors. Hourly compensation per consultation."},
-    {"organization": "AlphaSights", "title": "AlphaSights Expert – paid expert calls", "url": "https://www.alphasights.com/", "category": "expert_network", "description": "Expert network connecting investors and consultants with industry experts for remote paid calls. Hourly compensation."},
-    {"organization": "Third Bridge", "title": "Third Bridge Specialist – expert interviews and forums", "url": "https://www.thirdbridge.com/", "category": "expert_network", "description": "Expert network: paid remote interviews, forums and research calls with specialists including healthcare and diagnostics."},
-    {"organization": "Coleman Research", "title": "Coleman Research Expert – paid consultations", "url": "https://www.colemanrg.com/", "category": "expert_network", "description": "Expert network: paid remote consultations with healthcare and life sciences experts. Hourly compensation."},
-    {"organization": "NewtonX", "title": "NewtonX Expert – B2B expert consultations and surveys", "url": "https://www.newtonx.com/", "category": "expert_network", "description": "Expert network: paid remote consultations and surveys for B2B research, including healthcare and biotech."},
-    {"organization": "Mercor", "title": "Mercor – domain expert roles for AI model training and evaluation", "url": "https://work.mercor.com/", "category": "ai_expert", "description": "Platform matching domain experts (medicine, biology, PhD researchers) to hourly contract work training and evaluating AI models. Remote, asynchronous, AI interview."},
-    {"organization": "DataAnnotation", "title": "DataAnnotation – expert AI training (science / professional track)", "url": "https://www.dataannotation.tech/", "category": "ai_expert", "description": "Remote asynchronous AI training work: writing and evaluating AI responses; qualification assessment instead of live interview. Hourly pay."},
-    {"organization": "micro1", "title": "micro1 – expert contractor for AI training data (medical / science)", "url": "https://www.micro1.ai/", "category": "ai_expert", "description": "Platform recruiting domain experts as remote contractors for AI training data and evaluation; AI interviewer screening. Hourly contract."},
-    {"organization": "Outlier (Scale AI)", "title": "Outlier – expert AI trainer (biology / medicine / PhD)", "url": "https://outlier.ai/", "category": "ai_expert", "description": "Remote asynchronous AI training for subject experts; skills assessment onboarding; hourly pay."},
-    {"organization": "AfterQuery", "title": "AfterQuery – expert contributor for AI research datasets", "url": "https://www.afterquery.com/", "category": "ai_expert", "description": "Recruits domain experts to create and review high-quality datasets for frontier AI labs. Remote contract work."},
-    {"organization": "LILT", "title": "LILT – expert linguist / domain reviewer (Korean–English, life sciences)", "url": "https://lilt.com/", "category": "ai_expert", "description": "AI-powered translation company working with freelance linguists and domain reviewers; Korean-English life sciences content review. Remote."},
-    {"organization": "OpenTrain AI", "title": "OpenTrain AI – freelance AI training expert marketplace", "url": "https://www.opentrain.ai/", "category": "ai_expert", "description": "Freelance marketplace for AI training data experts; set own rate; remote project work."},
-    {"organization": "Multicampus (Samsung)", "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)", "url": "https://experthub.multicampus.com/", "category": "corporate_training", "korea_eligible": "yes", "description": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록. 바이오·헬스케어, 의료 AI, 보고서 작성, 리더십 강의. 강사료 비공개."},
-    {"organization": "Kmong (크몽)", "title": "크몽 – 논문 진단·학술 편집·연구 컨설팅 서비스 판매", "url": "https://kmong.com/", "category": "freelance", "korea_eligible": "yes", "remote": "remote", "description": "국내 프리랜서 마켓. 학위논문 정밀진단, 학술 원고 편집, 통계 해석, 연구 설계 자문 상품 판매. 원격, 건당 결제."},
-    {"organization": "Soomgo (숨고)", "title": "숨고 – 논문 컨설팅·통계·강의 견적 요청 대응", "url": "https://soomgo.com/", "category": "freelance", "korea_eligible": "yes", "description": "국내 고수 매칭 플랫폼. 논문 컨설팅, 통계 분석, 의생명 과외·강의 요청에 견적 발송. 견적 발송 비용 발생 가능."},
-    {"organization": "Talentbank (탤런트뱅크)", "title": "탤런트뱅크 – 전문가 프로젝트 매칭 (자문·교육)", "url": "https://www.talentbank.co.kr/", "category": "freelance", "korea_eligible": "yes", "description": "국내 전문가 프로젝트 매칭 플랫폼. 기업 자문·교육 프로젝트 단위 계약."}
+    {
+      "organization": "GLG (Gerson Lehrman Group)",
+      "title": "GLG Network Member – paid expert consultations (healthcare / life sciences)",
+      "url": "https://glginsights.com/",
+      "category": "expert_network",
+      "description": "Expert network: paid phone consultations, surveys and advisory for investors and companies. Healthcare, diagnostics, life sciences experts. Remote, per-call hourly compensation."
+    },
+    {
+      "organization": "Guidepoint",
+      "title": "Guidepoint Advisor – paid expert consultations",
+      "url": "https://www.guidepoint.com/",
+      "category": "expert_network",
+      "description": "Expert network: remote paid consultations for investment and corporate clients; healthcare and life sciences advisors. Hourly compensation per consultation."
+    },
+    {
+      "organization": "AlphaSights",
+      "title": "AlphaSights Expert – paid expert calls",
+      "url": "https://www.alphasights.com/",
+      "category": "expert_network",
+      "description": "Expert network connecting investors and consultants with industry experts for remote paid calls. Hourly compensation."
+    },
+    {
+      "organization": "Third Bridge",
+      "title": "Third Bridge Specialist – expert interviews and forums",
+      "url": "https://www.thirdbridge.com/",
+      "category": "expert_network",
+      "description": "Expert network: paid remote interviews, forums and research calls with specialists including healthcare and diagnostics."
+    },
+    {
+      "organization": "Coleman Research",
+      "title": "Coleman Research Expert – paid consultations",
+      "url": "https://www.colemanrg.com/",
+      "category": "expert_network",
+      "description": "Expert network: paid remote consultations with healthcare and life sciences experts. Hourly compensation."
+    },
+    {
+      "organization": "NewtonX",
+      "title": "NewtonX Expert – B2B expert consultations and surveys",
+      "url": "https://www.newtonx.com/",
+      "category": "expert_network",
+      "description": "Expert network: paid remote consultations and surveys for B2B research, including healthcare and biotech."
+    },
+    {
+      "organization": "Mercor",
+      "title": "Mercor – domain expert roles for AI model training and evaluation",
+      "url": "https://work.mercor.com/",
+      "category": "ai_expert",
+      "description": "Platform matching domain experts (medicine, biology, PhD researchers) to hourly contract work training and evaluating AI models. Remote, asynchronous, AI interview."
+    },
+    {
+      "organization": "DataAnnotation",
+      "title": "DataAnnotation – expert AI training (science / professional track)",
+      "url": "https://www.dataannotation.tech/",
+      "category": "ai_expert",
+      "description": "Remote asynchronous AI training work: writing and evaluating AI responses; qualification assessment instead of live interview. Hourly pay."
+    },
+    {
+      "organization": "micro1",
+      "title": "micro1 – expert contractor for AI training data (medical / science)",
+      "url": "https://www.micro1.ai/",
+      "category": "ai_expert",
+      "description": "Platform recruiting domain experts as remote contractors for AI training data and evaluation; AI interviewer screening. Hourly contract."
+    },
+    {
+      "organization": "Outlier (Scale AI)",
+      "title": "Outlier – expert AI trainer (biology / medicine / PhD)",
+      "url": "https://outlier.ai/",
+      "category": "ai_expert",
+      "description": "Remote asynchronous AI training for subject experts; skills assessment onboarding; hourly pay."
+    },
+    {
+      "organization": "AfterQuery",
+      "title": "AfterQuery – expert contributor for AI research datasets",
+      "url": "https://www.afterquery.com/",
+      "category": "ai_expert",
+      "description": "Recruits domain experts to create and review high-quality datasets for frontier AI labs. Remote contract work."
+    },
+    {
+      "organization": "LILT",
+      "title": "LILT – expert linguist / domain reviewer (Korean–English, life sciences)",
+      "url": "https://lilt.com/",
+      "category": "ai_expert",
+      "description": "AI-powered translation company working with freelance linguists and domain reviewers; Korean-English life sciences content review. Remote."
+    },
+    {
+      "organization": "OpenTrain AI",
+      "title": "OpenTrain AI – freelance AI training expert marketplace",
+      "url": "https://www.opentrain.ai/",
+      "category": "ai_expert",
+      "description": "Freelance marketplace for AI training data experts; set own rate; remote project work."
+    },
+    {
+      "organization": "Multicampus (Samsung)",
+      "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)",
+      "url": "https://experthub.multicampus.com/tlLogin.html",
+      "category": "corporate_training",
+      "korea_eligible": "yes",
+      "description": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록 (리더십·직무·공통역량·IT 분야 모집 게시). 바이오·IVD R&D 직무, 의료 AI 과정으로 지원. 강사료 비공개. 원격 등록, 강의는 집합 또는 온라인.",
+      "notes": [
+        "지원 가이드와 입력 문안: global-sme-kit/03_멀티캠퍼스_ExpertHub_지원가이드.md",
+        "학위는 실제 학위만 기재 (MD 표기 금지)",
+        "대학 이러닝 영상은 저작권 확인 후 제출",
+        "강의 확정 시 청탁금지법 외부강의 신고"
+      ]
+    },
+    {
+      "organization": "Kmong (크몽)",
+      "title": "크몽 – 논문 진단·학술 편집·연구 컨설팅 서비스 판매",
+      "url": "https://kmong.com/",
+      "category": "freelance",
+      "korea_eligible": "yes",
+      "remote": "remote",
+      "description": "국내 프리랜서 마켓. 학위논문 정밀진단, 학술 원고 편집, 통계 해석, 연구 설계 자문 상품 판매. 원격, 건당 결제."
+    },
+    {
+      "organization": "Soomgo (숨고)",
+      "title": "숨고 – 논문 컨설팅·통계·강의 견적 요청 대응",
+      "url": "https://soomgo.com/",
+      "category": "freelance",
+      "korea_eligible": "yes",
+      "description": "국내 고수 매칭 플랫폼. 논문 컨설팅, 통계 분석, 의생명 과외·강의 요청에 견적 발송. 견적 발송 비용 발생 가능."
+    },
+    {
+      "organization": "Talentbank (탤런트뱅크)",
+      "title": "탤런트뱅크 – 전문가 프로젝트 매칭 (자문·교육)",
+      "url": "https://www.talentbank.co.kr/",
+      "category": "freelance",
+      "korea_eligible": "yes",
+      "description": "국내 전문가 프로젝트 매칭 플랫폼. 기업 자문·교육 프로젝트 단위 계약."
+    }
   ]
 }

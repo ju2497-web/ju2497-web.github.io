@@ -1674,6 +1674,127 @@
    "last_changed": "2026-09-29",
    "history": []
   },
+  "d0c8fd20f4": {
+   "procurement_type": "platform",
+   "verification": "platform_homepage",
+   "verified_on": "2026-09-29",
+   "organization": "Multicampus (Samsung)",
+   "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)",
+   "url": "https://experthub.multicampus.com/tlLogin.html",
+   "category": "corporate_training",
+   "korea_eligible": "yes",
+   "description": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록 (리더십·직무·공통역량·IT 분야 모집 게시). 바이오·IVD R&D 직무, 의료 AI 과정으로 지원. 강사료 비공개. 원격 등록, 강의는 집합 또는 온라인.",
+   "source": "seed:platforms",
+   "source_type": "seed",
+   "deadline": null,
+   "posted_date": null,
+   "status": "open",
+   "verification_label": "공식 홈페이지 (상시 등록형)",
+   "compensation": {
+    "status": "COMPENSATION NOT DISCLOSED",
+    "text": "",
+    "min": null,
+    "max": null,
+    "currency": null,
+    "unit": "unknown",
+    "hourly_usd": null,
+    "project_usd": null,
+    "basis": "unknown",
+    "unpaid": false
+   },
+   "compensation_text": "COMPENSATION NOT DISCLOSED",
+   "pipelines": [
+    "H",
+    "I"
+   ],
+   "primary_pipeline": "H",
+   "procurement_type_basis": "fact",
+   "subcontract": null,
+   "remote": "remote",
+   "remote_basis": "fact",
+   "korea_basis": "fact",
+   "korea_evidence": "",
+   "interview": "unknown",
+   "interview_basis": "unknown",
+   "assessment": "unknown",
+   "travel": "no",
+   "requirements": {
+    "degree": [],
+    "experience_years": null,
+    "license": false,
+    "languages": []
+   },
+   "duration": null,
+   "skill_mismatch": [],
+   "cost_to_apply": false,
+   "recurring": true,
+   "flags": [],
+   "not_recommended_reason": "",
+   "fit_terms": {
+    "core": [
+     "ivd",
+     "바이오",
+     "의료 ai"
+    ],
+    "adjacent": [
+     "의료",
+     "강의"
+    ],
+    "roles": [
+     "expert"
+    ],
+    "title_core": []
+   },
+   "roles_for_me": [
+    "Biomedical SME",
+    "Medical Content Reviewer"
+   ],
+   "comp_estimate": null,
+   "score": 70,
+   "score_breakdown": {
+    "fit": 14,
+    "compensation": 8,
+    "korea": 10,
+    "remote": 10,
+    "conversion": 9.7,
+    "speed": 5,
+    "effort": 5,
+    "interview": 3,
+    "recurring": 5
+   },
+   "comp_reason": "보수 비공개 – 유형 기준 추정",
+   "priority": "A",
+   "recommendation": "RECOMMENDED",
+   "estimates": {
+    "application_minutes": 30,
+    "prep_hours": 0.5,
+    "payment_speed_days": 45,
+    "fit_chance_pct": 64,
+    "recurring": true,
+    "basis": "estimate"
+   },
+   "why_fit": [
+    "핵심 전공 일치: ivd, 바이오, 의료 ai",
+    "참여 역할: Biomedical SME, Medical Content Reviewer",
+    "원격 가능",
+    "반복 수입 가능 (로스터·리테이너·플랫폼)",
+    "보수 비공개 – 유형 기준 추정"
+   ],
+   "next_action": "전문강사 프로필 등록 (약 20분)",
+   "procurement_type_seed": "platform",
+   "key": "multicampus samsung|multicampus expert hub 전문강사 상시 등록 기업교육",
+   "id": "d0c8fd20f4",
+   "first_seen": "2026-09-29",
+   "last_seen": "2026-09-29",
+   "last_changed": "2026-09-29",
+   "history": [],
+   "notes": [
+    "지원 가이드와 입력 문안: global-sme-kit/03_멀티캠퍼스_ExpertHub_지원가이드.md",
+    "학위는 실제 학위만 기재 (MD 표기 금지)",
+    "대학 이러닝 영상은 저작권 확인 후 제출",
+    "강의 확정 시 청탁금지법 외부강의 신고"
+   ]
+  },
   "268c2fee0c": {
    "procurement_type": "platform",
    "verification": "platform_homepage",
@@ -2002,120 +2123,6 @@
    "procurement_type_seed": "platform",
    "key": "kmong 크몽|크몽 논문 진단 학술 편집 연구 컨설팅 서비스 판매",
    "id": "9ca3f82d56",
-   "first_seen": "2026-09-29",
-   "last_seen": "2026-09-29",
-   "last_changed": "2026-09-29",
-   "history": []
-  },
-  "d0c8fd20f4": {
-   "procurement_type": "platform",
-   "verification": "platform_homepage",
-   "verified_on": "2026-09-29",
-   "organization": "Multicampus (Samsung)",
-   "title": "Multicampus Expert Hub – 전문강사 상시 등록 (기업교육)",
-   "url": "https://experthub.multicampus.com/",
-   "category": "corporate_training",
-   "korea_eligible": "yes",
-   "description": "삼성 계열 기업교육 회사의 전문강사 풀 상시 등록. 바이오·헬스케어, 의료 AI, 보고서 작성, 리더십 강의. 강사료 비공개.",
-   "source": "seed:platforms",
-   "source_type": "seed",
-   "deadline": null,
-   "posted_date": null,
-   "status": "open",
-   "verification_label": "공식 홈페이지 (상시 등록형)",
-   "compensation": {
-    "status": "COMPENSATION NOT DISCLOSED",
-    "text": "",
-    "min": null,
-    "max": null,
-    "currency": null,
-    "unit": "unknown",
-    "hourly_usd": null,
-    "project_usd": null,
-    "basis": "unknown",
-    "unpaid": false
-   },
-   "compensation_text": "COMPENSATION NOT DISCLOSED",
-   "pipelines": [
-    "H",
-    "I"
-   ],
-   "primary_pipeline": "H",
-   "procurement_type_basis": "fact",
-   "subcontract": null,
-   "remote": "remote",
-   "remote_basis": "estimate",
-   "korea_basis": "fact",
-   "korea_evidence": "",
-   "interview": "unknown",
-   "interview_basis": "unknown",
-   "assessment": "unknown",
-   "travel": "no",
-   "requirements": {
-    "degree": [],
-    "experience_years": null,
-    "license": false,
-    "languages": []
-   },
-   "duration": null,
-   "skill_mismatch": [],
-   "cost_to_apply": false,
-   "recurring": true,
-   "flags": [],
-   "not_recommended_reason": "",
-   "fit_terms": {
-    "core": [
-     "바이오",
-     "의료 ai"
-    ],
-    "adjacent": [
-     "의료",
-     "강의"
-    ],
-    "roles": [
-     "expert"
-    ],
-    "title_core": []
-   },
-   "roles_for_me": [
-    "Biomedical SME",
-    "Medical Content Reviewer"
-   ],
-   "comp_estimate": null,
-   "score": 67,
-   "score_breakdown": {
-    "fit": 12,
-    "compensation": 8,
-    "korea": 10,
-    "remote": 10,
-    "conversion": 9.4,
-    "speed": 5,
-    "effort": 5,
-    "interview": 3,
-    "recurring": 5
-   },
-   "comp_reason": "보수 비공개 – 유형 기준 추정",
-   "priority": "A",
-   "recommendation": "RECOMMENDED",
-   "estimates": {
-    "application_minutes": 30,
-    "prep_hours": 0.5,
-    "payment_speed_days": 45,
-    "fit_chance_pct": 60,
-    "recurring": true,
-    "basis": "estimate"
-   },
-   "why_fit": [
-    "핵심 전공 일치: 바이오, 의료 ai",
-    "참여 역할: Biomedical SME, Medical Content Reviewer",
-    "원격 가능 (추정)",
-    "반복 수입 가능 (로스터·리테이너·플랫폼)",
-    "보수 비공개 – 유형 기준 추정"
-   ],
-   "next_action": "전문강사 프로필 등록 (약 20분)",
-   "procurement_type_seed": "platform",
-   "key": "multicampus samsung|multicampus expert hub 전문강사 상시 등록 기업교육",
-   "id": "d0c8fd20f4",
    "first_seen": "2026-09-29",
    "last_seen": "2026-09-29",
    "last_changed": "2026-09-29",
