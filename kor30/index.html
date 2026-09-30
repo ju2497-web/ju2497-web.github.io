@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>국어 독해 예술 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+details.psg { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; background: var(--paper); font-family: var(--f-body); font-size: 15px; line-height: 1.9; }
+details.psg summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--accent); }
+details.psg p { margin: 10px 0 0; text-indent: .6em; }
+.qtext .ask { display: block; }
+.opt, .qtext, details.psg { word-break: keep-all; }
+.qtext u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 국어 · 비문학 독해 · 예술 07~08 대비</div>
+    <h1>국어 독해 예술 30제</h1>
+    <p class="lede">29강 [예술 07] 범종 음통의 정체, [예술 08] 케이팝을 살리는 힘, 가창력과 같은 수준으로 다시 쓴 지문 두 편에 같은 짜임의 변형 지문(첨성대) 한 편을 더했습니다. 주제·제목, 글의 구조, 내용 일치, 어휘, 접속어, 글쓴이의 관점과 추론, 두 글 비교까지 담았습니다. 모두 풀고 채점하면, 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>지문</b> 문제 위의 "지문 보기"를 눌러 펼치세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 지문 ---------- */
+const PSG = {
+  A: {
+    title: '[예술 07] 범종 음통의 정체',
+    body: `<p><b>[가]</b> 우리나라 범종의 꼭대기에는 종을 매다는 고리인 용뉴가 있고, 그 옆에 대나무 마디처럼 생긴 속이 빈 원통이 솟아 있다. 이것을 음통이라고 한다. 음통은 중국이나 일본의 종에서는 찾아보기 어려운 우리 범종만의 특징이지만, 무엇에 쓰였는지는 아직도 분명하게 밝혀지지 않았다.</p>
+<p><b>[나]</b> 음통의 용도에 대해서는 크게 다섯 가지 주장이 있다. 첫째는 잡음 제거설이다. 종을 칠 때 생기는 잡음을 음통이 위로 빼내어 맑은 소리를 내게 한다는 주장이다. 둘째는 만파식적설이다. 신라의 전설 속 피리인 만파식적을 본떠 나라의 평안을 비는 뜻을 담았다는 것이다. 셋째는 장식설로, 음통이 실용적인 목적이 아니라 종의 겉모습을 꾸미기 위해 만들어졌다는 주장이다. 실제로 음통은 매우 정교하고 아름답게 만들어져 있다. 넷째는 용뉴 보강설이다. 용뉴만으로는 무거운 종을 버티기 어려워 음통을 붙여 보강했다는 것이다. 다섯째는 깃발 꽂이설이다. 일본 학계에서 나온 주장으로, 종을 배에 실어 옮길 때 음통에 깃발을 꽂았으리라는 것이다.</p>
+<p><b>[다]</b> 이처럼 주장은 다양하지만 어느 하나 딱 들어맞지는 않는다. 다만 여러 주장은 결국 두 가지로 정리할 수 있는데, 음통이 종소리나 종의 쓰임과 관련된 실용적인 장치인가, 아니면 장식물 또는 상징물인가 하는 것이다.</p>
+<p><b>[라]</b> 음통이 종소리에 영향을 주는지 알아보기 위해 타종 실험을 해 보았더니, 음통을 막았을 때와 열었을 때의 소리에 뚜렷한 차이가 나타나지 않았다. 음통이 잡음을 없앤다는 주장은 힘을 잃게 된 것이다.</p>
+<p><b>[마]</b> 그렇다면 음통은 소리와 관계없는 단순한 장식물일까? 용뉴에 음통을 붙이는 것은 고난도의 주조 기술이 필요한 힘들고 번거로운 작업이다. 그러므로 오로지 꾸미기 위해 음통을 붙였다는 주장도 근거가 약하다. 결국 다섯 가지 의견 가운데 어느 것을 정답이라고 가름하기 어려운 상황이다. 음통의 정체는 여전히 미스터리로 남아 있지만, 이 미스터리 덕분에 범종이 더욱 신비로운 존재로 느껴지는 것은 아닐까?</p>`
+  },
+  B: {
+    title: '[예술 08] 케이팝을 살리는 힘, 가창력',
+    body: `<p><b>[1]</b> 21세기 대중음악의 핵심어를 하나 고르라면 단연 '아이돌' 음악의 해외 시장 진출일 것이다. '케이팝'이라는 새 말이 순식간에 보통 명사처럼 쓰이게 된 이 놀라운 흐름은, 아이돌 음악을 둘러싼 호불호를 잠재우고 우리 음악 산업의 황금빛 미래를 열었다는 점에서 특별하다. 케이팝의 성공은 분명 기쁜 일이지만, 지금이야말로 케이팝의 앞날을 진지하게 고민해야 할 때이다.</p>
+<p><b>[2]</b> 대중음악의 역사를 돌아보면, 세계적으로 인기를 끌며 여러 세대에 걸쳐 사랑받은 노래들은 모두 가창력을 바탕으로 대중의 공감을 얻었다. 1950년대 미국에서 시작되어 1960년대 몇몇 위대한 가수들에 의해 세계적으로 흥행한 록 음악은, 흑인의 리듬 앤드 블루스와 백인의 컨트리 음악 등 여러 요소가 어우러진 강한 박자와 폭발적인 가창력으로 청중의 뜨거운 호응을 이끌어 냈다. 1970년대를 풍미했던 포크송은 서정적인 가사와 아름다운 가락, 호소력 짙은 음색으로 세계인의 마음을 파고들었다.</p>
+<p><b>[3]</b> 어떤 장르든 가창력이 뒷받침되지 않으면 짧은 흥행으로 끝날 수밖에 없다. 요즘 대중가요에서 외모와 춤의 비중이 커졌다고는 하지만, 노래 실력이 받쳐 주지 않으면 대중의 마음을 붙잡을 수 없다. 사람들이 뛰어난 노래 실력을 갖춘 가수들이 나오는 노래 경연 프로그램에 열광하는 것도, 아이돌 가수에게서 맛보지 못한 가창력과 감동적인 곡 때문이 아닐까? 이는 우리나라 음악 팬에게만 해당하는 이야기가 아니다. 지금의 아이돌이 부르는, 짧은 후렴구와 반복되는 가사로 이루어진 '맴돌이곡(후크송)'은 지나치게 틀에 박혀 있고 자극적이다. 요즘 대중가요가 다 비슷하게 들리는 것도 이 때문일 것이다.</p>
+<p><b>[4]</b> 물론 지금까지 케이팝이 걸어온 길은 성공적이었고, 그 성과는 칭찬받아 마땅하다. ( ㉠ ) 여기서 만족해서는 안 된다. 케이팝이 더 오래 사랑받으려면 무엇보다 가수들이 가창력을 연마하는 데 피와 땀을 쏟아야 한다. 지금까지 춤과 화려한 퍼포먼스로 해외 음악 팬들의 눈을 사로잡았다면, 앞으로는 귀를 사로잡아야 한다. 케이팝이 지닌 화려한 무대 연출과 역동적인 춤은 살리되, 해외에 더 알리려는 홍보 활동과 해외 공연을 늘리고 현지화하는 노력도 필요하다. 여기에 가창력까지 더해진다면 케이팝은 세계인이 진심으로 사랑하는 음악으로 자라날 것이다.</p>`
+  },
+  C: {
+    title: '[변형 지문] 첨성대의 정체',
+    body: `<p><b>[가]</b> 경주에 있는 첨성대는 신라 선덕여왕 때 세워진 것으로 알려진 돌 건축물이다. 오랫동안 '별을 관측하던 천문대'로 소개되어 왔지만, 그 용도를 두고 여러 주장이 맞서고 있다.</p>
+<p><b>[나]</b> 가장 널리 알려진 것은 천문대설이다. 이름 그대로 하늘의 별을 살피던 곳이라는 주장이다. 그러나 꼭대기 공간이 좁고 몸통 중간의 창문으로 드나들어야 해서 관측 장소로는 불편하다는 반론도 있다. 둘째는 제단설로, 하늘에 제사를 지내던 곳이라는 주장이다. 셋째는 상징물설인데, 첨성대의 모양과 쌓은 돌의 개수 등에 당시 사람들의 우주관이나 달력의 날수 같은 뜻이 담긴 상징적 건축물이라는 주장이다.</p>
+<p><b>[다]</b> 세 주장 모두 나름의 근거를 갖추고 있지만 이를 뒷받침할 결정적인 기록이 부족하여 어느 하나로 결론을 내리기 어렵다. 분명한 것은 첨성대가 신라 사람들이 하늘에 기울인 깊은 관심을 보여 주는 귀중한 유산이라는 점이다.</p>`
+  }
+};
+const firstOf = {};
+const Q = (g, text) => {
+  const open = !firstOf[g] ? ' open' : '';
+  firstOf[g] = true;
+  return `<details class="psg"${open}><summary>지문 ${g} · ${PSG[g].title}</summary>${PSG[g].body}</details><span class="ask">${text}</span>`;
+};
+
+/* ---------- 30문항 (모두 오지선다) ---------- */
+const PROBLEMS = [
+  { tag: '지문 A · 주제', type: 'mc', q: Q('A', '지문 A의 주제로 가장 적절한 것은?'),
+    opts: ['우리나라 범종의 제작 과정', '범종 음통의 용도에 대한 다양한 견해', '범종 소리가 맑은 과학적 원리', '한·중·일 범종의 공통점', '만파식적 전설의 유래'], ans: 2,
+    hint: '글 전체가 무엇에 대한 "여러 주장"을 소개하고 있나요?',
+    sol: '음통의 용도에 대한 다섯 가지 주장을 소개하고, 어느 것도 정답으로 단정하기 어렵다고 정리한 글이다. → 범종 음통의 용도에 대한 다양한 견해.' },
+  { tag: '지문 A · 제목', type: 'mc', q: Q('A', '지문 A가 음통에 대한 과제물의 결과라 할 때, 과제의 제목으로 가장 적절한 것은?'),
+    opts: ['범종을 치는 올바른 방법', '음통, 잡음을 없애는 비밀 장치', '일본 종과 우리 종의 차이', '풀리지 않은 수수께끼, 범종의 음통', '용뉴를 만드는 주조 기술'], ans: 4,
+    hint: '글쓴이는 음통의 용도가 밝혀졌다고 보나요, 아직 밝혀지지 않았다고 보나요?',
+    sol: '[가]에서 "분명하게 밝혀지지 않았다", [마]에서 "여전히 미스터리"라고 하였으므로 "풀리지 않은 수수께끼, 범종의 음통"이 알맞다. ②는 [라]의 실험 결과와 맞지 않는다.' },
+  { tag: '지문 A · 글의 구조', type: 'mc', q: Q('A', '지문 A의 문단별 중심 내용으로 적절하지 <b>않은</b> 것은?'),
+    opts: ['[가] 음통의 용도에 대한 궁금증', '[나] 음통의 용도에 대한 다섯 가지 주장', '[다] 여러 주장을 두 갈래로 정리', '[라] 실험으로 밝혀진 음통의 뛰어난 음향 효과', '[마] 명쾌하게 밝혀지지 않은 음통의 용도'], ans: 4,
+    hint: '[라]의 실험에서 음통을 막았을 때와 열었을 때 소리가 어떻게 달랐나요?',
+    sol: '[라]에서는 음통을 막았을 때와 열었을 때 소리 차이가 없었다고 했다. 즉 음통이 소리와 관련이 없다는(비실용성) 결과이므로 ④는 틀렸다.' },
+  { tag: '지문 A · 내용 분류', type: 'mc', q: Q('A', '[다]의 기준에 따를 때, 음통을 "장식물 또는 상징물"로 보는 주장끼리 바르게 묶은 것은?'),
+    opts: ['잡음 제거설, 장식설', '만파식적설, 장식설', '만파식적설, 깃발 꽂이설', '용뉴 보강설, 장식설', '잡음 제거설, 용뉴 보강설'], ans: 2,
+    hint: '소리를 좋게 하거나, 종을 버티게 하거나, 깃발을 꽂는 것은 "쓰임"이 있는 장치입니다.',
+    sol: '실용적 장치: 잡음 제거설, 용뉴 보강설, 깃발 꽂이설 / 장식물·상징물: 만파식적설(상징), 장식설(장식).' },
+  { tag: '지문 A · 세부 내용', type: 'mc', q: Q('A', '지문 A에서 일본 학계가 내놓은 주장은?'),
+    opts: ['잡음 제거설', '만파식적설', '장식설', '용뉴 보강설', '깃발 꽂이설'], ans: 5,
+    hint: '[나]의 다섯째 주장을 다시 읽어 보세요.',
+    sol: '"다섯째는 깃발 꽂이설이다. 일본 학계에서 나온 주장으로, 종을 배에 실어 옮길 때 음통에 깃발을 꽂았으리라는 것이다."' },
+  { tag: '지문 A · 내용 일치', type: 'mc', q: Q('A', '지문 A의 내용과 일치하지 <b>않는</b> 것은?'),
+    opts: ['음통은 용뉴 옆에 솟은 속이 빈 원통이다.', '음통은 중국이나 일본의 종에서는 찾아보기 어렵다.', '음통은 매우 정교하고 아름답게 만들어져 있다.', '타종 실험에서 음통을 막으면 소리가 크게 탁해졌다.', '용뉴에 음통을 붙이려면 고난도의 주조 기술이 필요하다.'], ans: 4,
+    hint: '[라]의 실험 결과를 정확히 확인하세요.',
+    sol: '[라]에서 음통을 막았을 때와 열었을 때 소리에 뚜렷한 차이가 없었다고 했으므로 ④는 일치하지 않는다.' },
+  { tag: '지문 A · 근거 파악', type: 'mc', q: Q('A', '[라]의 타종 실험 결과로 가장 크게 힘을 잃게 된 주장은?'),
+    opts: ['만파식적설', '장식설', '잡음 제거설', '용뉴 보강설', '깃발 꽂이설'], ans: 3,
+    hint: '이 실험은 음통이 "소리"에 영향을 주는지 알아보는 실험입니다.',
+    sol: '음통을 막아도 소리 차이가 없었으므로, 음통이 잡음을 없애 맑은 소리를 낸다는 잡음 제거설이 힘을 잃었다.' },
+  { tag: '지문 A · 근거 파악', type: 'mc', q: Q('A', '[마]에서 글쓴이가 장식설의 근거가 약하다고 본 까닭은?'),
+    opts: ['음통의 모양이 너무 단순하기 때문에', '장식만을 위해서라기에는 음통을 붙이는 작업이 너무 어렵고 번거롭기 때문에', '타종 실험에서 음통의 소리 효과가 확인되었기 때문에', '일본 학계가 장식설에 반대했기 때문에', '만파식적 전설과 내용이 맞지 않기 때문에'], ans: 2,
+    hint: '"용뉴에 음통을 붙이는 것은 ~한 작업이다. 그러므로 ~" 문장을 찾아보세요.',
+    sol: '"용뉴에 음통을 붙이는 것은 고난도의 주조 기술이 필요한 힘들고 번거로운 작업이다. 그러므로 오로지 꾸미기 위해 음통을 붙였다는 주장도 근거가 약하다."' },
+  { tag: '지문 A · 어휘', type: 'mc', q: Q('A', '[마]의 "어느 것을 정답이라고 <u>가름하기</u> 어려운"에서 "가름하다"의 뜻으로 가장 적절한 것은?'),
+    opts: ['승부나 등수 따위를 정하다.', '다른 것으로 바꾸어 대신하다.', '겉모양을 보기 좋게 꾸미다.', '쇠를 녹여 틀에 붓다.', '어떤 일을 뒤로 미루다.'], ans: 1,
+    hint: '"가름하다"와 소리가 비슷한 "갈음하다"를 구별하세요.',
+    sol: '가름하다: 승부나 등수 따위를 정하다(여기서는 어느 것이 정답인지 판단하여 정하다). ②는 "갈음하다(다른 것으로 바꾸어 대신하다)"의 뜻이다.' },
+  { tag: '지문 A · 어휘', type: 'mc', q: Q('A', '[마]의 "고난도의 <u>주조</u> 기술"에서 "주조"의 뜻으로 가장 적절한 것은?'),
+    opts: ['술을 빚어 만듦', '어떤 작품이나 사상의 주된 흐름', '녹인 쇠붙이를 거푸집에 부어 물건을 만듦', '쇠를 불에 달구어 두드려 늘림', '나무를 깎아 모양을 만듦'], ans: 3,
+    hint: '범종과 음통은 쇠(금속)로 만듭니다. 한자 鑄(쇠 부어 만들 주)를 떠올리세요.',
+    sol: '주조(鑄造): 녹인 쇠붙이를 거푸집에 부어 물건을 만듦. ① 酒造(술 빚기) ② 主調(주된 흐름) ④ 단조(鍛造)는 모두 다른 뜻이다.' },
+  { tag: '지문 A · 글쓴이의 태도', type: 'mc', q: Q('A', '지문 A에 나타난 글쓴이의 태도로 가장 적절한 것은?'),
+    opts: ['잡음 제거설이 옳다고 단정하고 있다.', '일본 학계의 주장을 강하게 비판하고 있다.', '음통 연구는 의미가 없다고 보고 있다.', '장식설만이 옳다고 주장하고 있다.', '어느 주장도 정답으로 단정하지 않고, 풀리지 않은 수수께끼를 긍정적으로 받아들이고 있다.'], ans: 5,
+    hint: '마지막 문장 "~덕분에 범종이 더욱 신비로운 존재로 느껴지는 것은 아닐까?"를 보세요.',
+    sol: '글쓴이는 다섯 가지 주장 중 어느 것도 정답으로 가름하기 어렵다고 보면서도, 그 미스터리 덕분에 범종이 더 신비롭다고 긍정적으로 받아들인다.' },
+  { tag: '지문 A · 반응·추론', type: 'mc', q: Q('A', '지문 A를 읽은 학생의 반응으로 적절하지 <b>않은</b> 것은?'),
+    opts: ['음통의 정체를 밝히려면 더 많은 연구가 필요하겠어.', '음통이 우리 범종에만 있는 특징이라니 흥미롭네.', '실험 결과를 보면 음통이 종소리를 맑게 한다고 확신할 수 있겠어.', '주조가 어렵다는 점은 장식설을 약하게 하는 근거가 되는구나.', '풀리지 않은 수수께끼가 범종을 더 신비롭게 만드는구나.'], ans: 3,
+    hint: '[라]의 실험 결과와 반대되는 반응을 찾으세요.',
+    sol: '실험에서 음통을 막아도 소리 차이가 없었으므로, 음통이 종소리를 맑게 한다고 확신할 수 없다. ③은 글의 내용과 반대이다.' },
+
+  { tag: '지문 B · 핵심 요소', type: 'mc', q: Q('B', '지문 B의 글쓴이가 케이팝의 발전적인 미래를 위해 가장 중요한 요소로 강조하는 것은?'),
+    opts: ['해외 시장 진출', '강한 박자', '서정적인 가사', '가창력', '춤과 화려한 퍼포먼스'], ans: 4,
+    hint: '제목과 [4]의 "무엇보다 ~해야 한다"를 찾아보세요.',
+    sol: '[4] "케이팝이 더 오래 사랑받으려면 무엇보다 가수들이 가창력을 연마하는 데 피와 땀을 쏟아야 한다." → 가창력.' },
+  { tag: '지문 B · 주제', type: 'mc', q: Q('B', '지문 B의 주제로 가장 적절한 것은?'),
+    opts: ['아이돌 음악의 해외 진출 역사', '록 음악과 포크송의 차이', '케이팝의 미래를 위해 필요한 가창력', '노래 경연 프로그램의 인기 비결', '맴돌이곡의 음악적 가치'], ans: 3,
+    hint: '글쓴이가 문제를 제기하고 해결책으로 내놓는 것은 무엇인가요?',
+    sol: '케이팝의 앞날을 고민해야 한다고 문제를 제기한 뒤, 오래 사랑받으려면 가창력이 필요하다고 주장한다. → 케이팝의 미래를 위해 필요한 가창력.' },
+  { tag: '지문 B · 글의 구조', type: 'mc', q: Q('B', '지문 B의 문단과 중심 내용을 연결한 것으로 적절하지 <b>않은</b> 것은?'),
+    opts: ['[1] 케이팝의 현주소와 미래에 대한 고민', '[2] 가창력으로 세계인의 사랑을 받았던 대중음악', '[2] 아이돌 음악과 록 음악의 인기 비교', '[3] 최근 대중가요의 한계와 문제점', '[4] 케이팝의 미래를 위해 필요한 노력'], ans: 3,
+    hint: '[2]에서 아이돌 음악을 록 음악과 비교하고 있나요?',
+    sol: '[2]는 록 음악과 포크송을 예로 들어 오래 사랑받은 음악의 특징(가창력)을 설명할 뿐, 아이돌 음악과의 인기 비교는 하지 않는다.' },
+  { tag: '지문 B · 접속어', type: 'mc', q: Q('B', '[4]의 ( ㉠ )에 들어갈 말로 가장 적절한 것은?'),
+    opts: ['그리고', '그러므로', '하지만', '예를 들면', '왜냐하면'], ans: 3,
+    hint: '앞: "성과는 칭찬받아 마땅하다", 뒤: "여기서 만족해서는 안 된다" — 두 문장의 관계는?',
+    sol: '앞 문장은 성과를 인정하고, 뒤 문장은 만족하면 안 된다고 하여 내용이 반대로 이어진다. → 역접의 "하지만(그러나)".' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '[2]에서 록 음악이 청중의 호응을 이끌어 낸 요인으로 언급되지 <b>않은</b> 것은?'),
+    opts: ['리듬 앤드 블루스', '컨트리 음악', '강한 박자', '폭발적인 가창력', '서정적인 가사'], ans: 5,
+    hint: '"서정적인 가사"는 어떤 음악의 특징이었나요?',
+    sol: '록 음악: 리듬 앤드 블루스와 컨트리 음악 등이 어우러진 강한 박자, 폭발적인 가창력. "서정적인 가사"는 1970년대 포크송의 특징이다.' },
+  { tag: '지문 B · 서술 의도', type: 'mc', q: Q('B', '[2]에서 글쓴이가 록 음악과 포크송을 예로 든 까닭으로 가장 적절한 것은?'),
+    opts: ['오래 사랑받은 노래는 가창력을 바탕으로 공감을 얻었음을 보여 주려고', '미국 음악이 우리 음악보다 뛰어남을 알리려고', '춤과 퍼포먼스의 중요성을 강조하려고', '음악 장르가 생겨난 과정을 자세히 설명하려고', '1970년대 음악이 가장 훌륭했음을 주장하려고'], ans: 1,
+    hint: '[2]의 첫 문장이 이 문단의 중심 문장입니다.',
+    sol: '[2] 첫 문장 "여러 세대에 걸쳐 사랑받은 노래들은 모두 가창력을 바탕으로 대중의 공감을 얻었다"를 뒷받침하기 위한 예시이다.' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '글쓴이가 "맴돌이곡(후크송)"에 대해 지적한 문제점으로 알맞은 것은?'),
+    opts: ['가사가 너무 길고 어렵다.', '지나치게 틀에 박혀 있고 자극적이다.', '해외 팬들이 이해하기 어렵다.', '춤이 지나치게 화려하다.', '곡의 길이가 짧아 흥행이 어렵다.'], ans: 2,
+    hint: '[3]의 후반부를 보세요.',
+    sol: '"맴돌이곡은 지나치게 틀에 박혀 있고 자극적이다. 요즘 대중가요가 다 비슷하게 들리는 것도 이 때문일 것이다."' },
+  { tag: '지문 B · 추론', type: 'mc', q: Q('B', '글쓴이가 짐작한, 사람들이 노래 경연 프로그램에 열광하는 까닭은?'),
+    opts: ['출연자들의 외모가 뛰어나기 때문에', '무대 연출이 화려하기 때문에', '짧은 후렴구가 따라 부르기 쉽기 때문에', '아이돌 가수에게서 맛보지 못한 가창력과 감동적인 곡 때문에', '해외 공연을 볼 수 있기 때문에'], ans: 4,
+    hint: '"~에 열광하는 것도, ~ 때문이 아닐까?"라는 문장을 찾으세요.',
+    sol: '[3] "노래 경연 프로그램에 열광하는 것도, 아이돌 가수에게서 맛보지 못한 가창력과 감동적인 곡 때문이 아닐까?"' },
+  { tag: '지문 B · 어휘', type: 'mc', q: Q('B', '[2]의 "1970년대를 <u>풍미했던</u> 포크송"에서 "풍미하다"의 뜻으로 가장 적절한 것은?'),
+    opts: ['어떤 사상이나 유행 등이 널리 사회에 퍼지다.', '음식의 맛이 좋고 향기롭다.', '바람이 세차게 불다.', '모자란 것을 넉넉하게 채우다.', '크게 실패하여 사라지다.'], ans: 1,
+    hint: '음식의 "풍미(風味)"와 헷갈리지 마세요. 1970년대에 포크송이 어떠했다는 뜻일까요?',
+    sol: '풍미(風靡)하다: 바람에 초목이 쓰러지듯, 어떤 사상이나 유행 등이 널리 사회에 퍼지다. ②는 음식의 풍미(風味)이다.' },
+  { tag: '지문 B · 어휘', type: 'mc', q: Q('B', '[4]의 "가창력을 <u>연마</u>하는 데"에서 "연마"의 뜻으로 가장 적절한 것은?'),
+    opts: ['여러 사람이 함께 연주함', '무대를 화려하게 꾸밈', '오래 쉬면서 힘을 기름', '남의 것을 그대로 흉내 냄', '학문이나 기술 따위를 힘써 배우고 닦음'], ans: 5,
+    hint: '"피와 땀을 쏟아야 한다"와 어울리는 뜻을 고르세요.',
+    sol: '연마(硏磨): 학문이나 기술 따위를 힘써 배우고 닦음. 가창력을 갈고닦는다는 뜻이다.' },
+  { tag: '지문 B · 내용 일치', type: 'mc', q: Q('B', '지문 B의 내용과 일치하지 <b>않는</b> 것은?'),
+    opts: ['"케이팝"이라는 말은 보통 명사처럼 쓰이게 되었다.', '록 음악은 1950년대 미국에서 시작되었다.', '글쓴이는 지금까지 케이팝이 이룬 성과를 인정한다.', '글쓴이는 케이팝의 무대 연출과 춤을 없애야 한다고 본다.', '글쓴이는 가창력이 없으면 짧은 흥행으로 끝난다고 본다.'], ans: 4,
+    hint: '[4]의 "~은 살리되"라는 표현을 보세요.',
+    sol: '[4] "케이팝이 지닌 화려한 무대 연출과 역동적인 춤은 살리되"라고 했으므로, 없애야 한다는 ④는 일치하지 않는다.' },
+  { tag: '지문 B · 글쓴이의 제안', type: 'mc', q: Q('B', '[4]에서 글쓴이가 케이팝을 위해 제안한 것이 <b>아닌</b> 것은?'),
+    opts: ['가수들이 가창력을 연마하기', '해외 홍보 활동 늘리기', '해외 공연을 현지화하기', '화려한 무대 연출과 역동적인 춤 살리기', '맴돌이곡을 더 많이 만들기'], ans: 5,
+    hint: '글쓴이가 [3]에서 비판한 것은 무엇이었나요?',
+    sol: '글쓴이는 [3]에서 맴돌이곡이 틀에 박혀 있고 자극적이라고 비판했다. 나머지 ①~④는 [4]에서 제안한 내용이다.' },
+  { tag: '지문 B · 표현 이해', type: 'mc', q: Q('B', '[4]의 "해외 음악 팬들의 눈을 사로잡았다면 앞으로는 귀를 사로잡아야 한다."의 의미로 가장 적절한 것은?'),
+    opts: ['해외 공연을 줄이고 국내 활동에 집중해야 한다.', '춤과 퍼포먼스를 지금보다 더욱 화려하게 해야 한다.', '시각적인 볼거리에 더해 노래 실력으로 감동을 주어야 한다.', '뮤직비디오 제작에 더 많은 돈을 들여야 한다.', '음악 평론가의 의견을 더 귀 기울여 들어야 한다.'], ans: 3,
+    hint: '"눈" = 보는 것(춤·퍼포먼스), "귀" = 듣는 것(?)',
+    sol: '"눈"은 춤과 화려한 퍼포먼스 같은 시각적 요소, "귀"는 노래(가창력) 같은 청각적 요소를 뜻한다. 볼거리에 더해 노래 실력으로 감동을 주어야 한다는 뜻이다.' },
+
+  { tag: '지문 C · 주제', type: 'mc', q: Q('C', '지문 C의 주제로 가장 적절한 것은?'),
+    opts: ['첨성대를 쌓은 건축 기술', '첨성대의 용도에 대한 여러 주장', '선덕여왕의 업적과 생애', '신라의 제사 문화', '옛날의 별 관측 방법'], ans: 2,
+    hint: '지문 A(범종 음통)와 짜임이 비슷합니다.',
+    sol: '첨성대의 용도를 두고 천문대설, 제단설, 상징물설이 맞서고 있으며 어느 하나로 결론 내리기 어렵다는 글이다.' },
+  { tag: '지문 C · 세부 내용', type: 'mc', q: Q('C', '지문 C에서 천문대설에 대해 제기된 반론은?'),
+    opts: ['이름에 "별"이라는 뜻이 들어 있다.', '하늘에 제사를 지낸 기록이 남아 있다.', '쌓은 돌의 개수가 달력의 날수와 관련이 있다.', '꼭대기 공간이 좁고 중간 창문으로 드나들어야 해서 관측 장소로 불편하다.', '선덕여왕 때 세워졌다는 기록이 전혀 없다.'], ans: 4,
+    hint: '[나]의 "그러나" 뒤 문장을 보세요.',
+    sol: '"그러나 꼭대기 공간이 좁고 몸통 중간의 창문으로 드나들어야 해서 관측 장소로는 불편하다는 반론도 있다."' },
+  { tag: '지문 C · 내용 일치', type: 'mc', q: Q('C', '지문 C의 내용과 일치하지 <b>않는</b> 것은?'),
+    opts: ['첨성대는 경주에 있다.', '첨성대는 선덕여왕 때 세워진 것으로 알려져 있다.', '제단설은 첨성대가 하늘에 제사를 지내던 곳이라는 주장이다.', '상징물설은 첨성대의 모양 등에 특별한 뜻이 담겼다고 본다.', '결정적인 기록이 있어 천문대설로 결론이 났다.'], ans: 5,
+    hint: '[다]를 다시 읽어 보세요.',
+    sol: '[다] "결정적인 기록이 부족하여 어느 하나로 결론을 내리기 어렵다"고 했으므로 ⑤는 일치하지 않는다.' },
+  { tag: '글 비교 · 전개 방식', type: 'mc', q: Q('C', '지문 A(범종 음통)와 지문 C(첨성대)의 공통된 전개 방식으로 가장 적절한 것은?'),
+    opts: ['대상의 정체에 대한 여러 주장을 소개하고, 어느 하나로 단정하기 어렵다고 본다.', '시간의 흐름에 따라 대상이 변해 온 과정을 설명한다.', '두 대상을 비교하여 공통점과 차이점을 밝힌다.', '문제를 제시하고 구체적인 해결 방안을 제안한다.', '글쓴이가 직접 겪은 일을 중심으로 서술한다.'], ans: 1,
+    hint: '두 글 모두 "여러 주장" → "결론 내리기 어려움"으로 이어집니다.',
+    sol: '범종 글은 음통에 대한 다섯 가지 주장, 첨성대 글은 세 가지 주장을 소개한 뒤 모두 어느 하나를 정답으로 단정하기 어렵다고 정리한다.' },
+  { tag: '글 비교 · 글의 성격', type: 'mc', q: Q('B', '지문 A(범종 음통)와 지문 B(케이팝)를 비교한 설명으로 가장 적절한 것은?'),
+    opts: ['두 글 모두 글쓴이의 주장을 강하게 내세운다.', '지문 B는 글쓴이의 주장과 근거를 제시하고, 지문 A는 대상에 대한 여러 견해를 소개한다.', '두 글 모두 실험 결과를 핵심 근거로 든다.', '지문 A는 문제 해결 방안을 구체적으로 제시한다.', '지문 B는 대상의 역사만을 객관적으로 설명한다.'], ans: 2,
+    hint: '"~해야 한다"는 표현이 많은 글은 어느 것인가요?',
+    sol: '지문 B는 "가창력을 연마해야 한다"는 주장과 대중음악의 역사 등 근거를 제시하는 주장하는 글이고, 지문 A는 음통에 대한 여러 견해를 소개하는 설명하는 글이다.' }
+];
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'kor30-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <div class="qtext">${p.q}</div>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
