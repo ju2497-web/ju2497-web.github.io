@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>영어 어법 Review 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">고등 영어 · Part 1 문법 · Review Test 2 대비</div>
+    <h1>영어 어법 Review 30제</h1>
+    <p class="lede">21강 Review Test 2(p.66~67)와 같은 수준으로 새로 쓴 지문과 문장입니다. 주어·동사 수일치, 네모 어법, 밑줄 오류, so that · so ~ that · such ~ that, 분사, 가주어·가목적어, who/whom, 명령문, 사역동사, 동명사까지 담았습니다. 모두 풀고 채점하면, 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) ---------- */
+const P = (label, body) => `<div class="bogi psg"><span>${label}</span>${body}</div>`;
+const U = (n, w) => `<u>${'①②③④⑤'[n - 1]} ${w}</u>`;
+const BOX = (l, a, b) => `(${l}) <span class="box">${a} / ${b}</span>`;
+const PROBLEMS = [
+  {
+    tag: '어법 · 수일치', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `Children who spend time outdoors ${U(1, 'regularly')} tend to sleep better. The benefits of playing outside ${U(2, 'is')} clear to many parents. Sunlight helps the body ${U(3, 'keep')} a steady rhythm, and physical activity makes children ${U(4, 'tired')} in a healthy way. Parents should encourage outdoor play ${U(5, 'whenever')} possible.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 2,
+    hint: '주어의 핵심 명사를 찾으세요. of 뒤의 말은 수식어입니다.',
+    sol: '주어는 The benefits (복수)이고 of playing outside는 수식어이므로 is → are. ③ help + 목적어 + 동사원형 ④ make + 목적어 + 형용사 보어.'
+  },
+  {
+    tag: '어법 · 네모 고르기', type: 'mc',
+    q: '(A), (B), (C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?' + P('지문', `The key to ${BOX('A', 'improve', 'improving')} your writing ${BOX('B', 'is', 'are')} regular practice. ${BOX('C', 'Try', 'Trying')} to write a little every day, even when you are busy.`),
+    opts: ['improve – is – Try', 'improving – is – Try', 'improving – are – Trying', 'improve – are – Try', 'improving – is – Trying'], ans: 2,
+    hint: 'the key to의 to는 전치사입니다. 주어 The key는 단수, 마지막 문장은 명령문입니다.',
+    sol: '(A) the key to의 to는 전치사 → 동명사 improving (B) 주어 The key(단수) → is (C) 주어 없이 시작하는 명령문 → 동사원형 Try.'
+  },
+  {
+    tag: '어법 · 난이형용사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>This machine is easy ________ once you learn the basic steps.</i>',
+    opts: ['operate', 'operating', 'to operate', 'to operating', 'operated'], ans: 3,
+    hint: 'easy, hard, difficult 뒤에는 어떤 형태가 와서 "~하기에"라는 뜻이 될까요?',
+    sol: 'easy / hard / difficult + to부정사 → "~하기에 쉬운/어려운". easy to operate가 맞다. (본문 예: learned optimism is easy to maintain)'
+  },
+  {
+    tag: '어법 · 분사', type: 'mc',
+    q: '(A), (B), (C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?' + P('지문', `Babies are not born ${BOX('A', 'speaking', 'spoken')} a language; they pick it up from the people ${BOX('B', 'surrounding', 'surrounded')} them. In other words, language is a ${BOX('C', 'learning', 'learned')} skill.`),
+    opts: ['speaking – surrounded – learning', 'spoken – surrounding – learned', 'speaking – surrounding – learning', 'spoken – surrounded – learned', 'speaking – surrounding – learned'], ans: 5,
+    hint: '수식받는 명사와 분사의 관계가 능동(~하는)인지 수동(~된)인지 따져 보세요.',
+    sol: '(A) be born + 현재분사(말하면서 태어나다, 능동) → speaking (B) 사람들이 그들을 둘러싸는 능동 → surrounding (C) 기술은 "배워지는" 것 → learned.'
+  },
+  {
+    tag: '어법 · who / whom', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>At the meeting, we talked about ________ should take charge of the budget.</i>',
+    opts: ['whom', 'which', 'whose', 'who', 'what'], ans: 4,
+    hint: '빈칸 뒤에 동사 should take가 바로 나옵니다. 빈칸이 절 안에서 주어인가요, 목적어인가요?',
+    sol: '빈칸은 간접의문문 안에서 동사 should take의 주어 역할 → 주격 who. whom은 목적격이라 쓸 수 없다. (본문 예: talk about who is responsible for what)'
+  },
+  {
+    tag: '어법 · 밑줄 오류', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `When two teams share one project, it can be difficult ${U(1, 'to coordinate')} their work. Make it ${U(2, 'clear')} who is in charge of each task. If one team falls behind, ${U(3, 'the other')} should be ready to help. Also, hold regular meetings ${U(4, 'which')} everyone can share updates and solve problems together. That way, the project will run much ${U(5, 'more smoothly')}.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 4,
+    hint: '관계사 뒤의 문장이 완전한지(주어·목적어가 다 있는지) 확인하세요.',
+    sol: 'everyone can share updates는 빠진 성분이 없는 완전한 절이므로 관계대명사 which가 아니라 관계부사 where(= at which)가 와야 한다. ① 가주어 it ② make + 가목적어 it + 형용사 ③ 둘 중 나머지 하나 the other.'
+  },
+  {
+    tag: '어법 · 가목적어', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>The manager made ________ clear that nobody could leave early.</i>',
+    opts: ['it', 'that', 'this', 'what', 'its'], ans: 1,
+    hint: 'make + (목적어) + 형용사 + that절. 진짜 목적어는 뒤의 that절입니다.',
+    sol: '진목적어 that절이 길어서 뒤로 보내고 그 자리에 가목적어 it을 쓴다. make it clear that ~ "~임을 분명히 하다".'
+  },
+  {
+    tag: '어법 · 부정대명사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>I have two brothers. One lives in Seoul, and ________ lives in Busan.</i>',
+    opts: ['another', 'other', 'the other', 'the others', 'others'], ans: 3,
+    hint: '둘 중 하나는 one, 나머지 하나는?',
+    sol: '둘 중 하나는 one, 나머지 하나는 the other. another는 셋 이상에서 "또 다른 하나", the others는 나머지 여럿.'
+  },
+  {
+    tag: '어법 · 밑줄 오류', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `Make sure the two volunteers ${U(1, 'handling')} the event ${U(2, 'works')} well together. If they plan things differently, there needs ${U(3, 'to be')} a compromise, and you must check that they aren't repeating work ${U(4, 'by')} each ${U(5, 'doing')} things in their own way.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 2,
+    hint: 'handling the event는 수식어입니다. 진짜 주어는?',
+    sol: '주어는 the two volunteers(복수)이고 handling the event는 현재분사구 수식어 → works → work. ④⑤ by + (의미상 주어 each) + 동명사 doing.'
+  },
+  {
+    tag: '구문 · so that', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>She left home early ________ she could catch the first train.</i>',
+    opts: ['so that', 'such that', 'so as', 'in order to', 'because of'], ans: 1,
+    hint: '빈칸 뒤에 주어 + 동사(she could catch)가 옵니다. "~하기 위해서"라는 목적의 접속사는?',
+    sol: 'so that + 주어 + can/could ~ "~하기 위해서(목적)". so as / in order to 뒤에는 동사원형, because of 뒤에는 명사가 온다.'
+  },
+  {
+    tag: '구문 · so ~ that', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>The room was so noisy ________ we couldn\'t hear each other.</i>',
+    opts: ['which', 'what', 'as', 'that', 'when'], ans: 4,
+    hint: 'so + 형용사 + ______ + 주어 + 동사 : "너무 ~해서 …하다"',
+    sol: 'so + 형용사/부사 + that + 주어 + 동사 → "너무 ~해서 …하다(결과)". 따라서 that.'
+  },
+  {
+    tag: '구문 · such ~ that', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>It was ________ that we stayed outside all day.</i>',
+    opts: ['such a nice day', 'so a nice day', 'such nice day', 'so nice day', 'a such nice day'], ans: 1,
+    hint: 'such와 so 뒤의 어순: such + a + 형용사 + 명사 / so + 형용사 + a + 명사',
+    sol: 'such + a(n) + 형용사 + 명사 + that ~. such a nice day that ~ "아주 좋은 날이라서 ~". (so를 쓰면 so nice a day)'
+  },
+  {
+    tag: '구문 · so many ~ that', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Many of the snacks sold today contain so much sugar ________ it is hard to eat them every day without gaining weight.</i>',
+    opts: ['which', 'what', 'where', 'how', 'that'], ans: 5,
+    hint: '앞에 so much sugar가 있습니다. 관계대명사가 아니라 결과 부사절입니다.',
+    sol: 'so much(many) + 명사 + that ~ "너무 많은 …이 있어서 ~하다". 뒤의 절 it is hard to eat them이 완전하므로 관계대명사 which는 불가. (본문 퀴즈: so many chemicals ... that it is sometimes difficult)'
+  },
+  {
+    tag: '영작 · 결과 부사절', type: 'mc',
+    q: '다음 우리말을 영어로 바르게 옮긴 것은?<br><b>그 영화는 너무 감동적이어서 많은 관객이 울었다.</b>',
+    opts: ['The movie was so moved that many viewers cried.', 'The movie was such moving that many viewers cried.', 'The movie was so moving which many viewers cried.', 'The movie was so moving that many viewers cried.', 'The movie was very moving that many viewers cried.'], ans: 4,
+    hint: '영화가 감동을 "주는" 것이면 moving / moved 중 무엇? 그리고 so ~ that 구문.',
+    sol: '영화가 감동을 주므로 현재분사 moving, "너무 ~해서 …하다"는 so + 형용사 + that. ① moved는 "감동받은" ② such 뒤에는 명사 ③ which 불가 ⑤ very ~ that 불가.'
+  },
+  {
+    tag: '구문 · so that의 의미', type: 'mc',
+    q: '다음 중 밑줄 친 부분이 <b>목적(~하기 위해서)</b>의 의미로 쓰인 것은?',
+    opts: ['He spoke loudly <u>so that</u> everyone could hear him.', 'It was <u>so</u> cold <u>that</u> the lake froze.', 'She was <u>so</u> tired <u>that</u> she fell asleep early.', 'The box was <u>so</u> heavy <u>that</u> I couldn\'t lift it.', 'He ran <u>so</u> fast <u>that</u> no one could catch him.'], ans: 1,
+    hint: 'so와 that이 붙어 있는지, 사이에 형용사·부사가 있는지 보세요.',
+    sol: '① so that + 주어 + can/could → 목적 "모두가 들을 수 있도록". ②~⑤ so + 형용사/부사 + that → 결과 "너무 ~해서 …하다". (본문: have a meeting ... so that you can all talk)'
+  },
+  {
+    tag: '어법 · 밑줄 오류', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `Yawning is an involuntary behavior. It's not something we choose ${U(1, 'to do')}; our bodies simply do it ${U(2, 'natural')}. In this way, yawning is similar to other involuntary behaviors ${U(3, 'like')} sneezing and blinking. But whereas those are merely physical, yawning seems ${U(4, 'to be')} contagious: we often yawn when we see others ${U(5, 'yawn')}.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 2,
+    hint: '동사 do를 꾸미는 말은 형용사일까요, 부사일까요?',
+    sol: '동사 do를 수식하므로 부사 naturally가 와야 한다. ③ like는 전치사("~와 같은") ④ seem to be ⑤ 지각동사 see + 목적어 + 동사원형. (본문: our brains simply do it naturally)'
+  },
+  {
+    tag: '어법 · to부정사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>We use humor ________ with friends and relieve stress.</i>',
+    opts: ['bond', 'bonded', 'to bond', 'to bonding', 'bonds'], ans: 3,
+    hint: '"~하기 위해" 유대감을 쌓는다는 목적의 뜻입니다.',
+    sol: '목적을 나타내는 부사적 용법의 to부정사 → to bond. (본문: We use laughter to bond with friends)'
+  },
+  {
+    tag: '어법 · 분사구문', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>It\'s a response to social signals, ________ with meaning.</i>',
+    opts: ['lace', 'lacing', 'to lace', 'laces', 'laced'], ans: 5,
+    hint: '반응(response)이 의미로 "가득 채워진" 것인지, 채우는 것인지 생각하세요.',
+    sol: '반응이 의미로 "채워진" 수동의 관계 → 과거분사 laced (be laced with ~ "~이 가득 섞인"). (본문: laced with interpersonal significance)'
+  },
+  {
+    tag: '어법 · 사역동사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Don\'t let negative thoughts ________ your life.</i>',
+    opts: ['control', 'to control', 'controlling', 'controlled', 'controls'], ans: 1,
+    hint: 'let + 목적어 + ?',
+    sol: '사역동사 let + 목적어 + 동사원형 → control. (본문: Don\'t let them run your emotional life.)'
+  },
+  {
+    tag: '어법 · 네모 고르기', type: 'mc',
+    q: '(A), (B), (C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?' + P('지문', `Sometimes your worries will turn out ${BOX('A', 'be', 'to be')} true; when this happens, ${BOX('B', 'focus', 'focusing')} on how you can change the situation and prevent small problems from ${BOX('C', 'become', 'becoming')} big ones.`),
+    opts: ['to be – focus – becoming', 'be – focus – become', 'to be – focusing – becoming', 'be – focusing – become', 'to be – focus – become'], ans: 1,
+    hint: 'turn out ___, 세미콜론 뒤 when절 다음의 주절, prevent A from ___.',
+    sol: '(A) turn out to be ~ "~으로 판명되다" (B) when절 뒤 주절은 주어 없는 명령문 → 동사원형 focus (C) prevent A from + 동명사 → becoming. (본문: concentrate on the ways ... prevent hardship from becoming disaster)'
+  },
+  {
+    tag: '어법 · 접속사/전치사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>________ some people enjoy spicy food, others cannot stand it.</i>',
+    opts: ['Despite', 'Because of', 'Whereas', 'In spite of', 'During'], ans: 3,
+    hint: '빈칸 뒤에 주어 + 동사가 있는 절이 옵니다. 대조의 의미를 가진 접속사는?',
+    sol: '절 앞이므로 접속사가 필요하고, 대조 "~인 반면에"의 의미 → Whereas. Despite / In spite of / Because of / During은 전치사(구)이다. (본문: But whereas these are merely physiological)'
+  },
+  {
+    tag: '어법 · 네모 고르기', type: 'mc',
+    q: '(A), (B), (C)의 각 네모 안에서 어법에 맞는 표현으로 가장 적절한 것은?' + P('지문', `Parents can also help by calmly and clearly ${BOX('A', 'name', 'naming')} a child's emotions, saying things ${BOX('B', 'like', 'alike')}, "You look upset." This helps children ${BOX('C', 'understand', 'understanding')} their own feelings.`),
+    opts: ['name – like – understand', 'naming – alike – understanding', 'naming – like – understanding', 'naming – like – understand', 'name – alike – understand'], ans: 4,
+    hint: '전치사 by 뒤, "~와 같은"이라는 전치사, help + 목적어 + ?',
+    sol: '(A) 전치사 by + 동명사 → naming (부사 calmly and clearly가 동명사를 수식) (B) "~와 같은" 전치사 like (alike는 서술 형용사) (C) help + 목적어 + (to) 동사원형 → understand. (본문: by actively and accurately reflecting a child\'s feelings)'
+  },
+  {
+    tag: '어법 · 분사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Nobody is born ________ how to ride a bike.</i>',
+    opts: ['know', 'known', 'to knowing', 'knowing', 'knew'], ans: 4,
+    hint: '태어날 때 "알면서" 태어나는 능동의 상태입니다.',
+    sol: 'be born + 현재분사 "~한 상태로 태어나다" → knowing (능동). (본문: Children are not born knowing words to describe their feelings.)'
+  },
+  {
+    tag: '어법 · 명령문', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Whenever you feel stressed, ________ yourself what is really bothering you.</i>',
+    opts: ['asking', 'ask', 'asked', 'to asking', 'asks'], ans: 2,
+    hint: 'Whenever절(부사절) 뒤에 주어가 없는 주절이 옵니다.',
+    sol: '부사절 뒤 주절에 주어가 없으므로 명령문 → 동사원형 ask. (본문: Anytime you find yourself down ..., ask what you are saying to yourself.)'
+  },
+  {
+    tag: '어법 · 수일치', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>The main reason for his many absences ________ health problems.</i>',
+    opts: ['are', 'were', 'was', 'being', 'be'], ans: 3,
+    hint: 'for his many absences는 수식어입니다. 진짜 주어는 단수인가요?',
+    sol: '주어는 The main reason(단수), for his many absences는 전치사구 수식어 → was. (본문: The main tool for changing your interpretations of hardship is disputation.)'
+  },
+  {
+    tag: '어법 · 동명사', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Once you get into the habit of ________ early, your day will go much better.</i>',
+    opts: ['waking up', 'wake up', 'woke up', 'to wake up', 'woken up'], ans: 1,
+    hint: 'of는 전치사입니다.',
+    sol: '전치사 of 뒤에는 동명사 → waking up. get into the habit of -ing "~하는 습관을 들이다". (본문: Once you get into the habit of disputing negative beliefs)'
+  },
+  {
+    tag: '어법 · 밑줄 오류', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `Anytime you find yourself ${U(1, 'anxious')}, stop and ask what you are ${U(2, 'saying')} to yourself. You ${U(3, 'may')} be surprised: most of your fears seem ${U(4, 'realistically')} at first, but many of them turn out ${U(5, 'to be')} distortions.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 4,
+    hint: 'seem 뒤에는 보어가 옵니다. 보어는 형용사일까요, 부사일까요?',
+    sol: 'seem은 보어가 필요한 2형식 동사 → 형용사 realistic. ① find + 목적어 + 형용사 보어 ⑤ turn out to be.'
+  },
+  {
+    tag: '어법 · 관계대명사 what', type: 'mc',
+    q: '빈칸에 들어갈 말로 가장 적절한 것은?<br><i>Write down ________ you want to achieve this year.</i>',
+    opts: ['that', 'which', 'who', 'what', 'whose'], ans: 4,
+    hint: '빈칸 앞에 선행사가 없고, 뒤 절에는 achieve의 목적어가 빠져 있습니다.',
+    sol: '선행사가 없고 뒤 절이 불완전(achieve의 목적어 없음) → 선행사를 포함한 관계대명사 what "~하는 것". (본문: ask what you are saying to yourself)'
+  },
+  {
+    tag: '독해 · 제목 완성', type: 'mc',
+    q: '다음 글의 제목을 아래와 같이 쓸 때, 빈칸에 들어갈 말로 가장 적절한 것은?' + P('지문', `Children are not born knowing how to explain their emotions. When caring adults put feelings into words, saying things like "You seem really excited!" or "I can see you're frustrated," children gradually learn the names of their emotions. With these words, they can tell others how they feel instead of crying or shouting.`) + '<div class="bogi"><span>제목</span>Teach Your Child to ________ Emotions</div>',
+    opts: ['Express', 'Ignore', 'Hide', 'Judge', 'Forget'], ans: 1,
+    hint: '아이들이 감정의 이름을 배우면 무엇을 할 수 있게 되나요?',
+    sol: '감정에 이름을 붙여 주면 아이들이 울거나 소리치는 대신 말로 감정을 "표현할" 수 있게 된다 → Express. (본문 제목: Help Your Child Learn to Describe Feelings)'
+  },
+  {
+    tag: '어법 · 종합', type: 'mc',
+    q: '다음 글의 밑줄 친 부분 중, 어법상 <b>틀린</b> 것은?' + P('지문', `Regular exercise keeps your heart ${U(1, 'healthy')} and prevents many diseases from ${U(2, 'developing')}. Experts recommend walking for thirty minutes a day ${U(3, 'so that')} your body can stay strong. Many people find it ${U(4, 'difficult')} to start, but the first step is often the hardest one ${U(5, 'what')} you will take.`),
+    opts: ['①', '②', '③', '④', '⑤'], ans: 5,
+    hint: '선행사(the hardest one)가 있을 때 what을 쓸 수 있을까요?',
+    sol: '선행사 the hardest one이 있으므로 what은 쓸 수 없고 that(또는 생략)이 와야 한다. ① keep + 목적어 + 형용사 ② prevent A from -ing ③ 목적의 so that ④ find + 가목적어 it + 형용사 + to부정사.'
+  }
+];
+// 밑줄 오류 문항은 선택지에 밑줄 친 표현을 그대로 보여 준다
+PROBLEMS.forEach(p => { if (p.opts[0] === '①') p.opts = [...p.q.matchAll(/<u>[①②③④⑤] ([^<]+)<\/u>/g)].map(m => m[1]); });
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'eng30-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
