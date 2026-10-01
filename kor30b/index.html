@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>국어 독해·문법 30강 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+details.psg { border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; background: var(--paper); font-family: var(--f-body); font-size: 15px; line-height: 1.9; }
+details.psg summary { cursor: pointer; font-weight: 600; font-size: 13.5px; color: var(--accent); }
+details.psg p { margin: 10px 0 0; text-indent: .6em; }
+.qtext .ask { display: block; }
+.opt, .qtext, details.psg { word-break: keep-all; }
+.qtext u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 국어 · 30강 · 예술 09~10 · 문법 특강 대비</div>
+    <h1>국어 독해·문법 30강 30제</h1>
+    <p class="lede">30강 [예술 09] 오케스트라 배치법, [예술 10] 영화가 걸어온 길과 같은 수준으로 다시 쓴 지문 두 편, 그리고 문법 특강(된소리되기, 단위성 의존 명사, "까다롭다")을 담았습니다. 주제·구조, 내용 일치, 〈보기〉 적용, 빈칸, 이어질 내용, 어휘, 발음까지 모두 오지선다입니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>지문</b> 문제 위의 "지문 보기"를 눌러 펼치세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 지문 ---------- */
+const PSG = {
+  A: {
+    title: '[예술 09] 오케스트라 배치법',
+    body: `<p><b>[가]</b> 오케스트라는 여러 종류의 악기가 모여 함께 연주하는 대규모의 관현악단을 말한다. 적게는 수십 명에서 많게는 백 명이 넘는 연주자가 한 무대에 올라 지휘자의 지휘에 따라 하나의 음악을 만들어 낸다.</p>
+<p><b>[나]</b> '오케스트라'라는 말은 고대 그리스의 극장에서 무대와 관객석 사이에 있던 반원형의 공간인 '오르케스트라'에서 비롯되었다. 이곳은 합창단이 노래하고 춤추던 자리였는데, 훗날 악기 연주자들이 자리하는 곳을 가리키게 되었고, 다시 연주자들의 무리 자체를 뜻하는 말이 되었다.</p>
+<p><b>[다]</b> 오케스트라의 악기 편성은 시대나 용도, 작곡가 또는 지휘자의 의도, 연주 장소, 그 밖의 조건에 따라 조금씩 달라져 왔다. 오늘날의 심포니 오케스트라는 대략 백 개 안팎의 악기로 이루어져 있다. 이 악기들은 제1·2바이올린, 비올라, 첼로, 콘트라베이스의 현악기군과 피콜로, 플루트, 오보에, 잉글리시 호른, 클라리넷, 바순 등의 목관 악기군, 그리고 호른, 트럼펫, 트롬본, 튜바 등의 금관 악기군과 팀파니, 북, 트라이앵글, 캐스터네츠, 실로폰, 심벌즈 등의 타악기군, 이렇게 네 개의 악기군으로 나뉜다.</p>
+<p><b>[라]</b> 오케스트라의 악기들을 어떻게 배치하는가는 합주의 기술적인 면이나 음향학적인 면에서 상당히 까다로운 문제이다. 따라서 배치에 대하여 절대적인 형식이나 틀이 이것이라고 딱 잘라서 말할 수는 없다. 그러나 오랫동안의 경험을 통해 과거의 연주회에서 오케스트라가 채택한 배치법은 공통적으로 현악기가 중심 위치를 차지했으며, 이는 악기의 소리가 언제나 현악기를 중심으로 행해졌음을 의미한다. 일반적으로 지휘자와 가까운 앞쪽에는 현악기군이, 그 뒤에는 목관 악기군이, 가장 뒤쪽에는 금관 악기군과 타악기군이 자리한다.</p>
+<p><b>[마]</b> 오늘날에는 피아노나 하프처럼 새로운 악기가 더해지기도 하고, 곡에 따라 악기의 자리를 바꾸는 경우도 많아졌다. 그러나 이러한 변화는 각 연주의 중심을 이루는 악기에 대한 지휘자의 해석을 반영한 변화이자, 연주를 듣는 청중에게도 보다 다양한 감상의 포인트를 제공한다는 장점이 있다. 이에 따라 연주회장에서도 오케스트라의 전통적인 악기 배치와는 다른 새로운 형식의 악기 배치를 쉽게 만나 볼 수 있게 되었다.</p>`
+  },
+  B: {
+    title: '[예술 10] 영화가 걸어온 길',
+    body: `<p><b>[1]</b> 영화는 사람들에게 꿈과 희망을 주기 때문에 '꿈의 공장'으로 불린다. 프랑스의 뤼미에르 형제가 1895년에 처음으로 영화를 만들었을 때 그것은 채 1분도 되지 않는 다큐멘터리에 불과했다. 초창기의 영화는 대부분 카메라를 관현악단 지휘자처럼 무대 앞쪽의 중앙에 세워 두고 찍은 영상이었다. 다시 말해 단순히 연극을 카메라로 찍은 동영상에 불과했던 것이다. 그러다가 허구적 내용의 영화가 등장한 것은 20세기 초 무렵이었다.</p>
+<p><b>[2]</b> 1910년대에 미국의 그리피스는 오늘날처럼 카메라를 이동하며 시각적 이미지를 촬영하고, 그렇게 촬영한 화면을 편집을 통해 적절하게 이어 붙이는 것이 중요하다는 것을 터득하여 영상 언어를 획기적으로 발전시켰다. 이후 1920년대 소련의 영화감독들은 이러한 편집의 원리를 더욱 발전시켜, 서로 다른 장면을 이어 붙여 새로운 의미를 만들어 내는 몽타주 기법을 완성하였다.</p>
+<p><b>[3]</b> 화면과 동시에 소리를 들려주는 유성 영화는 1927년에 처음 상영되었는데, 이는 영상 언어의 수준을 한 단계 높이는 결과를 가져왔다. 이어 1930년대에는 마침내 컬러 영화가 등장하여 관객들이 실제 현실과 거의 비슷한 영상을 접하게 되었다.</p>
+<p><b>[4]</b> 텔레비전의 등장으로 영화는 한때 위기에 처하기도 하였지만, 1950년대에 등장한 프랑스의 '누벨바그' 운동을 주도한 영화감독들이 새로운 영상 언어를 개발함으로써 다시 발전할 수 있었다. 이들은 장면을 빠르게 전환하거나 연속성을 깨뜨리는 편집 기법을 활용하는 등 이전과는 전혀 다른 방법으로 영화를 만들었다.</p>
+<p><b>[5]</b> 오늘날에는 두 개 이상의 화면을 겹쳐서 입체적으로 보여 주는 삼차원(3D) 영화가 많은 인기를 끌고 있다. 1950년대에 처음 개발된 이러한 영화는 한동안 인기를 끌지 못하다가, 여러 렌즈를 활용한 카메라 기술이 발전하면서 다시 관객들의 관심을 받고 있다. 이제까지 그래 왔듯이, 영화는 앞으로도 ( ㉠ )의 발전을 바탕으로 계속 발전할 수 있을 것이다.</p>`
+  }
+};
+const firstOf = {};
+const Q = (g, text) => {
+  const open = !firstOf[g] ? ' open' : '';
+  firstOf[g] = true;
+  return `<details class="psg"${open}><summary>지문 ${g} · ${PSG[g].title}</summary>${PSG[g].body}</details><span class="ask">${text}</span>`;
+};
+const G = text => `<span class="ask">${text}</span>`;
+
+/* ---------- 30문항 (모두 오지선다) ---------- */
+const PROBLEMS = [
+  { tag: '지문 A · 주제', type: 'mc', q: Q('A', '지문 A의 주제로 가장 적절한 것은?'),
+    opts: ['오케스트라 지휘자의 역할', '오케스트라의 악기 배치와 현대적 변화', '현악기가 가장 뛰어난 악기인 까닭', '고대 그리스 극장의 구조', '오케스트라 연주회의 감상 예절'], ans: 2,
+    hint: '[라]와 [마]가 글의 중심입니다. 배치의 원칙과 오늘날의 변화를 다룹니다.',
+    sol: '오케스트라의 개념·어원·편성을 소개한 뒤, 악기 배치의 전통적 형태([라])와 오늘날의 변화([마])를 설명한다. → 오케스트라의 악기 배치와 현대적 변화.' },
+  { tag: '지문 A · 글의 구조', type: 'mc', q: Q('A', '지문 A의 문단별 중심 내용으로 적절하지 <b>않은</b> 것은?'),
+    opts: ['[가] 오케스트라의 개념과 규모', '[나] 오케스트라의 어원', '[다] 오케스트라의 악기 편성', '[라] 오케스트라 지휘법의 역사', '[마] 새로운 악기 도입과 배치 방식의 변화'], ans: 4,
+    hint: '[라]는 무엇을 "어떻게" 하는 문제를 다루나요?',
+    sol: '[라]는 오케스트라의 악기 배치 형태(현악기 중심, 앞쪽 현악기·뒤쪽 금관과 타악기)를 다룬다. 지휘법의 역사는 나오지 않는다.' },
+  { tag: '지문 A · 세부 내용', type: 'mc', q: Q('A', '[나]에 따르면 "오케스트라"라는 말이 비롯된 곳은?'),
+    opts: ['중세 유럽 성당의 성가대석', '고대 로마 원형 경기장의 관중석', '고대 그리스 극장의 무대와 관객석 사이 반원형 공간', '근대 오페라 극장의 무대 뒤편', '고대 이집트 궁전의 연회장'], ans: 3,
+    hint: '[나] 첫 문장을 보세요.',
+    sol: '"오케스트라"는 고대 그리스 극장에서 무대와 관객석 사이에 있던 반원형 공간 "오르케스트라"에서 비롯되었다.' },
+  { tag: '지문 A · 세부 내용', type: 'mc', q: Q('A', '[다]에서 오케스트라의 악기 편성에 영향을 주는 요소로 언급되지 <b>않은</b> 것은?'),
+    opts: ['시대', '용도', '작곡가 또는 지휘자의 의도', '연주 장소', '청중의 나이'], ans: 5,
+    hint: '"~에 따라서 다소의 변동이 있었으나" 앞부분을 확인하세요.',
+    sol: '[다] "시대나 용도, 작곡가 또는 지휘자의 의도, 연주 장소, 그 밖의 조건에 따라" 달라졌다고 했다. 청중의 나이는 언급되지 않았다.' },
+  { tag: '지문 A · 분류', type: 'mc', q: Q('A', '[다]의 내용에 따라 악기와 악기군을 짝지은 것으로 적절하지 <b>않은</b> 것은?'),
+    opts: ['비올라 - 현악기군', '클라리넷 - 목관 악기군', '트럼펫 - 목관 악기군', '튜바 - 금관 악기군', '실로폰 - 타악기군'], ans: 3,
+    hint: '호른, 트럼펫, 트롬본, 튜바는 어느 악기군이었나요?',
+    sol: '트럼펫은 호른, 트롬본, 튜바와 함께 금관 악기군에 속한다.' },
+  { tag: '지문 A · 적용', type: 'mc', q: Q('A', '지문 A의 내용을 고려할 때, 〈보기〉의 ㉠~㉤ 중 적절하지 <b>않은</b> 것은?<div class="bogi"><span>보기</span>민후: 오늘 심포니 오케스트라 공연에 왔어. ㉠ 백 개 안팎의 악기가 등장하면 무대가 꽉 차겠지.<br>시은: ㉡ 그 안에 현악기군, 목관 악기군, 금관 악기군, 타악기군의 악기들이 있겠네.<br>범주: ㉢ 난 심벌즈를 보고 싶은데, 타악기는 지휘자 바로 앞에 있으니 잘 보이겠다.<br>지아: ㉣ 오늘 배치가 교과서에서 본 것과 달라도, 지휘자의 해석이 반영된 것일 수 있어.<br>도윤: ㉤ 전통적인 배치였다면 현악기가 중심 위치를 차지했겠지.</div>'),
+    opts: ['㉠', '㉡', '㉢', '㉣', '㉤'], ans: 3,
+    hint: '[라] 마지막 문장에서 타악기군의 자리를 확인하세요.',
+    sol: '[라] "지휘자와 가까운 앞쪽에는 현악기군이 ... 가장 뒤쪽에는 금관 악기군과 타악기군이 자리한다." 심벌즈(타악기)는 지휘자 바로 앞이 아니라 가장 뒤쪽에 있으므로 ㉢이 적절하지 않다.' },
+  { tag: '지문 A · 세부 내용', type: 'mc', q: Q('A', '[라]에서 과거 연주회의 오케스트라 배치법이 지닌 공통점으로 알맞은 것은?'),
+    opts: ['타악기가 가장 앞에 놓였다.', '현악기가 중심 위치를 차지했다.', '금관 악기가 지휘자 옆에 놓였다.', '악기를 정해진 자리 없이 자유롭게 놓았다.', '목관 악기가 무대 중앙을 차지했다.'], ans: 2,
+    hint: '"공통적으로 ~가 중심 위치를 차지했으며"',
+    sol: '"과거의 연주회에서 오케스트라가 채택한 배치법은 공통적으로 현악기가 중심 위치를 차지했으며, 이는 악기의 소리가 언제나 현악기를 중심으로 행해졌음을 의미한다."' },
+  { tag: '지문 A · 이유 파악', type: 'mc', q: Q('A', '[마]에서 오늘날 오케스트라 배치가 달라지는 것에 대한 설명으로 가장 적절한 것은?'),
+    opts: ['연주 장소가 좁아져 어쩔 수 없이 생긴 변화이다.', '전통적인 배치가 음향적으로 틀렸음이 밝혀졌기 때문이다.', '지휘자의 해석을 반영하고 청중에게 다양한 감상 포인트를 준다.', '연주자 수를 줄이기 위한 변화이다.', '악기 가격이 비싸져 생긴 변화이다.'], ans: 3,
+    hint: '"이러한 변화는 ~을 반영한 변화이자 ~ 장점이 있다."',
+    sol: '[마] "이러한 변화는 각 연주의 중심을 이루는 악기에 대한 지휘자의 해석을 반영한 변화이자, 청중에게도 보다 다양한 감상의 포인트를 제공한다는 장점이 있다."' },
+  { tag: '지문 A · 어휘', type: 'mc', q: Q('A', '[라]의 "상당히 <u>까다로운</u> 문제"에서 "까다롭다"의 뜻으로 가장 적절한 것은?'),
+    opts: ['성미나 취향이 너그럽지 못하고 별스럽다.', '조건 따위가 복잡하거나 엄격하여 다루기에 순탄하지 않다.', '몸집이 작고 가냘프다.', '말이나 행동이 매우 빠르다.', '맛이 쓰고 떫다.'], ans: 2,
+    hint: '사람의 성격이 아니라 "문제"를 꾸미고 있습니다.',
+    sol: '"배치 문제"가 기술적·음향적으로 복잡해 다루기 어렵다는 뜻이므로, "조건 따위가 복잡하거나 엄격하여 다루기에 순탄하지 않다"가 알맞다. ①은 "입맛이 까다롭다"처럼 사람의 성미를 말할 때의 뜻이다.' },
+  { tag: '지문 A · 내용 일치', type: 'mc', q: Q('A', '지문 A의 내용과 일치하지 <b>않는</b> 것은?'),
+    opts: ['오케스트라에는 백 명이 넘는 연주자가 서기도 한다.', '오늘날 심포니 오케스트라는 네 개의 악기군으로 나뉜다.', '악기 배치에 대한 절대적인 형식이 정해져 있다.', '오늘날에는 피아노나 하프가 더해지기도 한다.', '연주회장에서 새로운 형식의 배치를 쉽게 만나 볼 수 있다.'], ans: 3,
+    hint: '[라] 둘째 문장을 다시 읽어 보세요.',
+    sol: '[라] "배치에 대하여 절대적인 형식이나 틀이 이것이라고 딱 잘라서 말할 수는 없다."고 했으므로 ③은 일치하지 않는다.' },
+
+  { tag: '지문 B · 주제', type: 'mc', q: Q('B', '지문 B의 제목으로 가장 적절한 것은?'),
+    opts: ['영상 언어의 발전으로 본 영화의 역사', '텔레비전이 영화를 이긴 까닭', '뤼미에르 형제의 생애', '3D 영화를 만드는 방법', '연극과 영화의 공통점'], ans: 1,
+    hint: '각 문단은 시대마다 어떤 "발전"을 이야기하나요?',
+    sol: '1895년 첫 영화부터 그리피스의 편집, 유성·컬러 영화, 누벨바그, 3D 영화까지 영상 언어가 발전해 온 과정을 시간 순서로 설명한다.' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '영화가 "꿈의 공장"으로 불리는 까닭은?'),
+    opts: ['영화를 공장에서 대량으로 찍기 때문에', '사람들에게 꿈과 희망을 주기 때문에', '잠을 잘 때 꾸는 꿈을 찍기 때문에', '많은 사람이 일하는 곳이기 때문에', '처음 영화가 공장에서 상영되었기 때문에'], ans: 2,
+    hint: '[1] 첫 문장을 보세요.',
+    sol: '"영화는 사람들에게 꿈과 희망을 주기 때문에 \'꿈의 공장\'으로 불린다."' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '[1]에서 설명한 초창기 영화의 모습으로 가장 적절한 것은?'),
+    opts: ['카메라를 이동하며 다양한 각도로 찍었다.', '처음부터 허구적인 이야기를 담았다.', '무대 앞 중앙에 카메라를 세워 두고 연극을 찍은 것에 불과했다.', '소리와 색이 함께 담겨 있었다.', '두 개 이상의 화면을 겹쳐 입체적으로 보여 주었다.'], ans: 3,
+    hint: '"다시 말해 ~에 불과하였던 것이다."',
+    sol: '초창기 영화는 카메라를 무대 앞쪽 중앙에 세워 두고 찍은, "단순히 연극을 카메라로 찍은 동영상"에 불과했다. 허구적 내용은 20세기 초 무렵에 등장했다.' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '[2]에서 그리피스가 영상 언어를 획기적으로 발전시킨 방법은?'),
+    opts: ['화면과 동시에 소리를 들려주었다.', '색을 입힌 영상을 처음 만들었다.', '카메라를 이동하며 찍고, 편집으로 화면을 적절히 이어 붙였다.', '연속성을 깨뜨리는 편집을 처음 시도했다.', '여러 렌즈를 활용한 입체 영상을 만들었다.'], ans: 3,
+    hint: '[2] 첫 문장에서 "터득하여" 앞부분을 보세요.',
+    sol: '그리피스는 카메라를 이동하며 이미지를 촬영하고, 그 화면을 편집으로 적절히 이어 붙이는 것이 중요함을 터득했다. ④는 누벨바그, ⑤는 3D 영화에 대한 내용이다.' },
+  { tag: '지문 B · 내용 일치', type: 'mc', q: Q('B', '지문 B의 내용과 일치하는 것은?'),
+    opts: ['영화는 초창기부터 허구적인 내용을 다루었다.', '미국의 그리피스가 몽타주 기법을 완성했다.', '텔레비전의 등장으로 영화에 대한 관심은 크게 높아졌다.', '유성 영화의 등장은 영상 언어의 발전에 큰 영향을 미쳤다.', '3D 영화는 처음 등장하자마자 큰 인기를 얻었다.'], ans: 4,
+    hint: '[3]의 "영상 언어의 수준을 한 단계 높이는 결과"를 보세요.',
+    sol: '유성 영화는 "영상 언어의 수준을 한 단계 높이는 결과"를 가져왔다. ① 허구적 영화는 20세기 초 ② 몽타주는 소련 감독들이 완성 ③ 텔레비전으로 영화는 위기 ⑤ 3D는 한동안 인기를 끌지 못했다.' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '[4]의 "누벨바그" 운동에 대한 설명으로 적절한 것은?'),
+    opts: ['1920년대 소련에서 시작되었다.', '텔레비전에 맞서 컬러 영화를 처음 선보였다.', '장면을 빠르게 전환하거나 연속성을 깨뜨리는 편집을 활용했다.', '카메라를 무대 중앙에 고정해 찍는 방식을 되살렸다.', '영화에 처음으로 소리를 입혔다.'], ans: 3,
+    hint: '"이들은 ~하는 등 이전과는 전혀 다른 방법으로"',
+    sol: '1950년대 프랑스의 누벨바그 감독들은 장면을 빠르게 전환하거나 연속성을 깨뜨리는 편집 기법을 활용해 새로운 영상 언어를 개발했다.' },
+  { tag: '지문 B · 서술 방식', type: 'mc', q: Q('B', '지문 B의 서술 방식으로 가장 적절한 것은?'),
+    opts: ['두 대상의 공통점과 차이점을 비교하고 있다.', '시간의 흐름에 따라 대상이 발전해 온 과정을 설명하고 있다.', '글쓴이의 경험을 중심으로 감상을 서술하고 있다.', '문제점을 지적하고 해결 방안을 제시하고 있다.', '여러 학자의 주장을 소개하고 반박하고 있다.'], ans: 2,
+    hint: '1895년 → 1910년대 → 1927년 → 1930년대 → 1950년대 → 오늘날',
+    sol: '연도를 따라 영화가 발전해 온 과정(영상 언어의 발전)을 시간 순서로 설명하는 글이다.' },
+  { tag: '지문 B · 빈칸', type: 'mc', q: Q('B', '[5]의 ( ㉠ )에 들어갈 말로 가장 적절한 것은?'),
+    opts: ['배우의 연기', '영상 언어', '관객의 수', '극장의 크기', '영화 음악'], ans: 2,
+    hint: '글 전체에서 시대마다 "발전"한 것으로 반복해서 나온 말은?',
+    sol: '그리피스, 유성 영화, 누벨바그 모두 "영상 언어"를 발전시켰다고 설명했다. "이제까지 그래 왔듯이" 영화는 영상 언어의 발전을 바탕으로 계속 발전할 것이다.' },
+  { tag: '지문 B · 이어질 내용', type: 'mc', q: Q('B', '지문 B 다음에 이어질 내용으로 가장 적절한 것은?'),
+    opts: ['영화에 등장한 영상 언어의 특성', '유성 영화와 무성 영화의 차이점', '몽타주 기법이 사용된 작품의 예', '삼차원(3D) 영화의 개념 및 기술', '새롭게 등장할 영상 언어의 발전 방향'], ans: 5,
+    hint: '마지막 문장은 과거가 아니라 "앞으로"를 이야기합니다.',
+    sol: '마지막 문장 "영화는 앞으로도 영상 언어의 발전을 바탕으로 계속 발전할 수 있을 것이다"에 이어, 앞으로 새롭게 등장할 영상 언어의 발전 방향이 나오는 것이 자연스럽다.' },
+  { tag: '지문 B · 세부 내용', type: 'mc', q: Q('B', '[5]의 삼차원(3D) 영화에 대한 설명으로 적절한 것은?'),
+    opts: ['2000년대에 처음 개발되었다.', '처음 개발되자마자 큰 인기를 끌었다.', '하나의 화면만으로 입체감을 만든다.', '여러 렌즈를 활용한 카메라 기술이 발전하며 다시 관심을 받고 있다.', '텔레비전의 등장으로 완전히 사라졌다.'], ans: 4,
+    hint: '"1950년대에 처음 개발된 이러한 영화는 ~하다가, ~하면서"',
+    sol: '3D 영화는 1950년대에 처음 개발되어 한동안 인기를 끌지 못하다가, 여러 렌즈를 활용한 카메라 기술이 발전하면서 다시 관심을 받고 있다. 두 개 이상의 화면을 겹쳐 입체적으로 보여 준다.' },
+  { tag: '지문 B · 어휘', type: 'mc', q: Q('B', '[2]의 "~것이 중요하다는 것을 <u>터득하여</u>"에서 "터득하다"의 뜻으로 가장 적절한 것은?'),
+    opts: ['남의 것을 몰래 가져오다.', '깊이 생각하여 이치를 깨달아 알아내다.', '여러 사람에게 널리 알리다.', '어떤 일을 그만두다.', '남에게 가르쳐 주다.'], ans: 2,
+    hint: '그리피스가 무엇이 중요한지 "알게 된" 상황입니다.',
+    sol: '터득(攄得)하다: 깊이 생각하여 이치를 깨달아 알아내다.' },
+
+  { tag: '문법 · 된소리되기', type: 'mc', q: G('된소리되기에 대한 설명으로 가장 적절한 것은?'),
+    opts: ['받침 ㄴ, ㄹ, ㅁ, ㅇ 뒤에 오는 예사소리는 늘 된소리로 발음된다.', '받침 ㄱ, ㄷ, ㅂ 소리 뒤에 오는 첫소리 ㄱ, ㄷ, ㅂ, ㅅ, ㅈ이 ㄲ, ㄸ, ㅃ, ㅆ, ㅉ으로 발음된다.', '된소리되기가 일어나면 표기도 된소리로 바꾸어 적는다.', '된소리되기는 모음 뒤에서만 일어난다.', '"소쩍새", "으뜸"은 된소리되기가 일어난 말이다.'], ans: 2,
+    hint: '"합주"가 [합쭈]로 발음되는 까닭을 떠올리세요.',
+    sol: '된소리되기: 받침 ㄱ, ㄷ, ㅂ 소리 뒤에 이어지는 첫소리 ㄱ, ㄷ, ㅂ, ㅅ, ㅈ이 ㄲ, ㄸ, ㅃ, ㅆ, ㅉ으로 발음되는 현상. 소리만 바뀌고 표기는 그대로이며, "소쩍새", "으뜸"은 원래 된소리로 적는 말이다.' },
+  { tag: '문법 · 된소리되기', type: 'mc', q: G('다음 중 된소리되기 현상이 일어난 말이 <b>아닌</b> 것은?'),
+    opts: ['국밥', '먹다', '책상', '입고', '으뜸'], ans: 5,
+    hint: '받침 ㄱ, ㄷ, ㅂ 뒤에 예사소리가 이어지는지 보세요. 원래 된소리로 적는 말은?',
+    sol: '국밥[국빱], 먹다[먹따], 책상[책쌍], 입고[입꼬]는 된소리되기가 일어난다. "으뜸"은 앞 음절 받침이 ㄱ, ㄷ, ㅂ이 아니고, 처음부터 된소리로 적는 말이므로 된소리되기가 일어난 말이 아니다.' },
+  { tag: '문법 · 표준 발음', type: 'mc', q: G('다음 중 표준 발음이 바른 것은?'),
+    opts: ['학교[학교]', '먹던[먹던]', '벽지[벽찌]', '빛더미[빋더미]', '옆사람[엽사람]'], ans: 3,
+    hint: '받침 ㄱ, ㄷ, ㅂ 소리 뒤의 예사소리는 된소리가 됩니다.',
+    sol: '벽지[벽찌]가 바르다. 학교[학꾜], 먹던[먹떤], 빛더미[빋떠미], 옆사람[엽싸람]으로 발음해야 한다.' },
+  { tag: '문법 · 음운 변동', type: 'mc', q: G('"빛더미"가 [빋떠미]로 발음되는 과정을 바르게 설명한 것은?'),
+    opts: ['ㅊ 받침이 그대로 발음된 뒤 ㄷ이 ㄸ이 되었다.', '음절의 끝소리 규칙으로 ㅊ이 [ㄷ]이 된 뒤, 된소리되기로 ㄷ이 [ㄸ]이 되었다.', '두 자음이 합쳐져 ㅌ이 되었다.', 'ㄷ이 탈락하고 ㅊ이 ㄸ으로 바뀌었다.', '아무런 음운 변동도 일어나지 않았다.'], ans: 2,
+    hint: '받침 ㅊ은 끝소리에서 어떤 소리로 바뀔까요?',
+    sol: '음절의 끝소리 규칙에 따라 받침 ㅊ이 [ㄷ]으로 발음되고, 그 뒤에 오는 첫소리 ㄷ이 된소리되기로 [ㄸ]이 된다. → [빋떠미]. "옆사람"도 ㅍ→[ㅂ], ㅅ→[ㅆ]으로 [엽싸람].' },
+  { tag: '문법 · 단위성 의존 명사', type: 'mc', q: G('밑줄 친 말 중 단위성 의존 명사가 <b>아닌</b> 것은?'),
+    opts: ['양말을 두 <u>켤레</u>나 신었다.', '장미 다섯 <u>송이</u>가 피었다.', '작은 공 두 <u>개</u>를 가지고 놀았다.', '연필 한 <u>자루</u>를 빌렸다.', '먹을 <u>것</u>이 하나도 없다.'], ans: 5,
+    hint: '수량을 세는 "단위"를 나타내는지 보세요.',
+    sol: '켤레, 송이, 개, 자루는 수 관형사 뒤에서 수량의 단위를 나타내는 단위성 의존 명사이다. "먹을 것"의 "것"은 의존 명사이지만 단위를 나타내지 않는다.' },
+  { tag: '문법 · 띄어쓰기', type: 'mc', q: G('단위성 의존 명사의 띄어쓰기가 바른 것은?'),
+    opts: ['양말 두켤레', '장미 다섯송이', '공 두 개', '연필 한자루', '신발 세켤레'], ans: 3,
+    hint: '의존 명사는 앞말과 어떻게 써야 할까요?',
+    sol: '단위를 나타내는 의존 명사는 앞의 수 관형사와 띄어 쓴다. → 두 켤레, 다섯 송이, 두 개, 한 자루, 세 켤레.' },
+  { tag: '어휘 · 까다롭다', type: 'mc', q: G('밑줄 친 부분을 문맥상 "까다롭다(까탈스럽다)"로 바꾸어 쓸 수 <b>없는</b> 것은?'),
+    opts: ['그는 심사 기준이 아주 <u>엄격하고 세밀한</u> 편이다.', '이 일은 <u>복잡하고 처리하기 어려워</u> 많은 노력이 필요하다.', '일을 너무 <u>성급하게</u> 하다 보니 차분히 생각할 시간이 없었다.', '할머니는 음식 맛에 대한 기준이 <u>엄격하셔서</u> 아무 음식이나 드시지 않는다.', '그 시험은 응시 조건이 <u>복잡하고 엄격하다</u>.'], ans: 3,
+    hint: '"까다롭다"는 조건·기준이 복잡하고 엄격하거나, 성미가 별스러운 것입니다. "성급하다"는?',
+    sol: '"성급하다"는 성질이 몹시 급하다는 뜻으로 "까다롭다"와 의미가 다르다. 나머지는 기준·조건이 엄격하고 복잡하다는 뜻이라 "까다롭다"로 바꿀 수 있다.' },
+  { tag: '어휘 · 다의어', type: 'mc', q: G('"배치는 상당히 <u>까다로운</u> 문제이다."의 "까다롭다"와 같은 뜻으로 쓰인 것은?'),
+    opts: ['우리 할아버지는 입맛이 <u>까다로우시다</u>.', '이 수학 문제는 풀이 과정이 무척 <u>까다롭다</u>.', '그 손님은 성격이 <u>까다로워</u> 대하기 힘들다.', '동생은 옷 고르는 취향이 <u>까다롭다</u>.', '우리 집 고양이는 잠자리가 <u>까다롭다</u>.'], ans: 2,
+    hint: '사람의 성미·취향을 말하는지, 일이나 문제의 성격을 말하는지 구별하세요.',
+    sol: '예문은 "조건 따위가 복잡하거나 엄격하여 다루기 어렵다"의 뜻이다. ②의 문제 풀이 과정이 이와 같다. ①③④⑤는 "성미나 취향이 너그럽지 못하고 별스럽다"의 뜻이다.' },
+  { tag: '문법 · 종합', type: 'mc', q: G('다음 중 바르게 설명한 것은?'),
+    opts: ['된소리되기는 표기가 바뀌는 현상이다.', '"으뜸"은 된소리되기가 일어난 말이다.', '"합주"는 받침 ㅂ 뒤의 ㅈ이 [ㅉ]으로 소리 나 [합쭈]로 발음된다.', '받침 ㄴ, ㄹ, ㅁ, ㅇ 뒤에서는 늘 된소리되기가 일어난다.', '"학교"는 소리 나는 대로 "학꾜"라고 적어야 한다.'], ans: 3,
+    hint: '된소리되기는 "소리"만 바뀌는 현상입니다.',
+    sol: '"합주"는 받침 ㅂ 뒤의 첫소리 ㅈ이 된소리 [ㅉ]으로 발음되어 [합쭈]가 된다. 된소리되기는 표기가 아닌 발음이 바뀌는 현상이므로 ①⑤는 틀리고, "으뜸"은 원래 된소리로 적는 말이다. 울림소리(ㄴ, ㄹ, ㅁ, ㅇ) 뒤에서 늘 된소리가 되는 것은 아니다(예: "간다", "감기"는 [간다], [감기]로 발음한다).' }
+];
+// 정답 위치가 한쪽으로 몰리지 않도록 일부 문항의 정답 선택지 자리를 바꾼다
+[[0, 1], [2, 4], [4, 5], [6, 1], [7, 5], [11, 4], [12, 1], [15, 5], [16, 1], [23, 4]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]];
+  p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'kor30b-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <div class="qtext">${p.q}</div>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
