@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>등속 운동 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 과학 · 13강 등속 운동</div>
+    <h1>등속 운동 30제</h1>
+    <p class="lede">13강 등속 운동을 완벽하게 이해하는 30문항입니다. 힘과 운동의 뜻, 속력 계산과 단위 바꾸기, 다중 섬광 사진 읽기, 등속 운동의 성질과 예, 시간-이동 거리 그래프의 기울기와 시간-속력 그래프의 넓이, 그리고 추가 개념인 힘이 작용하지 않을 때의 운동과 수평으로 던진 물체의 운동까지 그림과 함께 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>그림</b>은 문제 조건에 맞게 그렸습니다</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 중학 과학 13강 등속 운동 ---------- */
+// 다중 섬광 사진: 자 위의 공 (단위 cm), rows = [[위치...], ...]
+function flash(rows, max, step, note) {
+  const k = 10 / max, pts = { _r0: [0, 0], _r1: [10, 0] }, segs = [{ a: '_r0', b: '_r1' }], text = [], balls = [];
+  for (let v = 0; v <= max; v += step) { const x = v * k, n = '_t' + v; pts[n] = [x, 0]; pts[n + 'b'] = [x, 0.18]; segs.push({ a: n, b: n + 'b' }); text.push({ t: String(v), at: [x, -0.42], s: 10 }); }
+  rows.forEach((row, j) => { const y = 0.55 + j * 0.9; row.forEach(v => balls.push({ at: [v * k, y], r: 5.5, c: j })); if (rows.length > 1) text.push({ t: 'AB'[j], at: [-0.5, y], s: 13 }); });
+  const top = 0.55 + rows.length * 0.9;
+  text.push({ t: '운동 방향 →', at: [1.2, top], s: 11 }, { t: '(단위: cm)' + (note ? '  ' + note : ''), at: [7.6, top], s: 10 });
+  return { pts, segs, text, balls };
+}
+// 그래프: 가로 X축(xmax), 세로 Y축(ymax), 선 lines = [{p: [[x,y],...], name}], 색칠 shade = [[x,y],...]
+function graph(xl, yl, xmax, ymax, xt, yt, lines, shade) {
+  const sx = 6 / xmax, sy = 4 / ymax, P = (x, y) => [x * sx, y * sy];
+  const pts = { _o: [0, 0], _x: [6.6, 0], _y: [0, 4.6] }, segs = [{ a: '_o', b: '_x' }, { a: '_o', b: '_y' }], text = [{ t: '0', at: [-0.3, -0.3], s: 11 }, { t: xl, at: [6.6, 0.4], s: 11 }, { t: yl, at: [0.1, 5.0], s: 11 }];
+  xt.forEach(v => { pts['_xt' + v] = P(v, 0); text.push({ t: String(v), at: G2(P(v, 0), [0, -0.35]), s: 11 }); });
+  yt.forEach(v => { pts['_yt' + v] = P(0, v); text.push({ t: String(v), at: G2(P(0, v), [-0.45, 0]), s: 11 }); });
+  const polys = [];
+  if (shade) { shade.forEach((q, i) => { pts['_s' + i] = P(...q); }); polys.push(shade.map((_, i) => '_s' + i)); }
+  lines.forEach((L, j) => {
+    L.p.forEach((q, i) => { pts['_l' + j + '_' + i] = P(...q); if (i) segs.push({ a: '_l' + j + '_' + (i - 1), b: '_l' + j + '_' + i, st: 'red' }); });
+    if (L.name) text.push({ t: L.name, at: G2(P(...L.p[L.p.length - 1]), [0.25, 0.25]), s: 13 });
+    (L.guide || []).forEach(([x, y]) => { const a = '_ga' + j + x, b = '_gb' + j + x, c = '_gc' + j + x; pts[a] = P(x, 0); pts[b] = P(x, y); pts[c] = P(0, y); segs.push({ a, b, st: 'dash' }, { a: b, b: c, st: 'dash' }); });
+  });
+  return { pts, segs, text, polys };
+}
+function G2(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+// 수평으로 던진 물체(g = 10 m/s²): 높이 h, 처음 속력 v
+function throwFig(h, v, drop) {
+  const T = Math.sqrt(2 * h / 10), n = Math.round(T), s = 0.06, pts = { _g0: [-1, 0], _g1: [v * T * s + 1.2, 0], _w0: [0, 0], _w1: [0, h * s] }, segs = [{ a: '_g0', b: '_g1' }, { a: '_w0', b: '_w1', st: 'dash' }], balls = [], text = [];
+  for (let i = 0; i <= 20; i++) { const t = T * i / 20; pts['_c' + i] = [v * t * s, (h - 5 * t * t) * s]; if (i) segs.push({ a: '_c' + (i - 1), b: '_c' + i, st: 'red' }); }
+  for (let t = 0; t <= n; t++) { balls.push({ at: [v * t * s, (h - 5 * t * t) * s], r: 6 }); if (drop) balls.push({ at: [-0.5, (h - 5 * t * t) * s], r: 6, c: 1 }); }
+  text.push({ t: '높이 ' + h + ' m', at: [0.9, h * s * 0.35], s: 11 }, { t: 'v₀ = ' + v + ' m/s →', at: [drop ? 2.1 : 1.3, h * s + 0.35], s: 11 });
+  if (drop) text.push({ t: 'A', at: [-0.95, h * s + 0.3], s: 13 }, { t: 'B', at: [0.25, h * s + 0.3], s: 13 });
+  return { pts, segs, balls, text };
+}
+const UNI = [0, 20, 40, 60, 80, 100], ACC = [0, 5, 15, 30, 50, 75], DEC = [0, 25, 45, 60, 70, 75];
+const u = (n, s, unit) => [-2, -1, 0, 1, 2].map(k => +(n + k * s).toFixed(2) + unit);
+
+const PROBLEMS = [
+  /* 1~6. 힘, 운동, 속력 */
+  { tag: '힘의 뜻', type: 'mc', q: '과학에서 말하는 <b>힘</b>의 뜻으로 가장 알맞은 것은?',
+    opts: ['물체가 가진 무게', '물체의 모양이나 운동 상태를 변화시키는 원인', '시간에 따라 물체의 위치가 변하는 현상', '일정한 시간 동안 물체가 이동한 거리', '물체가 움직이는 방향'], ans: 2,
+    hint: '"모 / 방 / 빠 — 변화의 원인"',
+    sol: '힘은 물체의 모양이나 운동 상태(운동 방향, 빠르기)를 변화시키는 원인이다. ③은 운동, ④는 속력의 뜻이다.' },
+  { tag: '운동 상태', type: 'mc', q: '물체의 <b>운동 상태</b>를 나타내는 두 가지 요소로 옳게 짝지은 것은?',
+    opts: ['질량, 부피', '모양, 색깔', '운동 방향, 빠르기(속력)', '온도, 위치', '무게, 모양'], ans: 3,
+    hint: '판서의 "방. 빠"',
+    sol: '운동 상태는 운동 방향과 빠르기로 나타낸다. 둘 중 하나라도 바뀌면 운동 상태가 변한 것이고, 그 원인이 힘이다.' },
+  { tag: '운동의 뜻', type: 'mc', q: '다음 중 과학에서 말하는 <b>운동</b>의 뜻에 가장 잘 맞는 것은?',
+    opts: ['물체의 모양이 바뀌는 현상', '물체의 온도가 올라가는 현상', '시간에 따라 물체의 위치가 변하는 현상', '물체의 무게가 바뀌는 현상', '물체가 빛을 내는 현상'], ans: 3,
+    hint: '판서: "운동 : 위치"',
+    sol: '운동은 시간에 따라 물체의 위치가 변하는 현상이다.' },
+  { tag: '속력 구하기', type: 'mc', q: '자전거가 100 m를 일정한 빠르기로 20초 동안 달렸다. 자전거의 속력은?',
+    opts: u(5, 1, ' m/s'), ans: 3,
+    hint: '속력 = 이동 거리 ÷ 걸린 시간',
+    sol: '100 m ÷ 20 s = 5 m/s.' },
+  { tag: '단위 바꾸기', type: 'mc', q: '72 km/h를 m/s 단위로 나타낸 것은?',
+    opts: u(20, 5, ' m/s'), ans: 3,
+    hint: '1 km = 1000 m, 1 h = 3600 s. 72 km/h = 72000 m ÷ 3600 s',
+    sol: '72 km/h = 72000 m ÷ 3600 s = 20 m/s. (km/h → m/s는 3.6으로 나눈다.)' },
+  { tag: '속력 비교', type: 'mc', q: '다음 중 가장 빠른 것은?',
+    opts: ['10 m/s로 달리는 자동차', '1분에 900 m를 가는 자전거', '54 km/h로 달리는 버스', '2초에 30 m를 달리는 치타', '1시간에 36 km를 가는 배'], ans: 4,
+    hint: '모두 m/s로 바꿔 비교하세요.',
+    sol: '① 10 m/s ② 900 ÷ 60 = 15 m/s ③ 54 ÷ 3.6 = 15 m/s ④ 30 ÷ 2 = 15 m/s … 같은 값이 많아 보이지만 ④를 다시 보면 치타는 2초에 30 m → 15 m/s. ⑤ 36 ÷ 3.6 = 10 m/s. (②③④가 15 m/s로 같다.)' },
+
+  /* 7~14. 다중 섬광 사진 */
+  { tag: '다중 섬광 사진', type: 'mc', q: '그림은 공의 운동을 0.1초 간격으로 찍은 다중 섬광 사진이다. 이 공의 운동으로 옳은 것은?',
+    opts: ['점점 빨라지는 운동', '점점 느려지는 운동', '속력이 일정한 운동(등속 운동)', '운동 방향이 계속 바뀌는 운동', '정지해 있다'], ans: 3,
+    fig: () => flash([UNI], 100, 10, '0.1초 간격'),
+    hint: '공 사이의 간격을 보세요.',
+    sol: '공 사이의 간격이 20 cm로 일정하다 → 같은 시간 동안 같은 거리를 이동 → 속력이 일정한 등속 운동.' },
+  { tag: '다중 섬광 사진', type: 'mc', q: '위와 같은 사진(0.1초 간격, 공 사이 간격 20 cm)에서 공의 속력은?',
+    opts: u(2, 0.5, ' m/s'), ans: 3,
+    fig: () => flash([UNI], 100, 10, '0.1초 간격'),
+    verify: () => 0.20 / 0.1,
+    hint: '20 cm = 0.2 m를 0.1초 동안 이동했습니다.',
+    sol: '0.2 m ÷ 0.1 s = 2 m/s (= 200 cm/s).' },
+  { tag: '다중 섬광 사진', type: 'mc', q: '앞 문제의 공이 같은 속력으로 계속 운동한다면, 3초 동안 이동하는 거리는?',
+    opts: u(6, 2, ' m'), ans: 3,
+    hint: '등속 운동: 이동 거리 = 속력 × 시간',
+    sol: '2 m/s × 3 s = 6 m.' },
+  { tag: '다중 섬광 사진', type: 'mc', q: '그림은 0.2초 간격으로 찍은 공의 다중 섬광 사진이다. 공의 속력은?',
+    opts: u(150, 25, ' cm/s'), ans: 3,
+    fig: () => flash([[0, 30, 60, 90, 120]], 120, 20, '0.2초 간격'),
+    verify: () => 30 / 0.2,
+    hint: '간격 30 cm, 시간 0.2초',
+    sol: '30 cm ÷ 0.2 s = 150 cm/s = 1.5 m/s.' },
+  { tag: '다중 섬광 사진', type: 'mc', q: '그림과 같은 다중 섬광 사진(같은 시간 간격)에 대한 설명으로 옳은 것은?',
+    opts: ['속력이 일정하므로 힘이 작용하지 않았다.', '점점 빨라지므로 운동 방향으로 힘이 작용했다.', '점점 느려지므로 운동 반대 방향으로 힘이 작용했다.', '운동 방향이 바뀌었다.', '공은 정지해 있다.'], ans: 2,
+    fig: () => flash([ACC], 80, 10),
+    hint: '간격이 점점 넓어지나요, 좁아지나요?',
+    sol: '간격이 5 → 10 → 15 → 20 → 25 cm로 넓어진다 → 점점 빨라짐 → 운동 방향으로 힘이 작용했다.' },
+  { tag: '다중 섬광 사진', type: 'mc', q: '그림과 같은 다중 섬광 사진(같은 시간 간격)에서 공에 작용한 힘의 방향은?',
+    opts: ['운동 방향과 같은 방향', '운동 방향과 반대 방향', '힘이 작용하지 않았다', '운동 방향과 수직인 위쪽', '방향을 알 수 없다'], ans: 2,
+    fig: () => flash([DEC], 80, 10),
+    hint: '간격이 25 → 20 → 15 → 10 → 5 cm',
+    sol: '간격이 점점 좁아짐 → 점점 느려짐 → 운동 반대 방향으로 힘이 작용했다(예: 마찰력).' },
+  { tag: '운동과 힘', type: 'mc', q: '물체의 빠르기가 일정한 경우(등속 운동)에 대한 설명으로 옳은 것은?',
+    opts: ['운동 ×, 힘 ○, 속력 변화 ○', '운동 ○, 힘 ×, 속력 변화 ×', '운동 ○, 힘 ○(운동 방향), 속력 변화 ○', '운동 ×, 힘 ×, 속력 변화 ×', '운동 ○, 힘 ○(반대 방향), 속력 변화 ×'], ans: 2,
+    hint: 'Focus 표의 첫째 열',
+    sol: '빠르기가 일정한 경우: 운동하고 있고(○), 운동 방향으로 작용하는 힘은 없으며(×), 속력 변화도 없다(×).' },
+  { tag: '두 물체 비교', type: 'mc', q: '그림은 두 공 A, B를 같은 시간 간격으로 찍은 다중 섬광 사진이다. B의 속력은 A의 속력의 몇 배인가?',
+    opts: ['½배', '1배', '2배', '3배', '4배'], ans: 3,
+    fig: () => flash([[0, 10, 20, 30, 40], [0, 20, 40, 60, 80]], 80, 10),
+    hint: '같은 시간 동안 이동한 거리를 비교하세요.',
+    sol: '같은 시간 간격 동안 A는 10 cm, B는 20 cm 이동 → B의 속력은 A의 2배.' },
+
+  /* 15~18. 등속 운동 */
+  { tag: '등속 운동', type: 'mc', q: '등속 운동에 대한 설명으로 옳지 <b>않은</b> 것은?',
+    opts: ['시간에 따라 속력이 일정한 운동이다.', '일정한 시간 동안 같은 거리를 이동한다.', '이동 거리가 시간에 비례하여 증가한다.', '다중 섬광 사진에서 물체 사이의 간격이 일정하다.', '시간이 지날수록 같은 시간 동안 이동한 거리가 늘어난다.'], ans: 5,
+    hint: '등속 = 같은 시간 → 같은 거리',
+    sol: '⑤는 점점 빨라지는 운동이다. 등속 운동은 같은 시간 동안 항상 같은 거리를 이동한다.' },
+  { tag: '등속 운동의 예', type: 'mc', q: '다음 중 등속 운동의 예로 보기 <b>어려운</b> 것은?',
+    opts: ['일정하게 움직이는 에스컬레이터', '공항의 무빙워크', '일정한 속력의 컨베이어 벨트', '높은 곳에서 떨어지는 사과', '일정한 속력으로 올라가는 스키 리프트'], ans: 4,
+    hint: '떨어지는 물체는 아래로 힘(중력)을 받습니다.',
+    sol: '떨어지는 사과는 중력을 받아 점점 빨라지므로 등속 운동이 아니다.' },
+  { tag: '거리 ∝ 시간', type: 'mc', q: '등속 운동하는 물체가 2초 동안 6 m를 이동했다. 같은 운동을 계속할 때 5초 동안 이동하는 거리는?',
+    opts: u(15, 3, ' m'), ans: 3,
+    hint: '이동 거리는 시간에 비례합니다.',
+    sol: '속력 = 6 ÷ 2 = 3 m/s → 3 m/s × 5 s = 15 m.' },
+  { tag: '등속 운동 그래프', type: 'mc', q: '등속 운동하는 물체의 그래프 모양을 바르게 짝지은 것은?',
+    opts: ['시간-이동 거리: 수평선 / 시간-속력: 원점을 지나는 직선', '시간-이동 거리: 원점을 지나는 기울어진 직선 / 시간-속력: 시간축에 나란한 수평선', '두 그래프 모두 수평선', '두 그래프 모두 원점을 지나는 직선', '시간-이동 거리: 곡선 / 시간-속력: 곡선'], ans: 2,
+    hint: '거리는 시간에 비례, 속력은 일정',
+    sol: '이동 거리가 시간에 비례하므로 시간-이동 거리 그래프는 원점을 지나는 직선, 속력이 일정하므로 시간-속력 그래프는 수평선.' },
+
+  /* 19~26. 그래프 */
+  { tag: '시간-이동 거리 그래프', type: 'mc', q: '그림은 어떤 물체의 시간-이동 거리 그래프이다. 이 물체의 속력은?',
+    opts: u(20, 5, ' m/s'), ans: 3,
+    fig: () => graph('시간(s)', '이동 거리(m)', 4, 80, [1, 2, 3, 4], [20, 40, 60, 80], [{ p: [[0, 0], [4, 80]], guide: [[1, 20], [2, 40], [3, 60]] }]),
+    verify: () => 80 / 4,
+    hint: '기울기 = 이동 거리 ÷ 걸린 시간',
+    sol: '1초마다 20 m씩 증가 → 기울기 = 20 m/s = 속력.' },
+  { tag: '그래프의 기울기', type: 'mc', q: '시간-이동 거리 그래프에서 <b>기울기</b>가 나타내는 것은?',
+    opts: ['이동 거리', '걸린 시간', '속력', '힘의 크기', '질량'], ans: 3,
+    hint: '기울기 = 이동 거리 / 걸린 시간',
+    sol: '기울기 = 이동 거리 ÷ 걸린 시간 = 속력. 기울기가 클수록 빠르다.' },
+  { tag: '두 그래프 비교', type: 'mc', q: '그림은 물체 A, B의 시간-이동 거리 그래프이다. A와 B의 속력의 비(A : B)는?',
+    opts: ['1 : 3', '1 : 1', '2 : 1', '3 : 1', '3 : 2'], ans: 4,
+    fig: () => graph('시간(s)', '이동 거리(m)', 4, 120, [1, 2, 3, 4], [40, 80, 120], [{ p: [[0, 0], [4, 120]], name: 'A' }, { p: [[0, 0], [4, 40]], name: 'B' }]),
+    hint: '4초 동안 A는 120 m, B는 40 m',
+    sol: 'A: 120 ÷ 4 = 30 m/s, B: 40 ÷ 4 = 10 m/s → 3 : 1. 기울기가 큰 A가 더 빠르다.' },
+  { tag: '시간-속력 그래프', type: 'mc', q: '그림은 어떤 물체의 시간-속력 그래프이다. 0~4초 동안 이동한 거리(색칠한 부분)는?',
+    opts: u(80, 20, ' m'), ans: 3,
+    fig: () => graph('시간(s)', '속력(m/s)', 5, 25, [1, 2, 3, 4, 5], [20], [{ p: [[0, 20], [5, 20]] }], [[0, 0], [4, 0], [4, 20], [0, 20]]),
+    verify: () => 20 * 4,
+    hint: '아랫부분의 넓이 = 속력 × 시간',
+    sol: '20 m/s × 4 s = 80 m (직사각형의 넓이).' },
+  { tag: '그래프의 넓이', type: 'mc', q: '시간-속력 그래프에서 그래프 <b>아랫부분의 넓이</b>가 나타내는 것은?',
+    opts: ['속력', '이동 거리', '걸린 시간', '힘의 크기', '속력의 변화량'], ans: 2,
+    hint: '넓이 = 가로(시간) × 세로(속력)',
+    sol: '넓이 = 속력 × 시간 = 이동 거리.' },
+  { tag: '시간-속력 그래프', type: 'mc', q: '그림은 5 m/s로 등속 운동하는 물체의 시간-속력 그래프이다. 2초부터 6초까지 이동한 거리(색칠한 부분)는?',
+    opts: u(20, 5, ' m'), ans: 3,
+    fig: () => graph('시간(s)', '속력(m/s)', 6, 6, [2, 4, 6], [5], [{ p: [[0, 5], [6, 5]] }], [[2, 0], [6, 0], [6, 5], [2, 5]]),
+    verify: () => 5 * (6 - 2),
+    hint: '가로 = 6 − 2 = 4초',
+    sol: '5 m/s × 4 s = 20 m.' },
+  { tag: '그래프 바꾸기', type: 'mc', q: '그림의 시간-이동 거리 그래프를 시간-속력 그래프로 바르게 나타낸 것은?',
+    opts: ['속력 0인 수평선', '속력 4 m/s인 수평선', '속력 8 m/s인 수평선', '원점에서 4초에 16 m/s가 되는 직선', '속력 16 m/s인 수평선'], ans: 2,
+    fig: () => graph('시간(s)', '이동 거리(m)', 4, 16, [1, 2, 3, 4], [4, 8, 12, 16], [{ p: [[0, 0], [4, 16]], guide: [[2, 8]] }]),
+    hint: '먼저 기울기(속력)를 구하세요.',
+    sol: '기울기 = 16 ÷ 4 = 4 m/s로 일정 → 시간-속력 그래프는 4 m/s에서 시간축에 나란한 수평선.' },
+  { tag: '두 물체의 거리', type: 'mc', q: '그림은 같은 위치에서 같은 방향으로 동시에 출발한 A, B의 시간-속력 그래프이다. 5초 후 A와 B 사이의 거리는?',
+    opts: u(20, 5, ' m'), ans: 3,
+    fig: () => graph('시간(s)', '속력(m/s)', 5, 12, [1, 2, 3, 4, 5], [6, 10], [{ p: [[0, 10], [5, 10]], name: 'A' }, { p: [[0, 6], [5, 6]], name: 'B' }]),
+    verify: () => (10 - 6) * 5,
+    hint: '각각의 이동 거리 = 넓이',
+    sol: 'A: 10 × 5 = 50 m, B: 6 × 5 = 30 m → 50 − 30 = 20 m.' },
+
+  /* 27~30. 추가 개념 */
+  { tag: '힘이 없을 때', type: 'mc', q: '마찰이 없는 수평면에서 운동하던 물체에 아무런 힘도 작용하지 않으면, 이 물체는 어떤 운동을 하는가?',
+    opts: ['곧바로 멈춘다.', '점점 느려지다가 멈춘다.', '점점 빨라진다.', '처음 속력 그대로 같은 방향으로 계속 운동한다(등속 직선 운동).', '운동 방향이 반대로 바뀐다.'], ans: 4,
+    hint: '힘은 운동 상태를 "변화"시키는 원인입니다.',
+    sol: '운동 상태를 바꿀 힘이 없으므로 빠르기와 방향이 그대로 유지된다 → 등속 직선 운동.' },
+  { tag: '수평으로 던진 물체', type: 'mc', q: '그림은 수평으로 던진 공의 운동을 일정한 시간 간격으로 나타낸 것이다. 이 운동을 바르게 설명한 것은?',
+    opts: ['수평 방향: 자유 낙하 / 연직 방향: 등속 운동', '수평 방향: 등속 운동 / 연직 방향: 자유 낙하 운동', '두 방향 모두 등속 운동', '두 방향 모두 점점 빨라진다', '수평 방향: 점점 느려짐 / 연직 방향: 등속 운동'], ans: 2,
+    fig: () => throwFig(80, 20),
+    hint: '공의 가로 간격과 세로 간격을 각각 보세요.',
+    sol: '수평 방향으로는 힘이 작용하지 않아 같은 시간 동안 같은 거리를 가는 등속 운동, 연직 방향으로는 중력을 받아 자유 낙하 운동을 한다. 그래서 포물선 모양이 된다.' },
+  { tag: '수평으로 던진 물체', type: 'mc', q: '높이 80 m에서 공을 20 m/s로 수평으로 던졌더니 4초 후 땅에 떨어졌다. 공이 수평 방향으로 이동한 거리는? (단, 공기 저항은 무시한다.)',
+    opts: u(80, 20, ' m'), ans: 3,
+    fig: () => throwFig(80, 20),
+    verify: () => 20 * Math.sqrt(2 * 80 / 10),
+    hint: '수평 방향은 등속 운동: 거리 = 속력 × 시간',
+    sol: '수평 방향 속력 20 m/s가 일정하므로 20 m/s × 4 s = 80 m.' },
+  { tag: '떨어뜨리기 vs 던지기', type: 'mc', q: '같은 높이에서 공 A는 가만히 놓아 떨어뜨리고, 동시에 공 B는 수평으로 던졌다. 두 공이 땅에 닿는 순서는? (단, 공기 저항은 무시한다.)',
+    opts: ['A가 먼저 닿는다.', 'B가 먼저 닿는다.', '동시에 닿는다.', 'B를 세게 던질수록 B가 먼저 닿는다.', '공의 크기에 따라 다르다.'], ans: 3,
+    fig: () => throwFig(45, 15, true),
+    hint: '그림에서 같은 시각의 A와 B의 높이를 비교하세요.',
+    sol: '연직 방향으로는 둘 다 자유 낙하 운동을 하므로 같은 시각에 높이가 같다 → 동시에 땅에 닿는다. 수평 속력은 떨어지는 시간에 영향을 주지 않는다.' }
+];
+// 6번 정답 보정: 15 m/s가 셋이므로 '가장 느린 것'으로 묻는다
+PROBLEMS[5].q = '다음 중 가장 <b>느린</b> 것은?';
+PROBLEMS[5].opts = ['12 m/s로 달리는 자동차', '1분에 600 m를 가는 자전거', '54 km/h로 달리는 버스', '2초에 16 m를 달리는 강아지', '1시간에 18 km를 가는 배'];
+PROBLEMS[5].ans = 5;
+PROBLEMS[5].sol = '모두 m/s로 바꾸면 ① 12 ② 600 ÷ 60 = 10 ③ 54 ÷ 3.6 = 15 ④ 16 ÷ 2 = 8 ⑤ 18000 ÷ 3600 = 5 m/s. 가장 느린 것은 ⑤ 배.';
+PROBLEMS[5].hint = '모두 m/s로 바꿔 비교하세요. km/h → m/s는 3.6으로 나눕니다.';
+// 정답 위치 고르게: 등간격 숫자 선택지는 순서를 유지한 채 범위를 옮기고, 설명형은 자리를 바꾼다
+const TGT = [0, 0, 0, 1, 5, 0, 0, 4, 2, 5, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 5, 0, 4, 0, 1, 0, 0, 5, 0];
+PROBLEMS.forEach((p, i) => {
+  const to = TGT[i]; if (!to) return;
+  const m = p.opts.map(o => o.match(/^([\d.]+)(\D*)$/));
+  if (!m.every(Boolean)) return;
+  const nums = m.map(x => +x[1]), step = +(nums[1] - nums[0]).toFixed(4), a = nums[p.ans - 1];
+  if (a - (to - 1) * step <= 0) return;
+  p.opts = [1, 2, 3, 4, 5].map(k => +(a + (k - to) * step).toFixed(2) + m[0][2]);
+  p.ans = to;
+});
+[[0, 1], [2, 5], [6, 1], [10, 4], [12, 1], [17, 5], [19, 1], [26, 5], [27, 1], [29, 4]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'sci13-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    (fig.balls || []).forEach(b => all.push(b.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.balls || []).forEach(b => { const p = T(b.at); out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="${b.r || 7}" style="fill:${b.c === 1 ? 'var(--accent)' : 'var(--pen)'};stroke:var(--ink);stroke-width:.8"/>`; });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : (t.s ? '600 ' + t.s + 'px var(--f-body)' : '600 12.5px var(--f-body)')}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
