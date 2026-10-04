@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>비문학 독해 개념 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">국어 · 필독 01강 비문학 독해 개념 학습 (p.10~15)</div>
+    <h1>비문학 독해 개념 30제</h1>
+    <p class="lede">필독 01강 "비문학 독해" 개념 학습을 완벽하게 이해하는 30문항입니다. 사실적 읽기(화제·중심 화제·중심 문장·주제, 정의·예시·인용·인과·분류·분석, 원인-결과·주장-근거·문제-해결·주지-상세화·원리-적용·대립·전제-결론)와 추론적 읽기(추론의 뜻, 맥락과 배경지식, 담화 표지, 숨겨진 주제), 그리고 흄 지문 개념 적용까지 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 필독 01강 비문학 독해 개념 학습 ---------- */
+const P = (label, body) => `<div class="bogi psg"><span>${label}</span>${body}</div>`;
+const BOX = t => `<div style="border:1.5px solid var(--rule);border-radius:8px;padding:6px 10px;margin:4px auto;max-width:300px;text-align:center;background:var(--sheet)">${t}</div>`;
+const ARROW = '<div style="text-align:center;color:var(--ink-soft)">↓</div>';
+const HUME = P('흄 지문 (요약)', `흄은 지식의 근원을 경험으로 보고, 이를 인상과 관념으로 구분하여 설명하였다. 인상은 오감을 통해 얻을 수 있는 감각이나 감정 등을 말하고, 관념은 인상을 머릿속에 떠올리는 것을 말한다. 가령 혀로 소금의 '짠맛'을 느끼는 것은 인상이고, 머릿속으로 '짠맛'을 떠올리는 것은 관념이다. 인상은 단일 감각을 통해 얻은 단순 인상과, 단순 인상들이 결합된 복합 인상으로 나뉜다. 따라서 '짜다'는 단순 인상에, '짜다'와 '희다' 등이 결합된 소금의 인상은 복합 인상에 해당한다. 흄은 단순 인상이 없다면 단순 관념이 존재하지 않는다고 보았다. 그런데 '황금 소금'은 현실에 존재하지 않아 그 자체에 대한 복합 인상은 없지만, '황금'과 '소금' 각각의 인상이 존재하기 때문에 복합 관념이 존재할 수 있다.<br><br>흄은 과학적 탐구 방식으로서의 인과 관계에 대해서도 비판적 태도를 보였다. 그는 인과 관계란 시공간적으로 인접한 두 사건이 반복해서 발생할 때 갖는 관찰자의 습관적인 기대에 불과하다고 말하였다. '까마귀 날자 배 떨어진다'라는 속담처럼, 우리는 두 사건을 관찰할 수 있을 뿐 두 사건 사이의 필연적 연결을 관찰할 수는 없다는 것이다. 결국 인과 관계를 통해 얻은 과학적 지식이 필연적이라는 생각은 적합하지 않다고 흄은 비판하였다. 그는 과학적 지식이라 하더라도 그것이 진리인지 확인할 수 없다는 회의적인 태도를 보였다.`);
+const PROBLEMS = [
+  /* ===== 1~6. 사실적 읽기 1: 중심 내용 파악 ===== */
+  { tag: '중심 내용 · 화제', type: 'mc', q: '"글에서 서술하고 있는 대상"을 가리키는 말은?',
+    opts: ['화제', '주제', '관점', '문맥', '담화 표지'], ans: 1,
+    hint: '"무엇에 대한 글인가?"의 답',
+    sol: '화제는 글에서 서술하고 있는 대상이다. 그중 글 전체에서 다루는 중심 대상이 중심 화제이다.' },
+  { tag: '중심 내용 · 중심 화제', type: 'mc', q: '중심 화제에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['글쓴이가 독자에게 요청하는 내용이다.', '글에서 다루고 있는 중심 대상으로, 글에서 반복적으로 나타나며 주제를 파악하는 중요한 단서가 된다.', '글의 마지막 문장에만 나타난다.', '글의 내용을 뒷받침하는 예시이다.', '글쓴이의 숨겨진 의도이다.'], ans: 2,
+    hint: '반복, 단서',
+    sol: '중심 화제는 글에서 다루는 중심 대상이며, 반복적으로 나타나 주제를 파악하는 중요한 단서가 된다.' },
+  { tag: '중심 내용 · 문단', type: 'mc', q: '문단의 구성을 바르게 나타낸 것은?',
+    opts: ['화제 + 주제', '중심 문장 + 뒷받침 문장', '서론 + 결론', '정의 + 예시', '원인 + 결과'], ans: 2,
+    hint: '문단 구조 파악 = 두 종류의 문장을 구별하기',
+    sol: '문단 = 중심 문장 + 뒷받침 문장. 문단 구조를 파악하려면 중심 문장과 뒷받침 문장을 구별할 수 있어야 한다.' },
+  { tag: '중심 내용 · 주제', type: 'mc', q: '"주제"에 대한 설명으로 알맞지 <b>않은</b> 것은?',
+    opts: ['글에서 말하고자 하는 중심 생각이다.', '주제를 파악하는 것은 독해의 핵심이다.', '각 문단의 중심 문장을 찾아 확정한다.', '각 중심 문장을 포괄할 수 있는 내용으로 정리하여 요약한다.', '글에 가장 많이 나온 낱말 하나가 곧 주제이다.'], ans: 5,
+    hint: '낱말 하나는 "화제"이지 "생각"이 아닙니다.',
+    sol: '자주 나오는 낱말은 중심 화제의 단서일 뿐이다. 주제는 그 화제에 대해 말하고자 하는 중심 "생각"으로, 문장 형태로 정리된다.' },
+  { tag: '중심 내용 · 중심 문장', type: 'mc', q: '다음 문단의 중심 문장은?' + P('문단', `㉠ 숲은 지구의 허파라고 불린다. ㉡ 숲은 이산화 탄소를 흡수하고 산소를 내보낸다. ㉢ 또한 숲은 빗물을 머금었다가 천천히 흘려보내 홍수와 가뭄을 줄여 준다. ㉣ 뿐만 아니라 수많은 동식물에게 살 곳을 제공한다. ㉤ 이처럼 숲은 우리 삶에 없어서는 안 될 여러 가지 이로움을 준다.`),
+    opts: ['㉠', '㉡', '㉢', '㉣', '㉤'], ans: 5,
+    hint: '나머지 문장을 모두 아우르는 문장은? "이처럼"에 주목',
+    sol: '㉡㉢㉣은 숲의 구체적인 이로움(뒷받침 문장)이고, ㉤ "이처럼 숲은 … 여러 가지 이로움을 준다"가 이를 포괄하는 중심 문장이다.' },
+  { tag: '중심 내용 · 순서', type: 'mc', q: '글의 주제를 확정하는 과정으로 가장 알맞은 것은?',
+    opts: ['첫 문장을 그대로 주제로 삼는다.', '각 문단의 중심 문장 찾기 → 중심 문장들을 포괄하는 내용으로 요약하기', '모르는 낱말의 뜻 찾기 → 제목 붙이기', '예시만 모아 정리하기', '마지막 문단만 읽기'], ans: 2,
+    hint: '"주제 확정하기" 표',
+    sol: '주제 확정: 각 문단의 중심 문장 찾기 → 각 중심 문장을 포괄할 수 있는 내용을 정리하여 요약하기.' },
+
+  /* ===== 7~14. 사실적 읽기 2: 전개 방식 ===== */
+  { tag: '전개 방식 · 뜻', type: 'mc', q: '글쓴이가 정보나 견해를 효과적으로 전달하기 위해 활용하는 내용 조직 원리나 서술 방식을 무엇이라 하는가?',
+    opts: ['글의 구조', '전개 방식', '담화 표지', '중심 화제', '배경지식'], ans: 2,
+    hint: '정의, 예시, 인과, 분류 등을 묶어 부르는 말',
+    sol: '전개 방식은 정보나 견해를 효과적으로 전달하기 위한 내용 조직 원리나 서술 방식이다.' },
+  { tag: '전개 방식 · 정의', type: 'mc', q: '"렘수면은 눈동자가 빨리 움직이면서 자는 얕은 수면이다."에 쓰인 전개 방식은?',
+    opts: ['예시', '인용', '정의', '분류', '분석'], ans: 3,
+    hint: '"무엇은 무엇이다" 형식',
+    sol: '"무엇은 무엇이다"라는 형식으로 개념을 설명하는 정의이다.' },
+  { tag: '전개 방식 · 예시', type: 'mc', q: '"문자의 기원으로 중국의 \'갑골 문자\', 메소포타미아의 \'쐐기 문자\'를 들 수 있다."에 쓰인 전개 방식은?',
+    opts: ['정의', '예시', '인과', '대조', '분석'], ans: 2,
+    hint: '구체적인 예를 들었나요?',
+    sol: '문자의 기원을 구체적인 예(갑골 문자, 쐐기 문자)를 들어 설명하는 예시이다.' },
+  { tag: '전개 방식 · 인용', type: 'mc', q: '"심리학자인 카너먼은 인간은 직감에 의해 문제를 해결하는 경향이 강하다고 주장했다."에 쓰인 전개 방식은?',
+    opts: ['인용', '정의', '분류', '인과', '예시'], ans: 1,
+    hint: '권위 있는 사람의 견해를 가져왔습니다.',
+    sol: '권위 있는 사람의 견해나 책의 내용 등을 가져다 쓰는 인용이다.' },
+  { tag: '전개 방식 · 인과', type: 'mc', q: '"올해 여름에는 태풍이 많이 왔다. 그래서 과일 재배 농가의 피해가 매우 컸다."에 대한 설명으로 옳은 것은?',
+    opts: ['대상을 종류별로 묶었다.', '어떤 결과를 가져온 원인과 그 결과를 밝히는 인과의 방식이다. "그래서"가 단서이다.', '대상을 구성 요소로 나누었다.', '두 대상의 차이점을 견주었다.', '개념을 "무엇은 무엇이다"로 풀이했다.'], ans: 2,
+    hint: '태풍(원인) → 피해(결과)',
+    sol: '태풍이 많이 옴(원인) → 그래서 → 농가 피해(결과): 인과.' },
+  { tag: '전개 방식 · 분류', type: 'mc', q: '"사람, 고래, 개는 포유류에 속하고, 까치와 까마귀는 조류에 속한다."에 쓰인 전개 방식은?',
+    opts: ['분석', '분류', '정의', '인용', '인과'], ans: 2,
+    hint: '대상을 일정한 기준에 따라 종류별로 묶었나요?',
+    sol: '대상을 일정한 기준에 따라 종류별로 묶어 설명하는 분류이다(포유류 / 조류).' },
+  { tag: '전개 방식 · 분석', type: 'mc', q: '"혈액은 고형 성분인 혈구와 액체 성분인 혈장으로 구성되어 있다."에 쓰인 전개 방식은?',
+    opts: ['분류', '예시', '분석', '인용', '정의'], ans: 3,
+    hint: '대상 하나를 구성 요소로 나누었나요?',
+    sol: '하나의 대상(혈액)을 구성 요소(혈구, 혈장)로 나누어 설명하는 분석이다.' },
+  { tag: '분류 vs 분석', type: 'mc', q: '분류와 분석의 차이를 바르게 설명한 것은?',
+    opts: ['분류는 하나를 구성 요소로 나누고, 분석은 여러 대상을 종류별로 묶는다.', '분류는 여러 대상을 기준에 따라 종류별로 묶고, 분석은 하나의 대상을 구성 요소로 나눈다.', '두 방식은 같은 말이다.', '분류는 원인을, 분석은 결과를 밝힌다.', '분석은 예를 드는 방식이다.'], ans: 2,
+    hint: '포유류/조류(여러 동물) vs 혈구/혈장(혈액 하나)',
+    sol: '분류: 여러 대상 → 같은 종류끼리 묶음. 분석: 한 대상 → 부분(구성 요소)으로 나눔.' },
+
+  /* ===== 15~20. 사실적 읽기 3: 글의 구조 ===== */
+  { tag: '글의 구조 · 주장-근거', type: 'mc', q: '한 문단이 말하고자 하는 바가 되고 다른 문단이 그 근거가 되는 문단 간의 관계는?',
+    opts: ['원인-결과', '주장-근거', '문제-해결', '대립', '원리-적용'], ans: 2,
+    hint: '말하고자 하는 바 = 주장',
+    sol: '한 문단이 주장이고 다른 문단이 근거가 되는 관계는 주장-근거 구조이다.' },
+  { tag: '글의 구조 · 문제-해결', type: 'mc', q: '한 문단이 어떤 현상이나 대상에 대한 문제나 과제를 제시하고, 다른 문단이 해결 방안을 제시하는 관계는?',
+    opts: ['주지-상세화', '전제-결론', '문제-해결', '대립', '원인-결과'], ans: 3,
+    hint: '문제 → 해결 방안',
+    sol: '문제(과제) 제시 → 해결 방안 제시: 문제-해결 구조.' },
+  { tag: '글의 구조 · 주지-상세화', type: 'mc', q: '주지-상세화 구조에서 상세화 방법인 "상술"과 "부연"을 바르게 설명한 것은?',
+    opts: ['상술: 주지에 새로운 내용을 덧붙임 / 부연: 주지를 상세하게 풀어 설명', '상술: 주지를 상세하게 풀어서 설명 / 부연: 주지에 새로운 내용을 덧붙여 이해를 도움', '상술: 반대 의견 제시 / 부연: 결론 제시', '둘 다 예를 드는 방법이다', '상술: 원인 / 부연: 결과'], ans: 2,
+    hint: '상(詳) = 자세히, 부(附) = 덧붙임',
+    sol: '상술은 주지를 상세하게 풀어서 설명하는 방법, 부연은 주지에 새로운 내용을 덧붙여 이해를 돕는 방법이다.' },
+  { tag: '글의 구조 · 원리-적용', type: 'mc', q: '"한 문단이 원리를 설명하고 다른 문단이 그 적용 방법을 예시하는 관계, 또는 구체적 사실을 예시하고 이를 바탕으로 원리를 설명하는 관계"는?',
+    opts: ['대립', '원리-적용', '전제-결론', '원인-결과', '문제-해결'], ans: 2,
+    hint: '원리 ↔ 적용(사실)',
+    sol: '원리-적용 구조이다. 원리 → 적용 순서뿐 아니라 사실(적용) → 원리 순서로도 쓰인다.' },
+  { tag: '글의 구조 · 대립 / 전제-결론', type: 'mc', q: '다음 설명과 글의 구조를 바르게 짝지은 것은?<br>(가) 서로 상반되는 둘 이상의 내용을 나열하는 관계<br>(나) 한 문단에서 조건이나 가정을 제시하고 다른 문단에서 그에 따른 결론을 제시하는 관계',
+    opts: ['(가) 원인-결과 (나) 대립', '(가) 대립 (나) 전제-결론', '(가) 주장-근거 (나) 원리-적용', '(가) 대립 (나) 문제-해결', '(가) 전제-결론 (나) 대립'], ans: 2,
+    hint: '상반 = 대립, 조건·가정 → 결론',
+    sol: '(가) 대립 (나) 전제-결론.' },
+  { tag: '글의 구조 · 구조도', type: 'mc', q: '어떤 글의 구조를 다음과 같이 정리했을 때, 이에 대한 설명으로 가장 알맞은 것은?' + BOX('인터넷 쇼핑에서 반품과 관련한 문제') + ARROW + BOX('청약 철회권의 개념 · 소비자가 청약 철회권을 행사할 수 없는 경우 · 판매자가 청약 철회를 방해하는 행위') + ARROW + BOX('소비자가 보호받는 건전한 거래 질서 확립 기대'),
+    opts: ['중심 화제와 관련된 여러 정보를 대등하게 나열하고만 있다.', '문제가 되는 상황을 밝힌 뒤 이를 해결할 수 있는 방안(청약 철회권)을 소개하고 있다.', '두 대상의 차이점을 대조하고 있다.', '권위자의 견해를 인용하여 주장을 강화하고 있다.', '시간 순서에 따라 사건을 서술하고 있다.'], ans: 2,
+    hint: '맨 위 상자는 "문제", 가운데는 그에 대한 "제도", 맨 아래는 "기대 효과"입니다.',
+    sol: '반품 관련 문제(문제 상황) → 청약 철회권의 개념·제한·방해 행위(해결 방안) → 건전한 거래 질서 기대. 문제-해결 구조이다. 가운데 세 정보는 나열되어 있지만 글 전체가 단순 나열은 아니다.' },
+
+  /* ===== 21~25. 추론적 읽기 ===== */
+  { tag: '추론 · 뜻', type: 'mc', q: '"추론"의 의미로 가장 알맞은 것은?',
+    opts: ['글에 쓰인 내용을 그대로 옮겨 적는 것', '주어진 내용을 근거로 삼아 겉으로 드러나지 않은 내용을 추측하는 것', '근거 없이 자유롭게 상상하는 것', '글의 문장 수를 세는 것', '모르는 낱말을 사전에서 찾는 것'], ans: 2,
+    hint: '추론에는 반드시 ( 근거 )가 있어야 합니다.',
+    sol: '추론은 주어진 내용을 근거로 삼아 겉으로 드러나지 않은 내용을 추측하는 것이다. 근거 없는 상상과 다르다.' },
+  { tag: '추론적 읽기', type: 'mc', q: '추론적 읽기에 대한 설명의 빈칸에 들어갈 말로 알맞은 것은?<br>글의 전체 ( ㉠ )과 ( ㉡ ) 등을 활용하여 생략된 내용이나 글쓴이의 의도, 가치관이나 관점 등을 파악하며 읽는 것',
+    opts: ['㉠ 제목 ㉡ 글자 수', '㉠ 맥락 ㉡ 배경지식', '㉠ 결론 ㉡ 첫 문장', '㉠ 낱말 ㉡ 문법', '㉠ 그림 ㉡ 표'], ans: 2,
+    hint: '판서의 두 동그라미',
+    sol: '글의 전체 맥락과 (독자의) 배경지식 등을 활용해 생략된 내용, 글쓴이의 의도·가치관·관점 등을 파악하며 읽는다.' },
+  { tag: '추론 · 필요성', type: 'mc', q: '추론적 읽기가 필요한 까닭으로 가장 알맞은 것은?',
+    opts: ['글쓴이는 모든 내용을 빠짐없이 쓰기 때문이다.', '글쓴이는 주제나 목적을 효과적으로 전달하기 위해 의도적으로 내용을 생략하거나 감추기도 하기 때문이다.', '글은 항상 거짓을 담고 있기 때문이다.', '독자는 글을 빨리 읽어야 하기 때문이다.', '추론은 시험에만 나오기 때문이다.'], ans: 2,
+    hint: '생략·감추기 → 그래서 독자는?',
+    sol: '글쓴이는 의도적으로 내용을 생략하거나 원하는 표현 효과를 위해 내용을 감추기도 한다 → 생략되어 있거나 숨겨진 내용을 추론하며 읽는 능력을 길러야 한다.' },
+  { tag: '생략된 내용 · 담화 표지', type: 'mc', q: '"글쓴이의 의도나 목적을 효과적으로 전달하기 위해 내용과 구조를 알려 주는 단어"(예: 예를 들면, 첫째, 둘째, 마지막으로)를 무엇이라 하는가?',
+    opts: ['중심 화제', '담화 표지', '뒷받침 문장', '배경지식', '관념'], ans: 2,
+    hint: '생략된 내용을 추론할 때 쓰는 세 가지: 배경지식, ( ), 문맥',
+    sol: '담화 표지이다. "그래서", "그러나", "예를 들면" 등은 앞뒤 내용의 관계와 글의 구조를 알려 준다.' },
+  { tag: '숨겨진 주제', type: 'mc', q: '주제가 겉으로 드러나지 않는 글을 읽는 방법으로 가장 알맞은 것은?',
+    opts: ['첫 문장을 주제로 본다.', '표면에 드러난 정보의 관계를 정확히 파악하고, 글쓴이의 입장이나 의도, 목적, 대상을 대하는 태도 등을 바탕으로 주제를 추론한다.', '주제가 없는 글로 판단한다.', '가장 긴 문단을 주제로 본다.', '독자의 생각을 주제로 정한다.'], ans: 2,
+    hint: '판서: (의도), 목적, (태도)',
+    sol: '숨겨진 주제는 드러난 정보의 관계와 글쓴이의 의도·목적·태도를 바탕으로 추론한다.' },
+
+  /* ===== 26~30. 개념 적용: 흄 ===== */
+  { tag: '흄 · 인상과 관념', type: 'mc', q: '다음 글에 따를 때, 인상과 관념의 예를 바르게 짝지은 것은?' + HUME,
+    opts: ['인상: 머릿속으로 짠맛을 떠올림 / 관념: 혀로 짠맛을 느낌', '인상: 혀로 소금의 짠맛을 느낌 / 관념: 머릿속으로 짠맛을 떠올림', '둘 다 머릿속으로 떠올리는 것이다', '인상: 황금 소금 / 관념: 소금', '인상: 인과 관계 / 관념: 경험'], ans: 2,
+    hint: '인상 = 오감, 관념 = 인상을 머릿속에 떠올림',
+    sol: '인상은 오감으로 얻는 감각·감정(혀로 짠맛을 느낌), 관념은 인상을 머릿속에 떠올리는 것(짠맛을 떠올림).' },
+  { tag: '흄 · 단순·복합', type: 'mc', q: '위 흄 지문에 따를 때, 옳지 <b>않은</b> 것은?',
+    opts: ['"짜다"는 단순 인상에 해당한다.', '소금의 인상은 "짜다", "희다" 등이 결합된 복합 인상이다.', '단순 인상이 없다면 단순 관념도 존재하지 않는다.', '"황금 소금"에 대한 복합 인상은 없다.', '"황금 소금"은 복합 인상이 없으므로 복합 관념도 존재할 수 없다.'], ans: 5,
+    hint: '"황금"과 "소금" 각각의 인상이 있다면?',
+    sol: '황금 소금 자체의 복합 인상은 없지만 황금과 소금 각각의 인상이 있으므로 복합 관념은 존재할 수 있다. 복합 관념은 복합 인상이 없더라도 존재할 수 있다.' },
+  { tag: '흄 · 인과 관계', type: 'mc', q: '흄이 말한 인과 관계에 대한 이해로 가장 알맞은 것은?',
+    opts: ['인과 관계는 관찰할 수 있는 필연적 연결이다.', '인과 관계란 시공간적으로 인접한 두 사건이 반복될 때 관찰자가 갖는 습관적인 기대에 불과하다.', '까마귀가 날면 반드시 배가 떨어진다.', '과학적 지식은 모두 필연적인 진리이다.', '인과 관계는 오감으로 직접 느낄 수 있는 인상이다.'], ans: 2,
+    hint: '"까마귀 날자 배 떨어진다"가 의미하는 것',
+    sol: '흄에 따르면 우리는 두 사건을 관찰할 수 있을 뿐 그 사이의 필연적 연결을 관찰할 수 없다. 인과 관계는 반복 경험에서 생긴 관찰자의 습관적 기대(주관적 판단)이다.' },
+  { tag: '흄 · 요약 빈칸', type: 'mc', q: '흄 지문을 요약한 글의 빈칸 ㉠~㉢에 들어갈 말로 바르게 짝지은 것은?' + P('요약', `흄은 지식의 근원을 ( ㉠ )으로 보고 경험을 인상과 관념으로 구분하여, 인상이 없는 지식은 과학적 지식이 될 수 없다고 주장하였다. … 흄은 과학적 지식이라 하더라도 그것이 ( ㉡ )인지 확인할 수 없다는 회의적인 태도를 보였다. 흄은 과학적 지식조차 ( ㉢ )으로 보아 비판을 받기도 하였지만, 경험을 중심으로 지식 및 진리의 문제를 탐구했다는 점에서 근대 철학에 새로운 방향성을 제시했다는 평가를 받는다.`),
+    opts: ['㉠ 이성 ㉡ 진리 ㉢ 낙관적', '㉠ 경험 ㉡ 진리 ㉢ 회의적', '㉠ 경험 ㉡ 관념 ㉢ 필연적', '㉠ 관념 ㉡ 인상 ㉢ 회의적', '㉠ 이성 ㉡ 경험 ㉢ 필연적'], ans: 2,
+    hint: '강의 판서: 경험 / 진리 / 회의적',
+    sol: '㉠ 경험 ㉡ 진리 ㉢ 회의적. 흄은 이성만 중시하던 당시 철학 사조와 달리 경험을 지식의 근원으로 보았다.' },
+  { tag: '흄 · 이유 추론', type: 'mc', q: '"흄은 서양 근대 철학사에서 극단적인 회의주의자로 평가받는다."의 이유를 흄 지문을 바탕으로 추론한 것으로 가장 알맞은 것은?',
+    opts: ['흄이 경험을 전혀 믿지 않았기 때문이다.', '흄이 이성만을 지식의 근원으로 보았기 때문이다.', '흄이 경험(인과 관계)을 통해서도 진리를 확인할 수 없다고 보았기 때문이다.', '흄이 과학적 지식은 모두 필연적이라고 보았기 때문이다.', '흄이 관념은 존재하지 않는다고 보았기 때문이다.'], ans: 3,
+    hint: '[A]: 경험을 통해 얻은 과학적 지식이라 하더라도 …',
+    sol: '흄은 경험을 통해 얻은 과학적 지식조차 그것이 진리인지 여부를 확인할 수 없다고 보았다. 지식의 근원인 경험으로도 진리를 확인할 수 없다고 본 점에서 극단적인 회의주의자로 평가받는다.' }
+];
+// 정답 위치를 고르게 나눈다 (선택지 자리만 바꿈)
+[[1, 4], [2, 3], [5, 1], [6, 4], [8, 5], [10, 3], [11, 4], [13, 1], [14, 5], [15, 1], [16, 4], [17, 5], [18, 3], [19, 5], [20, 1], [22, 4], [24, 5], [25, 3], [27, 4], [28, 1], [9, 2], [26, 2], [12, 2]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'kor01-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
