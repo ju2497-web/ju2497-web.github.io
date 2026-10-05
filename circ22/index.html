@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>원과 부채꼴 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 수학 · 평면도형 · 22강 원과 부채꼴 (p.58~59)</div>
+    <h1>원과 부채꼴 30제</h1>
+    <p class="lede">22강 원과 부채꼴 100점 개념과 STEP 1 시험에 꼭 나오는 문제를 완벽하게 이해하는 30문항입니다. 호·현·부채꼴·활꼴, 원주율, 중심각과 호의 길이·넓이의 정비례(현은 정비례하지 않음), 지름과 현이 이루는 각, 원의 둘레와 넓이, 부채꼴 공식과 S = ½rl, 정삼각형이 숨은 부채꼴 넓이, 세 반원의 초승달 둘레, 두 부채꼴 사이의 둘레와 넓이까지 그림과 함께 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>그림</b>은 문제 조건에 맞게 그렸습니다</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 기하 도우미 ---------- */
+const G = {
+  add: (a, b) => [a[0] + b[0], a[1] + b[1]],
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1]],
+  mul: (a, k) => [a[0] * k, a[1] * k],
+  len: (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]),
+  unit: (a, b) => { const d = Math.hypot(b[0] - a[0], b[1] - a[1]); return [(b[0] - a[0]) / d, (b[1] - a[1]) / d]; },
+  rad: d => d * Math.PI / 180,
+  rot(p, deg, c = [0, 0]) {
+    const t = deg * Math.PI / 180, x = p[0] - c[0], y = p[1] - c[1];
+    return [c[0] + x * Math.cos(t) - y * Math.sin(t), c[1] + x * Math.sin(t) + y * Math.cos(t)];
+  },
+  inter(p1, p2, p3, p4) {
+    const d1 = [p2[0] - p1[0], p2[1] - p1[1]], d2 = [p4[0] - p3[0], p4[1] - p3[1]];
+    const den = d1[0] * d2[1] - d1[1] * d2[0];
+    const t = ((p3[0] - p1[0]) * d2[1] - (p3[1] - p1[1]) * d2[0]) / den;
+    return [p1[0] + t * d1[0], p1[1] + t * d1[1]];
+  },
+  foot(p, a, b) {
+    const d = [b[0] - a[0], b[1] - a[1]];
+    const t = ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]);
+    return [a[0] + t * d[0], a[1] + t * d[1]];
+  },
+  angle(a, v, b) {
+    const u = [a[0] - v[0], a[1] - v[1]], w = [b[0] - v[0], b[1] - v[1]];
+    const c = (u[0] * w[0] + u[1] * w[1]) / Math.hypot(...u) / Math.hypot(...w);
+    return Math.acos(Math.max(-1, Math.min(1, c))) * 180 / Math.PI;
+  },
+  circ(c1, r1, c2, r2) {
+    const d = G.len(c1, c2), a = (r1 * r1 - r2 * r2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, r1 * r1 - a * a));
+    const m = [c1[0] + a * (c2[0] - c1[0]) / d, c1[1] + a * (c2[1] - c1[1]) / d];
+    const o = [-(c2[1] - c1[1]) * h / d, (c2[0] - c1[0]) * h / d];
+    return [[m[0] + o[0], m[1] + o[1]], [m[0] - o[0], m[1] - o[1]]];
+  },
+  area(...ps) {
+    let s = 0;
+    for (let i = 0; i < ps.length; i++) { const p = ps[i], q = ps[(i + 1) % ps.length]; s += p[0] * q[1] - q[0] * p[1]; }
+    return Math.abs(s) / 2;
+  },
+  tan: d => Math.tan(d * Math.PI / 180),
+  sin: d => Math.sin(d * Math.PI / 180),
+  cos: d => Math.cos(d * Math.PI / 180)
+};
+const S3 = Math.sqrt(3);
+
+/* ---------- 도형 빌더 ---------- */
+const dirp = (p, d, r) => [p[0] + r * G.cos(d), p[1] + r * G.sin(d)];
+const LET = 'ABCDEFGHIJKLMNOPQRST';
+function reg(n, R = 5, rot = 90) {
+  const pts = {};
+  for (let i = 0; i < n; i++) pts[LET[i]] = dirp([0, 0], rot + 360 * i / n, R);
+  return pts;
+}
+const ring = n => [...Array(n).keys()].map(i => [LET[i], LET[(i + 1) % n]]);
+// 꺾이는 각(외각) turns 로 다각형을 만든다. lens는 앞의 n-2개 변의 길이
+function polygon(turns, lens) {
+  const n = turns.length + 1, V = [[0, 0]], dirs = [0];
+  let d = 0;
+  turns.forEach(t => { d += t; dirs.push(d); });
+  for (let i = 0; i < n - 2; i++) V.push(dirp(V[i], dirs[i], lens[i]));
+  const u = [G.cos(dirs[n - 2]), G.sin(dirs[n - 2])], w = [G.cos(dirs[n - 1]), G.sin(dirs[n - 1])];
+  const r = G.sub(V[0], V[n - 2]), s = (r[0] * w[1] - r[1] * w[0]) / (u[0] * w[1] - u[1] * w[0]);
+  V.push(G.add(V[n - 2], G.mul(u, s)));
+  const pts = {};
+  V.forEach((p, i) => { pts[LET[i]] = p; });
+  return pts;
+}
+// 점 P에서 두 방향으로 뻗은 반직선 위에 두 꼭짓점을 잡아, 그 꼭짓점들의 각이 a1, a2인 삼각형
+function triAt(P, d1, d2, a1, a2, L) {
+  const apex = 180 - a1 - a2;          // P에서의 각
+  const s1 = L * G.sin(a2) / G.sin(a1); // (P에서 첫째 꼭짓점까지) : (둘째까지) = sin a2 : sin a1
+  return [dirp(P, d1, s1), dirp(P, d2, L)];
+}
+function bowtie(aA, aD, aB, labels) {
+  const E = [0, 0], dA = 125, dD = 200;               // ∠AED = 75°
+  const [A, D] = triAt(E, dA, dD, aA, aD, 4);
+  const eAng = 180 - aA - aD, aC = 180 - eAng - aB;
+  const [B, C] = triAt(E, dA + 180, dD + 180, aB, aC, 4.2);
+  return {
+    pts: { A, B, C, D, E },
+    segs: ['AB', 'CD', 'AD', 'CB'],
+    angs: [['E', 'A', 'D', labels[0], 30], ['A', 'D', 'E', labels[1], 34], ['C', 'B', 'E', labels[2], 34], ['E', 'C', 'B', labels[3], 30]],
+    lab: { A: 'n', B: 's', C: 'n', D: 's', E: 'e' }
+  };
+}
+// 끝 각이 tips[j]인 별 모양: 직선 k의 법선 각을 정오각별에서 조금씩 비튼다
+function star(tips) {
+  const eps = [0, 0, 0, 0, 0];
+  let j = 0;
+  for (let step = 0; step < 4; step++) { const k = (j + 3) % 5; eps[k] = eps[j] - (36 - tips[j]); j = k; }
+  const R = 5, d = R * G.cos(72);
+  const line = k => { const ph = 162 + 72 * k + eps[k], n = [G.cos(ph), G.sin(ph)]; return [G.mul(n, d), G.add(G.mul(n, d), [-n[1], n[0]])]; };
+  const pts = {};
+  for (let q = 0; q < 5; q++) { const a = line(q), b = line((q + 3) % 5); pts['_' + q] = G.inter(a[0], a[1], b[0], b[1]); }
+  return pts;
+}
+function isoCount(n) {
+  const P = Object.values(reg(n)), key = (a, b) => G.len(P[a], P[b]).toFixed(6);
+  let c = 0;
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) for (let k = j + 1; k < n; k++) {
+    const s = [key(i, j), key(j, k), key(i, k)];
+    if (s[0] === s[1] || s[1] === s[2] || s[0] === s[2]) c++;
+  }
+  return c;
+}
+function circlePts(n, extra) {
+  const pts = { O: [0, 0] };
+  for (let i = 0; i < n; i++) pts['P' + (i + 1)] = dirp([0, 0], 90 - 360 * i / n, 5);
+  return { pts, segs: (extra || []), arcs: [{ c: [0, 0], r: 5, a1: 0, a2: 360 }], lab: { O: 's' } };
+}
+function exteriorMarks(pts, n, idx, labels) {
+  const ext = {}, angs = [], segs = [];
+  idx.forEach((i, k) => {
+    const P = pts[LET[(i - 1 + n) % n]], V = pts[LET[i]], key = '_x' + i;
+    ext[key] = G.add(V, G.mul(G.unit(P, V), 2));
+    angs.push([key, LET[i], LET[(i + 1) % n], labels[k], 26]);
+    segs.push({ a: LET[i], b: key, st: 'dash' });
+  });
+  return { ext, angs, segs };
+}
+
+// 원 위의 점(중심 c, 반지름 r, 각 d)
+const onC = (c, r, d) => dirp(c, d, r);
+// 호를 점들로 만들어 pts에 넣고 이름 목록을 돌려준다 (a1 → a2, 도 단위)
+function arcPts(pts, key, c, r, a1, a2, n = 24) {
+  const names = [];
+  for (let i = 0; i <= n; i++) { const k = '_' + key + i; pts[k] = onC(c, r, a1 + (a2 - a1) * i / n); names.push(k); }
+  return names;
+}
+const chain = (segs, names, st) => { for (let i = 1; i < names.length; i++) segs.push(st ? { a: names[i - 1], b: names[i], st } : [names[i - 1], names[i]]); };
+function withCircle(f, r = 5) { const n = arcPts(f.pts, 'cc', [0, 0], r, 0, 360, 90); f.segs = n.slice(1).map((k, i) => [n[i], k]).concat(f.segs); delete f.arcs; return f; }
+const ang = (p, c) => Math.atan2(p[1] - c[1], p[0] - c[0]) * 180 / Math.PI;
+// 지름 AB, ∠ABC = t
+function diamFig(t) {
+  const pts = { O: [0, 0], A: [-5, 0], B: [5, 0] };
+  pts.C = onC([0, 0], 5, 180 + 2 * t);
+  return withCircle({ pts, segs: ['AB', 'BC', { a: 'O', b: 'C', st: 'dash' }], angs: [['A', 'B', 'C', t + '°', 34]], lab: { O: 'n', C: 's' } });
+}
+// 부채꼴 AOB(중심각 x, 반지름 r)
+function sectorFig(x, r, labels) {
+  const pts = { O: [0, 0] }, a = arcPts(pts, 'a', [0, 0], r, 0, x);
+  pts.A = pts[a[a.length - 1]]; pts.B = pts[a[0]];
+  const segs = [{ a: 'O', b: 'A' }, { a: 'O', b: 'B' }]; chain(segs, a, 'red');
+  return { pts, segs, polys: [['O'].concat(a)], angs: [['B', 'O', 'A', labels.x || x + '°', 20]], text: labels.r ? [{ t: labels.r, at: G.mul(G.add(pts.B, [0, 0]), .5).map((v, i) => v + (i ? -0.5 : 0)) }] : [], lab: { O: 'w', A: 'n', B: 'e' } };
+}
+// 원 O에서 OA = AB(∠AOB = 60°), M은 AB의 중점, MO 연장선과 원의 교점 C, ∠COD = d
+function step04(d) {
+  const pts = { O: [0, 0] };
+  pts.A = onC([0, 0], 5, 120); pts.B = onC([0, 0], 5, 180); pts.M = G.mul(G.add(pts.A, pts.B), .5);
+  pts.C = onC([0, 0], 5, 330); pts.D = onC([0, 0], 5, 330 + d);
+  const a = arcPts(pts, 's', [0, 0], 5, 330 + d, 480);
+  const segs = ['OA', 'OB', 'AB', { a: 'M', b: 'C' }, 'OD']; chain(segs, a, 'red');
+  return withCircle({ pts, segs, polys: [['O'].concat(a)], ticks: [['O', 'A', 2], ['A', 'B', 2], ['O', 'B', 2]], angs: [['C', 'O', 'D', d + '°', 20]], lab: { M: 'nw', O: 's', C: 'se', D: 'e' } });
+}
+// 직각삼각형의 세 변을 지름으로 하는 반원 (빗변 BC 위쪽, 두 초승달 색칠)
+function lunes(a, b) {
+  const c = Math.hypot(a, b), pts = { B: [0, 0], C: [c, 0] };
+  pts.A = [b * b / c, a * b / c]; // AB = b, AC = a
+  const segs = ['AB', 'AC', 'BC'], polys = [];
+  const mBC = [c / 2, 0], angA = ang(pts.A, mBC);
+  [['B', 'A', 'l1'], ['A', 'C', 'l2']].forEach(([p, q, k]) => {
+    const m = G.mul(G.add(pts[p], pts[q]), .5), r = G.len(pts[p], pts[q]) / 2, a1 = ang(pts[p], m);
+    // 바깥쪽(삼각형 반대쪽) 반원: 시작각 a1에서 -180° 방향
+    const outer = arcPts(pts, k, m, r, a1, a1 - 180);
+    chain(segs, outer, 'red');
+    const inner = p === 'B' ? arcPts(pts, k + 'i', mBC, c / 2, angA, 180) : arcPts(pts, k + 'i', mBC, c / 2, 0, angA);
+    polys.push(outer.concat(inner));
+  });
+  const hyp = arcPts(pts, 'h', mBC, c / 2, 0, 180, 40); chain(segs, hyp);
+  return { pts, segs, polys, right: [['A', 'B', 'C']], text: [{ t: b + ' cm', at: G.add(G.mul(pts.A, .5), [0.9, -0.3]) }, { t: a + ' cm', at: G.add(G.mul(G.add(pts.A, pts.C), .5), [-0.9, -0.3]) }, { t: c + ' cm', at: [c / 2, -0.6] }], lab: { A: 'n', B: 'sw', C: 'se' } };
+}
+// 중심각 x, 반지름 r1 < r2 인 두 부채꼴 사이(색칠)
+function ringSector(x, r1, r2) {
+  const pts = { P: [0, 0] }, o = arcPts(pts, 'o', [0, 0], r2, 0, x), i = arcPts(pts, 'i', [0, 0], r1, x, 0);
+  const segs = [{ a: 'P', b: o[0] }, { a: 'P', b: o[o.length - 1] }]; chain(segs, o, 'red'); chain(segs, i, 'red');
+  segs.push({ a: o[0], b: i[i.length - 1], st: 'red' }, { a: o[o.length - 1], b: i[0], st: 'red' });
+  return { pts, segs, polys: [o.concat(i)], angs: [[o[0], 'P', o[o.length - 1], x + '°', 16]], text: [{ t: r1 + ' cm', at: [r1 / 2, -0.7] }, { t: (r2 - r1) + ' cm', at: [(r1 + r2) / 2, -0.7] }], lab: { P: 'w' } };
+}
+// 한 원에서 중심각과 호
+function twoSectors(x1, x2, lab1, lab2) {
+  const pts = { O: [0, 0] };
+  const a = arcPts(pts, 'a', [0, 0], 5, 100, 100 + x1, 12), b = arcPts(pts, 'b', [0, 0], 5, 330 - x2, 330, 12);
+  pts.A = pts[a[0]]; pts.B = pts[a[a.length - 1]]; pts.C = pts[b[0]]; pts.D = pts[b[b.length - 1]];
+  const segs = ['OA', 'OB', 'OC', 'OD']; chain(segs, a, 'red'); chain(segs, b, 'red');
+  return withCircle({ pts, segs, polys: [['O'].concat(a), ['O'].concat(b)], angs: [['A', 'O', 'B', x1 + '°', 16], ['C', 'O', 'D', x2 + '°', 16]], text: [lab1, lab2].map((t, i) => t ? { t, at: onC([0, 0], 6.2, i ? 330 - x2 / 2 : 100 + x1 / 2) } : null).filter(Boolean), lab: { O: 's' } });
+}
+
+/* ---------- 30문항 (모두 오지선다) — 22강 원과 부채꼴 ---------- */
+const u = (n, s, unit) => [-2, -1, 0, 1, 2].map(k => +(n + k * s).toFixed(2) + unit);
+const PROBLEMS = [
+  /* 1~5. 원과 부채꼴의 뜻 */
+  { tag: '용어', type: 'mc', q: '원 O 위의 두 점 C, D를 이은 <b>선분</b>을 무엇이라 하는가?',
+    opts: ['호', '현', '부채꼴', '활꼴', '중심각'], ans: 2,
+    hint: '호는 곡선, 현은 선분',
+    sol: '원 위의 두 점을 이은 선분은 현이다. 두 점을 양 끝으로 하는 원의 일부분(곡선)은 호이다.' },
+  { tag: '용어', type: 'mc', q: '다음 설명과 용어를 바르게 짝지은 것은?<br>(가) 원 O에서 두 반지름 OA, OB와 호 AB로 이루어진 도형<br>(나) 원 O에서 현 CD와 호 CD로 이루어진 도형',
+    opts: ['(가) 활꼴 (나) 부채꼴', '(가) 부채꼴 (나) 활꼴', '(가) 부채꼴 (나) 중심각', '(가) 현 (나) 호', '(가) 중심각 (나) 활꼴'], ans: 2,
+    hint: '반지름 두 개 + 호 / 현 + 호',
+    sol: '(가) 두 반지름과 호 → 부채꼴 (나) 현과 호 → 활꼴.' },
+  { tag: '옳은 것 고르기', type: 'mc', q: '원과 부채꼴에 대한 설명으로 옳은 것을 &lt;보기&gt;에서 모두 고른 것은?<div class="bogi"><span>보기</span>ㄱ. 한 원에서 길이가 가장 긴 현은 지름이다.<br>ㄴ. 한 원에서 현의 길이는 중심각의 크기에 정비례한다.<br>ㄷ. 한 원에서 부채꼴의 호의 길이와 넓이는 각각 중심각의 크기에 정비례한다.<br>ㄹ. 한 원에서 부채꼴이면서 활꼴이 되는 경우가 있다.</div>',
+    opts: ['ㄱ, ㄴ', 'ㄱ, ㄷ', 'ㄴ, ㄹ', 'ㄱ, ㄷ, ㄹ', 'ㄱ, ㄴ, ㄷ, ㄹ'], ans: 4,
+    hint: '중심각이 2배가 되면 현도 2배가 될까요? 반원을 생각해 보세요.',
+    sol: 'ㄱ (○) ㄴ (×) 현의 길이는 중심각에 정비례하지 않는다(중심각 60°→ 현 = r, 120° → 현 ≠ 2r). ㄷ (○) ㄹ (○) 반원은 부채꼴이면서 활꼴이다. 원래 문제의 "② 두 원에서 같은 중심각에 대한 현의 길이는 항상 같다"는 원의 크기가 다르면 틀린 말이다.' },
+  { tag: '부채꼴 = 활꼴', type: 'mc', q: '한 원에서 부채꼴이면서 동시에 활꼴이 되는 도형의 중심각의 크기는?',
+    opts: ['60°', '90°', '120°', '180°', '360°'], ans: 4,
+    hint: '현이 지름이 되면?',
+    sol: '현이 지름일 때(중심각 180°) 반원은 두 반지름(=지름)과 호로 이루어진 부채꼴이면서, 현(지름)과 호로 이루어진 활꼴이다.' },
+  { tag: '원주율', type: 'mc', q: '원주율 π에 대한 설명으로 옳은 것은?',
+    opts: ['원의 반지름의 길이에 대한 넓이의 비율', '원의 지름의 길이에 대한 원의 둘레의 길이의 비율', '원의 둘레의 길이에 대한 지름의 비율', '원의 넓이에 대한 둘레의 비율', '원의 크기가 클수록 커진다.'], ans: 2,
+    hint: 'l ÷ 2r = π',
+    sol: '원주율은 (원의 둘레) ÷ (지름)으로, 원의 크기와 관계없이 일정하며 π로 나타낸다. 그래서 l = 2πr.' },
+
+  /* 6~9. 중심각과 호, 넓이의 정비례 */
+  { tag: '중심각과 호', type: 'mc', q: '그림의 원 O에서 ∠AOB = 30°, ∠COD = 90°이고 호 AB의 길이가 4 cm일 때, 호 CD의 길이는?',
+    opts: u(12, 2, ' cm'), ans: 3,
+    fig: () => twoSectors(30, 90, '4 cm', 'x'),
+    hint: '호의 길이는 중심각의 크기에 정비례',
+    sol: '30° : 90° = 4 : x → x = 12 cm.' },
+  { tag: '중심각과 넓이', type: 'mc', q: '한 원에서 중심각의 크기가 40°인 부채꼴의 넓이가 10 cm²일 때, 중심각의 크기가 140°인 부채꼴의 넓이는?',
+    opts: u(35, 5, ' cm²'), ans: 3,
+    hint: '40 : 140 = 10 : x',
+    sol: '넓이는 중심각의 크기에 정비례 → x = 10 × 140/40 = 35 cm².' },
+  { tag: '중심각의 비', type: 'mc', q: '한 원에서 세 부채꼴의 중심각의 크기의 비가 2 : 3 : 7이고 가장 큰 부채꼴의 호의 길이가 21 cm일 때, 가장 작은 부채꼴의 호의 길이는?',
+    opts: u(6, 1, ' cm'), ans: 3,
+    hint: '호의 길이의 비 = 중심각의 비',
+    sol: '호의 길이의 비도 2 : 3 : 7 → 가장 작은 호 = 21 × 2/7 = 6 cm.' },
+  { tag: '현과 중심각', type: 'mc', q: '한 원에서 ∠AOB = 40°, ∠COD = 80°일 때, 옳은 것은?',
+    opts: ['호 CD = 2 × 호 AB, 현 CD = 2 × 현 AB', '호 CD = 2 × 호 AB, 현 CD &lt; 2 × 현 AB', '호 CD &lt; 2 × 호 AB, 현 CD = 2 × 현 AB', '호 CD = 호 AB', '현 CD = 현 AB'], ans: 2,
+    fig: () => twoSectors(40, 80, '', ''),
+    hint: '호는 정비례, 현은 정비례하지 않는다.',
+    sol: '호의 길이는 중심각에 정비례하므로 호 CD = 2 × 호 AB. 현 CD는 중심각을 반씩 나눈 두 현의 합보다 짧다(삼각형의 두 변의 합 > 나머지 한 변) → 현 CD &lt; 2 × 현 AB.' },
+
+  /* 10~12. STEP 1 02번형 */
+  { tag: '지름과 현', type: 'mc', q: '그림의 원 O에서 지름 AB와 현 BC가 이루는 각의 크기가 20°일 때, (호 BC의 길이) ÷ (호 AC의 길이)의 값은?',
+    opts: u(3.5, 0.1, ''), ans: 3,
+    fig: () => diamFig(20),
+    verify: f => G.angle(f.pts.B, f.pts.O, f.pts.C) / G.angle(f.pts.A, f.pts.O, f.pts.C),
+    hint: 'OB = OC이므로 △OBC는 이등변삼각형입니다.',
+    sol: '△OBC에서 ∠OCB = 20° → ∠BOC = 140°, ∠AOC = 180° − 140° = 40°. 호의 길이는 중심각에 정비례 → 140 ÷ 40 = 3.5.' },
+  { tag: '지름과 현', type: 'mc', q: '원 O에서 지름 AB와 현 BC가 이루는 각의 크기가 25°일 때, (호 BC) ÷ (호 AC)의 값은?',
+    opts: u(2.6, 0.1, ''), ans: 3,
+    fig: () => diamFig(25),
+    verify: f => G.angle(f.pts.B, f.pts.O, f.pts.C) / G.angle(f.pts.A, f.pts.O, f.pts.C),
+    hint: '∠BOC = 180° − 2 × 25°',
+    sol: '∠BOC = 130°, ∠AOC = 50° → 130 ÷ 50 = 2.6.' },
+  { tag: '지름과 현', type: 'mc', q: '원 O에서 지름 AB와 현 BC가 이루는 각의 크기가 15°이고 호 AC의 길이가 2π cm일 때, 호 BC의 길이는?',
+    opts: u(10, 1, 'π cm'), ans: 3,
+    fig: () => diamFig(15),
+    verify: f => 2 * G.angle(f.pts.B, f.pts.O, f.pts.C) / G.angle(f.pts.A, f.pts.O, f.pts.C),
+    hint: '∠AOC : ∠BOC = 30 : 150',
+    sol: '∠BOC = 150°, ∠AOC = 30° → 호 BC = 2π × 5 = 10π cm.' },
+
+  /* 13~16. 원의 둘레와 넓이 */
+  { tag: '원의 둘레·넓이', type: 'mc', q: '반지름의 길이가 7 cm인 원의 둘레의 길이와 넓이를 바르게 짝지은 것은?',
+    opts: ['7π cm, 49π cm²', '14π cm, 49π cm²', '14π cm, 14π cm²', '49π cm, 14π cm²', '7π cm, 14π cm²'], ans: 2,
+    hint: 'l = 2πr, S = πr²',
+    sol: 'l = 2π × 7 = 14π cm, S = π × 7² = 49π cm².' },
+  { tag: '둘레 → 넓이', type: 'mc', q: '둘레의 길이가 18π cm인 원의 넓이는?',
+    opts: u(81, 9, 'π cm²'), ans: 3,
+    hint: '2πr = 18π → r = ?',
+    sol: 'r = 9 cm → S = 81π cm².' },
+  { tag: '반원의 둘레', type: 'mc', q: '지름의 길이가 12 cm인 반원의 둘레의 길이는?',
+    opts: ['6π cm', '(6π + 6) cm', '(6π + 12) cm', '(12π + 12) cm', '12π cm'], ans: 3,
+    hint: '반원의 둘레 = 호(원 둘레의 절반) + 지름',
+    sol: '호 = 2π × 6 ÷ 2 = 6π cm, 지름 12 cm → (6π + 12) cm. 지름을 빠뜨리지 않도록 주의!' },
+  { tag: '반지름과 넓이', type: 'mc', q: '원의 반지름의 길이를 3배로 늘이면 넓이는 몇 배가 되는가?',
+    opts: ['3배', '6배', '9배', '12배', '27배'], ans: 3,
+    hint: 'S = πr²',
+    sol: 'π(3r)² = 9πr² → 9배. (둘레는 3배)' },
+
+  /* 17~22. 부채꼴의 호의 길이와 넓이 */
+  { tag: '부채꼴 공식', type: 'mc', q: '반지름의 길이가 6 cm, 중심각의 크기가 60°인 부채꼴의 호의 길이와 넓이를 바르게 짝지은 것은?',
+    opts: ['π cm, 3π cm²', '2π cm, 6π cm²', '2π cm, 12π cm²', '3π cm, 6π cm²', '6π cm, 36π cm²'], ans: 2,
+    fig: () => sectorFig(60, 5, { r: '6 cm' }),
+    hint: 'l = 2πr × x/360, S = πr² × x/360',
+    sol: 'l = 2π × 6 × 60/360 = 2π cm, S = π × 36 × 60/360 = 6π cm².' },
+  { tag: '부채꼴 공식', type: 'mc', q: '반지름의 길이가 8 cm, 중심각의 크기가 135°인 부채꼴의 넓이는?',
+    opts: u(24, 4, 'π cm²'), ans: 3,
+    fig: () => sectorFig(135, 5, { r: '8 cm' }),
+    hint: 'π × 64 × 135/360',
+    sol: '64π × 3/8 = 24π cm².' },
+  { tag: 'S = ½rl', type: 'mc', q: '반지름의 길이가 10 cm이고 호의 길이가 4π cm인 부채꼴의 넓이는?',
+    opts: u(20, 5, 'π cm²'), ans: 3,
+    hint: '중심각을 몰라도 S = ½ × r × l',
+    sol: 'S = ½ × 10 × 4π = 20π cm². (S = πr² × x/360 = ½ × (2πr × x/360) × r = ½rl)' },
+  { tag: 'S = ½rl 거꾸로', type: 'mc', q: '호의 길이가 3π cm, 넓이가 6π cm²인 부채꼴의 반지름의 길이는?',
+    opts: u(4, 1, ' cm'), ans: 3,
+    hint: '6π = ½ × r × 3π',
+    sol: '6π = ½ × r × 3π → r = 4 cm.' },
+  { tag: '중심각 구하기', type: 'mc', q: '반지름의 길이가 9 cm이고 호의 길이가 4π cm인 부채꼴의 중심각의 크기는?',
+    opts: u(80, 10, '°'), ans: 3,
+    hint: '2π × 9 × x/360 = 4π',
+    sol: '18π × x/360 = 4π → x = 80°.' },
+  { tag: '중심각 구하기', type: 'mc', q: '반지름의 길이가 12 cm이고 넓이가 30π cm²인 부채꼴의 중심각의 크기는?',
+    opts: u(75, 15, '°'), ans: 3,
+    hint: '144π × x/360 = 30π',
+    sol: 'x = 30 × 360 / 144 = 75°.' },
+
+  /* 23~24. STEP 1 04번형 */
+  { tag: '정삼각형과 부채꼴', type: 'mc', q: '그림의 원 O에서 OA = AB이고 부채꼴 AOB의 넓이가 15 cm²이다. ∠AOB의 이등분선과 현 AB가 만나는 점을 M, 반직선 MO가 원 O와 만나는 점을 C라 하자. ∠COD = 50°일 때, 부채꼴 AOD(색칠한 부분)의 넓이는?',
+    opts: u(25, 5, ' cm²'), ans: 3,
+    fig: () => step04(50),
+    verify: f => 15 * G.angle(f.pts.A, f.pts.O, f.pts.D) / G.angle(f.pts.A, f.pts.O, f.pts.B),
+    hint: 'OA = OB = AB → △OAB는 정삼각형, ∠AOB = 60°. ∠AOM = 30°이고 A, … 의 위치에서 ∠AOC = 180° − 30°',
+    sol: '△OAB가 정삼각형이므로 ∠AOB = 60°, ∠AOM = 30°. M, O, C는 한 직선 위에 있으므로 ∠AOC = 150°, ∠AOD = 150° − 50° = 100°. 넓이는 중심각에 정비례 → 15 × 100/60 = 25 cm².' },
+  { tag: '정삼각형과 부채꼴', type: 'mc', q: '앞 문제와 같은 조건에서 ∠COD = 30°일 때, 부채꼴 AOD의 넓이는? (부채꼴 AOB의 넓이 15 cm²)',
+    opts: u(30, 5, ' cm²'), ans: 3,
+    fig: () => step04(30),
+    verify: f => 15 * G.angle(f.pts.A, f.pts.O, f.pts.D) / G.angle(f.pts.A, f.pts.O, f.pts.B),
+    hint: '∠AOD = 150° − 30°',
+    sol: '∠AOD = 120° → 15 × 120/60 = 30 cm².' },
+
+  /* 25~28. 색칠한 부분의 둘레 (05·07번형) */
+  { tag: '반원 세 개', type: 'mc', q: '그림은 ∠A = 90°인 직각삼각형 ABC의 세 변을 각각 지름으로 하는 반원을 그린 것이다. 색칠한 부분의 둘레의 길이는? (AB = 6 cm, AC = 8 cm, BC = 10 cm)',
+    opts: u(12, 1, 'π cm'), ans: 3,
+    fig: () => lunes(8, 6),
+    hint: '색칠한 부분의 둘레 = 세 반원의 호의 길이의 합',
+    sol: '반지름 3: 3π, 반지름 4: 4π, 반지름 5: 5π. 두 초승달의 둘레는 세 호를 모두 지나므로 3π + 4π + 5π = 12π cm.' },
+  { tag: '반원 세 개', type: 'mc', q: '∠A = 90°인 직각삼각형 ABC에서 AB = 5 cm, AC = 12 cm, BC = 13 cm이다. 세 변을 각각 지름으로 하는 반원을 그렸을 때, 앞 문제와 같은 색칠한 부분의 둘레의 길이는?',
+    opts: u(15, 1, 'π cm'), ans: 3,
+    fig: () => lunes(12, 5),
+    hint: '반지름 2.5, 6, 6.5',
+    sol: '2.5π + 6π + 6.5π = 15π cm. (지름의 합 30 cm의 절반 × π)' },
+  { tag: '두 부채꼴 사이', type: 'mc', q: '그림에서 색칠한 부분은 중심각의 크기가 60°이고 반지름의 길이가 각각 12 cm, 18 cm인 두 부채꼴 사이의 부분이다. 색칠한 부분의 둘레의 길이는?',
+    opts: ['10π cm', '(10π + 6) cm', '(10π + 12) cm', '(6π + 12) cm', '(30π + 12) cm'], ans: 3,
+    fig: () => ringSector(60, 12, 18),
+    hint: '바깥 호 + 안쪽 호 + 직선 두 개(각 6 cm)',
+    sol: '바깥 호 = 2π × 18 × 60/360 = 6π, 안쪽 호 = 2π × 12 × 60/360 = 4π, 직선 6 + 6 = 12 → (10π + 12) cm.' },
+  { tag: '두 부채꼴 사이', type: 'mc', q: '중심각의 크기가 90°이고 반지름의 길이가 각각 6 cm, 10 cm인 두 부채꼴 사이의 부분(그림)의 넓이는?',
+    opts: u(16, 2, 'π cm²'), ans: 3,
+    fig: () => ringSector(90, 6, 10),
+    hint: '큰 부채꼴 − 작은 부채꼴',
+    sol: 'π(100 − 36) × 90/360 = 64π/4 = 16π cm². (둘레는 5π + 3π + 8 = (8π + 8) cm)' },
+
+  /* 29~30. 약간 높은 수준 */
+  { tag: '도전 · 반지름 비교', type: 'mc', q: '반지름의 길이가 6 cm, 중심각의 크기가 120°인 부채꼴 A와 넓이가 같고 반지름의 길이가 4 cm인 부채꼴 B의 중심각의 크기는?',
+    opts: u(270, 30, '°'), ans: 3,
+    hint: 'A의 넓이 = 36π × 1/3',
+    sol: 'A = 12π cm². B: 16π × x/360 = 12π → x = 270°.' },
+  { tag: '도전 · 둘레', type: 'mc', q: '반지름의 길이가 r cm, 중심각의 크기가 90°인 부채꼴의 둘레의 길이가 (4π + 16) cm일 때, 이 부채꼴의 넓이는?',
+    opts: u(16, 4, 'π cm²'), ans: 3,
+    fig: () => sectorFig(90, 5, { r: 'r cm' }),
+    hint: '둘레 = 호 + 반지름 2개 → πr/2 + 2r',
+    sol: '호 = 2πr × 1/4 = πr/2, 둘레 = πr/2 + 2r = 4π + 16 → r = 8. 넓이 = 64π × 1/4 = 16π cm².' }
+];
+// 정답 위치 고르게: 등간격 숫자 선택지는 순서를 유지한 채 범위를 옮기고, 설명형은 자리를 바꾼다
+const TGT = [0, 0, 0, 0, 0, 1, 5, 2, 0, 4, 1, 5, 0, 2, 0, 0, 0, 4, 1, 5, 2, 0, 4, 1, 5, 2, 0, 4, 1, 5];
+PROBLEMS.forEach((p, i) => {
+  const to = TGT[i]; if (!to) return;
+  const m = p.opts.map(o => o.match(/^([\d.]+)(\D*)$/));
+  if (!m.every(Boolean)) return;
+  const nums = m.map(x => +x[1]), step = +(nums[1] - nums[0]).toFixed(4), a = nums[p.ans - 1];
+  if (a - (to - 1) * step <= 0) return;
+  p.opts = [1, 2, 3, 4, 5].map(k => +(a + (k - to) * step).toFixed(2) + m[0][2]);
+  p.ans = to;
+});
+[[0, 2], [1, 1], [4, 5], [12, 5], [16, 1], [26, 5]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'circ22-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
