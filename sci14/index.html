@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>자유 낙하 운동 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi span { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 과학 · 14강 자유 낙하 운동</div>
+    <h1>자유 낙하 운동 30제</h1>
+    <p class="lede">14강 자유 낙하 운동을 완벽하게 이해하는 30문항입니다. 힘과 운동, 자유 낙하의 뜻과 중력(중력의 크기 = 9.8 × 질량), 1초마다 9.8 m/s씩 증가하는 속력과 시간-속력 그래프, 같은 시간 동안 점점 늘어나는 낙하 거리, 공기 중과 진공 중의 쇠구슬과 깃털, 수평으로 던진 물체의 운동까지 그림과 함께 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>그림</b>은 문제 조건에 맞게 그렸습니다</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* 그림 도구 */
+// 다중 섬광 사진: 자 위의 공 (단위 cm), rows = [[위치...], ...]
+function flash(rows, max, step, note) {
+  const k = 10 / max, pts = { _r0: [0, 0], _r1: [10, 0] }, segs = [{ a: '_r0', b: '_r1' }], text = [], balls = [];
+  for (let v = 0; v <= max; v += step) { const x = v * k, n = '_t' + v; pts[n] = [x, 0]; pts[n + 'b'] = [x, 0.18]; segs.push({ a: n, b: n + 'b' }); text.push({ t: String(v), at: [x, -0.42], s: 10 }); }
+  rows.forEach((row, j) => { const y = 0.55 + j * 0.9; row.forEach(v => balls.push({ at: [v * k, y], r: 5.5, c: j })); if (rows.length > 1) text.push({ t: 'AB'[j], at: [-0.5, y], s: 13 }); });
+  const top = 0.55 + rows.length * 0.9;
+  text.push({ t: '운동 방향 →', at: [1.2, top], s: 11 }, { t: '(단위: cm)' + (note ? '  ' + note : ''), at: [7.6, top], s: 10 });
+  return { pts, segs, text, balls };
+}
+// 그래프: 가로 X축(xmax), 세로 Y축(ymax), 선 lines = [{p: [[x,y],...], name}], 색칠 shade = [[x,y],...]
+function graph(xl, yl, xmax, ymax, xt, yt, lines, shade) {
+  const sx = 6 / xmax, sy = 4 / ymax, P = (x, y) => [x * sx, y * sy];
+  const pts = { _o: [0, 0], _x: [6.6, 0], _y: [0, 4.6] }, segs = [{ a: '_o', b: '_x' }, { a: '_o', b: '_y' }], text = [{ t: '0', at: [-0.3, -0.3], s: 11 }, { t: xl, at: [6.6, 0.4], s: 11 }, { t: yl, at: [0.1, 5.0], s: 11 }];
+  xt.forEach(v => { pts['_xt' + v] = P(v, 0); text.push({ t: String(v), at: G2(P(v, 0), [0, -0.35]), s: 11 }); });
+  yt.forEach(v => { pts['_yt' + v] = P(0, v); text.push({ t: String(v), at: G2(P(0, v), [-0.45, 0]), s: 11 }); });
+  const polys = [];
+  if (shade) { shade.forEach((q, i) => { pts['_s' + i] = P(...q); }); polys.push(shade.map((_, i) => '_s' + i)); }
+  lines.forEach((L, j) => {
+    L.p.forEach((q, i) => { pts['_l' + j + '_' + i] = P(...q); if (i) segs.push({ a: '_l' + j + '_' + (i - 1), b: '_l' + j + '_' + i, st: 'red' }); });
+    if (L.name) text.push({ t: L.name, at: G2(P(...L.p[L.p.length - 1]), [0.25, 0.25]), s: 13 });
+    (L.guide || []).forEach(([x, y]) => { const a = '_ga' + j + x, b = '_gb' + j + x, c = '_gc' + j + x; pts[a] = P(x, 0); pts[b] = P(x, y); pts[c] = P(0, y); segs.push({ a, b, st: 'dash' }, { a: b, b: c, st: 'dash' }); });
+  });
+  return { pts, segs, text, polys };
+}
+function G2(a, b) { return [a[0] + b[0], a[1] + b[1]]; }
+// 수평으로 던진 물체(g = 10 m/s²): 높이 h, 처음 속력 v
+function throwFig(h, v, drop) {
+  const T = Math.sqrt(2 * h / 9.8), n = Math.round(T), s = 0.06, pts = { _g0: [-1, 0], _g1: [v * T * s + 1.2, 0], _w0: [0, 0], _w1: [0, h * s] }, segs = [{ a: '_g0', b: '_g1' }, { a: '_w0', b: '_w1', st: 'dash' }], balls = [], text = [];
+  for (let i = 0; i <= 20; i++) { const t = T * i / 20; pts['_c' + i] = [v * t * s, (h - 4.9 * t * t) * s]; if (i) segs.push({ a: '_c' + (i - 1), b: '_c' + i, st: 'red' }); }
+  for (let t = 0; t <= n; t++) { balls.push({ at: [v * t * s, (h - 4.9 * t * t) * s], r: 6 }); if (drop) balls.push({ at: [-0.5, (h - 4.9 * t * t) * s], r: 6, c: 1 }); }
+  text.push({ t: '높이 ' + h + ' m', at: [0.9, h * s * 0.35], s: 11 }, { t: 'v₀ = ' + v + ' m/s →', at: [drop ? 2.1 : 1.3, h * s + 0.35], s: 11 });
+  if (drop) text.push({ t: 'A', at: [-0.95, h * s + 0.3], s: 13 }, { t: 'B', at: [0.25, h * s + 0.3], s: 13 });
+  return { pts, segs, balls, text };
+}
+/* ---------- 30문항 (모두 오지선다) — 중학 과학 14강 자유 낙하 운동 ---------- */
+// 자유 낙하 다중 섬광: 일정한 시간 간격의 공 (위에서 아래로)
+function dropFig(n, dt, labels) {
+  const K = 5 / (4.9 * (n * dt) ** 2);
+  const pts = { _a: [-0.6, 0.3], _b: [-0.6, -5.3] }, segs = [{ a: '_a', b: '_b', st: 'dash' }], balls = [], text = [];
+  for (let i = 0; i <= n; i++) {
+    const y = -4.9 * (i * dt) ** 2 * K; balls.push({ at: [0, y], r: 7 });
+    pts['_l' + i] = [-0.25, y]; pts['_r' + i] = [2.4, y]; segs.push({ a: '_l' + i, b: '_r' + i, st: 'dash' });
+    if (labels) text.push({ t: (i * dt).toFixed(1) + '초', at: [3.1, y], s: 10 });
+  }
+  text.push({ t: '↓ 낙하', at: [-1.4, -2.5], s: 11 });
+  return { pts, segs, balls, text };
+}
+// 공기 중 / 진공 중 쇠구슬과 깃털
+function airVac() {
+  const pts = { _f0: [-1, 0.6], _f1: [-1, -5.6], _f2: [4.2, 0.6], _f3: [4.2, -5.6], _f4: [9.4, 0.6], _f5: [9.4, -5.6] };
+  const segs = [{ a: '_f0', b: '_f1' }, { a: '_f2', b: '_f3' }, { a: '_f4', b: '_f5' }, { a: '_f0', b: '_f4' }, { a: '_f1', b: '_f5' }];
+  const balls = [], text = [{ t: '공기 중', at: [1.6, 1.1], s: 12 }, { t: '진공 중', at: [6.8, 1.1], s: 12 }, { t: '쇠구슬', at: [0.4, 0.25], s: 10 }, { t: '깃털', at: [2.9, 0.25], s: 10 }, { t: '쇠구슬', at: [5.6, 0.25], s: 10 }, { t: '깃털', at: [8.1, 0.25], s: 10 }];
+  [0, 1, 2, 3, 4].forEach(i => {
+    const y = -0.5 - 4.9 * (i * 0.25) ** 2 * 0.98;
+    balls.push({ at: [0.6, y], r: 7 }, { at: [2.6, -0.5 - i * 0.6], r: 4.5, c: 1 }, { at: [5.8, y], r: 7 }, { at: [7.8, y], r: 4.5, c: 1 });
+  });
+  return { pts, segs, balls, text };
+}
+const u = (n, s, unit) => [-2, -1, 0, 1, 2].map(k => +(n + k * s).toFixed(2) + unit);
+const SPEED = () => graph('시간(s)', '속력(m/s)', 5, 49, [1, 2, 3, 4, 5], [9.8, 19.6, 29.4, 39.2, 49], [{ p: [[0, 0], [5, 49]], guide: [[2, 19.6], [3, 29.4]] }]);
+
+const PROBLEMS = [
+  /* 1~4. 힘과 운동 */
+  { tag: '힘의 뜻', type: 'mc', q: '힘에 대한 설명으로 옳은 것은?',
+    opts: ['물체의 위치가 변하는 현상이다.', '물체의 모양이나 운동 상태(방향·빠르기)를 변화하게 하는 원인이다.', '물체가 가진 질량이다.', '일정한 시간 동안 이동한 거리이다.', '물체의 부피이다.'], ans: 2,
+    hint: '판서: 힘 = 모 / 방 / 빠 "변화" 원인',
+    sol: '힘은 물체의 모양이나 운동 상태(운동 방향, 빠르기)를 변화하게 하는 원인이다. 운동은 시간에 따라 위치가 변하는 현상이다.' },
+  { tag: '속력과 힘', type: 'mc', q: '물체가 점점 빨라지는 운동을 할 때, 물체에 작용하는 힘에 대한 설명으로 옳은 것은?',
+    opts: ['힘이 작용하지 않는다.', '운동 방향으로 힘이 작용한다.', '운동의 반대 방향으로 힘이 작용한다.', '운동 방향과 수직으로만 힘이 작용한다.', '힘의 방향을 알 수 없다.'], ans: 2,
+    hint: 'Focus 표의 가운데 열',
+    sol: '빨라지는 경우: 운동 ○, 힘 ○(운동 방향으로), 속력 변화 ○(빨라짐). 느려지는 경우는 운동의 반대 방향으로 힘이 작용한다.' },
+  { tag: '속력과 힘', type: 'mc', q: '그림은 같은 시간 간격으로 찍은 공의 다중 섬광 사진이다. 공에 작용한 힘에 대한 설명으로 옳은 것은?',
+    opts: ['힘이 작용하지 않았다.', '운동 방향으로 힘이 작용했다.', '운동의 반대 방향으로 힘이 작용했다.', '공은 등속 운동을 했다.', '공은 정지해 있었다.'], ans: 3,
+    fig: () => flash([[0, 14, 25, 33, 38, 40]], 40, 10),
+    hint: '간격이 14 → 11 → 8 → 5 → 2 cm',
+    sol: '간격이 점점 좁아짐 → 점점 느려짐 → 운동의 반대 방향으로 힘이 작용했다.' },
+  { tag: '중력', type: 'mc', q: '자유 낙하 하는 물체에 작용하는 힘은?',
+    opts: ['마찰력', '탄성력', '중력', '자기력', '부력'], ans: 3,
+    hint: '판서: 자유 낙하 ← 중력만',
+    sol: '자유 낙하 운동은 물체가 중력만을 받으면서 아래로 떨어지는 운동이다.' },
+
+  /* 5~11. 자유 낙하 운동과 중력 */
+  { tag: '자유 낙하의 뜻', type: 'mc', q: '자유 낙하 운동의 뜻으로 가장 알맞은 것은?',
+    opts: ['위로 던져 올린 물체의 운동', '공기 저항을 무시할 때 정지해 있던 물체가 중력만을 받으면서 아래로 떨어지는 운동', '수평으로 던진 물체의 운동', '속력이 일정한 운동', '마찰력을 받아 멈추는 운동'], ans: 2,
+    hint: '세 가지 조건: 공기 저항 무시, 처음 속력 0(v = 0), 중력만',
+    sol: '자유 낙하 = 공기 저항을 무시할 때 정지해 있던(v = 0) 물체가 중력만을 받으며 아래로 떨어지는 운동.' },
+  { tag: '중력의 방향', type: 'mc', q: '자유 낙하 하는 물체의 속력이 증가하는 까닭으로 옳은 것은?',
+    opts: ['중력이 위쪽으로 작용하기 때문이다.', '중력이 연직 아래 방향으로 작용하여 운동 방향과 힘의 방향이 같기 때문이다.', '공기 저항이 커지기 때문이다.', '물체의 질량이 커지기 때문이다.', '힘이 작용하지 않기 때문이다.'], ans: 2,
+    hint: '운동 방향 = 아래, 중력 방향 = ?',
+    sol: '중력(물체의 무게)은 연직 아래 방향으로 작용한다. 물체의 운동 방향과 힘의 방향이 같으므로 속력이 증가한다.' },
+  { tag: '중력의 크기', type: 'mc', q: '질량이 2 kg인 물체에 작용하는 중력의 크기는?',
+    opts: u(19.6, 4.9, ' N'), ans: 3,
+    verify: () => 9.8 * 2,
+    hint: '중력의 크기 = 9.8 × 물체의 질량',
+    sol: '9.8 × 2 = 19.6 N.' },
+  { tag: '중력의 크기', type: 'mc', q: '질량이 5 kg인 물체에 작용하는 중력의 크기는?',
+    opts: u(49, 9.8, ' N'), ans: 3,
+    verify: () => 9.8 * 5,
+    hint: '9.8 × 5',
+    sol: '9.8 × 5 = 49 N.' },
+  { tag: '중력의 크기', type: 'mc', q: '물체에 작용하는 중력의 크기가 29.4 N일 때, 이 물체의 질량은?',
+    opts: u(3, 1, ' kg'), ans: 3,
+    verify: () => 29.4 / 9.8,
+    hint: '질량 = 중력의 크기 ÷ 9.8',
+    sol: '29.4 ÷ 9.8 = 3 kg.' },
+  { tag: '낙하 중 힘', type: 'mc', q: '자유 낙하 하는 동안 물체에 작용하는 힘과 속력에 대한 설명으로 옳은 것은?',
+    opts: ['힘이 점점 커지므로 속력이 점점 더 빨리 증가한다.', '힘(중력)이 일정하므로 속력이 일정하게 증가한다.', '힘이 점점 작아지므로 속력이 일정해진다.', '힘이 없으므로 속력이 일정하다.', '힘이 일정하므로 속력도 변하지 않는다.'], ans: 2,
+    hint: '판서: 무게 일정 → 속력 일정하게 증가',
+    sol: '낙하하는 동안 질량이 변하지 않으므로 중력(9.8 × 질량)이 일정하다 → 속력이 일정하게(1초마다 9.8 m/s씩) 증가한다.' },
+  { tag: '질량과 중력', type: 'mc', q: '질량이 1 kg인 물체 A와 4 kg인 물체 B에 작용하는 중력의 크기를 비교한 것으로 옳은 것은?',
+    opts: ['A가 B의 4배이다.', 'B가 A의 4배이다.', 'A와 B가 같다.', 'B가 A의 2배이다.', '비교할 수 없다.'], ans: 2,
+    hint: '중력의 크기는 질량에 비례',
+    sol: 'A: 9.8 N, B: 39.2 N → B가 A의 4배.' },
+
+  /* 12~18. 시간에 따른 속력 변화 */
+  { tag: '속력 변화', type: 'mc', q: '지구의 지표면 근처에서 자유 낙하 하는 물체의 속력은 1초마다 얼마씩 증가하는가?',
+    opts: u(9.8, 4.9, ' m/s'), ans: 3,
+    hint: '가속도 상수',
+    sol: '1초마다 9.8 m/s씩 일정하게 증가한다(중력 가속도 상수 9.8).' },
+  { tag: '속력 계산', type: 'mc', q: '정지해 있던 물체가 자유 낙하 할 때, 3초 후의 속력은?',
+    opts: u(29.4, 9.8, ' m/s'), ans: 3,
+    verify: () => 9.8 * 3,
+    hint: '속력 = 9.8 × 시간',
+    sol: '9.8 × 3 = 29.4 m/s.' },
+  { tag: '그래프 읽기', type: 'mc', q: '그림은 자유 낙하 하는 물체의 시간-속력 그래프이다. 이 그래프의 기울기가 나타내는 값은?',
+    opts: u(9.8, 4.9, ''), ans: 3,
+    fig: SPEED,
+    verify: () => 49 / 5,
+    hint: '1초 증가할 때 속력이 얼마나 증가하나요?',
+    sol: '기울기 = 속력 변화 ÷ 시간 = 9.8 m/s ÷ 1 s = 9.8 (중력 가속도 상수).' },
+  { tag: '그래프 읽기', type: 'mc', q: '위 그래프에서 2초부터 4초까지 증가한 속력은?',
+    opts: u(19.6, 4.9, ' m/s'), ans: 3,
+    fig: SPEED,
+    verify: () => 39.2 - 19.6,
+    hint: '4초: 39.2 m/s, 2초: 19.6 m/s',
+    sol: '39.2 − 19.6 = 19.6 m/s (2초 × 9.8 m/s).' },
+  { tag: '그래프 모양', type: 'mc', q: '자유 낙하 하는 물체의 시간-속력 그래프 모양으로 옳은 것은?',
+    opts: ['시간축에 나란한 수평선', '원점을 지나는 기울어진 직선', '점점 기울기가 작아지는 곡선', '처음에 높았다가 내려가는 직선', '세로축에 나란한 직선'], ans: 2,
+    hint: '처음 속력 0, 일정하게 증가',
+    sol: '처음 속력이 0이고 속력이 시간에 비례해 일정하게 증가하므로 원점을 지나는 직선(기울기 9.8). 수평선은 등속 운동의 시간-속력 그래프이다.' },
+  { tag: '질량과 속력 변화', type: 'mc', q: '공기 저항을 무시할 때, 질량이 1 kg인 공과 10 kg인 공을 같은 높이에서 동시에 떨어뜨렸다. 2초 후 두 공의 속력은?',
+    opts: ['1 kg: 19.6 m/s, 10 kg: 196 m/s', '둘 다 19.6 m/s', '1 kg: 9.8 m/s, 10 kg: 19.6 m/s', '1 kg이 더 빠르다', '둘 다 9.8 m/s'], ans: 2,
+    hint: '속력 변화(9.8 m/s per 1초)는 질량과 상관없습니다.',
+    sol: '자유 낙하에서 속력은 질량과 관계없이 1초마다 9.8 m/s씩 증가 → 2초 후 둘 다 19.6 m/s. 중력의 크기는 10 kg 공이 10배이지만 속력 변화는 같다.' },
+  { tag: '속력 → 시간', type: 'mc', q: '자유 낙하 하는 물체의 속력이 39.2 m/s가 되는 것은 떨어지기 시작한 지 몇 초 후인가?',
+    opts: u(4, 1, '초'), ans: 3,
+    verify: () => 39.2 / 9.8,
+    hint: '시간 = 속력 ÷ 9.8',
+    sol: '39.2 ÷ 9.8 = 4초.' },
+
+  /* 19~22. 이동 거리의 변화 */
+  { tag: '다중 섬광 사진', type: 'mc', q: '그림은 자유 낙하 하는 공을 일정한 시간 간격으로 찍은 것이다. 이에 대한 설명으로 옳은 것은?',
+    opts: ['같은 시간 동안 낙하한 거리가 일정하다.', '같은 시간 동안 낙하한 거리가 점점 증가한다.', '같은 시간 동안 낙하한 거리가 점점 감소한다.', '공의 속력이 일정하다.', '공에 작용하는 힘이 점점 커진다.'], ans: 2,
+    fig: () => dropFig(5, 0.2, true),
+    hint: '공 사이의 간격이 어떻게 변하나요?',
+    sol: '공 사이의 간격이 점점 넓어진다 → 같은 시간 동안 낙하한 거리가 점점 증가 → 속력이 점점 빨라진다.' },
+  { tag: '다중 섬광 고르기', type: 'mc', q: '자유 낙하 하는 물체를 일정한 시간 간격으로 찍은 사진에서 물체 사이의 간격의 변화로 옳은 것은?',
+    opts: ['간격이 일정하다.', '아래로 갈수록 간격이 좁아진다.', '아래로 갈수록 간격이 넓어진다.', '처음엔 넓다가 점점 좁아진다.', '간격이 불규칙하다.'], ans: 3,
+    fig: () => dropFig(4, 0.25, false),
+    hint: '빨라질수록 같은 시간 동안 더 멀리 이동합니다.',
+    sol: '속력이 점점 증가하므로 아래로 갈수록 간격이 넓어진다.' },
+  { tag: '그래프 넓이', type: 'mc', q: '자유 낙하 하는 물체의 시간-속력 그래프에서 0~2초 동안 그래프 아랫부분의 넓이(낙하 거리)는?',
+    opts: u(19.6, 4.9, ' m'), ans: 3,
+    fig: () => { const f = SPEED(); const sx = 6 / 5, sy = 4 / 49; ['_s0', '_s1', '_s2'].forEach((k, i) => { f.pts[k] = [[0, 0], [2 * sx, 0], [2 * sx, 19.6 * sy]][i]; }); f.polys = [['_s0', '_s1', '_s2']]; return f; },
+    verify: () => 0.5 * 2 * 19.6,
+    hint: '삼각형의 넓이 = ½ × 밑변(2초) × 높이(19.6 m/s)',
+    sol: '½ × 2 × 19.6 = 19.6 m. 시간-속력 그래프 아랫부분의 넓이 = 이동 거리.' },
+  { tag: '그래프 넓이', type: 'mc', q: '자유 낙하 하는 물체가 처음 1초 동안 낙하한 거리와 처음 2초 동안 낙하한 거리의 비는?',
+    opts: ['1 : 1', '1 : 2', '1 : 3', '1 : 4', '1 : 8'], ans: 4,
+    hint: '1초: ½ × 1 × 9.8, 2초: ½ × 2 × 19.6',
+    sol: '1초 동안 4.9 m, 2초 동안 19.6 m → 1 : 4. 시간이 2배가 되면 낙하 거리는 4배가 된다(같은 시간 동안 낙하 거리가 점점 증가).' },
+
+  /* 23~26. 공기 중과 진공 중의 낙하 */
+  { tag: '공기 중 vs 진공', type: 'mc', q: '그림은 쇠구슬과 깃털을 공기 중과 진공 중에서 동시에 떨어뜨린 모습이다. <b>공기 중</b>에서의 결과와 그 이유로 옳은 것은?',
+    opts: ['깃털이 먼저 떨어진다 – 깃털이 가볍기 때문', '쇠구슬이 먼저 떨어진다 – 깃털이 받는 공기 저항의 영향이 크기 때문', '동시에 떨어진다 – 중력만 받기 때문', '깃털은 떨어지지 않는다 – 중력을 받지 않기 때문', '쇠구슬이 먼저 떨어진다 – 쇠구슬에는 공기 저항이 없기 때문'], ans: 2,
+    fig: airVac,
+    hint: '공기 중에서는 공기 저항이 작용합니다.',
+    sol: '공기 중에서는 깃털이 받는 공기 저항의 영향이 커서 쇠구슬이 먼저 떨어진다(쇠구슬도 공기 저항을 조금 받는다).' },
+  { tag: '공기 중 vs 진공', type: 'mc', q: '위 그림에서 <b>진공 중</b>에서의 결과로 옳은 것은?',
+    opts: ['쇠구슬이 먼저 떨어진다.', '깃털이 먼저 떨어진다.', '쇠구슬과 깃털이 동시에 떨어진다.', '깃털은 위로 올라간다.', '둘 다 떨어지지 않는다.'], ans: 3,
+    fig: airVac,
+    hint: '진공에서는 공기 저항이 없습니다.',
+    sol: '진공 중에서는 공기 저항이 없어 두 물체가 중력만 받는 자유 낙하를 하므로, 질량에 관계없이 속력이 똑같이(1초마다 9.8 m/s) 증가해 동시에 떨어진다.' },
+  { tag: '진공에서의 낙하', type: 'mc', q: '진공 중에서 쇠구슬과 깃털이 동시에 떨어지는 사실로 알 수 있는 것은?',
+    opts: ['무거운 물체가 항상 먼저 떨어진다.', '자유 낙하 하는 물체의 속력 변화는 질량과 관계없이 같다.', '깃털에는 중력이 작용하지 않는다.', '진공에서는 중력이 사라진다.', '쇠구슬과 깃털의 질량은 같다.'], ans: 2,
+    hint: '두 물체의 질량은 다르지만 결과는 같습니다.',
+    sol: '질량이 다른데도 동시에 떨어진다 → 자유 낙하에서 속력 변화(9.8 m/s per 1초)는 질량과 관계없다. 중력의 크기는 질량에 비례해 다르다.' },
+  { tag: '달에서의 실험', type: 'mc', q: '공기가 없는 달 표면에서 우주 비행사가 망치와 깃털을 같은 높이에서 동시에 놓았다. 결과로 옳은 것은?',
+    opts: ['망치가 먼저 닿는다.', '깃털이 먼저 닿는다.', '동시에 닿는다.', '둘 다 떠 있다.', '깃털은 위로 날아간다.'], ans: 3,
+    hint: '공기가 없다 = 공기 저항이 없다',
+    sol: '공기 저항이 없으므로 망치와 깃털은 동시에 바닥에 닿는다. (달의 중력은 지구보다 약하지만 둘에게 똑같은 속력 변화를 준다.)' },
+
+  /* 27~30. 수평으로 던진 물체의 운동 */
+  { tag: '수평으로 던진 물체', type: 'mc', q: '그림은 공 A를 가만히 떨어뜨리는 동시에 공 B를 수평으로 던졌을 때의 모습이다. B의 운동에 대한 설명으로 옳은 것은?',
+    opts: ['수평 방향: 자유 낙하 / 연직 방향: 등속 운동', '수평 방향: 등속 운동 / 연직 방향: 자유 낙하 운동', '두 방향 모두 등속 운동', '두 방향 모두 자유 낙하 운동', '수평 방향: 점점 느려짐 / 연직 방향: 등속 운동'], ans: 2,
+    fig: () => throwFig(44.1, 15, true),
+    hint: 'B의 가로 간격은 일정, 세로 위치는 A와 같습니다.',
+    sol: '수평 방향으로는 힘이 작용하지 않아 등속 운동, 연직 방향으로는 중력만 받아 A와 똑같이 자유 낙하 운동을 한다.' },
+  { tag: '수평으로 던진 물체', type: 'mc', q: '같은 높이에서 공 세 개를 각각 수평 방향으로 5 m/s, 10 m/s, 20 m/s의 속력으로 동시에 던졌다. 땅에 닿는 순서로 옳은 것은? (단, 공기 저항은 무시한다.)',
+    opts: ['5 m/s 공이 가장 먼저 닿는다.', '20 m/s 공이 가장 먼저 닿는다.', '세 공이 동시에 닿는다.', '10 m/s 공이 가장 먼저 닿는다.', '세 공 모두 땅에 닿지 않는다.'], ans: 3,
+    hint: '수평 방향의 속력만 다르게 던지면 연직 방향의 운동은?',
+    sol: '수평 방향의 속력만 다르게 던지면 연직 방향의 운동은 자유 낙하 운동으로 동일하다 → 동시에 닿는다. 수평 속력이 큰 공일수록 더 멀리 떨어질 뿐이다.' },
+  { tag: '수평으로 던진 물체', type: 'mc', q: '수평으로 10 m/s로 던진 공이 1초 후 갖는 연직 방향의 속력은? (단, 공기 저항은 무시한다.)',
+    opts: u(9.8, 4.9, ' m/s'), ans: 3,
+    verify: () => 9.8 * 1,
+    hint: '연직 방향은 자유 낙하: v = 9.8 × t',
+    sol: '연직 방향은 자유 낙하 운동이므로 1초 후 연직 속력 = 9.8 × 1 = 9.8 m/s. 수평 속력(10 m/s)과는 관계없다.' },
+  { tag: '수평으로 던진 물체', type: 'mc', q: '높은 곳에서 공을 수평으로 10 m/s로 던졌더니 3초 후 땅에 떨어졌다. 공이 수평 방향으로 이동한 거리는? (단, 공기 저항은 무시한다.)',
+    opts: u(30, 10, ' m'), ans: 3,
+    fig: () => throwFig(44.1, 10),
+    verify: () => 10 * 3,
+    hint: '수평 방향은 등속 운동: 거리 = 속력 × 시간',
+    sol: '10 m/s × 3 s = 30 m. (이때 높이는 ½ × 3 × 29.4 = 44.1 m)' }
+];
+// 정답 위치 고르게: 등간격 숫자 선택지는 순서를 유지한 채 범위를 옮기고, 설명형은 자리를 바꾼다
+const TGT = [0, 0, 0, 0, 0, 0, 5, 1, 4, 0, 0, 2, 5, 4, 1, 0, 0, 5, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 1, 4];
+PROBLEMS.forEach((p, i) => {
+  const to = TGT[i]; if (!to) return;
+  const m = p.opts.map(o => o.match(/^([\d.]+)(\D*)$/));
+  if (!m.every(Boolean)) return;
+  const nums = m.map(x => +x[1]), step = +(nums[1] - nums[0]).toFixed(4), a = nums[p.ans - 1];
+  if (a - (to - 1) * step <= 0) return;
+  p.opts = [1, 2, 3, 4, 5].map(k => +(a + (k - to) * step).toFixed(2) + m[0][2]);
+  p.ans = to;
+});
+[[0, 1], [1, 4], [3, 2], [4, 5], [5, 2], [9, 4], [10, 5], [14, 4], [15, 1], [18, 5], [19, 1], [22, 4], [23, 5], [24, 2], [25, 2], [26, 4], [27, 5]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'sci14-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    (fig.balls || []).forEach(b => all.push(b.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.balls || []).forEach(b => { const p = T(b.at); out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="${b.r || 7}" style="fill:${b.c === 1 ? 'var(--accent)' : 'var(--pen)'};stroke:var(--ink);stroke-width:.8"/>`; });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : (t.s ? '600 ' + t.s + 'px var(--f-body)' : '600 12.5px var(--f-body)')}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
