@@ -153,7 +153,7 @@
     buyUrl: "",         // 크몽·래피드 등 판매 페이지 주소
     serviceUrl: "",     // 원고 정밀진단 서비스 주소
     price: 4900,        // 현재 판매가(원)
-    priceRule: "판매 1건마다 1,000원씩 인상됩니다"
+    priceRule: "12월 31일까지 · 1월부터 9,900원"
   };
   const won = n => n.toLocaleString('ko-KR') + '원';
   document.querySelectorAll('.price-now').forEach(el => el.textContent = won(CONFIG.price));
