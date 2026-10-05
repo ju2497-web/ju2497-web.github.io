@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>함축 의미 파악 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">고등 영어 · 26강 Part 2 독해 · 03 함축 의미 파악 (p.82~85)</div>
+    <h1>함축 의미 파악 30제</h1>
+    <p class="lede">26강 독해 03 "밑줄 어구의 함축된 의미"(p.82~85)를 완벽하게 이해하는 30문항입니다. 문제 해결 3단계 전략, Get Started(목적지 없는 여정 — 공감적 경청), Exercise 1(누군가에게 구명조끼 던지기), Exercise 2(사람들을 무력하게 만드는 꼬리표), 지문 속 어법과 구문, 오늘의 공부 완료 Quiz, 새 지문 적용까지 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 26강 Part 2 독해 03 함축 의미 파악 ---------- */
+const P = (label, body) => `<div class="bogi psg"><span>${label}</span>${body}</div>`;
+const S = t => `<i>${t}</i>`;
+const LISTEN = P('Get Started 지문 (요약)', `As an empathetic listener, you are on <u>a journey with a direction but no destination</u>. You will never "arrive." You will never be able to say, "I truly understand you." We are all too complex for that, and our skills (A) [imagining / to imagine] ourselves into other people's lives are too limited. But in a sense this is good news. Psychologists have found that we are each more (B) [interesting / interested] in knowing that the other person is <i>trying</i> to empathize with us—that they are willing to struggle to understand how we feel and see how we see—than we are in believing that they have actually accomplished that goal. Good listening, as we've said, is profoundly communicative. And struggling to understand (C) [communicates / communicating] the most positive message of all.<br><small>*empathetic 공감적인</small>`);
+const VEST = P('Exercise 1 지문 (요약)', `Moments after I listened to the voice mail delivering news of a tragic loss, I boarded the second plane of my connecting flight. As I sat dazed and disheartened, I looked to my left and a small sign caught my eye: "Life vest under your seat" … My eyes focused on those three small words … I smiled and felt an instant comfort. A life vest has the ability to stay afloat r________ of how much one may push down upon it. Our life vest, our ability to overcome our hardships, to make it through, comes from "inside!" Through the kindness we bestow on others and through the kindness others bestow upon us, we help keep each other afloat in the stormy seas of life. We can't prevent life's obstacles, mishaps, and curveballs from coming our way, but what we can do, what we have the power to do, is <u>to throw someone a life vest</u>.<br><small>*bestow 베풀다, 주다</small>`);
+const PLEASE = P('Exercise 2 지문 (요약)', `It is quite common in my research studies for people to describe themselves as "people pleasers." They feel terribly guilty if they do not help, because their concern for their relationship with others far exceeds meeting their own needs and desires. They need to free themselves from <u>the labels that disable them</u>. For the so-called people pleasers out there, I have a simple request: please don't give yourself a label. All labels do is carry messages or prompt self-talk that confines you to a particular role or behavior. In the same way a child called "a troublemaker" will begin to perceive herself as such and live down to this label, labeling yourself a people pleaser will result in you taking the easiest way out in the short run by saying yes in the moment, only to pay the price later.`);
+const PROBLEMS = [
+  /* ===== 1~4. 함축 의미 추론 전략 ===== */
+  { tag: '전략 · 함축 의미', type: 'mc', q: '밑줄 친 어구의 함축적 의미를 추론할 때 가장 중요한 것은?',
+    opts: ['밑줄 친 단어의 사전적 의미를 그대로 옮긴다.', '비유적 표현이 많으므로 글의 요지와 전반적인 맥락을 파악한다.', '밑줄 친 부분의 문법 구조만 분석한다.', '첫 문장만 읽고 바로 답을 고른다.', '밑줄 친 부분과 철자가 비슷한 선택지를 고른다.'], ans: 2,
+    hint: '"문자 그대로가 아닌 … 암시하는 의미"',
+    sol: '함축적 의미는 문자 그대로가 아닌, 밑줄 친 부분이 암시하는 의미이다. 비유적 표현이 많으므로 사전적 의미보다 글의 요지와 전반적인 맥락을 파악하는 것이 중요하다.' },
+  { tag: '전략 · 단계', type: 'mc', q: '함축 의미 파악의 문제 해결 전략을 순서대로 바르게 나열한 것은?<br>(A) 요지를 파악하고, 밑줄 친 부분의 의미를 이와 관련하여 추론한다.<br>(B) 글의 도입 부분을 통해 소재를 파악한다.<br>(C) 글의 중반 부분을 통해 소재에 대한 글쓴이의 의견과 부연 설명을 확인한다.',
+    opts: ['(A) – (B) – (C)', '(B) – (A) – (C)', '(B) – (C) – (A)', '(C) – (A) – (B)', '(C) – (B) – (A)'], ans: 3,
+    hint: '도입 → 중반 → 요지',
+    sol: 'Step 1 도입부에서 소재 파악 → Step 2 중반부에서 글쓴이의 의견·부연 설명 확인 → Step 3 요지를 바탕으로 밑줄 친 부분의 의미 추론.' },
+  { tag: '전략 · 오답 피하기', type: 'mc', q: '함축 의미 문제의 오답 선택지가 자주 만들어지는 방식으로 가장 알맞은 것은?',
+    opts: ['글의 요지와 정확히 일치하게 만든다.', '밑줄 친 부분의 단어를 글자 그대로 해석하거나, 지문의 일부 낱말만 가져와 그럴듯하게 만든다.', '선택지를 모두 한국어로 쓴다.', '정답보다 항상 짧게 만든다.', '지문에 없는 문법을 쓴다.'], ans: 2,
+    hint: '강의에서 ①~④에 X 표시를 한 이유',
+    sol: '오답은 밑줄 어구를 문자 그대로 해석하거나(arrive → 도착), 지문의 낱말을 일부 빌려 와 요지와 어긋나게 만든다. 반드시 요지와 연결해 판단해야 한다.' },
+  { tag: '전략 · 비유', type: 'mc', q: '다음 중 문자 그대로가 아닌 <b>비유적</b> 의미로 쓰인 표현은?',
+    opts: ['I boarded the second plane.', 'I listened to the voice mail.', 'we help keep each other afloat in the stormy seas of life', 'a small sign caught my eye', 'I looked to my left'], ans: 3,
+    hint: '실제로 바다에 떠 있나요?',
+    sol: '"인생의 폭풍우 치는 바다에서 서로를 떠 있게 돕는다"는 어려움(stormy seas) 속에서 서로를 지탱해 준다는 비유이다.' },
+
+  /* ===== 5~12. Get Started: 공감적 경청 ===== */
+  { tag: 'Get Started · 함축 의미', type: 'mc', q: '밑줄 친 <u>a journey with a direction but no destination</u>이 다음 글에서 의미하는 바로 가장 적절한 것은?' + LISTEN,
+    opts: ['a continuous personal challenge to improve your speaking skills', 'a deep search to understand the essence of human life', 'a series of heated discussions on miscommunication', 'a pursuit of the ultimate solution for psychological problems', 'a constant attempt to understand others despite your limitations'], ans: 5,
+    hint: '"You will never arrive." + "struggling to understand"',
+    sol: '목적지(완전한 이해)에는 결코 도달하지 못하지만 방향(이해하려는 노력)은 있다 → 한계가 있어도 다른 사람을 이해하려고 끊임없이 노력하는 것. ①은 말하기 기술, ②는 삶의 본질, ③은 토론, ④는 심리 문제 해결로 요지와 무관하다.' },
+  { tag: 'Get Started · 어법 (A)', type: 'mc', q: S('our skills (A) [imagining / to imagine] ourselves into other people\'s lives are too limited') + '<br>(A)에 알맞은 말과 그 이유는?',
+    opts: ['imagining – 동명사가 주어이므로', 'to imagine – 명사 skills를 꾸미는 형용사적 용법의 to부정사이므로', 'imagining – 진행형이므로', 'to imagine – 목적을 나타내므로', 'imagine – 동사원형이 와야 하므로'], ans: 2,
+    hint: '"상상할 (수 있는) 기술"',
+    sol: 'our skills to imagine ourselves into ~ "우리 자신을 다른 사람의 삶 속에 상상해 넣는 기술". 문장의 주어는 our skills, 동사는 are이다.' },
+  { tag: 'Get Started · 어법 (B)', type: 'mc', q: S('we are each more (B) [interesting / interested] in knowing that ...') + '<br>(B)에 알맞은 말은?',
+    opts: ['interesting – 우리가 흥미를 주는 존재이므로', 'interested – 우리가 관심을 갖는(감정을 느끼는) 주체이므로', 'interesting – be동사 뒤이므로', 'interested – 수동태 문장에서 by가 생략되었으므로', '둘 다 가능하다'], ans: 2,
+    hint: 'be interested in ~ = ~에 관심이 있다',
+    sol: '주어 we가 관심을 "느끼는" 쪽이므로 과거분사 interested. be (more) interested in -ing.' },
+  { tag: 'Get Started · 어법 (C)', type: 'mc', q: S('And struggling to understand (C) [communicates / communicating] the most positive message of all.') + '<br>(C)에 알맞은 말과 그 이유는?',
+    opts: ['communicating – 동명사 주어 뒤에는 동명사가 오므로', 'communicates – 동명사구 주어(struggling to understand)는 단수이고 문장의 동사가 필요하므로', 'communicating – 진행형이므로', 'communicates – 주어가 message이므로', 'communicate – 주어가 복수이므로'], ans: 2,
+    hint: '문장에 본동사가 있나요?',
+    sol: '주어는 동명사구 struggling to understand(단수)이고, 문장의 동사가 필요하므로 communicates. "이해하려고 애쓰는 것이 가장 긍정적인 메시지를 전달한다."' },
+  { tag: 'Get Started · arrive', type: 'mc', q: S('You will never "arrive."') + '가 의미하는 바로 가장 알맞은 것은?',
+    opts: ['상대방의 집에 도착하지 못한다.', '상대방을 완전히 이해했다고 할 수 있는 지점에는 결코 이르지 못한다.', '약속 시간에 늦는다.', '대화를 시작할 수 없다.', '상대방이 나를 이해하지 못한다.'], ans: 2,
+    hint: '바로 뒤 "I truly understand you."',
+    sol: '"도착하다"는 "상대를 완전히 이해하는 목표에 도달하다"의 비유. 우리는 너무 복잡해서 완전한 이해는 불가능하다.' },
+  { tag: 'Get Started · good news', type: 'mc', q: S('But in a sense this is good news.') + '<br>필자가 "좋은 소식"이라고 한 이유로 가장 알맞은 것은?',
+    opts: ['사람들은 상대가 완벽히 이해했다고 믿는 것을 가장 원하기 때문에', '사람들은 상대가 실제로 이해에 성공했는지보다 이해하려고 노력한다는 것을 아는 데 더 관심이 있기 때문에', '공감은 배울 필요가 없기 때문에', '사람은 누구나 단순하기 때문에', '심리학자들이 공감 능력을 높이는 약을 개발했기 때문에'], ans: 2,
+    hint: 'more interested in knowing that ... trying ... than ... accomplished',
+    sol: '심리학자들에 따르면 우리는 상대가 실제로 목표를 이뤘다고 믿는 것보다 상대가 공감하려고 "노력한다"는 것을 아는 데 더 관심이 있다. 완벽한 이해가 불가능해도 노력 자체가 의미 있으므로 좋은 소식이다.' },
+  { tag: 'Get Started · 어휘', type: 'mc', q: S('Good listening, as we\'ve said, is <u>profoundly communicative</u>.') + '<br>밑줄 친 부분의 의미로 가장 알맞은 것은?',
+    opts: ['매우 시끄럽다', '깊이 소통하는(많은 것을 전달하는) 행위이다', '거의 의미가 없다', '말을 많이 하는 것이다', '짧게 끝난다'], ans: 2,
+    hint: 'profoundly 깊이, communicative 소통하는',
+    sol: '"좋은 경청은 깊이 소통하는 것이다" — 잘 들어 주는 것만으로도 상대에게 많은 것을 전달한다.' },
+  { tag: 'Get Started · 요지', type: 'mc', q: '위 Get Started 글의 요지로 가장 알맞은 것은?',
+    opts: ['완벽한 공감에 도달해야만 좋은 경청자가 된다.', '상대를 완전히 이해할 수는 없지만, 이해하려고 애쓰는 노력 자체가 가장 긍정적인 메시지를 전한다.', '사람은 너무 복잡하므로 이해하려고 할 필요가 없다.', '심리학자만이 다른 사람을 이해할 수 있다.', '말을 잘하는 것이 듣는 것보다 중요하다.'], ans: 2,
+    hint: '마지막 문장이 요지입니다.',
+    sol: '"struggling to understand communicates the most positive message of all" — 이해하려는 노력 자체가 가장 긍정적인 메시지이다.' },
+
+  /* ===== 13~20. Exercise 1: life vest ===== */
+  { tag: 'Exercise 1 · 함축 의미', type: 'mc', q: '밑줄 친 <u>to throw someone a life vest</u>가 다음 글에서 의미하는 바로 가장 적절한 것은?' + VEST,
+    opts: ['to adjust to changing environments', 'to focus on the good in life rather than the bad', 'to kindly help someone triumph over their adversity', 'to make others dependent on external circumstances', 'to build strength to protect against external physical threats'], ans: 3,
+    hint: '구명조끼 = 어려움을 이겨 내는 힘. 무엇을 통해 서로를 떠 있게 하나요?',
+    sol: '"우리가 다른 사람에게 베푸는 친절을 통해 인생의 폭풍우 속에서 서로를 떠 있게 돕는다" → 누군가에게 구명조끼를 던지는 것 = 친절하게 도와 그가 역경을 이겨 내게 하는 것.' },
+  { tag: 'Exercise 1 · 빈칸', type: 'mc', q: S('A life vest has the ability to stay afloat r________ of how much one may push down upon it.') + '<br>빈칸에 알맞은 단어는?',
+    opts: ['regarding', 'regardless', 'regular', 'resistant', 'related'], ans: 2,
+    hint: '___ of = ~에 상관없이',
+    sol: 'regardless of how much ~ "얼마나 세게 아래로 누르든 상관없이" 떠 있는 능력.' },
+  { tag: 'Exercise 1 · 비유', type: 'mc', q: S('Our life vest, our ability to overcome our hardships, to make it through, comes from "inside!"') + '<br>이 문장이 뜻하는 바로 가장 알맞은 것은?',
+    opts: ['구명조끼는 비행기 좌석 안에 있다.', '어려움을 이겨 내는 힘은 우리 내면에서 나온다.', '구명조끼를 늘 몸에 지녀야 한다.', '어려움은 외부에서만 온다.', '다른 사람의 도움은 필요 없다.'], ans: 2,
+    hint: 'our life vest = our ability to overcome our hardships (동격)',
+    sol: 'our life vest와 our ability to overcome our hardships, to make it through는 동격. 역경을 이겨 내는 힘은 "안"(내면)에서 나온다.' },
+  { tag: 'Exercise 1 · 구문', type: 'mc', q: S('Through the kindness (    ) we bestow on others ...') + '<br>괄호에 생략된 말로 알맞은 것은?',
+    opts: ['what', 'which(that)', 'whose', 'where', 'who'], ans: 2,
+    hint: 'bestow A on B의 A(목적어)가 빠졌습니다.',
+    sol: 'the kindness (which/that) we bestow on others — 사물 선행사 kindness를 받는 목적격 관계대명사가 생략되었다.' },
+  { tag: 'Exercise 1 · prevent', type: 'mc', q: S('We can\'t prevent life\'s obstacles, mishaps, and curveballs from coming our way') + '<br>의 의미로 가장 알맞은 것은?',
+    opts: ['우리는 삶의 장애물이 오도록 할 수 없다.', '우리는 삶의 장애물, 불운, 뜻밖의 일이 우리에게 닥치는 것을 막을 수 없다.', '삶의 장애물은 우리 길로 오지 않는다.', '우리는 장애물을 피해서 갈 수 있다.', '장애물이 오면 반드시 성공한다.'], ans: 2,
+    hint: 'prevent A from -ing = A가 ~하는 것을 막다',
+    sol: 'prevent A from -ing: A가 ~하는 것을 막다. 어려움이 오는 것을 막을 수는 없지만(but) 누군가에게 구명조끼를 던져 줄 수는 있다.' },
+  { tag: 'Exercise 1 · 주어', type: 'mc', q: S('but what we can do, what we have the power to do, is to throw someone a life vest') + '<br>이 문장의 주어로 알맞은 것은?',
+    opts: ['we', 'the power', 'what we can do (= what we have the power to do)', 'someone', 'a life vest'], ans: 3,
+    hint: 'is 앞까지가 주어입니다.',
+    sol: '관계대명사 what절 "우리가 할 수 있는 것"이 주어이고, 콤마 사이 what we have the power to do는 같은 말을 다시 강조한 동격이다. 동사는 is, 보어는 to throw ~.' },
+  { tag: 'Exercise 1 · 심경', type: 'mc', q: '필자의 심경 변화로 가장 알맞은 것은?',
+    opts: ['excited → bored', 'dazed and disheartened → comforted', 'calm → angry', 'proud → ashamed', 'relieved → worried'], ans: 2,
+    hint: '"As I sat dazed and disheartened" → "I smiled and felt an instant comfort."',
+    sol: '비극적인 소식에 멍하고 낙담했다가(dazed and disheartened) 구명조끼 표지를 보고 미소 지으며 위안을 얻었다(comforted).' },
+  { tag: 'Exercise 1 · 분사', type: 'mc', q: S('the voice mail <u>delivering</u> news of a tragic loss') + '<br>밑줄 친 delivering에 대한 설명으로 알맞은 것은?',
+    opts: ['문장의 본동사이다.', 'voice mail을 뒤에서 꾸미는 현재분사로 "~을 전하는"의 뜻이다.', '동명사 주어이다.', 'to부정사가 생략되었다.', '수동의 의미이다.'], ans: 2,
+    hint: '음성 메시지가 소식을 "전하는" 능동 관계',
+    sol: 'the voice mail (which was) delivering news ~ — "비극적 상실의 소식을 전하는 음성 메시지". 현재분사의 후치 수식.' },
+
+  /* ===== 21~28. Exercise 2: people pleasers ===== */
+  { tag: 'Exercise 2 · 함축 의미', type: 'mc', q: '밑줄 친 <u>the labels that disable them</u>이 다음 글에서 의미하는 바로 가장 적절한 것은?' + PLEASE,
+    opts: ['habits of underestimating the capabilities of others', 'states of feeling easily overwhelmed or discouraged', 'beliefs that there is nothing others can do for them', 'mindsets of constantly seeking validation from others', 'attitudes of prioritizing others\' demands over their own'], ans: 5,
+    hint: 'people pleaser라는 꼬리표의 내용: concern for others far exceeds meeting their own needs',
+    sol: '그들을 무력하게 만드는 꼬리표 = "people pleaser", 즉 자신의 필요보다 타인의 요구를 우선시하는 태도. 그런 꼬리표가 특정 역할에 자신을 가두어 늘 yes라고 말하게 만든다.' },
+  { tag: 'Exercise 2 · 빈칸', type: 'mc', q: '필자가 언급한 "people pleasers"의 의미를 다음과 같이 나타낼 때 빈칸에 알맞은 단어는?<br>' + S('individuals who find it hard to r______ requests from others and always strive to help'),
+    opts: ['receive', 'refuse', 'repeat', 'respect', 'remember'], ans: 2,
+    hint: '부탁을 거절하기 어려워하는 사람',
+    sol: 'find it hard to refuse requests "부탁을 거절하기 어렵다고 여기다". it은 가목적어, to refuse ~가 진목적어.' },
+  { tag: 'Exercise 2 · 구문', type: 'mc', q: S('<u>It</u> is quite common in my research studies <u>for</u> people <u>to</u> describe themselves as "people pleasers."') + '<br>이 문장에 대한 설명으로 옳은 것은?',
+    opts: ['It은 앞 문장의 내용을 가리킨다.', 'It은 가주어, to describe ~가 진주어이고, for people은 to부정사의 의미상 주어이다.', 'for는 "~ 때문에"라는 뜻이다.', 'to describe는 목적을 나타낸다.', 'themselves는 people과 다른 사람을 가리킨다.'], ans: 2,
+    hint: '강의에서 동그라미 친 It, for, to',
+    sol: 'It(가주어) … for people(의미상 주어) to describe ~(진주어): "사람들이 스스로를 people pleasers라고 묘사하는 것은 꽤 흔하다."' },
+  { tag: 'Exercise 2 · 이유', type: 'mc', q: '"people pleasers"가 돕지 않으면 몹시 죄책감을 느끼는 이유로 가장 알맞은 것은?',
+    opts: ['도움을 주면 돈을 받기 때문에', '다른 사람과의 관계에 대한 관심이 자신의 욕구를 채우는 것보다 훨씬 크기 때문에', '돕는 일이 쉽기 때문에', '자신의 욕구가 가장 중요하기 때문에', '연구자가 시켰기 때문에'], ans: 2,
+    hint: 'because their concern for ... far exceeds ...',
+    sol: '타인과의 관계에 대한 관심이 자신의 필요와 욕구를 충족하는 것을 훨씬 넘어서기(far exceeds) 때문이다.' },
+  { tag: 'Exercise 2 · 주장', type: 'mc', q: '위 Exercise 2 글에서 필자가 주장하는 바로 가장 알맞은 것은?',
+    opts: ['다른 사람의 부탁을 항상 들어주어야 한다.', '스스로에게 "people pleaser" 같은 꼬리표를 붙이지 말아야 한다.', '아이에게 별명을 지어 주어야 한다.', '연구에 더 많이 참여해야 한다.', '자신의 욕구는 숨겨야 한다.'], ans: 2,
+    hint: '명령문 "please don\'t give yourself a label"',
+    sol: '명령문 "please don\'t give yourself a label"과 "They need to free themselves from the labels"에 주장이 드러난다.' },
+  { tag: 'Exercise 2 · All ~ do is', type: 'mc', q: S('All labels do is carry messages or prompt self-talk that confines you to a particular role or behavior.') + '<br>의 의미로 가장 알맞은 것은?',
+    opts: ['모든 꼬리표는 유익한 메시지를 준다.', '꼬리표가 하는 일이라고는 당신을 특정 역할이나 행동에 가두는 메시지를 전하거나 그런 혼잣말을 하게 하는 것뿐이다.', '꼬리표는 아무 일도 하지 않는다.', '모든 꼬리표를 수집해야 한다.', '혼잣말은 꼬리표를 없앤다.'], ans: 2,
+    hint: 'All (that) S do is (to) V = S가 하는 것은 V뿐이다',
+    sol: 'All labels do is (to) carry ~ or prompt ~: "꼬리표가 하는 일은 ~뿐이다". that confines you to ~ = 당신을 ~에 가두는.' },
+  { tag: 'Exercise 2 · live down to', type: 'mc', q: S('a child called "a troublemaker" will begin to perceive herself as such and <u>live down to</u> this label') + '<br>밑줄 친 부분의 의미로 가장 알맞은 것은?',
+    opts: ['꼬리표를 극복하다', '(낮은) 꼬리표에 맞게 행동하다', '꼬리표를 잊어버리다', '꼬리표를 남에게 붙이다', '꼬리표보다 훨씬 잘하다'], ans: 2,
+    hint: 'live up to (기대에 부응하다) ↔ live down to',
+    sol: 'live down to: (낮은 기대·평판)에 걸맞게 행동하다. "말썽꾸러기"라고 불린 아이는 스스로를 그렇게(as such) 여기고 그 꼬리표대로 행동하게 된다.' },
+  { tag: 'Exercise 2 · 결과', type: 'mc', q: S('labeling yourself a people pleaser will result in you taking the easiest way out in the short run by saying yes in the moment, <u>only to pay the price later</u>') + '<br>에 대한 설명으로 알맞지 <b>않은</b> 것은?',
+    opts: ['labeling yourself a people pleaser가 주어이다.', 'result in 뒤의 you는 동명사 taking의 의미상 주어이다.', 'only to pay ~는 "결국 나중에 대가를 치르게 된다"는 결과를 나타낸다.', '당장은 yes라고 말하는 쉬운 길을 택한다는 뜻이다.', 'only to는 "오직 ~하기 위하여"라는 목적을 나타낸다.'], ans: 5,
+    hint: '…, only to V = (그러나) 결국 ~하게 되다',
+    sol: ', only to V는 실망스러운 "결과"를 나타낸다(결국 ~하고 말다). 목적이라고 한 ⑤가 틀렸다.' },
+
+  /* ===== 29~30. 오늘의 공부 완료 Quiz / 적용 ===== */
+  { tag: '완료 Quiz', type: 'mc', q: '요거트 아이스크림이 아이스크림보다 건강하다고 인지하기 때문에, 요거트 아이스크림을 먹는 많은 사람들이 덜 죄책감을 느낍니다.<br>' + S('Many people feel less guilty eating frozen yogurt because it is ________ to be healthier than ice cream.') + '<br>빈칸에 알맞은 것은?',
+    opts: ['perceiving', 'perceived', 'perceive', 'perception', 'to perceive'], ans: 2,
+    hint: 'it(요거트)이 "인지되는" 것',
+    sol: 'be perceived to be ~ "~라고 인지되다(여겨지다)". 주어 it(frozen yogurt)이 사람들에게 건강하다고 인지되는 수동 관계이므로 perceived. Exercise 2의 perceive herself as such와 같은 동사이다.' },
+  { tag: '적용 · 함축 의미', type: 'mc', q: '다음 글의 밑줄 친 부분이 의미하는 바로 가장 적절한 것은?' + P('새 지문', `Many students study only to get high scores on tests. When the test is over, they quickly forget what they learned. But real learning is like planting a tree, not picking a flower. A flower looks beautiful today but dies in a few days, while a tree grows slowly and gives fruit for many years. If you want your knowledge to last, <u>plant trees instead of picking flowers</u>.`),
+    opts: ['spend more time outside in nature', 'focus on deep, lasting learning rather than short-term results', 'study biology and environmental science', 'give flowers to teachers after tests', 'take as many tests as possible'], ans: 2,
+    hint: 'flower = 시험 점수(곧 잊힘), tree = 오래가는 배움',
+    sol: '꽃(오늘은 아름답지만 곧 시듦) = 시험만을 위한 공부, 나무(천천히 자라 오래 열매를 맺음) = 오래가는 진짜 배움. "꽃을 꺾지 말고 나무를 심어라" = 단기적 결과보다 깊고 오래가는 배움에 집중하라.' }
+];
+// 정답 위치를 고르게 나눈다 (설명형 선택지의 자리만 바꿈)
+[[0, 4], [5, 4], [6, 1], [7, 5], [8, 3], [10, 1], [13, 4], [14, 1], [15, 5], [16, 3], [17, 1], [21, 4], [22, 1], [23, 3], [24, 5], [25, 4], [28, 3], [29, 4]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'eng26imp-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
