@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>비판적·창의적 읽기 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">국어 · 필독 02강 비판적·창의적 읽기 (p.16~21) + 03강 인문 02</div>
+    <h1>비판적·창의적 읽기 30제</h1>
+    <p class="lede">필독 02강 비판적 읽기와 창의적 읽기를 완벽하게 이해하는 30문항입니다. 비판적 읽기의 뜻과 필요성, 타당성·공정성·적절성·신뢰성을 실제 사례에 적용하기, 표현 방법과 숨은 의도 판단, 창의적 읽기의 뜻과 필요성, 공공 디자인 지문(주장과 근거, 막대그래프 자료), 간접 광고 지문(요약, 유추, 자료 비판), 03강 인문 지문(기억의 선택적 저장과 감각 기억)까지 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 필독 02강 비판적·창의적 읽기 + 03강 인문 ---------- */
+const P = (label, body) => `<div class="bogi psg"><span>${label}</span>${body}</div>`;
+const BARS = (() => {
+  const d = [['매우 불만족', 11], ['불만족', 36], ['보통', 34], ['만족', 16], ['매우 만족', 3]];
+  let s = '<svg viewBox="0 0 300 170" role="img" aria-label="2017년 공공 디자인 만족도 조사 막대그래프" style="width:100%;max-width:330px;display:block;margin:6px auto">';
+  [0, 10, 20, 30, 40].forEach(v => { const y = 140 - v * 3; s += `<line x1="34" y1="${y}" x2="292" y2="${y}" style="stroke:var(--rule);stroke-dasharray:3 3"/><text x="28" y="${y + 4}" text-anchor="end" style="fill:var(--ink-soft);font:10px var(--f-body)">${v}</text>`; });
+  d.forEach(([n, v], i) => { const x = 46 + i * 50, h = v * 3; s += `<rect x="${x}" y="${140 - h}" width="32" height="${h}" rx="3" style="fill:${i === 1 || i === 2 ? 'var(--pen)' : 'var(--accent)'};opacity:${i === 1 || i === 2 ? .85 : .7}"/><text x="${x + 16}" y="${134 - h}" text-anchor="middle" style="fill:var(--ink);font:600 11px var(--f-body)">${v}</text><text x="${x + 16}" y="156" text-anchor="middle" style="fill:var(--ink-soft);font:10px var(--f-body)">${n}</text>`; });
+  return s + '<text x="4" y="12" style="fill:var(--ink-soft);font:10px var(--f-body)">(%)</text></svg><div style="text-align:center;font-size:13px;color:var(--ink-soft)">&lt;자료 1&gt; 2017년 공공 디자인 만족도 조사</div>';
+})();
+const DESIGN = P('공공 디자인 지문 (요약)', `(가) 보다 나은 공공 디자인을 위해 실용적 기능과 미적 기능의 균형을 생각해 보아야 한다.<br>(나) 공원이나 정류장에서 흔히 볼 수 있는 벤치는 모양이나 색, 재료 등이 비슷한 경우가 많다. 하지만 덴마크의 디자이너 예페 하인은 이러한 벤치를 다양한 모양으로 디자인하여 사람들이 각양각색의 자세로 쉴 수 있도록 하였다. 실용적 기능에 창의적 상상력이 더해져 사람들에게 재미와 즐거움까지 주게 된 좋은 예이다.<br>(라) 전주에는 남원과의 경계를 알리는 '전주 연돌 탑'이 있다. 이 탑의 굴뚝에서는 밥 짓는 때에 맞춰 하루 세 번 연기가 나는데, 이는 사랑이 담긴 '엄마의 밥상'을 상징적으로 표현한 것이라고 한다. 이처럼 공공 디자인에 인간미를 더하면 사람들에게 깊은 인상을 줄 수 있다.<br>(마) 공공 디자인은 실용적 기능과 미적 기능이 균형을 이룰 때 그 효과가 크게 발휘되며, 이 두 기능이 조화된 공공 디자인이 많아져야 한다.`);
+const PPL = P('간접 광고 지문 (요약)', `간접 광고는 시청자들에게 무의식적인 각인 효과를 심어 주고 있으며 프로그램의 완성도를 떨어뜨린다. 또한 시청자들의 선택권을 빼앗아 시청자를 수동적인 존재로 만든다. … ㉠그물코가 느슨하면 물고기가 그물망을 쉽게 빠져나가서 물고기를 잡을 수 없다. 이와 마찬가지로 방송법 시행령의 규정이 '제작상 불가피한', '자연스러운 노출'처럼 모호하면 광고주들과 방송사가 법망을 쉽게 피할 수 있게 되어 간접 광고가 과도해지는 것을 막을 수 없다. … 이러한 문제를 해결하기 위해 법과 규정을 명확히 하여야 하며 이를 위반했을 경우 법적 제재를 강하게 가해야 한다. 시청자들 또한 비판의 목소리를 높여 과도한 간접 광고를 막아야 한다.`);
+const MEM = P('인문 지문 (요약) — 인간은 어떻게 정보를 기억할까?', `[3문단] 우선 기억의 양상으로 우리는 하루 동안 지각한 것을 모두 기억할 수 없듯이 자기에게 주어진 모든 정보를 기억하지는 않으며 기억할 수도 없다. 또한 우리는 아침에 신문을 보면서 TV에서 이야기하는 내용을 동시에 기억할 수 없다. 단지 우리가 경험한 극히 일부분만을 기억하고 있을 뿐이다. 이는 사람들은 자기에게 특별한 의미를 지니거나 다른 자극과는 달리 매우 독특하고 새로운 자극에 대해서 특별히 관심을 가지고 선택적으로 주의를 기울이기 때문이다.<br>[5문단] 먼저 감각 기억은 우리가 경험하는 시각적, 청각적, 후각적, 촉각적 등의 순간적 자극과 같은 아주 짧은 정보에 대한 기억이다. 이러한 감각적 자극들은 인간의 기억 체계에 1~5초의 짧은 시간 동안 머물게 되는데 대개 큰 주의를 기울이지 않기 때문에 기억 속에서 거의 사라질 가능성이 높다.`);
+const PROBLEMS = [
+  /* ===== 1~5. 비판적 읽기의 이해 ===== */
+  { tag: '비판적 읽기 · 뜻', type: 'mc', q: '비판적 읽기에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['글의 내용을 있는 그대로 받아들이며 읽는 것', '글의 내용이 타당한지, 내용이 글 속에 적절하게 표현되어 있는지 등을 판단하면서 읽는 것', '글쓴이의 생각을 무조건 반대하며 읽는 것', '글에 생략된 내용만 찾아 읽는 것', '글을 빠르게 훑어 읽는 것'], ans: 2,
+    hint: '"있는 그대로 받아들이는 것이 아니라 … ( 판단 )하면서 읽는 것"',
+    sol: '비판적 읽기는 글을 있는 그대로 받아들이지 않고, 내용의 타당성과 표현의 적절성 등을 판단하며 읽는 것이다. 무조건 반대하는 것과는 다르다.' },
+  { tag: '비판적 읽기 · 활동', type: 'mc', q: '"글의 내용과 글쓴이의 생각에 ( ㉠ )하거나 ( ㉡ )하며 비판적으로 읽는 활동"의 빈칸에 들어갈 말로 알맞은 것은?',
+    opts: ['㉠ 요약 ㉡ 암기', '㉠ 동의 ㉡ 반박', '㉠ 인용 ㉡ 분류', '㉠ 추측 ㉡ 상상', '㉠ 낭독 ㉡ 필사'], ans: 2,
+    hint: '근거를 바탕으로 받아들이거나, 받아들이지 않거나',
+    sol: '비판적 읽기는 근거를 따져 글쓴이의 생각에 동의하거나 반박하며 읽는 활동이다.' },
+  { tag: '비판적 읽기 · 필요성', type: 'mc', q: '비판적 읽기가 필요한 까닭으로 알맞지 <b>않은</b> 것은?',
+    opts: ['글에는 정보나 근거가 정확하지 않거나 적절하지 않은 경우가 있을 수 있다.', '글쓴이의 생각이나 관점이 과장되어 있을 수 있다.', '글쓴이의 주장이 충분한 근거 없이 제시되는 경우가 있다.', '균형감 있게 글을 파악하고 이해하기 위해서이다.', '모든 글은 거짓이므로 하나도 믿어서는 안 되기 때문이다.'], ans: 5,
+    hint: '비판 ≠ 불신',
+    sol: '비판적 읽기는 정보·근거의 부정확함, 과장, 근거 부족을 가려내 균형 있게 이해하려는 것이다. 모든 글을 거짓으로 보는 것은 비판적 읽기가 아니다.' },
+  { tag: '비판적 읽기 · 네 기준', type: 'mc', q: '글에 제시된 관점이나 내용을 판단하는 비판적 읽기의 네 가지 기준으로 바르게 묶은 것은?',
+    opts: ['정확성, 간결성, 독창성, 흥미성', '타당성, 공정성, 적절성, 신뢰성', '통일성, 응집성, 완결성, 일관성', '정의, 예시, 인과, 분류', '사실성, 추론성, 창의성, 감상성'], ans: 2,
+    hint: '판서의 동그라미 네 개',
+    sol: '비판적 읽기는 타당성, 공정성, 적절성, 신뢰성 측면에서 내용이 적절한지 판단하며 읽는다.' },
+  { tag: '비판적 읽기 · 범위', type: 'mc', q: '"비판적 읽기" 한 장 개념 정리에 해당하지 <b>않는</b> 것은?',
+    opts: ['관점이나 내용이 타당성·공정성·적절성·신뢰성 측면에서 적절한지 판단한다.', '글에 사용된 표현 방법이 내용을 효과적으로 전달하는 데 도움이 되는지 판단한다.', '글쓴이가 숨겨 둔 의도나 당시의 사회·문화적 이념이 적절한지 판단한다.', '독자의 배경지식을 바탕으로 자신의 가치관에 맞는 새로운 문제 해결 방법을 찾는다.', '글쓴이의 주장을 뒷받침하는 근거가 정확한지 따진다.'], ans: 4,
+    hint: '④는 다른 읽기 방법입니다.',
+    sol: '④는 창의적 읽기에 해당한다. 비판적 읽기는 내용·표현·의도와 이념의 적절성을 "판단"하는 읽기이다.' },
+
+  /* ===== 6~12. 네 기준 적용 ===== */
+  { tag: '기준 · 타당성', type: 'mc', q: '"글에 나타난 정보가 합리적이고, 이를 뒷받침하는 근거가 정확하고 일관성이 있는지를 판단하는 것"은?',
+    opts: ['공정성', '적절성', '타당성', '신뢰성', '창의성'], ans: 3,
+    hint: '합리적, 근거, 일관성',
+    sol: '타당성: 정보가 합리적인지, 근거가 정확하고 일관성이 있는지 판단한다.' },
+  { tag: '기준 · 공정성', type: 'mc', q: '"대상을 바라보는 시각이나 문제의식, 그것을 다루어 나가는 방식이 편견에 사로잡히지 않고 공정한지를 판단하는 것"은?',
+    opts: ['타당성', '공정성', '신뢰성', '적절성', '독창성'], ans: 2,
+    hint: '어느 한쪽에 치우치지 않고 균형적으로',
+    sol: '공정성: 편견 없이 어느 한쪽에 치우치지 않고 균형적으로 접근하는지 판단한다.' },
+  { tag: '기준 · 적절성', type: 'mc', q: '"글쓴이가 사용한 자료가 글의 주장이나 설명한 내용에 맞게 필요한 형태로, 필요한 위치에, 필요한 정보 수준으로 제시되었는가?"를 따지는 기준은?',
+    opts: ['타당성', '공정성', '적절성', '신뢰성', '일관성'], ans: 3,
+    hint: '필요한 형태 · 위치 · 수준',
+    sol: '적절성: 자료가 내용에 적절한지, 글의 표현 방식에 맞게 적절하게 제시되었는지 판단한다.' },
+  { tag: '기준 · 신뢰성', type: 'mc', q: '어떤 건강 정보 글이 출처를 밝히지 않은 개인 블로그의 수치와 "누군가에게 들은 이야기"만을 근거로 삼고 있다. 이 글을 비판할 때 가장 중심이 되는 기준은?',
+    opts: ['공정성', '신뢰성', '적절성', '창의성', '간결성'], ans: 2,
+    hint: '정보를 믿을 수 있는지',
+    sol: '정보와 그 출처를 믿을 수 있는지를 따지는 신뢰성의 문제이다. 믿을 만한 기관의 자료인지, 출처가 분명한지 확인해야 한다.' },
+  { tag: '기준 적용 · 판별', type: 'mc', q: '다음 비판에 사용된 기준을 바르게 짝지은 것은?<br>(A) "글쓴이는 찬성 측 전문가의 의견만 소개하고 반대 측 입장은 전혀 다루지 않았다."<br>(B) "앞에서는 규제가 필요하다고 하더니, 뒤에서는 규제가 필요 없다고 하여 주장이 앞뒤가 맞지 않는다."',
+    opts: ['(A) 타당성 (B) 공정성', '(A) 공정성 (B) 타당성', '(A) 신뢰성 (B) 적절성', '(A) 적절성 (B) 신뢰성', '(A) 공정성 (B) 신뢰성'], ans: 2,
+    hint: '한쪽 치우침 / 일관성',
+    sol: '(A) 한쪽 입장만 다룸 → 공정성 (B) 주장에 일관성이 없음 → 타당성.' },
+  { tag: '기준 적용 · 판별', type: 'mc', q: '"청소년의 수면 시간"을 다루는 글에 20년 전 직장인의 수면 조사 그래프를 근거로 실었다. 이에 대한 비판으로 가장 알맞은 것은?',
+    opts: ['그래프는 수치화된 자료이므로 문제가 없다.', '글의 내용과 맞지 않는 대상·시기의 자료이므로 적절성이 부족하다.', '글쓴이가 한쪽 입장에 치우쳐 공정성이 부족하다.', '그래프가 있으므로 창의성이 뛰어나다.', '자료의 출처가 있으므로 모든 기준을 만족한다.'], ans: 2,
+    hint: '자료가 내용에 맞나요?',
+    sol: '청소년에 대한 글인데 직장인, 그것도 오래된 자료이다 → 내용에 맞는 자료가 아니므로 적절성(필요한 정보 수준) 문제이다. 오래된 자료라는 점에서 신뢰성도 함께 의심할 수 있다.' },
+  { tag: '기준 적용 · 타당성', type: 'mc', q: '"우리 반 학생 두 명이 이 게임을 하고 성적이 올랐다. 그러므로 이 게임은 모든 학생의 성적을 올려 준다." 이 주장을 비판한 것으로 가장 알맞은 것은?',
+    opts: ['두 명이라는 적은 사례로 모든 학생에게 일반화하여 근거가 합리적이지 않다(타당성 부족).', '게임을 좋아하는 사람만 다루어 공정하다.', '출처가 분명하므로 신뢰할 수 있다.', '그래프가 없으므로 적절성이 부족하다.', '주장이 짧아 표현 방법이 효과적이다.'], ans: 1,
+    hint: '근거 → 주장으로 넘어가는 과정이 합리적인가요?',
+    sol: '극히 적은 사례를 전체로 일반화한 성급한 일반화로, 근거가 주장을 합리적으로 뒷받침하지 못한다 → 타당성이 부족하다.' },
+
+  /* ===== 13~14. 표현 방법, 의도·이념 ===== */
+  { tag: '표현 방법 비판', type: 'mc', q: '비판적 읽기에서 "표현 방법"을 판단한다는 것의 의미로 가장 알맞은 것은?',
+    opts: ['맞춤법이 틀린 곳만 찾는다.', '비유, 자료 제시, 인용 등 글에 사용된 표현 방법이 내용을 효과적으로 전달하는 데 도움이 되는지 판단한다.', '글쓴이의 이름을 확인한다.', '글의 길이가 적당한지 센다.', '그림이 예쁜지 판단한다.'], ans: 2,
+    hint: '한 장 개념 정리 2번',
+    sol: '글에 사용된 표현 방법(비유·유추·자료 등)이 내용을 효과적으로 전달하는 데 도움이 되는지 판단하며 읽는다.' },
+  { tag: '숨은 의도와 이념', type: 'mc', q: '어떤 기업이 후원한 "우리 회사 음료는 건강에 좋다"는 연구 기사를 읽을 때, 비판적 읽기의 3번(숨은 의도·이념 판단)에 해당하는 태도로 가장 알맞은 것은?',
+    opts: ['연구 결과이므로 그대로 믿는다.', '기사에 숨겨진 홍보 의도가 있는지, 그것이 독자에게 적절한지 판단하며 읽는다.', '음료의 맛을 상상하며 읽는다.', '기사의 글자 수를 센다.', '다른 음료를 사지 않기로 결심한다.'], ans: 2,
+    hint: '글쓴이가 글에 숨겨 둔 의도',
+    sol: '후원 기업과 연구 결과의 관계를 보고 숨겨진 의도(홍보)를 파악하고, 그것이 적절한지 판단하는 것이 비판적 읽기이다.' },
+
+  /* ===== 15~18. 창의적 읽기 ===== */
+  { tag: '창의적 읽기 · 뜻', type: 'mc', q: '창의적 읽기에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['글의 내용을 정확히 외우며 읽는 것', '독자가 자신의 지식과 경험을 바탕으로 글의 내용과 글쓴이의 생각에서 새롭게 의미를 만들어 내는 것', '글의 오류만 찾아내며 읽는 것', '생략된 내용을 추측하며 읽는 것', '글의 구조를 도식화하는 것'], ans: 2,
+    hint: '판서: ( 새롭게 ) 의미를 만들어 내는 것',
+    sol: '창의적 읽기는 지식과 경험을 바탕으로 글의 내용과 관련하여 새로운 의미·가치를 창조하며 읽는 것이다. ③은 비판적, ④는 추론적 읽기에 가깝다.' },
+  { tag: '창의적 읽기 · 차이', type: 'mc', q: '창의적 읽기가 사실적·추론적·비판적 읽기와 구별되는 점으로 가장 알맞은 것은?',
+    opts: ['글의 내용을 확인하는 데 그친다.', '독자가 자신만의 독창적인 생각을 만들어 낸다는 점', '글의 숨은 의미를 찾는다는 점', '글의 오류를 찾는다는 점', '글을 소리 내어 읽는다는 점'], ans: 2,
+    hint: '"독자가 자신만의 ( 독창적인 생각 )을 만들어 낸다"',
+    sol: '창의적 읽기는 글을 바탕으로 독자가 자신만의 독창적인 생각을 만들어 낸다는 점에서 다른 읽기와 차이가 있다.' },
+  { tag: '창의적 읽기 · 필요성', type: 'mc', q: '"개인이나 사회가 해결하기 어려운 문제에 부딪혔을 때, 책 속에 담긴 글쓴이의 경험과 지식, 가치관에서 문제 해결의 실마리를 찾고는 함. → (    )을 기르기 위해 창의적 읽기의 경험이 필요함." 빈칸에 알맞은 말은?',
+    opts: ['암기 능력', '문제 해결 능력', '맞춤법 능력', '속독 능력', '발표 능력'], ans: 2,
+    hint: '"문제 해결의 실마리"',
+    sol: '책 속에서 문제 해결의 실마리를 찾는 경험을 통해 문제 해결 능력을 기를 수 있다.' },
+  { tag: '창의적 읽기 · 적용', type: 'mc', q: '예페 하인의 벤치 이야기를 읽은 학생들의 반응 중 <b>창의적 읽기</b>에 가장 가까운 것은?',
+    opts: ['"예페 하인은 덴마크의 디자이너구나."', '"이 글은 실용적 기능과 미적 기능의 균형을 주장하고 있어."', '"벤치 사례가 주장을 뒷받침하기에 적절한지 따져 봐야겠어."', '"우리 학교 복도 신발장도 앉아 쉴 수 있는 계단 모양으로 바꾸면 쓸모와 재미를 함께 줄 수 있겠어."', '"이 글에는 영국의 사례도 생략되어 있을 거야."'], ans: 4,
+    hint: '글의 내용과 관련해 "새로운" 생각을 만들었나요?',
+    sol: '④는 글의 원리(실용 + 창의적 상상력)를 자기 주변 문제에 적용해 새로운 해결책을 떠올렸다 → 창의적 읽기. ①② 사실적, ③ 비판적, ⑤ 추론적 읽기.' },
+
+  /* ===== 19~24. 공공 디자인 지문 ===== */
+  { tag: '공공 디자인 · 중심 내용', type: 'mc', q: '다음 글의 (가)와 (마)에 공통으로 드러난 글쓴이의 주장으로 가장 알맞은 것은?' + DESIGN,
+    opts: ['공공 디자인은 실용적 기능만 갖추면 된다.', '공공 디자인은 실용적 기능과 미적 기능이 균형을 이루어야 한다.', '공공 디자인은 외국의 것을 그대로 따라야 한다.', '공공 디자인은 비용을 줄이는 것이 가장 중요하다.', '공공 디자인은 모두 같은 모양이어야 한다.'], ans: 2,
+    hint: '처음과 끝 문단의 반복',
+    sol: '(가)에서 실용적 기능과 미적 기능의 균형을 제시하고 (마)에서 두 기능이 조화된 공공 디자인이 많아져야 한다고 다시 강조한다(양괄식 주장).' },
+  { tag: '공공 디자인 · 주장과 근거', type: 'mc', q: '위 글의 (나)에서 "공공 디자인의 실용적 기능과 미적 기능이 균형을 이루어야 한다"는 주장의 근거로 쓰인 것은?',
+    opts: ['전주 연돌 탑의 굴뚝 연기', '덴마크 디자이너 예페 하인의 다양한 모양의 벤치', '공공 디자인 만족도 조사', '남원과의 경계', '엄마의 밥상'], ans: 2,
+    hint: '(나)의 사례',
+    sol: '예페 하인의 벤치는 실용적 기능(쉼)에 창의적 상상력이 더해져 재미와 즐거움까지 준 사례로, (나)의 주장을 뒷받침한다.' },
+  { tag: '공공 디자인 · (라)', type: 'mc', q: '위 글의 (라)에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['전주 연돌 탑은 남원의 관광 안내소이다.', '굴뚝 연기는 공장의 오염을 경고하기 위한 것이다.', '사랑이 담긴 "엄마의 밥상"을 상징적으로 표현한 사례를 들어, 공공 디자인에 인간미를 더하면 깊은 인상을 줄 수 있다고 주장한다.', '공공 디자인은 미적 기능만 중요하다고 주장한다.', '연돌 탑은 실용적 기능이 전혀 없다.'], ans: 3,
+    hint: '"이처럼"으로 시작하는 문장이 주장',
+    sol: '(라)의 근거: 경계를 알리는(실용) 탑의 굴뚝에서 밥 짓는 때에 맞춰 연기가 남(인간미·상징). 주장: 공공 디자인에 인간미를 더하면 깊은 인상을 줄 수 있다.' },
+  { tag: '자료 · 수치화', type: 'mc', q: '다음 &lt;자료 1&gt;에 대한 설명으로 옳지 <b>않은</b> 것은?' + BARS,
+    opts: ['공공 디자인 만족도와 관련한 정보를 수치화하여 보여 준다.', '"불만족"과 "매우 불만족"을 합한 비율은 47%이다.', '"만족"과 "매우 만족"을 합한 비율은 19%이다.', '가장 높은 비율을 차지한 응답은 "불만족"이다.', '만족한다는 응답이 불만족한다는 응답보다 많다.'], ans: 5,
+    hint: '불만족 계 11 + 36, 만족 계 16 + 3',
+    sol: '불만족 계 47% > 만족 계 19% → 불만족한다는 응답이 훨씬 많다. ⑤가 틀렸다. 이 자료는 공공 디자인 개선의 필요성을 수치로 뒷받침한다.' },
+  { tag: '자료 · 역할', type: 'mc', q: '글쓴이가 공공 디자인의 개선을 주장하며 &lt;자료 1&gt;을 제시한 효과로 가장 알맞은 것은?',
+    opts: ['공공 디자인의 역사를 소개한다.', '시민들의 낮은 만족도를 객관적인 수치로 보여 주어 개선이 필요하다는 주장의 설득력을 높인다.', '외국 디자이너의 사례를 소개한다.', '글의 내용과 상관없는 정보를 덧붙인다.', '독자의 흥미를 위해 색을 보여 준다.'], ans: 2,
+    hint: '수치화된 자료의 힘',
+    sol: '만족 19%, 불만족 47%라는 객관적 수치는 공공 디자인 개선의 필요성을 뒷받침한다. 비판적 읽기에서는 이 자료가 주장에 맞게 제시되었는지(적절성), 출처는 믿을 만한지(신뢰성)도 따진다.' },
+  { tag: '자료 · 비판적 읽기', type: 'mc', q: '&lt;자료 1&gt;을 <b>비판적으로</b> 읽은 반응으로 가장 알맞은 것은?',
+    opts: ['"막대가 알록달록해서 보기 좋다."', '"조사 대상이 누구인지, 몇 명인지, 어느 기관의 조사인지 밝혀져 있어야 믿을 수 있겠어."', '"36이라는 숫자를 외워야겠다."', '"그래프를 보니 디자이너가 되고 싶다."', '"막대가 다섯 개이다."'], ans: 2,
+    hint: '신뢰성: 믿을 수 있는 정보인가',
+    sol: '조사 대상·규모·출처를 확인하려는 것은 자료의 신뢰성을 판단하는 비판적 읽기이다. ①④는 감상, ③⑤는 사실 확인에 그친다.' },
+
+  /* ===== 25~28. 간접 광고 지문 ===== */
+  { tag: '간접 광고 · 요약', type: 'mc', q: '다음 글의 내용을 요약할 때 빈칸 ㉮, ㉯에 들어갈 말로 알맞은 것은?<br>"이 글은 간접 광고의 ( ㉮ )을 살펴보고 적절한 ( ㉯ )을 모색하고 있다."' + PPL,
+    opts: ['㉮ 장점 ㉯ 홍보 방법', '㉮ 문제점 ㉯ 해결 방안', '㉮ 역사 ㉯ 제작 방법', '㉮ 수익 ㉯ 투자 방안', '㉮ 효과 ㉯ 확대 방안'], ans: 2,
+    hint: '각인 효과, 완성도 저하, 선택권 박탈 → 법·규정 명확화, 시청자 비판',
+    sol: '간접 광고의 문제점(무의식적 각인, 완성도 저하, 시청자 선택권 박탈)을 살펴보고 해결 방안(법·규정의 명확화와 강한 제재, 시청자의 비판)을 모색하는 글이다.' },
+  { tag: '간접 광고 · 유추', type: 'mc', q: '윗글의 ㉠에 사용된 논증 방식인 <b>유추</b>에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['두 대상의 차이점만 나열하는 방식', '두 대상 사이의 유사성을 바탕으로 잘 알려지지 않은 것을 잘 알려진 것에 비교하며 설명하는 방식', '전문가의 말을 그대로 옮기는 방식', '원인과 결과를 차례로 밝히는 방식', '대상을 종류별로 묶는 방식'], ans: 2,
+    hint: '판서: 두 대상 사이의 ( 유사성 )',
+    sol: '유추는 두 대상의 유사성을 판단 근거로 삼는다. ㉠은 느슨한 방송법 시행령 규정과 법망을 피하는 광고주·방송사를, 그물코가 느슨한 그물망과 빠져나가는 물고기에 빗대어 서술했다.' },
+  { tag: '간접 광고 · 유추 대응', type: 'mc', q: '㉠의 유추에서 대응 관계가 바르지 <b>않은</b> 것은?',
+    opts: ['느슨한 그물코 – 모호한 방송법 시행령의 규정', '물고기 – 광고주들과 방송사', '그물망을 빠져나감 – 법망을 쉽게 피함', '물고기를 잡을 수 없음 – 과도한 간접 광고를 막을 수 없음', '그물을 던지는 어부 – 간접 광고를 보는 시청자'], ans: 5,
+    hint: '글에서 실제로 짝지어진 것만 고르세요.',
+    sol: '①~④가 글의 대응 관계이다. 어부와 시청자를 대응시킨 내용은 글에 없다(그물을 만드는 쪽은 법과 규정이다).' },
+  { tag: '간접 광고 · 비판', type: 'mc', q: '다음 &lt;자료&gt;를 윗글의 관점에서 비판한 내용으로 가장 알맞은 것은?' + P('자료', '최근 한류 열풍에 힘입어 우리나라 방송 프로그램 안에 등장하는 제품들이 외국에서 큰 인기를 얻고 있다. 이는 기업의 매출 증가에 도움을 주고 있으며 국가 경제 발전에도 긍정적인 기여를 하고 있다. 그러므로 간접 광고를 더욱 확대할 수 있도록 간접 광고에 대한 규제를 완화해야 한다.'),
+    opts: ['규제 완화로 기업 매출이 늘면 프로그램도 좋아질 것이다.', '간접 광고 규제 완화는 프로그램의 완성도를 떨어뜨려 오히려 한류에 악영향을 끼칠 것이다.', '한류는 간접 광고와 아무 관련이 없다.', '외국 시청자는 간접 광고를 좋아하므로 규제를 없애야 한다.', '경제 발전을 위해 시청자의 선택권은 포기해야 한다.'], ans: 2,
+    hint: '윗글은 간접 광고가 프로그램의 무엇을 떨어뜨린다고 했나요?',
+    sol: '윗글은 간접 광고가 프로그램의 완성도를 떨어뜨린다고 본다. 따라서 규제 완화는 프로그램의 질을 낮춰 오히려 한류에 해가 되며, 과도한 간접 광고를 비판하는 시청자의 목소리를 귀담아들어야 프로그램의 완성도와 시청자들의 신뢰도 높아진다고 비판할 수 있다.' },
+
+  /* ===== 29~30. 인문: 기억 ===== */
+  { tag: '인문 · 선택적 저장', type: 'mc', q: '다음 글의 3문단에 대한 이해로 가장 알맞은 것은?' + MEM,
+    opts: ['사람은 하루 동안 지각한 것을 모두 기억한다.', '신문과 TV의 내용을 동시에 똑같이 기억할 수 있다.', '사람은 자기에게 특별한 의미가 있거나 독특하고 새로운 자극에 선택적으로 주의를 기울여 일부만 기억한다.', '기억은 자극의 크기와 상관없이 무작위로 저장된다.', '감각 기억은 평생 지속된다.'], ans: 3,
+    hint: '3문단 중심 내용: 기억의 선택적 저장',
+    sol: '3문단은 "기억의 선택적 저장"을 다룬다. 우리는 경험의 극히 일부만 기억하는데, 특별한 의미가 있거나 독특하고 새로운 자극에 선택적으로 주의를 기울이기 때문이다.' },
+  { tag: '인문 · 감각 기억', type: 'mc', q: '위 글의 5문단을 바탕으로 할 때, 다음 사례에 대한 설명으로 가장 알맞은 것은?<br>"버스 창밖으로 스쳐 지나간 간판 글자들은 내리자마자 하나도 떠오르지 않았다. 그런데 그중 내 이름과 똑같은 가게 이름은 지금도 기억난다."',
+    opts: ['간판 글자는 모두 장기 기억으로 저장되었다.', '대부분의 간판은 주의를 기울이지 않은 감각 기억이라 1~5초 안에 사라졌고, 내 이름과 같은 간판은 특별한 의미가 있어 선택적으로 주의를 기울였기 때문에 기억에 남았다.', '시각적 자극은 감각 기억이 될 수 없다.', '감각 기억은 큰 주의를 기울일수록 빨리 사라진다.', '모든 간판을 똑같이 기억해야 정상이다.'], ans: 2,
+    hint: '5문단(감각 기억의 개념과 특성) + 3문단(선택적 저장)',
+    sol: '스쳐 본 간판은 순간적 시각 자극(감각 기억)으로 1~5초 머물다 주의를 기울이지 않아 사라졌다. 자기 이름과 같은 간판은 "자기에게 특별한 의미"가 있어 선택적으로 주의를 기울였으므로 기억에 남았다. 두 문단을 연결해 사례에 적용하는 문항이다.' }
+];
+// 정답 위치를 고르게 나눈다 (선택지 자리만 바꿈)
+[[0, 4], [3, 5], [5, 1], [6, 3], [7, 5], [8, 1], [9, 3], [12, 4], [14, 3], [15, 5], [16, 1], [20, 1], [22, 3], [23, 4], [25, 3], [27, 5], [28, 1], [29, 4]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'kor02-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
