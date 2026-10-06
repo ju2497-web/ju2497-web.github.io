@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>입시 문의 자동답변</title>
+  <meta name="description" content="수시·정시 입시 문의에 대한 답변을 지식베이스로 자동 작성하는 입학처용 도구">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9C%89%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">✉</span>
+      <div>
+        <h1>입시 문의 자동답변</h1>
+        <p class="sub"><span id="uniName">○○대학교</span> 입학처 · 수시/정시 상담 답변 작성 도구</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="compose" class="active">답변 작성</button>
+      <button role="tab" data-tab="batch">일괄 처리</button>
+      <button role="tab" data-tab="kb">지식베이스</button>
+      <button role="tab" data-tab="settings">설정</button>
+      <button role="tab" data-tab="history">기록</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 답변 작성 -->
+    <section id="tab-compose" class="tab active">
+      <div id="setupBanner" class="banner" hidden>
+        모집 일정·연락처가 아직 비어 있습니다. <a href="#" data-goto="settings">설정</a>에서 우리 대학 정보를 입력하면 답변에 자동 반영됩니다.
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2>문의 내용</h2>
+          <textarea id="inquiry" rows="8" placeholder="수험생·학부모 문의를 붙여 넣으세요. 예) 수시 원서는 몇 개까지 쓸 수 있나요? 수능최저도 있나요?"></textarea>
+          <div class="chips" id="samples"></div>
+          <div class="opts">
+            <label>채널
+              <select id="channel">
+                <option value="email">이메일</option>
+                <option value="board">홈페이지 Q&amp;A 게시판</option>
+                <option value="kakao">카카오톡·문자</option>
+                <option value="phone">전화 상담 스크립트</option>
+              </select>
+            </label>
+            <label>어조
+              <select id="tone">
+                <option value="formal">정중·공식</option>
+                <option value="friendly">친근</option>
+              </select>
+            </label>
+            <label>질문자
+              <select id="asker">
+                <option value="auto">자동 판별</option>
+                <option value="학생">학생</option>
+                <option value="학부모">학부모</option>
+              </select>
+            </label>
+            <label>이름(선택)
+              <input id="askerName" type="text" placeholder="예) 홍길동">
+            </label>
+          </div>
+          <div class="actions">
+            <button id="btnGenerate" class="primary">답변 생성</button>
+            <button id="btnAI" class="ghost" title="설정에서 Claude API 키를 입력하면 사용할 수 있습니다">AI로 다듬기</button>
+            <button id="btnClear" class="ghost">지우기</button>
+          </div>
+
+          <div id="analysis" class="analysis" hidden>
+            <div class="badges">
+              <span class="badge" id="bTrack"></span>
+              <span class="badge" id="bAsker"></span>
+            </div>
+            <h3>매칭된 답변 항목 <small>체크를 바꾸면 답변이 다시 조립됩니다</small></h3>
+            <ul id="matchList" class="matches"></ul>
+            <div class="add-entry">
+              <select id="addEntry"><option value="">+ 다른 항목 추가…</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>답변 초안 <small id="modeLabel"></small></h2>
+          <input id="subject" type="text" placeholder="이메일 제목" hidden>
+          <textarea id="output" rows="20" placeholder="왼쪽에 문의를 입력하고 [답변 생성]을 누르세요. 생성된 답변은 여기서 바로 수정할 수 있습니다."></textarea>
+          <div id="warnings" class="warn" hidden></div>
+          <div class="actions">
+            <button id="btnCopy" class="primary">복사</button>
+            <button id="btnSave" class="ghost">기록에 저장</button>
+            <span id="toast" class="toast" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 일괄 처리 -->
+    <section id="tab-batch" class="tab">
+      <div class="card">
+        <h2>일괄 처리</h2>
+        <p class="hint">문의를 한 줄에 하나씩(여러 줄 문의는 <code>---</code> 줄로 구분) 붙여 넣거나, 첫 열이 문의 내용인 CSV 파일을 불러오세요. 결과는 CSV(엑셀)로 내려받을 수 있습니다.</p>
+        <textarea id="batchInput" rows="8" placeholder="수시 원서 몇 개까지 쓸 수 있나요?&#10;정시 가나다군은 어떻게 지원하나요?&#10;---&#10;아이가 검정고시 출신인데&#10;학생부종합전형 지원이 가능한가요?"></textarea>
+        <div class="opts">
+          <label>채널
+            <select id="batchChannel">
+              <option value="board">홈페이지 Q&amp;A 게시판</option>
+              <option value="email">이메일</option>
+              <option value="kakao">카카오톡·문자</option>
+            </select>
+          </label>
+          <label>어조
+            <select id="batchTone">
+              <option value="formal">정중·공식</option>
+              <option value="friendly">친근</option>
+            </select>
+          </label>
+          <label class="file">CSV 불러오기 <input id="batchFile" type="file" accept=".csv,.txt"></label>
+        </div>
+        <div class="actions">
+          <button id="btnBatch" class="primary">일괄 생성</button>
+          <button id="btnBatchCsv" class="ghost" disabled>CSV 내려받기</button>
+          <span id="batchStat" class="hint"></span>
+        </div>
+        <div class="table-wrap"><table id="batchTable" class="tbl" hidden>
+          <thead><tr><th>#</th><th>문의</th><th>분류</th><th>매칭 항목</th><th>답변</th></tr></thead>
+          <tbody></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <!-- 지식베이스 -->
+    <section id="tab-kb" class="tab">
+      <div class="card">
+        <div class="row-between">
+          <h2>지식베이스 <small id="kbCount"></small></h2>
+          <div class="actions tight">
+            <input id="kbSearch" type="search" placeholder="검색">
+            <select id="kbFilter">
+              <option value="">전체</option><option>수시</option><option>정시</option><option>공통</option><option>학과</option>
+            </select>
+            <button id="btnKbNew" class="primary">+ 새 항목</button>
+            <button id="btnKbExport" class="ghost">내보내기</button>
+            <label class="ghost btnlike">가져오기<input id="kbImport" type="file" accept=".json" hidden></label>
+            <button id="btnKbReset" class="ghost danger">기본값 복원</button>
+          </div>
+        </div>
+        <p class="hint">답변에 <code>{{대학명}}</code>, <code>{{수시원서접수}}</code>처럼 쓰면 [설정] 값으로 자동 치환됩니다. 키워드는 쉼표로 구분하며, 띄어쓰기는 무시하고 비교합니다.</p>
+        <div id="kbList" class="kb-list"></div>
+      </div>
+    </section>
+
+    <!-- 설정 -->
+    <section id="tab-settings" class="tab">
+      <div class="grid2">
+        <div class="card">
+          <h2>대학·모집 정보</h2>
+          <p class="hint">여기 입력한 값이 모든 답변의 <code>{{변수}}</code>에 들어갑니다. 비워 두면 답변에 “설정 필요”로 표시되어 발송 전에 알 수 있습니다.</p>
+          <form id="settingsForm" class="form"></form>
+          <div class="actions">
+            <button id="btnSettingsSave" class="primary">저장</button>
+            <button id="btnSettingsExport" class="ghost">전체 백업(JSON)</button>
+            <label class="ghost btnlike">백업 복원<input id="restoreFile" type="file" accept=".json" hidden></label>
+          </div>
+        </div>
+        <div class="card">
+          <h2>AI 다듬기 (선택)</h2>
+          <p class="hint">Claude API 키를 입력하면 [AI로 다듬기]로 지식베이스에 근거한 자연스러운 답변을 받을 수 있습니다. 키는 이 브라우저에만 저장되고 Anthropic API로만 전송됩니다. 공용 PC에서는 사용 후 키를 삭제하세요.</p>
+          <div class="form">
+            <label>API 키<input id="apiKey" type="password" placeholder="sk-ant-..." autocomplete="off"></label>
+            <label>모델<input id="aiModel" type="text" placeholder="claude-opus-5-5"></label>
+          </div>
+          <div class="actions">
+            <button id="btnAiSave" class="primary">저장</button>
+            <button id="btnAiDelete" class="ghost danger">키 삭제</button>
+          </div>
+          <h3>작동 방식</h3>
+          <ol class="hint">
+            <li>문의에서 전형(수시/정시)과 질문자(학생/학부모)를 판별합니다.</li>
+            <li>키워드·문장 유사도로 지식베이스의 승인된 답변을 최대 3개 고릅니다.</li>
+            <li>채널(이메일·게시판·카톡·전화)에 맞춰 인사말·본문·유의사항·서명을 조립합니다.</li>
+            <li>AI 사용 시, 같은 지식베이스만 근거로 문장을 다듬고 근거 없는 수치는 쓰지 않도록 지시합니다.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 기록 -->
+    <section id="tab-history" class="tab">
+      <div class="card">
+        <div class="row-between">
+          <h2>답변 기록 <small id="histCount"></small></h2>
+          <div class="actions tight">
+            <button id="btnHistCsv" class="ghost">CSV 내려받기</button>
+            <button id="btnHistClear" class="ghost danger">전체 삭제</button>
+          </div>
+        </div>
+        <p class="hint">기록은 이 브라우저에만 저장됩니다. 자주 쓰는 답변은 FAQ 통계로 활용해 지식베이스를 보강하세요.</p>
+        <div id="histStats" class="stats"></div>
+        <div id="histList" class="hist-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="kbDialog">
+    <form method="dialog" class="form" id="kbForm">
+      <h2 id="kbDialogTitle">항목 편집</h2>
+      <label>분류
+        <select name="track"><option>수시</option><option>정시</option><option>공통</option><option>학과</option></select>
+      </label>
+      <label>제목<input name="title" required></label>
+      <label>대표 질문<input name="question" required></label>
+      <label>키워드(쉼표 구분)<input name="keywords" required></label>
+      <label>답변(문단은 빈 줄로 구분)<textarea name="answer" rows="9" required></textarea></label>
+      <div class="actions">
+        <button value="save" class="primary">저장</button>
+        <button value="cancel" formnovalidate class="ghost">취소</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="foot">모든 데이터는 사용 중인 브라우저에만 저장됩니다 · 최종 기준은 해당 학년도 모집요강</footer>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
