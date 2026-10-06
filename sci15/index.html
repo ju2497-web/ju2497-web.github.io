@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>지권과 기권 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">중학 과학 · 15강 지권과 기권의 층상 구조</div>
+    <h1>지권과 기권 30제</h1>
+    <p class="lede">15강 지권과 기권의 층상 구조를 완벽하게 이해하는 30문항입니다. 지구계와 상호 작용, 지권의 층(지각·맨틀·외핵·내핵, 모호면), 기권의 분포와 성분, 높이에 따른 기온 변화로 나눈 대류권·성층권·중간권·열권, 위도에 따른 에너지 불균형, 탄소의 순환과 암석의 순환까지 그림과 함께 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 중학 과학 15강 지권과 기권의 층상 구조 ---------- */
+const SVG = (w, h, body, label) => `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${label}" style="width:100%;max-width:${Math.min(w + 20, 360)}px;display:block;margin:8px auto">${body}</svg>`;
+const T = (x, y, t, o = {}) => `<text x="${x}" y="${y}" text-anchor="${o.a || 'middle'}" style="fill:${o.c || 'var(--ink)'};font:${o.w || 600} ${o.s || 11}px var(--f-body)">${t}</text>`;
+const L = (x1, y1, x2, y2, o = {}) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:${o.c || 'var(--ink)'};stroke-width:${o.w || 1.4}${o.d ? ';stroke-dasharray:4 3' : ''}"/>`;
+// 높이에 따른 기온 그래프 (층 이름 대신 A~D)
+const ATM = (() => {
+  const X = t => 50 + (t + 90) * 2.1, Y = h => 230 - h * 1.75;
+  const prof = [[15, 0], [-56, 11], [-56, 20], [-2, 50], [-90, 80], [-90, 88], [20, 120]];
+  let s = `<rect x="${X(-90)}" y="${Y(120)}" width="${X(20) - X(-90)}" height="${Y(0) - Y(120)}" style="fill:var(--fig-fill)"/>`;
+  [11, 50, 80].forEach(h => { s += L(X(-90), Y(h), X(20), Y(h), { c: 'var(--ink-soft)', d: 1, w: 1 }) + T(X(-90) - 6, Y(h) + 4, h, { a: 'end', s: 10 }); });
+  s += T(X(-90) - 6, Y(0) + 4, 0, { a: 'end', s: 10 }) + L(X(-90), Y(0), X(20), Y(0)) + L(X(-90), Y(0), X(-90), Y(120));
+  [-80, -60, -40, -20, 0, 20].forEach(t => { s += T(X(t), Y(0) + 14, t, { s: 10 }); });
+  s += `<polyline points="${prof.map(([t, h]) => X(t) + ',' + Y(h)).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:2"/>`;
+  [['A', 5], ['B', 30], ['C', 65], ['D', 100]].forEach(([n, h]) => { s += T(X(-75), Y(h) + 4, n, { s: 14, w: 800 }); });
+  s += T(X(-35), Y(0) + 28, '기온(℃)', { s: 10 }) + T(24, Y(122), '높이(km)', { s: 10, a: 'start' });
+  return SVG(300, 270, s, '높이에 따른 기온 변화 그래프');
+})();
+// 지구 내부 구조 (깊이)
+const EARTH = (() => {
+  const layers = [['A', 0, 35, 'var(--accent)'], ['B', 35, 2900, '#c9a26b'], ['C', 2900, 5100, '#e08a4a'], ['D', 5100, 6400, 'var(--pen)']];
+  const Y = d => 20 + Math.max(d, d < 200 ? d * 4 : d) * 0.034 + (d >= 35 ? 4 : 0);
+  let s = '';
+  layers.forEach(([n, a, b, c]) => { const y1 = 20 + (a === 0 ? 0 : a < 100 ? 10 : a * 0.034 + 6), y2 = 20 + (b < 100 ? 10 : b * 0.034 + 6); s += `<rect x="70" y="${y1}" width="120" height="${y2 - y1}" style="fill:${c};opacity:.55;stroke:var(--ink);stroke-width:1"/>` + T(130, (y1 + y2) / 2 + 5, n, { s: 14, w: 800 }); });
+  [[0, 20], [35, 30], [2900, 20 + 2900 * 0.034 + 6], [5100, 20 + 5100 * 0.034 + 6], [6400, 20 + 6400 * 0.034 + 6]].forEach(([d, y]) => { s += T(62, y + 4, d + ' km', { a: 'end', s: 10 }); });
+  s += T(250, 30, '← 모호면', { s: 10, c: 'var(--ink-soft)' }) + T(130, 260, '지표로부터의 깊이', { s: 10, c: 'var(--ink-soft)' });
+  return SVG(300, 270, s, '지구 내부 구조 깊이 그림');
+})();
+// 위도에 따른 에너지 (흡수 = 태양 복사, 방출 = 지구 복사)
+const ENERGY = (() => {
+  const X = lat => 40 + (90 - lat) * 2.6, Y = e => 210 - (e - 100) * 0.36;
+  const sun = lat => 570 - 430 * Math.pow(lat / 90, 1.55), earth = lat => 490 - 150 * Math.pow(lat / 90, 1.8);
+  const pts = f => [...Array(19).keys()].map(i => i * 5).map(l => X(l) + ',' + Y(f(l))).join(' ');
+  let s = L(X(90), Y(100), X(0), Y(100)) + L(X(90), Y(100), X(90), Y(600));
+  [100, 200, 300, 400, 500, 600].forEach(e => { s += T(X(90) - 6, Y(e) + 4, e, { a: 'end', s: 9 }); });
+  [90, 60, 30, 0].forEach(l => { s += T(X(l), Y(100) + 13, l + '°', { s: 9 }); });
+  s += `<polyline points="${pts(sun)}" style="fill:none;stroke:var(--pen);stroke-width:2"/><polyline points="${pts(earth)}" style="fill:none;stroke:var(--accent);stroke-width:2"/>`;
+  s += T(X(20), Y(sun(20)) - 8, '㉮', { s: 12, c: 'var(--pen)' }) + T(X(75), Y(earth(75)) - 8, '㉯', { s: 12, c: 'var(--accent)' });
+  s += L(X(38), Y(100), X(38), Y(sun(38)), { c: 'var(--ink-soft)', d: 1, w: 1 }) + T(X(85), Y(100) + 26, '극', { s: 10 }) + T(X(45), Y(100) + 26, '위도', { s: 10 }) + T(X(3), Y(100) + 26, '적도', { s: 10 });
+  return SVG(300, 250, s, '위도에 따른 에너지 그래프');
+})();
+// 암석의 순환
+const ROCK = (() => {
+  const B = (x, y, t) => `<rect x="${x - 34}" y="${y - 13}" width="68" height="26" rx="7" style="fill:var(--sheet);stroke:var(--ink-soft)"/>` + T(x, y + 4, t, { s: 11 });
+  const A = (x1, y1, x2, y2) => { const a = Math.atan2(y2 - y1, x2 - x1), h = 8, p = (d) => `${(x2 - h * Math.cos(a + d)).toFixed(1)},${(y2 - h * Math.sin(a + d)).toFixed(1)}`; return L(x1, y1, x2, y2, { c: 'var(--pen)', w: 1.6 }) + `<polygon points="${x2},${y2} ${p(0.45)} ${p(-0.45)}" style="fill:var(--pen)"/>`; };
+  let s = B(80, 30, '퇴적암') + B(220, 30, '퇴적물') + B(60, 150, '변성암') + B(240, 150, '화성암') + B(150, 230, '마그마');
+  s += A(186, 26, 114, 26) + T(150, 18, '㉠', { s: 12, c: 'var(--pen)' });
+  s += A(80, 43, 62, 137) + T(52, 92, '㉡', { s: 12, c: 'var(--pen)' });
+  s += A(62, 163, 128, 225) + T(80, 205, '㉢', { s: 12, c: 'var(--pen)' });
+  s += A(172, 225, 240, 163) + T(222, 205, '㉣', { s: 12, c: 'var(--pen)' });
+  s += A(240, 137, 222, 43) + T(248, 92, '㉤', { s: 12, c: 'var(--pen)' });
+  s += A(206, 150, 94, 150) + T(150, 143, '높은 열 · 큰 압력', { s: 9, c: 'var(--ink-soft)' });
+  return SVG(300, 250, s, '암석의 순환 그림');
+})();
+const PROBLEMS = [
+  /* ===== 1~6. 지구계 ===== */
+  { tag: '지구계', type: 'mc', q: '지구계(지구 시스템)에 대한 설명으로 가장 알맞은 것은?',
+    opts: ['지구의 내부만을 가리키는 말이다.', '지구를 구성하는 여러 요소들이 서로 영향을 주고받으며 이루는 계이다.', '대기만으로 이루어진 계이다.', '생물이 사는 곳만을 가리킨다.', '태양계와 같은 말이다.'], ans: 2,
+    hint: '판서: 여러 "요소" + 서로 영향',
+    sol: '지구계는 지구를 구성하는 여러 요소(지권, 수권, 기권, 생물권, 외권)가 서로 영향을 주고받으며 이루는 계이다.' },
+  { tag: '지구계 구성', type: 'mc', q: '지구계의 구성 요소로 바르게 묶은 것은?',
+    opts: ['지권, 수권, 기권, 생물권, 외권', '지각, 맨틀, 외핵, 내핵', '대류권, 성층권, 중간권, 열권', '퇴적암, 화성암, 변성암', '질소, 산소, 아르곤'], ans: 1,
+    hint: '"○권" 다섯 가지',
+    sol: '지구계 = 지권, 수권, 기권, 생물권, 외권. ②는 지권의 층, ③은 기권의 층이다.' },
+  { tag: '외권', type: 'mc', q: '지구계의 구성 요소 중 "기권 바깥의 우주 공간"에 해당하는 것은?',
+    opts: ['지권', '수권', '기권', '생물권', '외권'], ans: 5,
+    hint: '바깥 외(外)',
+    sol: '외권은 기권 바깥의 우주 공간으로, 태양 에너지 등을 통해 지구계에 영향을 준다.' },
+  { tag: '상호 작용', type: 'mc', q: '"화산이 분출하여 화산재가 대기 중으로 퍼졌다."는 지구계의 어느 두 요소 사이의 상호 작용인가?',
+    opts: ['수권 – 생물권', '지권 – 기권', '기권 – 외권', '수권 – 외권', '생물권 – 외권'], ans: 2,
+    hint: '화산(땅) → 대기',
+    sol: '화산 분출(지권)로 화산재·기체가 대기(기권)로 → 지권과 기권의 상호 작용.' },
+  { tag: '상호 작용', type: 'mc', q: '다음 중 <b>생물권과 기권</b>의 상호 작용에 해당하는 것은?',
+    opts: ['파도가 해안의 암석을 깎는다.', '식물이 광합성으로 대기 중의 이산화 탄소를 흡수한다.', '지하수가 석회암을 녹인다.', '운석이 지표에 떨어진다.', '빙하가 산을 깎는다.'], ans: 2,
+    hint: '식물 = 생물권, 대기 = 기권',
+    sol: '광합성은 생물권(식물)이 기권의 CO₂를 흡수하는 상호 작용이다. ① 수권–지권 ③ 수권–지권 ④ 외권–지권 ⑤ 수권–지권.' },
+  { tag: '에너지원', type: 'mc', q: '지구계에서 일어나는 대부분의 현상(바람, 물의 순환, 광합성 등)을 일으키는 가장 주된 에너지원은?',
+    opts: ['지구 내부 에너지', '조력 에너지', '태양 에너지', '화석 연료', '전기 에너지'], ans: 3,
+    hint: '그림의 "태양 복사 에너지"',
+    sol: '지구계의 주된 에너지원은 태양 에너지이다. 지구 내부 에너지는 화산 활동·지진 등을 일으킨다.' },
+
+  /* ===== 7~13. 지권의 층상 구조 ===== */
+  { tag: '지권의 층', type: 'mc', q: '지권을 이루는 4개의 층을 지표에서부터 순서대로 바르게 나열한 것은?',
+    opts: ['지각 → 외핵 → 맨틀 → 내핵', '지각 → 맨틀 → 외핵 → 내핵', '맨틀 → 지각 → 내핵 → 외핵', '지각 → 맨틀 → 내핵 → 외핵', '내핵 → 외핵 → 맨틀 → 지각'], ans: 2,
+    hint: '겉에서 속으로',
+    sol: '지표에서부터 지각 → 맨틀 → 외핵 → 내핵 순이다(지구 중심까지 약 6400 km).' },
+  { tag: '지구 내부', type: 'mc', q: '그림은 지구 내부 구조를 깊이에 따라 나타낸 것이다. A~D 중 <b>액체 상태</b>로 추정되는 층은?' + EARTH,
+    opts: ['A', 'B', 'C', 'D', '없다'], ans: 3,
+    hint: '깊이 2900~5100 km',
+    sol: 'C는 외핵(2900~5100 km)으로 액체 상태로 추정된다. A 지각·B 맨틀·D 내핵은 고체이다.' },
+  { tag: '지구 내부', type: 'mc', q: '위 그림의 A~D 중 <b>두께가 가장 두껍고 지구 전체 부피의 약 80%</b>를 차지하는 층은?' + EARTH,
+    opts: ['A (지각)', 'B (맨틀)', 'C (외핵)', 'D (내핵)', 'A와 D'], ans: 2,
+    hint: '35 km ~ 2900 km',
+    sol: 'B 맨틀은 깊이 약 35~2900 km로 가장 두껍고 지구 부피의 약 80%를 차지하는 고체층이다.' },
+  { tag: '지각', type: 'mc', q: '지각에 대한 설명으로 옳지 <b>않은</b> 것은?',
+    opts: ['고체 암석으로 된 지구의 겉 부분이다.', '지권의 층 중 두께가 가장 얇다.', '대륙 지각과 해양 지각으로 구분한다.', '두께는 약 5~35 km이다.', '지구 전체 부피의 약 80%를 차지한다.'], ans: 5,
+    hint: '부피 80%는 다른 층',
+    sol: '부피 약 80%를 차지하는 것은 맨틀이다. 지각은 두께가 가장 얇은 겉 부분이다.' },
+  { tag: '모호면', type: 'mc', q: '모호면에 대한 설명으로 옳은 것은?',
+    opts: ['맨틀과 외핵의 경계면이다.', '지각과 맨틀의 경계면이며, 모호면의 깊이는 대륙 지각이 해양 지각보다 깊다.', '외핵과 내핵의 경계면이다.', '대기와 지표의 경계면이다.', '모호면의 깊이는 해양 지각이 대륙 지각보다 깊다.'], ans: 2,
+    hint: '모호면의 깊이: 대륙 지각 ( ) 해양 지각',
+    sol: '모호면은 지각과 맨틀의 경계면이다. 대륙 지각이 해양 지각보다 두꺼우므로 모호면의 깊이는 대륙 &gt; 해양.' },
+  { tag: '지권 비교', type: 'mc', q: '지권의 각 층을 비교한 것으로 옳은 것은?',
+    opts: ['두께: 지각 &gt; 맨틀', '상태: 외핵은 고체, 내핵은 액체', '지구 중심까지의 거리(반지름)는 약 6400 km이다.', '지각은 모두 같은 두께이다.', '맨틀은 액체이다.'], ans: 3,
+    hint: '그림의 가장 깊은 숫자',
+    sol: '지구의 반지름은 약 6400 km이다. 두께는 맨틀이 가장 두껍고, 외핵은 액체·내핵은 고체, 지각은 대륙과 해양에서 두께가 다르다.' },
+  { tag: '지권 정의', type: 'mc', q: '"반지름 약 6400 km의 고체 부분으로, 지각·맨틀·외핵·내핵으로 구분되는" 지구계의 구성 요소는?',
+    opts: ['기권', '수권', '지권', '생물권', '외권'], ans: 3,
+    hint: '땅 지(地)',
+    sol: '지권이다(판서의 정의). 단, 그 안의 외핵은 액체 상태로 추정된다는 점도 함께 기억하자.' },
+
+  /* ===== 14~21. 기권 ===== */
+  { tag: '대기의 분포', type: 'mc', q: '기권(대기)에 대한 설명으로 옳지 <b>않은</b> 것은?',
+    opts: ['지구를 둘러싸고 있는 대기로, 여러 가지 기체로 이루어져 있다.', '지표면에서 약 1000 km 높이까지 분포한다.', '대기는 대부분 지표 부근에 존재한다.', '높이 올라갈수록 대기가 희박해진다.', '높이에 관계없이 대기의 양은 고르게 분포한다.'], ans: 5,
+    hint: '중력 때문에 대기는 어디에 많이 모여 있을까요?',
+    sol: '중력 때문에 대기는 대부분 지표 부근에 모여 있고, 높이 올라갈수록 희박해진다. ⑤가 틀렸다.' },
+  { tag: '대기의 성분', type: 'mc', q: '대기의 조성(부피비)에서 많은 순서대로 바르게 나열한 것은?',
+    opts: ['산소 &gt; 질소 &gt; 아르곤 &gt; 이산화 탄소', '질소 &gt; 산소 &gt; 아르곤 &gt; 이산화 탄소', '질소 &gt; 산소 &gt; 이산화 탄소 &gt; 아르곤', '이산화 탄소 &gt; 질소 &gt; 산소 &gt; 아르곤', '질소 &gt; 아르곤 &gt; 산소 &gt; 이산화 탄소'], ans: 2,
+    hint: '78 %, 21 %, 0.93 %, 0.03 %',
+    sol: '질소 78 % &gt; 산소 21 % &gt; 아르곤 0.93 % &gt; 이산화 탄소 0.03 %.' },
+  { tag: '층 구분 기준', type: 'mc', q: '기권을 4개의 층으로 구분하는 기준은?',
+    opts: ['높이에 따른 기압 변화', '높이에 따른 기온 변화', '높이에 따른 산소의 양', '대기의 색깔', '구름의 모양'], ans: 2,
+    hint: '판서의 동그라미: 기온',
+    sol: '기권은 높이에 따른 기온 변화를 기준으로 대류권, 성층권, 중간권, 열권으로 나눈다.' },
+  { tag: '기온 그래프', type: 'mc', q: '그림은 높이에 따른 기온 변화를 나타낸 것이다. A~D에 해당하는 층을 바르게 짝지은 것은?' + ATM,
+    opts: ['A 성층권, B 대류권, C 중간권, D 열권', 'A 대류권, B 성층권, C 중간권, D 열권', 'A 대류권, B 중간권, C 성층권, D 열권', 'A 열권, B 중간권, C 성층권, D 대류권', 'A 대류권, B 열권, C 중간권, D 성층권'], ans: 2,
+    hint: '지표~11 km, 11~50 km, 50~80 km, 80~1000 km',
+    sol: 'A 대류권(지표~약 11 km), B 성층권(약 11~50 km), C 중간권(약 50~80 km), D 열권(약 80~1000 km).' },
+  { tag: '성층권', type: 'mc', q: '위 그래프에서 B층(성층권)의 기온이 높이 올라갈수록 <b>상승</b>하는 까닭은?' + ATM,
+    opts: ['지표에서 방출되는 에너지가 많이 도달하기 때문', '오존층에서 태양에서 오는 자외선을 흡수하여 가열되기 때문', '태양 에너지에 의해 직접 가열되기 때문', '수증기가 많기 때문', '대류가 활발하기 때문'], ans: 2,
+    hint: '성층권에는 무엇이 있나요?',
+    sol: '성층권에는 오존층이 있어 태양의 자외선을 흡수하여 가열되므로 높이 올라갈수록 기온이 상승한다. ③은 열권의 까닭이다.' },
+  { tag: '대류권·중간권', type: 'mc', q: '대류권과 중간권에서 높이 올라갈수록 기온이 <b>하강</b>하는 공통적인 까닭은?',
+    opts: ['오존층이 자외선을 흡수하기 때문', '높이 올라갈수록 지표에서 방출되는 에너지가 적게 도달하기 때문', '태양에 가까워지기 때문', '공기가 많아지기 때문', '유성이 타기 때문'], ans: 2,
+    hint: '표의 대류권·중간권 칸이 똑같은 까닭입니다.',
+    sol: '두 층 모두 "높이 올라갈수록 지표에서 방출되는 에너지가 적게 도달하기 때문"에 기온이 낮아진다.' },
+  { tag: '열권', type: 'mc', q: '열권(약 80~1000 km)에 대한 설명으로 옳은 것은?',
+    opts: ['높이 올라갈수록 기온이 하강한다.', '태양 에너지에 의해 직접 가열되어 높이 올라갈수록 기온이 상승하고, 오로라가 나타난다.', '오존층이 있다.', '기상 현상이 가장 활발하다.', '대기가 가장 많다.'], ans: 2,
+    hint: '그래프의 맨 위층',
+    sol: '열권은 태양 에너지에 의해 직접 가열되어 기온이 상승하며, 오로라가 나타난다. 유성은 주로 중간권에서 나타난다.' },
+  { tag: '현상과 층', type: 'mc', q: '기권의 각 층과 그 층에서 볼 수 있는 현상을 바르게 짝지은 것은?',
+    opts: ['대류권 – 오로라', '성층권 – 유성', '중간권 – 유성', '열권 – 비, 눈', '중간권 – 오존층'], ans: 3,
+    hint: '그림에서 "유성"과 "오로라"의 위치',
+    sol: '유성은 중간권, 오로라는 열권, 오존층은 성층권, 비·눈 같은 기상 현상은 대류권에서 나타난다.' },
+
+  /* ===== 22~24. 위도에 따른 에너지 불균형 ===== */
+  { tag: '에너지 불균형', type: 'mc', q: '그림은 위도에 따라 지구가 흡수하는 태양 복사 에너지(㉮)와 방출하는 지구 복사 에너지(㉯)를 나타낸 것이다. 이에 대한 설명으로 옳은 것은?' + ENERGY,
+    opts: ['모든 위도에서 ㉮ = ㉯이다.', '저위도에서는 에너지가 남고(㉮ &gt; ㉯), 고위도에서는 에너지가 부족하다(㉮ &lt; ㉯).', '고위도에서 에너지가 남는다.', '적도에서는 에너지가 부족하다.', '극지방은 흡수하는 에너지가 가장 많다.'], ans: 2,
+    hint: '두 선의 위아래 관계를 위도별로 보세요.',
+    sol: '저위도(약 38°보다 적도 쪽)는 흡수 &gt; 방출로 에너지 과잉, 고위도는 흡수 &lt; 방출로 에너지 부족이다.' },
+  { tag: '에너지 이동', type: 'mc', q: '위도에 따른 에너지 불균형이 있는데도 저위도가 계속 더워지고 고위도가 계속 추워지지 않는 까닭은?',
+    opts: ['고위도에서 에너지가 생겨나기 때문', '대기와 해수의 순환으로 저위도의 남는 에너지가 고위도로 이동하기 때문', '태양이 고위도를 더 많이 비추기 때문', '지구 내부 에너지가 고위도로 나오기 때문', '에너지는 이동하지 않기 때문'], ans: 2,
+    hint: '바람과 해류',
+    sol: '대기의 순환(바람)과 해수의 순환(해류)이 저위도의 남는 에너지를 고위도로 운반하여 지구 전체의 에너지 균형을 이룬다.' },
+  { tag: '교차 위도', type: 'mc', q: '위 그래프에서 흡수하는 태양 복사 에너지와 방출하는 지구 복사 에너지가 같아지는 위도는 대략 몇 도인가?',
+    opts: ['약 0°', '약 20°', '약 38°(40° 부근)', '약 60°', '약 90°'], ans: 3,
+    hint: '강의 그래프에서 두 선이 만나는 곳',
+    sol: '두 곡선은 위도 약 38°(40° 부근)에서 만난다. 이보다 저위도는 에너지 과잉, 고위도는 에너지 부족.' },
+
+  /* ===== 25~27. 탄소의 순환 ===== */
+  { tag: '탄소의 순환', type: 'mc', q: '탄소의 순환에서 탄소가 이동하는 과정과 그 방향을 바르게 짝지은 것은?',
+    opts: ['광합성: 생물권 → 기권', '화석 연료 연소: 지권 → 기권', '해저 탄산염 퇴적: 지권 → 수권', '화산 분출: 기권 → 지권', '용해: 수권 → 생물권'], ans: 2,
+    hint: '석탄·석유(땅속) → 태우면 CO₂(대기)',
+    sol: '화석 연료(지권)를 태우면 CO₂가 기권으로 나간다. 광합성은 기권 → 생물권, 해저 탄산염 퇴적은 수권 → 지권, 화산 분출은 지권 → 기권, 이산화 탄소의 용해는 기권 → 수권이다.' },
+  { tag: '탄소의 순환', type: 'mc', q: '대기 중의 이산화 탄소가 바닷물에 녹아 들어가는 과정은 지구계의 어느 요소 사이의 탄소 이동인가?',
+    opts: ['기권 → 수권', '수권 → 지권', '지권 → 기권', '생물권 → 지권', '외권 → 기권'], ans: 1,
+    hint: '그림의 "용해와 방출"',
+    sol: '대기(기권)의 CO₂가 바다(수권)에 녹는다(용해) → 기권 → 수권. 반대로 바다에서 대기로 나오는 것이 방출이다.' },
+  { tag: '탄소의 순환', type: 'mc', q: '최근 대기 중 이산화 탄소의 양이 늘어나는 가장 큰 까닭으로 알맞은 것은?',
+    opts: ['광합성이 많아졌기 때문', '인간 활동에 의한 화석 연료 연소가 늘어났기 때문', '해저 탄산염 퇴적이 늘었기 때문', '바닷물이 이산화 탄소를 더 많이 녹였기 때문', '맨틀로 탄소가 많이 내려갔기 때문'], ans: 2,
+    hint: '그림 왼쪽 위 "인간 활동"',
+    sol: '인간 활동(화석 연료 연소)으로 지권의 탄소가 빠르게 기권으로 이동하여 대기 중 CO₂가 늘어난다. ①③④⑤는 오히려 대기 중 탄소를 줄이는 과정이다.' },
+
+  /* ===== 28~30. 암석의 순환 ===== */
+  { tag: '암석의 순환', type: 'mc', q: '그림은 암석의 순환을 나타낸 것이다. ㉠~㉣에 해당하는 과정을 바르게 짝지은 것은?' + ROCK,
+    opts: ['㉠ 풍화·침식 ㉡ 용융 ㉢ 냉각 ㉣ 다져짐', '㉠ 다져짐·굳어짐 ㉡ 높은 열·큰 압력 ㉢ 용융 ㉣ 냉각', '㉠ 냉각 ㉡ 용융 ㉢ 다져짐 ㉣ 풍화', '㉠ 다져짐·굳어짐 ㉡ 냉각 ㉢ 용융 ㉣ 높은 열·큰 압력', '㉠ 용융 ㉡ 냉각 ㉢ 높은 열 ㉣ 풍화'], ans: 2,
+    hint: '퇴적물 → 퇴적암 → 변성암 → 마그마 → 화성암',
+    sol: '㉠ 퇴적물이 다져지고 굳어져 퇴적암 ㉡ 높은 열·큰 압력을 받아 변성암 ㉢ 녹아(용융) 마그마 ㉣ 식어서(냉각) 화성암. ㉤ 화성암이 풍화·침식·운반되어 퇴적물.' },
+  { tag: '암석의 순환', type: 'mc', q: '위 그림에서 ㉤(화성암 → 퇴적물)의 과정으로 옳은 것은?' + ROCK,
+    opts: ['용융', '냉각', '풍화·침식·운반', '다져짐·굳어짐', '높은 열·큰 압력'], ans: 3,
+    hint: '암석이 부서지고 옮겨져 쌓이는 과정',
+    sol: '화성암이 지표에서 풍화·침식·운반되어 퇴적물이 된다. 퇴적암과 변성암도 같은 과정으로 퇴적물이 될 수 있다.' },
+  { tag: '순환과 지구계', type: 'mc', q: '암석의 순환과 탄소의 순환을 통해 알 수 있는 사실로 가장 알맞은 것은?',
+    opts: ['물질은 한 곳에 머물러 변하지 않는다.', '지구계의 물질은 여러 권을 오가며 끊임없이 순환하고, 그 과정에서 지구계의 요소들이 서로 영향을 주고받는다.', '암석은 한번 만들어지면 다른 암석이 될 수 없다.', '탄소는 기권에만 존재한다.', '순환에는 에너지가 필요 없다.'], ans: 2,
+    hint: '지구계의 정의와 연결해 보세요.',
+    sol: '암석은 퇴적암·변성암·화성암으로 바뀌며 순환하고, 탄소는 기권·수권·생물권·지권을 오간다. 이러한 물질 순환이 지구계 요소 사이의 상호 작용이며, 태양 에너지와 지구 내부 에너지가 그 원동력이다.' }
+];
+// 정답 위치를 고르게 나눈다 (선택지 자리만 바꿈)
+[[0, 4], [3, 5], [4, 1], [9, 3], [11, 1], [12, 4], [14, 3], [17, 4], [18, 1], [19, 5], [21, 4], [22, 1], [24, 3], [26, 4], [27, 5], [29, 1]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'sci15-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
