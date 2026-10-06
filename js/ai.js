@@ -44,7 +44,7 @@ ${facts}
 ${kbText}`;
 }
 
-export async function aiAnswer({ apiKey, model, inquiry, settings, kb, channel, tone, asker, draft, onText }) {
+export async function aiAnswer({ apiKey, model, inquiry, settings, kb, channel, tone, asker, draft, notes, empathy = true, differentiate = true, onText }) {
   const Anthropic = await loadSdk();
   const client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
 
@@ -56,6 +56,7 @@ ${inquiry}
 작성 형식: ${CHANNEL_GUIDE[channel]}
 어조: ${tone === "friendly" ? "따뜻하고 친근하지만 예의 바른 어조" : "정중하고 공식적인 어조"}
 추정 질문자: ${asker}
+${notes ? `\n담당자 메모(가장 중요한 근거. 모든 항목을 빠짐없이 답변의 핵심으로 반영하고, 메모와 지식베이스가 다르면 메모를 따를 것):\n"""\n${notes}\n"""\n` : ""}${empathy ? "\n진정성: 문의자의 상황(재수, 예비번호 대기, 실수, 학부모의 걱정 등)을 읽고, 그 상황을 구체적으로 짚는 공감 한두 문장으로 시작하고 그 상황에 맞는 응원으로 맺을 것. 상투적인 문구나 과장은 피할 것." : ""}${differentiate && settings.강점 ? `\n차별화: 아래 강점 중 문의와 관련된 것을 1~2개만 골라 자연스럽게 녹일 것. 강점에 없는 자랑은 만들지 말 것. '○○'처럼 비어 있는 수치는 쓰지 말 것.\n"""\n${settings.강점}\n"""` : ""}
 ${draft ? `\n참고용 규칙 기반 초안(사실 관계는 이 초안과 지식베이스를 따르되 문장은 자연스럽게 다듬을 것):\n"""\n${draft}\n"""` : ""}`;
 
   const stream = client.beta.messages.stream({

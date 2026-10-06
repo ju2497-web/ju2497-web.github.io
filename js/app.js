@@ -1,4 +1,4 @@
-import { DEFAULT_KB, DEFAULT_SETTINGS, SETTING_LABELS, SAMPLE_INQUIRIES } from "./kb.js";
+import { DEFAULT_KB, DEFAULT_SETTINGS, SETTING_LABELS, SAMPLE_INQUIRIES, EXAMPLE_STRENGTHS, MEMO_EXAMPLES } from "./kb.js";
 import { analyze, compose, detectAsker } from "./engine.js";
 import { aiAnswer, DEFAULT_MODEL } from "./ai.js";
 
@@ -73,6 +73,13 @@ SAMPLE_INQUIRIES.forEach((q) => {
   $("#samples").append(c);
 });
 
+MEMO_EXAMPLES.forEach((m) => {
+  const c = document.createElement("button");
+  c.className = "chip"; c.type = "button"; c.textContent = `예시: ${m.label}`;
+  c.addEventListener("click", () => { $("#notes").value = m.memo; if (state.analysis) assemble(); });
+  $("#memoExamples").append(c);
+});
+
 const kbById = (id) => state.kb.find((e) => e.id === id);
 
 function currentAsker(text) {
@@ -144,7 +151,14 @@ function assemble() {
     tone: $("#tone").value,
     asker: currentAsker(text),
     name: $("#askerName").value.trim(),
+    notes: $("#notes").value,
+    empathy: $("#optEmpathy").checked,
+    differentiate: $("#optDiff").checked,
   });
+  const sit = $("#bSituation");
+  sit.hidden = !res.situation || !$("#optEmpathy").checked;
+  sit.textContent = `상황: ${res.situation}`;
+  sit.className = "badge sit";
   $("#subject").hidden = channel !== "email";
   $("#subject").value = res.subject;
   $("#output").value = res.text;
@@ -157,7 +171,7 @@ function showWarnings(missing) {
   const w = $("#warnings");
   if (missing.length) {
     w.hidden = false;
-    w.innerHTML = `발송 전 확인: <b>${missing.map(esc).join(", ")}</b> 값이 비어 있습니다. <a href="#" data-goto="settings">설정에서 입력</a>하거나 답변에서 직접 수정하세요.`;
+    w.innerHTML = `발송 전 확인: <b>${missing.map(esc).join(", ")}</b> 값을 확인해 주세요. <a href="#" data-goto="settings">설정에서 입력</a>하거나 답변에서 직접 수정하세요.`;
   } else w.hidden = true;
 }
 
@@ -165,10 +179,15 @@ $("#btnGenerate").addEventListener("click", generate);
 $("#inquiry").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) generate();
 });
-["#channel", "#tone", "#asker", "#askerName"].forEach((s) =>
+let notesTimer;
+$("#notes").addEventListener("input", () => {
+  clearTimeout(notesTimer);
+  notesTimer = setTimeout(() => { if (state.analysis) assemble(); }, 250);
+});
+["#channel", "#tone", "#asker", "#askerName", "#optEmpathy", "#optDiff"].forEach((s) =>
   $(s).addEventListener("change", () => { if (state.analysis) { renderAnalysis(); assemble(); } }));
 $("#btnClear").addEventListener("click", () => {
-  $("#inquiry").value = ""; $("#output").value = ""; $("#subject").value = "";
+  $("#inquiry").value = ""; $("#notes").value = ""; $("#output").value = ""; $("#subject").value = "";
   $("#analysis").hidden = true; $("#warnings").hidden = true; state.analysis = null; state.selected = [];
   $("#modeLabel").textContent = "";
 });
@@ -199,6 +218,9 @@ $("#btnAI").addEventListener("click", async () => {
       tone: $("#tone").value,
       asker: currentAsker(text),
       draft,
+      notes: $("#notes").value.trim(),
+      empathy: $("#optEmpathy").checked,
+      differentiate: $("#optDiff").checked,
       onText: (d) => { acc += d; $("#output").value = acc; },
     });
     let body = final;
@@ -403,9 +425,18 @@ $("#btnKbReset").addEventListener("click", () => {
 
 // ───────── 설정 ─────────
 function renderSettings() {
-  $("#settingsForm").innerHTML = Object.keys(DEFAULT_SETTINGS).map((k) =>
-    `<label>${esc(SETTING_LABELS[k] || k)} <code>{{${esc(k)}}}</code>
+  $("#settingsForm").innerHTML = Object.keys(DEFAULT_SETTINGS).map((k) => k === "강점"
+    ? `<label>${esc(SETTING_LABELS[k])}
+        <span class="hint">한 줄에 하나씩. <code>태그,태그: 문장</code>으로 쓰면 문의에 태그가 있을 때 그 문장을 골라 넣고, 태그 없는 줄은 기본 강점으로 씁니다.</span>
+        <textarea name="강점" rows="7" placeholder="국시,합격률: 최근 3년간 임상병리사 국가시험 합격률 98%를 유지하고 있습니다">${esc(state.settings.강점 ?? "")}</textarea>
+        <button type="button" class="ghost" id="btnStrengthEx">임상병리학과 예시 불러오기</button></label>`
+    : `<label>${esc(SETTING_LABELS[k] || k)} <code>{{${esc(k)}}}</code>
       <input name="${esc(k)}" value="${esc(state.settings[k] ?? "")}" placeholder="${esc(placeholderFor(k))}"></label>`).join("");
+  $("#btnStrengthEx").addEventListener("click", () => {
+    const ta = $("#settingsForm textarea[name=강점]");
+    if (ta.value.trim() && !confirm("입력된 강점을 예시로 바꿀까요?")) return;
+    ta.value = EXAMPLE_STRENGTHS;
+  });
   $("#apiKey").value = state.ai.apiKey || "";
   $("#aiModel").value = state.ai.model || "";
 }
