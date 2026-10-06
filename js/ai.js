@@ -14,7 +14,7 @@ const CHANNEL_GUIDE = {
 };
 
 let sdkPromise;
-function loadSdk() {
+export function loadSdk() {
   sdkPromise ??= import(SDK_URL).then((m) => m.default ?? m.Anthropic);
   return sdkPromise;
 }

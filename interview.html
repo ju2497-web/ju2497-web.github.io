@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>면접 대비 노트</title>
+  <meta name="description" content="공개된 대학 면접 문항을 넣으면 내 경험으로 답변 초안·꼬리질문·연습 모드를 만들어 주는 면접 대비 앱">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%A4%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/interview.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🎤</span>
+      <div>
+        <h1>면접 대비 노트</h1>
+        <p class="sub">공개 면접 문항 → 내 경험으로 답변 만들기 → 실전처럼 연습 · <a href="index.html">입시 문의 자동답변</a></p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="questions" class="active">① 면접 문항</button>
+      <button role="tab" data-tab="profile">② 나의 재료</button>
+      <button role="tab" data-tab="notes">③ 답변 노트 <span id="noteCount" class="count"></span></button>
+      <button role="tab" data-tab="practice">④ 실전 연습</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ① 면접 문항 -->
+    <section id="tab-questions" class="tab active">
+      <div class="card hero">
+        <h2 class="ask">면접 문항을 주세요.</h2>
+        <p class="hint">대학이 공개한 면접 문항(선행학습 영향평가 보고서·입학처 기출 공개 자료·모집요강 예시 문항)을 그대로 붙여 넣으세요. 번호(1. / Q1 / ①)로 시작하는 줄마다 한 문항으로 나누고, 제시문처럼 이어지는 줄은 같은 문항으로 묶습니다.</p>
+        <textarea id="qInput" rows="11" placeholder="1. 우리 학과에 지원한 동기는 무엇인가요?&#10;2. 학교생활 중 전공과 관련해 가장 의미 있었던 활동은 무엇인가요?&#10;3. 검사 결과를 보고하기 직전에 본인의 실수를 발견했다면 어떻게 하겠습니까?"></textarea>
+        <div class="opts">
+          <label>대학·전형(메모용)<input id="qSource" type="text" placeholder="예) ○○대 학생부종합 면접 2025 공개 문항"></label>
+          <label>답변 목표 길이
+            <select id="qLength">
+              <option value="60" selected>1분 내외(약 300자)</option>
+              <option value="90">1분 30초 내외(약 450자)</option>
+              <option value="120">2분 내외(약 600자)</option>
+            </select>
+          </label>
+        </div>
+        <div class="actions">
+          <button id="btnMake" class="primary">답변 만들기</button>
+          <button id="btnAppend" class="ghost">기존 노트에 추가</button>
+          <button id="btnSampleQ" class="ghost">공통 예시 문항 넣기</button>
+          <span id="qStat" class="hint"></span>
+        </div>
+        <div id="profileWarn" class="banner" hidden>
+          아직 ‘나의 재료’가 비어 있습니다. 내 경험을 먼저 적어 두면 문항마다 <b>나만의 답변</b>이 만들어집니다. 비어 있으면 <code>[✎ …]</code> 빈칸이 있는 뼈대로 만들어집니다. <a href="#" data-goto="profile">나의 재료 채우기 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 나의 재료 -->
+    <section id="tab-profile" class="tab">
+      <div class="card">
+        <div class="row-between">
+          <h2>나의 재료 <small>학생부에 실제로 있는 내용만 적으세요 · 자동 저장</small></h2>
+          <div class="actions tight">
+            <button id="btnExample" class="ghost">예시 채우기(임상병리학과)</button>
+            <button id="btnRegen" class="primary">이 재료로 전체 답변 다시 만들기</button>
+          </div>
+        </div>
+        <p class="hint">짧은 메모로 적어도 됩니다. “보고서를 작성” → “보고서를 작성했습니다.”처럼 문장으로 다듬어 답변에 넣습니다. 출신 학교명·가족 직업·본인 이름은 적지 마세요(블라인드 면접).</p>
+        <form id="profileForm" class="form cols">
+          <label>지원 학과<input name="dept" placeholder="예) 임상병리학과"></label>
+          <label>졸업 후 되고 싶은 모습<input name="career" placeholder="예) 대학병원 진단검사의학과의 임상병리사"></label>
+          <label class="span2">지원 계기(한 문장)<input name="motive" placeholder="예) ○○을 보고 정확한 검사가 진단의 출발점이라는 것을 느꼈기"></label>
+          <label class="span2">흥미를 느낀 과목<input name="subject" placeholder="예) 생명과학Ⅱ와 화학"></label>
+
+          <fieldset class="span2"><legend>대표 활동 (최대 3개)</legend>
+            <div class="acts" id="acts"></div>
+          </fieldset>
+
+          <label>나의 장점<input name="strength" placeholder="예) 꼼꼼함"></label>
+          <label>장점이 드러난 경험<input name="strengthProof" placeholder="예) 측정값을 두 번 확인하는 습관이 있어 조원들이 최종 검토를 맡김"></label>
+          <label>나의 단점<input name="weakness" placeholder="예) 처음 보는 사람 앞에서 말이 빨라지는 점"></label>
+          <label>단점 보완 노력<input name="fix" placeholder="예) 핵심 문장을 세 개로 줄여 연습"></label>
+
+          <fieldset class="span2"><legend>갈등·협력 경험</legend>
+            <div class="form cols3">
+              <label>상황<input name="teamSit" placeholder="예) 조별 실험 방법을 두고 의견이 둘로 나뉨"></label>
+              <label>내가 먼저 한 행동<input name="teamAct" placeholder="예) 두 방법을 작게 시험해 보고 비교하자고 제안"></label>
+              <label>결과<input name="teamResult" placeholder="예) 모두 납득한 방법으로 진행"></label>
+            </div>
+          </fieldset>
+
+          <label>인상 깊은 책(저자)<input name="book" placeholder="예) 리처드 도킨스의 『이기적 유전자』"></label>
+          <label>인상 깊었던 이유<input name="bookWhy" placeholder="예) 유전자 수준의 변화가 질병으로 이어지는 과정을 더 알고 싶어졌기"></label>
+        </form>
+      </div>
+    </section>
+
+    <!-- ③ 답변 노트 -->
+    <section id="tab-notes" class="tab">
+      <div class="card">
+        <div class="row-between">
+          <h2>답변 노트 <small id="noteSource"></small></h2>
+          <div class="actions tight">
+            <button id="btnAIAll" class="ghost">전체 AI로 다듬기</button>
+            <button id="btnCopyAll" class="ghost">전체 복사</button>
+            <button id="btnDownload" class="ghost">텍스트 저장</button>
+            <button id="btnPrint" class="ghost">인쇄</button>
+            <button id="btnClearNotes" class="ghost danger">노트 비우기</button>
+          </div>
+        </div>
+        <p class="hint">답변은 초안입니다. 소리 내어 읽어 보고 <b>내 말투로 고쳐</b> 쓰세요. 수정한 내용은 자동 저장되며, ‘다시 만들기’를 누르기 전까지 유지됩니다. 외우기보다 키워드 3개로 말하는 연습이 실전에서 강합니다.</p>
+        <div id="notes" class="notes"></div>
+        <p id="notesEmpty" class="hint">아직 문항이 없습니다. <a href="#" data-goto="questions">① 면접 문항</a>에 문항을 넣어 주세요.</p>
+      </div>
+    </section>
+
+    <!-- ④ 실전 연습 -->
+    <section id="tab-practice" class="tab">
+      <div class="card practice">
+        <div class="row-between">
+          <div class="pnav">
+            <button id="pPrev" class="ghost">← 이전</button>
+            <span id="pPos" class="hint"></span>
+            <button id="pNext" class="ghost">다음 →</button>
+            <button id="pShuffle" class="ghost">무작위</button>
+          </div>
+          <div class="actions tight">
+            <label class="hint">제한 시간
+              <select id="pLimit"><option value="60" selected>60초</option><option value="90">90초</option><option value="120">120초</option></select>
+            </label>
+          </div>
+        </div>
+        <span id="pType" class="tag"></span>
+        <p id="pQuestion" class="pq"></p>
+        <div class="actions">
+          <button id="pSpeak" class="ghost">🔊 면접관 목소리로 듣기</button>
+          <button id="pStart" class="primary">▶ 답변 시작</button>
+          <span id="pTimer" class="timer">00:00</span>
+        </div>
+        <div class="pbar"><div id="pBar"></div></div>
+
+        <div class="reveal">
+          <button id="pShowKw" class="ghost">키워드만 보기</button>
+          <button id="pShowAns" class="ghost">답변 보기</button>
+          <button id="pFollow" class="ghost">꼬리질문 받기</button>
+        </div>
+        <div id="pKw" class="kwrow" hidden></div>
+        <p id="pAns" class="pans" hidden></p>
+        <p id="pFollowQ" class="pfollow" hidden></p>
+
+        <h3>셀프 체크</h3>
+        <div class="checks col" id="pChecks">
+          <label><input type="checkbox"> 첫 문장에 결론(핵심)을 말했다</label>
+          <label><input type="checkbox"> ‘내가’ 한 일을 구체적으로(방법·숫자) 말했다</label>
+          <label><input type="checkbox"> 배운 점을 지원 학과와 연결했다</label>
+          <label><input type="checkbox"> 제한 시간 안에 끝냈다</label>
+          <label><input type="checkbox"> 학교명·가족 직업 등 블라인드 정보를 말하지 않았다</label>
+        </div>
+        <div class="actions"><button id="pSaveCheck" class="ghost">체크 결과 저장</button><span id="pCheckStat" class="hint"></span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">모든 내용은 사용 중인 브라우저에만 저장됩니다 · 답변은 본인의 실제 경험으로 고쳐 쓰세요</footer>
+  <script type="module" src="js/interview.js"></script>
+</body>
+</html>
