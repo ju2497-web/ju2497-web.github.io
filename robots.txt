@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ju2497-web.github.io/sitemap.xml

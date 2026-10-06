@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>임상검사 단위 환산기 | mg/dL ↔ mmol/L 계산기</title>
+<meta name="description" content="혈당, 콜레스테롤, 중성지방, 크레아티닌, BUN, 칼슘, 요산, 빌리루빈 등 임상검사 수치를 mg/dL과 mmol/L·µmol/L 사이에서 즉시 변환하는 무료 계산기.">
+<meta name="keywords" content="mg/dL mmol/L 변환, 혈당 단위 변환, 콜레스테롤 단위, 크레아티닌 µmol/L, 임상검사 단위 환산">
+<link rel="canonical" href="https://ju2497-web.github.io/convert.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="./">🔬 임상병리 학습실</a>
+    <nav><a href="quiz.html">퀴즈</a><a href="convert.html">단위 환산</a></nav>
+  </header>
+  <h1>임상검사 단위 환산기</h1>
+  <p class="lead">관용 단위(mg/dL)와 SI 단위(mmol/L, µmol/L)를 양방향으로 변환합니다.</p>
+
+  <div class="card">
+    <div class="row">
+      <label>검사 항목<select id="analyte"></select></label>
+      <label>방향<select id="dir"></select></label>
+      <label>값<input id="val" type="number" inputmode="decimal" step="any" placeholder="예: 126"></label>
+    </div>
+    <div class="result" id="out">—</div>
+    <p class="lead" id="factor" style="margin:.4em 0 0;font-size:.9rem"></p>
+  </div>
+
+  <div class="ad-slot"><!-- 광고 단위 위치 --></div>
+
+  <div class="card">
+    <h2 style="margin-top:0;font-size:1.1rem">환산 계수표</h2>
+    <table id="tbl"><thead><tr><th>항목</th><th>관용 단위</th><th>SI 단위</th><th>× 계수 (관용→SI)</th></tr></thead><tbody></tbody></table>
+  </div>
+  <footer>교육용 계산기입니다. 환산값은 반올림되며, 실제 판정은 각 검사실의 참고범위를 따르십시오.</footer>
+</div>
+<script>
+const A=[
+ ["포도당 (Glucose)","mg/dL","mmol/L",0.0555],
+ ["총콜레스테롤 / HDL / LDL","mg/dL","mmol/L",0.02586],
+ ["중성지방 (Triglyceride)","mg/dL","mmol/L",0.01129],
+ ["크레아티닌 (Creatinine)","mg/dL","µmol/L",88.4],
+ ["요소질소 (BUN → Urea)","mg/dL","mmol/L",0.357],
+ ["칼슘 (Calcium)","mg/dL","mmol/L",0.2495],
+ ["요산 (Uric acid)","mg/dL","µmol/L",59.48],
+ ["총빌리루빈 (Bilirubin)","mg/dL","µmol/L",17.1],
+ ["알부민 (Albumin)","g/dL","g/L",10],
+ ["혈색소 (Hemoglobin)","g/dL","g/L",10]
+];
+const $=id=>document.getElementById(id),an=$("analyte"),dir=$("dir"),val=$("val");
+A.forEach((a,i)=>{an.add(new Option(a[0],i));$("tbl").tBodies[0].insertAdjacentHTML("beforeend",`<tr><td>${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td></tr>`)});
+function fillDir(){const a=A[an.value];dir.innerHTML="";dir.add(new Option(`${a[1]} → ${a[2]}`,"f"));dir.add(new Option(`${a[2]} → ${a[1]}`,"r"))}
+function calc(){const a=A[an.value],v=parseFloat(val.value);
+ $("factor").textContent=`환산식: ${a[1]} × ${a[3]} = ${a[2]}`;
+ if(isNaN(v)){$("out").textContent="—";return}
+ const r=dir.value==="f"?v*a[3]:v/a[3],u=dir.value==="f"?a[2]:a[1];
+ $("out").textContent=`${+r.toFixed(r<10?2:1)} ${u}`}
+an.onchange=()=>{fillDir();calc()};dir.onchange=calc;val.oninput=calc;fillDir();calc();
+</script>
+</body>
+</html>

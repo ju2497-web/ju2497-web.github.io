@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>임상병리사 국가고시 퀴즈 게임 | 과목별 무료 문제풀이</title>
+<meta name="description" content="임상병리사 국가고시 대비 무료 퀴즈. 임상화학, 혈액학, 임상미생물, 수혈의학, 분자·세포유전학 문제를 해설과 함께 풀고 최고 점수에 도전하세요.">
+<meta name="keywords" content="임상병리사 국가고시, 임상병리 문제, 혈액학 문제, 임상화학 문제, 세포유전학, 분자진단 퀴즈">
+<link rel="canonical" href="https://ju2497-web.github.io/quiz.html">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="./">🔬 임상병리 학습실</a>
+    <nav><a href="quiz.html">퀴즈</a><a href="convert.html">단위 환산</a></nav>
+  </header>
+
+  <section id="start">
+    <h1>국가고시 퀴즈 게임</h1>
+    <p class="lead">과목을 고르고 10문제에 도전하세요. 문제당 20초, 빨리 맞힐수록 보너스 점수!</p>
+    <div class="card">
+      <strong>과목 선택</strong>
+      <div class="chips" id="cats"></div>
+      <p class="lead" style="margin:0 0 12px">최고 점수: <b id="best">0</b>점</p>
+      <button class="btn" id="go">시작하기</button>
+    </div>
+  </section>
+
+  <section id="play" class="hidden">
+    <div class="meta"><span id="qno"></span><span id="cat"></span><span>⏱ <b id="time">20</b>초 · 점수 <b id="score">0</b></span></div>
+    <div class="bar"><i id="prog"></i></div>
+    <div class="card">
+      <div id="q" style="font-weight:700;font-size:1.08rem"></div>
+      <div class="opts" id="opts"></div>
+      <div class="explain hidden" id="ex"></div>
+      <div style="margin-top:14px;text-align:right"><button class="btn hidden" id="next">다음 문제 →</button></div>
+    </div>
+  </section>
+
+  <section id="end" class="hidden">
+    <h1>결과</h1>
+    <div class="card">
+      <div class="result" id="final"></div>
+      <p id="msg"></p>
+      <div class="row" style="max-width:420px"><button class="btn" id="again">다시 도전</button><button class="btn ghost" id="share">결과 공유</button></div>
+    </div>
+  </section>
+
+  <div class="ad-slot"><!-- 광고 단위 위치 --></div>
+  <footer>교육용 문제입니다. 실제 국가고시 기출문제가 아니며, 최신 교과서와 지침을 함께 확인하십시오.</footer>
+</div>
+<script>
+// [과목, 문제, [보기], 정답 index, 해설]
+const Q=[
+["임상화학","혈당 검체의 해당작용(glycolysis)을 억제하기 위해 채혈관에 첨가하는 물질은?",["EDTA","Sodium fluoride","Sodium citrate","Heparin"],1,"Sodium fluoride(회색 마개)는 enolase를 억제해 시험관 내 포도당 소모를 막습니다."],
+["임상화학","HbA1c는 대략 어느 기간의 평균 혈당을 반영하는가?",["1~2일","1~2주","2~3개월","1년"],2,"적혈구 수명(약 120일)을 반영하여 최근 2~3개월의 평균 혈당 지표로 쓰입니다."],
+["임상화학","간세포 손상에 가장 특이적인 효소는?",["AST","ALT","ALP","LD"],1,"ALT는 주로 간세포 세포질에 존재해 AST보다 간 특이성이 높습니다."],
+["임상화학","급성심근경색 진단에 가장 특이적인 표지자는?",["Myoglobin","CK 총활성","Cardiac troponin","LD"],2,"심장 트로포닌(cTnI, cTnT)은 심근 특이성이 가장 높은 표준 표지자입니다."],
+["임상화학","급성췌장염 진단에서 아밀라제보다 특이도가 높은 효소는?",["Lipase","GGT","ALP","CK"],0,"Lipase는 췌장 특이성이 높고 상승 기간도 깁니다."],
+["임상화학","CRP에 대한 설명으로 옳은 것은?",["림프구에서 합성된다","만성기 반응물질이다","간에서 합성되는 급성기 반응물질이다","면역글로불린의 일종이다"],2,"CRP는 IL-6 자극으로 간에서 합성되는 대표적 급성기 단백입니다."],
+["임상화학","사구체여과율(GFR) 추정에 가장 널리 쓰이는 혈청 지표는?",["요산","크레아티닌","알부민","암모니아"],1,"혈청 크레아티닌을 이용한 eGFR 공식(CKD-EPI 등)이 표준적으로 사용됩니다."],
+["혈액학","혈청과 혈장의 차이로 옳은 것은?",["혈청에는 피브리노겐이 없다","혈장에는 알부민이 없다","혈청에는 전해질이 없다","혈장은 응고 후 얻는다"],0,"혈청은 응고 후 얻으므로 피브리노겐 등 응고인자가 소모되어 없습니다."],
+["혈액학","일반혈액검사(CBC)에 사용하는 항응고제는?",["Sodium citrate","K2-EDTA","Sodium fluoride","Heparin"],1,"EDTA(보라색 마개)는 칼슘을 킬레이트하고 세포 형태를 잘 보존합니다."],
+["혈액학","PT/aPTT 응고검사용 3.2% sodium citrate 채혈관의 혈액:항응고제 비율은?",["4:1","9:1","1:1","19:1"],1,"혈액 9 : 항응고제 1 비율을 지켜야 하며, 채혈량 부족 시 응고시간이 연장됩니다."],
+["혈액학","철결핍빈혈의 전형적 소견은?",["MCV 증가, ferritin 증가","MCV 감소, ferritin 감소","MCV 정상, ferritin 증가","MCV 증가, ferritin 감소"],1,"소구성 저색소성 빈혈이며 저장철 지표인 ferritin이 감소합니다."],
+["혈액학","거대적모구빈혈의 주요 원인은?",["철 결핍","비타민 B12 또는 엽산 결핍","납 중독","지중해빈혈"],1,"DNA 합성 장애로 핵-세포질 성숙 불균형이 생겨 거대적모구가 나타납니다."],
+["혈액학","혈우병 A의 전형적 검사 소견은?",["PT 연장, aPTT 정상","PT 정상, aPTT 연장","PT·aPTT 모두 정상, 혈소판 감소","출혈시간만 연장"],1,"제VIII인자는 내인경로에 속하므로 aPTT만 연장됩니다."],
+["혈액학","와파린 치료 모니터링에 사용하는 검사는?",["aPTT","PT/INR","혈소판 수","D-dimer"],1,"와파린은 비타민 K 의존 인자(II, VII, IX, X)를 감소시키며 PT/INR로 모니터링합니다."],
+["혈액학","망상적혈구 염색에 사용하는 초생체염색약은?",["Wright 염색","New methylene blue","Gram 염색","PAS"],1,"New methylene blue가 잔존 RNA를 침전시켜 망상구조로 보이게 합니다."],
+["혈액학","정상 성인 혈색소의 주된 형태와 구성은?",["HbA2 (α2δ2)","HbF (α2γ2)","HbA (α2β2)","HbS (α2βS2)"],2,"성인 혈색소의 약 95% 이상이 HbA(α2β2)입니다."],
+["혈액학","Glanzmann 혈소판무력증에서 결핍된 당단백은?",["GPIb-IX-V","GPIIb/IIIa","GPVI","vWF"],1,"GPIIb/IIIa(αIIbβ3) 결핍으로 피브리노겐 매개 혈소판 응집이 일어나지 않습니다."],
+["임상미생물","그람염색에서 그람양성균은 어떤 색으로 보이는가?",["분홍색","보라색","녹색","무색"],1,"두꺼운 펩티도글리칸층이 crystal violet-iodine 복합체를 유지해 보라색으로 보입니다."],
+["임상미생물","결핵균 검출에 사용하는 항산성 염색법은?",["Gram 염색","Ziehl-Neelsen 염색","Giemsa 염색","India ink"],1,"미콜산이 풍부한 세포벽 때문에 항산성 염색(Ziehl-Neelsen, Kinyoun)을 사용합니다."],
+["임상미생물","Cryptococcus neoformans의 협막 관찰에 쓰는 방법은?",["India ink","Gram 염색","항산성 염색","KOH"],0,"India ink 음성염색으로 투명한 협막(halo)을 관찰합니다."],
+["임상미생물","디스크 확산법에서 MRSA 선별에 권장되는 디스크는?",["Vancomycin","Cefoxitin","Penicillin","Erythromycin"],1,"Cefoxitin은 mecA/PBP2a 매개 내성을 잘 유도·반영하여 선별에 권장됩니다."],
+["임상미생물","세균성 수막염의 전형적 뇌척수액 소견은?",["포도당 감소, 단백 증가, 호중구 증가","포도당 정상, 단백 정상, 림프구 증가","포도당 증가, 단백 감소","모두 정상"],0,"세균이 포도당을 소모하고 혈뇌장벽 손상으로 단백이 증가하며 호중구가 우세합니다."],
+["임상미생물","말라리아 진단의 표준 검사는?",["소변 배양","말초혈액 도말 Giemsa 염색","대변 충란검사","CSF 배양"],1,"두꺼운·얇은 도말 Giemsa 염색으로 원충을 확인하고 종을 감별합니다."],
+["수혈의학","O형 사람의 혈장에 존재하는 항체는?",["항-A만","항-B만","항-A와 항-B","없음"],2,"O형은 A·B 항원이 없으므로 자연항체인 항-A, 항-B를 모두 가집니다."],
+["수혈의학","응급 시 '만능 공혈' 적혈구로 사용되는 혈액형은?",["AB RhD 양성","O RhD 음성","A RhD 음성","B RhD 양성"],1,"O RhD 음성 적혈구는 A, B, D 항원이 없어 응급 수혈에 사용됩니다."],
+["수혈의학","직접항글로불린검사(DAT)의 목적은?",["혈청 내 비예기항체 선별","생체 내 적혈구에 결합된 항체·보체 검출","ABO 혈구형 판정","혈소판 항체 검출"],1,"DAT는 자가면역용혈빈혈, 신생아용혈질환, 수혈반응 평가에 쓰입니다."],
+["분자·세포유전학","만성골수성백혈병(CML)의 특징적 염색체 이상은?",["t(15;17)","t(9;22)(q34;q11)","t(8;14)","inv(16)"],1,"필라델피아 염색체로 BCR::ABL1 융합유전자가 형성되며 imatinib 등 TKI의 표적입니다."],
+["분자·세포유전학","급성전골수구백혈병(APL)의 특징적 융합유전자는?",["BCR::ABL1","PML::RARA","RUNX1::RUNX1T1","CBFB::MYH11"],1,"t(15;17)에 의한 PML::RARA로, ATRA·ATO 치료에 반응합니다."],
+["분자·세포유전학","Burkitt 림프종의 대표적 전좌는?",["t(14;18) BCL2","t(11;14) CCND1","t(8;14) MYC","t(9;22) ABL1"],2,"MYC가 IGH 프로모터 영향 아래 놓여 과발현됩니다."],
+["분자·세포유전학","'유전체의 수호자'로 불리며 17p13에 위치한 종양억제유전자는?",["KRAS","TP53","MYC","EGFR"],1,"TP53은 인간 암에서 가장 흔히 변이되는 유전자로 세포주기 정지·세포사멸을 조절합니다."],
+["분자·세포유전학","Knudson의 two-hit 가설이 처음 제시된 종양과 유전자는?",["망막모세포종 – RB1","유방암 – BRCA1","대장암 – APC","신경모세포종 – MYCN"],0,"유전성 망막모세포종 연구에서 종양억제유전자의 양쪽 대립유전자 불활성화 개념이 제시되었습니다."],
+["분자·세포유전학","유방암에서 HER2(ERBB2) 유전자 증폭 확인에 쓰이는 대표 분자세포유전학 검사는?",["Southern blot","FISH","핵형분석","Sanger 시퀀싱"],1,"IHC 2+ 등 모호한 경우 FISH(또는 ISH)로 증폭 여부를 확정합니다."],
+["분자·세포유전학","Lynch 증후군과 관련된 분자 특성은?",["BCR::ABL1 융합","불일치복구(MMR) 결함과 MSI-high","EGFR 증폭","BRAF 결손"],1,"MLH1, MSH2, MSH6, PMS2 생식세포 변이로 MMR 결함과 미세위성 불안정성이 나타납니다."],
+["분자·세포유전학","PCR 한 주기의 올바른 순서는?",["결합→변성→신장","변성→결합(annealing)→신장","신장→변성→결합","변성→신장→결합"],1,"약 94–95°C 변성, 프라이머 결합, 약 72°C 신장 순으로 진행됩니다."],
+["분자·세포유전학","다운증후군 남아의 전형적 핵형 표기는?",["46,XY","47,XY,+21","45,X","47,XXY"],1,"21번 염색체 삼염색체(trisomy 21)가 약 95%를 차지합니다."],
+["분자·세포유전학","낫적혈구빈혈의 분자적 원인은?",["α-globin 결실","β-globin 6번 코돈 Glu→Val","β-globin 프로모터 변이","HbF 과발현"],1,"HBB 유전자의 점돌연변이로 HbS가 형성되어 탈산소 시 중합됩니다."]
+];
+const cats=["전체",...new Set(Q.map(q=>q[0]))];let sel="전체";
+const $=id=>document.getElementById(id);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+$("best").textContent=store.get("bestScore")||0;
+cats.forEach(c=>{const b=document.createElement("button");b.className="chip"+(c===sel?" on":"");b.textContent=c;b.onclick=()=>{sel=c;[...$("cats").children].forEach(x=>x.classList.toggle("on",x.textContent===c))};$("cats").append(b)});
+let set=[],i=0,score=0,correct=0,t=20,timer=null;
+function shuffle(a){a=[...a];for(let k=a.length-1;k>0;k--){const j=Math.random()*(k+1)|0;[a[k],a[j]]=[a[j],a[k]]}return a}
+function show(id){["start","play","end"].forEach(s=>$(s).classList.toggle("hidden",s!==id))}
+function start(){set=shuffle(Q.filter(q=>sel==="전체"||q[0]===sel)).slice(0,10);i=0;score=0;correct=0;show("play");render()}
+function render(){const q=set[i];$("qno").textContent=`문제 ${i+1} / ${set.length}`;$("cat").textContent=q[0];$("score").textContent=score;
+ $("prog").style.width=(i/set.length*100)+"%";$("q").textContent=q[1];$("opts").innerHTML="";$("ex").classList.add("hidden");$("next").classList.add("hidden");
+ const order=shuffle(q[2].map((o,k)=>k));order.forEach(k=>{const b=document.createElement("button");b.className="opt";b.textContent=q[2][k];b.dataset.k=k;b.onclick=()=>pick(k);$("opts").append(b)});
+ t=20;$("time").textContent=t;clearInterval(timer);timer=setInterval(()=>{t--;$("time").textContent=t;if(t<=0)pick(-1)},1000)}
+function pick(k){clearInterval(timer);const q=set[i],ok=k===q[3];
+ [...$("opts").children].forEach(b=>{b.disabled=true;const bk=+b.dataset.k;if(bk===q[3])b.classList.add("ok");else if(bk===k)b.classList.add("bad")});
+ if(ok){correct++;score+=10+Math.max(t,0)}
+ $("score").textContent=score;$("ex").innerHTML=(ok?"✅ 정답! ":k<0?"⏰ 시간 초과. ":"❌ 오답. ")+q[4];$("ex").classList.remove("hidden");
+ $("next").textContent=i+1<set.length?"다음 문제 →":"결과 보기";$("next").classList.remove("hidden")}
+function next(){i++;if(i<set.length)render();else finish()}
+function finish(){show("end");const best=Math.max(score,+(store.get("bestScore")||0));store.set("bestScore",best);$("best").textContent=best;
+ $("final").textContent=`${correct} / ${set.length} 정답 · ${score}점`;
+ $("msg").textContent=correct===set.length?"완벽합니다! 국가고시 준비 끝 🎉":correct>=7?"훌륭해요. 틀린 문제의 해설을 한 번 더 확인하세요.":"과목별로 다시 풀며 개념을 다져보세요."}
+$("go").onclick=start;$("next").onclick=next;$("again").onclick=()=>show("start");
+$("share").onclick=async()=>{const text=`임상병리 국가고시 퀴즈 ${correct}/${set.length} 정답, ${score}점! 도전해보세요`,url=location.href;
+ try{if(navigator.share)await navigator.share({title:"임상병리 퀴즈",text,url});else{await navigator.clipboard.writeText(text+" "+url);$("share").textContent="복사됨!"}}catch(e){}};
+</script>
+</body>
+</html>
