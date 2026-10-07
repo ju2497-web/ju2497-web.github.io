@@ -20,7 +20,7 @@ export const CONFIG = {
     ],
     zoom: { name: "줌 모의면접(선택)", price: 40000, minutes: 30, desc: "실제 면접처럼 질문·꼬리질문 후 바로 피드백" },
     deliveryHours: 48,          // 자료를 받은 뒤 답변 전달까지
-    quoteCash: 5090,            // 견적 1건 발송 캐시(2026-09 실측)
+    quoteCash: 5090,            // 견적 1건 발송 비용(원). 교수님 확인: 5,090원
     minDaysBeforeInterview: 2,  // 면접까지 이보다 적게 남으면 '보류'로 판정
   },
 };

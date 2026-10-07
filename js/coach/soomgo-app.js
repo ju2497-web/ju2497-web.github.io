@@ -22,7 +22,7 @@ function run() {
   $("#why").innerHTML = `<ul>${(t.plus || []).map((p) => `<li class="plus">${esc(p)}</li>`).join("")}${t.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>`;
   $("#fUniv").value = req.univ; $("#fDept").value = req.dept; $("#fTrack").value = req.track; $("#fDate").value = req.interview;
   const be = CONFIG.soomgo.plans.map((p) => `${p.name} ${p.price.toLocaleString()}원은 약 ${breakEven(p.price).rate}%`).join(", ");
-  $("#cash").textContent = `견적 1건 ${CONFIG.soomgo.quoteCash.toLocaleString()}캐시. 캐시를 원 단위로 같다고 보면 견적 비용만 메우는 데 필요한 성사율은 ${be}입니다(캐시 원화 환산은 고수센터에서 확인).`;
+  $("#cash").textContent = `견적 1건 ${CONFIG.soomgo.quoteCash.toLocaleString()}원. 견적 비용만 메우는 데 필요한 성사율은 ${be}입니다.`;
   refresh(t.verdict === "거절");
 }
 function refresh(refuse) {
@@ -54,7 +54,7 @@ function stats() {
   const rate = all.sent ? Math.round((all.hired / all.sent) * 1000) / 10 : 0;
   $("#stats").innerHTML = `<span class="stat">오늘 견적 <b>${t.sent}</b> · 고용 <b>${t.hired}</b></span>
     <span class="stat">누적 견적 <b>${all.sent}</b> · 고용 <b>${all.hired}</b> · 성사율 <b>${rate}%</b></span>
-    <span class="stat">누적 캐시 사용 약 <b>${(all.sent * CONFIG.soomgo.quoteCash).toLocaleString()}</b></span>`;
+    <span class="stat">누적 견적 비용 약 <b>${(all.sent * CONFIG.soomgo.quoteCash).toLocaleString()}원</b></span>`;
   const be = CONFIG.soomgo.plans.map((p) => ({ p, r: breakEven(p.price).rate }));
   $("#beHint").textContent = all.sent >= 20
     ? `현재 성사율 ${rate}% 기준: ${be.map(({ p, r }) => `${p.name}은 ${rate >= r ? "견적 비용을 넘습니다" : `견적 비용보다 적습니다(필요 ${r}%)`}`).join(" / ")}.`

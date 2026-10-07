@@ -52,7 +52,7 @@ export function triage(text, req = parseRequest(text)) {
   return { verdict, reasons, plus };
 }
 
-// 캐시 손익(1캐시=1원 가정은 화면으로 확인 불가하므로 '캐시' 단위로만 표시)
+// 견적 비용 대비 손익분기 성사율(견적 1건 비용은 config의 quoteCash, 원 단위)
 export function breakEven(price) {
   const c = CONFIG.soomgo.quoteCash;
   return { cash: c, rate: Math.round((c / price) * 1000) / 10 };
