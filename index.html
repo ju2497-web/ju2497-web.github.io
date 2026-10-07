@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>강지언 아카데믹 랩</title>
+<meta name="description" content="논문·과제·강의, 심사위원의 눈으로 완성합니다. 학위논문 정밀진단, 정부과제 계획서 컨설팅, 이러닝 개발, 특강.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --text: #1c1f26;
+    --muted: #5b6270;
+    --line: #e6e3dc;
+    --accent: #1f4e79;
+    --accent-soft: #e8eff6;
+    --gold: #a8792a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151b;
+      --surface: #1a1e26;
+      --text: #e9ebef;
+      --muted: #a2a9b6;
+      --line: #2a303b;
+      --accent: #7fb0e0;
+      --accent-soft: #1f2a38;
+      --gold: #d6a75a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151b;
+    --surface: #1a1e26;
+    --text: #e9ebef;
+    --muted: #a2a9b6;
+    --line: #2a303b;
+    --accent: #7fb0e0;
+    --accent-soft: #1f2a38;
+    --gold: #d6a75a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    word-break: keep-all;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+
+  header.nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  header.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+  .brand { font-weight: 800; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .brand span { color: var(--gold); }
+  nav a { margin-left: 18px; text-decoration: none; color: var(--muted); font-size: 0.95rem; }
+  nav a:hover { color: var(--text); }
+  @media (max-width: 640px) { nav a:not(.cta) { display: none; } }
+
+  .btn {
+    display: inline-block; padding: 12px 22px; border-radius: 8px;
+    background: var(--accent); color: var(--bg); font-weight: 700; text-decoration: none;
+  }
+  .btn.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  nav a.cta { color: var(--accent); font-weight: 700; }
+
+  .hero { padding: 88px 0 72px; }
+  .eyebrow { color: var(--gold); font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; }
+  h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.25; letter-spacing: -0.03em; margin: 12px 0 20px; }
+  .lead { font-size: 1.15rem; color: var(--muted); max-width: 640px; }
+  .hero .actions { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .proof { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 56px; }
+  .proof div { background: var(--surface); padding: 20px; }
+  .proof b { display: block; font-size: 1.05rem; }
+  .proof small { color: var(--muted); }
+  @media (max-width: 760px) { .proof { grid-template-columns: 1fr 1fr; } }
+
+  section { padding: 72px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); letter-spacing: -0.02em; margin: 0 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 36px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 26px; }
+  .card h3 { margin: 0 0 6px; font-size: 1.15rem; }
+  .card .tag { display: inline-block; font-size: 0.8rem; color: var(--accent); background: var(--accent-soft); padding: 2px 10px; border-radius: 99px; margin-bottom: 12px; font-weight: 500; }
+  .card ul { padding-left: 18px; margin: 12px 0 0; color: var(--muted); }
+  .card .price { margin-top: 16px; font-weight: 700; }
+
+  .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .pricing { grid-template-columns: 1fr; } }
+  .plan { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 28px; display: flex; flex-direction: column; }
+  .plan.featured { border: 2px solid var(--accent); }
+  .plan .name { font-weight: 700; color: var(--muted); }
+  .plan .amount { font-size: 2rem; font-weight: 800; margin: 6px 0 2px; }
+  .plan .amount small { font-size: 1rem; font-weight: 500; color: var(--muted); }
+  .plan ul { padding-left: 18px; color: var(--muted); flex: 1; }
+  .badge { align-self: flex-start; font-size: 0.78rem; background: var(--accent); color: var(--bg); padding: 2px 10px; border-radius: 99px; margin-bottom: 10px; font-weight: 700; }
+
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  @media (max-width: 860px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
+  .step { counter-increment: s; }
+  .step::before { content: "0" counter(s); display: block; font-size: 1.6rem; font-weight: 800; color: var(--gold); }
+  .step b { display: block; margin: 4px 0; }
+  .step p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; }
+  summary { cursor: pointer; font-weight: 700; }
+  details p { color: var(--muted); margin: 10px 0 0; }
+
+  .contact { background: var(--accent-soft); border-radius: 16px; padding: 44px 28px; text-align: center; }
+  .contact p { color: var(--muted); }
+
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#">강지언 <span>Academic Lab</span></a>
+    <nav>
+      <a href="#services">서비스</a>
+      <a href="#pricing">논문진단</a>
+      <a href="#process">진행방식</a>
+      <a href="#faq">FAQ</a>
+      <a class="cta" href="#contact">문의하기</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap hero">
+    <div class="eyebrow">교수 · 심사위원의 시선으로</div>
+    <h1>논문·과제·강의,<br>통과하는 기준으로 완성합니다.</h1>
+    <p class="lead">암세포유전학 리뷰 논문 저자이자 임상병리학과 교수가 학위논문을 진단하고, 정부과제 계획서를 다듬고, 기관의 이러닝과 특강을 설계합니다.</p>
+    <div class="actions">
+      <a class="btn" href="#contact">무료 사전 상담 신청</a>
+      <a class="btn ghost" href="#pricing">논문진단 패키지 보기</a>
+    </div>
+
+    <div class="proof">
+      <div><b>암세포유전학</b><small>리뷰 논문 다수 저술</small></div>
+      <div><b>임상병리학과 교수</b><small>현직 대학 교원</small></div>
+      <div><b>입학처장 2년</b><small>역대 최고 충원 성과</small></div>
+      <div><b>외부 특강·이러닝</b><small>한국기술교육대 등 출강</small></div>
+    </div>
+  </div>
+
+  <section id="services">
+    <div class="wrap">
+      <h2>서비스</h2>
+      <p class="sub">대필이 아닌 진단과 코칭. 결과물의 주인은 언제나 의뢰인입니다.</p>
+      <div class="grid">
+        <div class="card">
+          <span class="tag">대학원생 · 연구자</span>
+          <h3>학위논문·학술원고 정밀진단</h3>
+          <p>심사 전 원고를 20개 항목으로 점검하고, 심각도별 결함과 수정 우선순위를 보고서로 드립니다.</p>
+          <div class="price">30만 원부터</div>
+        </div>
+        <div class="card">
+          <span class="tag">교수 · 연구책임자</span>
+          <h3>정부과제 계획서 컨설팅</h3>
+          <p>연구재단·부처 과제 계획서를 평가위원의 관점에서 검토합니다. 구성 논리, 차별성, 예산 타당성까지.</p>
+          <div class="price">건당 100만 원부터</div>
+        </div>
+        <div class="card">
+          <span class="tag">대학 · 공공기관 · 기업</span>
+          <h3>이러닝 콘텐츠 개발</h3>
+          <p>과정 개요서부터 차시 구성, 강의대본, PPT, 평가문항까지 한 번에. 보건·의생명·연구방법론 특화.</p>
+          <div class="price">차시당 20만 원부터</div>
+        </div>
+        <div class="card">
+          <span class="tag">기관 교육 담당자</span>
+          <h3>특강 · 연수</h3>
+          <ul>
+            <li>AI 시대 리뷰논문 작성 전략</li>
+            <li>심사위원이 고르는 기획서·보고서</li>
+            <li>정밀의료 시대의 암유전체 이해</li>
+          </ul>
+          <div class="price">회당 50만 원부터</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <h2>학위논문 정밀진단 패키지</h2>
+      <p class="sub">심사를 앞둔 원고, 무엇을 먼저 고쳐야 할지 정확히 알려드립니다.</p>
+      <div class="pricing">
+        <div class="plan">
+          <div class="name">베이직</div>
+          <div class="amount">30만 <small>원</small></div>
+          <ul>
+            <li>20개 항목 체크리스트 진단</li>
+            <li>핵심 결함 요약 1페이지</li>
+            <li>납기 5일</li>
+          </ul>
+          <a class="btn ghost" href="#contact">신청하기</a>
+        </div>
+        <div class="plan featured">
+          <span class="badge">가장 많이 선택</span>
+          <div class="name">스탠다드</div>
+          <div class="amount">60만 <small>원</small></div>
+          <ul>
+            <li>심각도별 정밀진단 보고서(Word)</li>
+            <li>장·절별 수정 우선순위</li>
+            <li>심사 예상 질문 10선</li>
+            <li>납기 7일</li>
+          </ul>
+          <a class="btn" href="#contact">신청하기</a>
+        </div>
+        <div class="plan">
+          <div class="name">프리미엄</div>
+          <div class="amount">120만 <small>원</small></div>
+          <ul>
+            <li>스탠다드 전체 포함</li>
+            <li>1:1 화상 피드백 60분</li>
+            <li>수정본 재진단 1회</li>
+            <li>납기 10일</li>
+          </ul>
+          <a class="btn ghost" href="#contact">신청하기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <h2>진행 방식</h2>
+      <p class="sub">문의부터 결과물 수령까지, 평균 일주일.</p>
+      <div class="steps">
+        <div class="step"><b>사전 상담</b><p>원고 분량·분야·심사 일정을 확인합니다. 무료.</p></div>
+        <div class="step"><b>견적·계약</b><p>범위와 납기를 확정하고 비밀유지를 약속합니다.</p></div>
+        <div class="step"><b>진단·작업</b><p>심사 기준표에 따라 꼼꼼히 검토합니다.</p></div>
+        <div class="step"><b>보고·피드백</b><p>보고서 전달 후 질문에 답변해 드립니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <h2>자주 묻는 질문</h2>
+      <p class="sub">&nbsp;</p>
+      <details>
+        <summary>논문을 대신 써 주시나요?</summary>
+        <p>아닙니다. 대필·대작은 연구윤리 위반이므로 받지 않습니다. 원고의 문제를 진단하고 고치는 방향을 코칭합니다.</p>
+      </details>
+      <details>
+        <summary>전공이 의생명 분야가 아니어도 되나요?</summary>
+        <p>논문 구조, 논리 전개, 연구방법 서술, 인용 체계 진단은 전공과 무관하게 가능합니다. 내용 전문성이 필요한 부분은 사전 상담에서 범위를 안내합니다.</p>
+      </details>
+      <details>
+        <summary>원고 보안은 어떻게 관리되나요?</summary>
+        <p>계약 시 비밀유지를 명시하며, 작업 종료 후 원고 파일은 요청에 따라 삭제합니다.</p>
+      </details>
+      <details>
+        <summary>입시·진학 상담도 하시나요?</summary>
+        <p>하지 않습니다. 입시의 공정성을 위해 수험생 대상 입시 컨설팅은 제공하지 않습니다.</p>
+      </details>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="contact" id="contact">
+        <h2>무료 사전 상담</h2>
+        <p>원고 분량, 분야, 심사 일정 또는 기관 교육 수요를 알려주시면 1영업일 안에 회신드립니다.</p>
+        <!-- TODO: 공개용 업무 이메일 또는 크몽 프로필 주소로 교체하세요 -->
+        <a class="btn" href="mailto:contact@example.com?subject=%5B%EC%83%81%EB%8B%B4%EC%8B%A0%EC%B2%AD%5D%20">이메일로 상담 신청</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 강지언 아카데믹 랩 · 지식서비스·교육 컨설팅</div>
+</footer>
+
+</body>
+</html>
