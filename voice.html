@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>AI 면접 트레이너</title>
-  <meta name="description" content="면접 질문을 말하고 내 답변을 말하면, 면접관이 어떻게 들을지 점수로 알려 주고 더 잘 전달되는 답변으로 다시 연습시킵니다.">
+  <meta name="description" content="면접 질문을 말하고 지금 답해 보세요. 면접관이 어떻게 들을지 분석하고, 부족한 것 하나만 물어본 뒤 더 강한 답변으로 다시 연습시킵니다.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8E%99%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -14,61 +14,75 @@
 </head>
 <body>
   <main class="voice">
-    <!-- 1. 질문 -->
+    <!-- ① 질문 -->
     <section id="s1" class="screen on">
       <p class="eyebrow">AI 면접 트레이너 · 첫 문항 무료</p>
-      <h1>면접 질문을 말해 보세요.</h1>
+      <h1>면접 질문을 말해 주세요.</h1>
       <button class="mic" data-mic="q" aria-label="질문 말하기"><span>🎙</span></button>
       <p class="micstate" data-state="q">질문 말하기</p>
       <textarea id="q" rows="2" placeholder="또는 질문을 직접 입력하세요"></textarea>
-      <button id="go1" class="primary big wide">다음</button>
+      <label id="photoBtn" class="btnlike ghost small photo" hidden>📷 사진으로 넣기<input id="photo" type="file" accept="image/*" capture="environment" hidden></label>
+      <div id="photoPick" class="pickq"></div>
+      <button id="go1" class="primary big wide">시작하기</button>
       <p class="nomic hint" hidden>이 브라우저는 음성 인식을 지원하지 않아요. 휴대폰 키보드의 🎤로 말하거나 직접 입력해 주세요. 카카오톡·인스타 안에서 열었다면 크롬·사파리로 열어 주세요.</p>
     </section>
 
-    <!-- 2. 내 답변 -->
+    <!-- ② 답변 -->
     <section id="s2" class="screen">
       <p class="qline" id="qShow"></p>
-      <h2 class="ask">이 질문에 본인은 어떻게 답하시겠어요?</h2>
-      <button class="mic" data-mic="a" aria-label="내 답변 말하기"><span>🎙</span></button>
-      <p class="micstate" data-state="a">내 답변 말하기</p>
+      <h2 class="ask" id="s2title">이 질문에 지금 답해 보세요.</h2>
+      <p class="hint" id="s2sub">잘하려고 하지 않아도 됩니다.</p>
+      <button class="mic" data-mic="a" aria-label="답변 시작"><span>🎙</span></button>
+      <p class="micstate" data-state="a">답변 시작</p>
       <div class="timer big" id="timer">00:00</div>
       <textarea id="a" rows="4" placeholder="말한 내용이 여기에 적힙니다. 직접 입력해도 됩니다."></textarea>
-      <button id="gradeBtn" class="primary big wide">채점하기</button>
-      <button id="makeBtn" class="link">아직 답변이 없다면 → 답변 만들어줘</button>
+      <button id="gradeBtn" class="primary big wide">면접관 평가 받기</button>
       <label class="deptline">지원 학과 <input id="dept" placeholder="예) 간호학과 (질문에 직업이 있으면 자동)"></label>
     </section>
 
-    <!-- 2b. 답변 만들기: 짧게 되묻기 -->
-    <section id="s2b" class="screen">
-      <p class="qline" id="qShow2"></p>
-      <div class="dots" id="dots"></div>
-      <h2 id="ask" class="ask"></h2>
-      <button class="mic" data-mic="g" aria-label="답하기"><span>🎙</span></button>
-      <p class="micstate" data-state="g">있었던 일 그대로 말하기</p>
-      <textarea id="g" rows="3"></textarea>
-      <div class="row2"><button id="skip" class="ghost">건너뛰기</button><button id="next" class="primary big">다음</button></div>
-    </section>
-
-    <!-- 3. 결과 -->
+    <!-- ③ 면접관 분석 + ④ 부족한 것 하나 -->
     <section id="s3" class="screen">
       <p class="qline" id="qShow3"></p>
-      <div class="bigscore"><span id="scoreLbl">현재 답변</span> <b id="score">0</b><span>점</span></div>
+      <div class="bigscore"><span>면접관 평가</span> <b id="score">0</b><span>점</span></div>
       <div id="history" class="history"></div>
-      <div id="dims" class="dims"></div>
-      <div class="problem"><b>가장 큰 문제</b><p id="problem"></p></div>
+      <p id="head" class="head"></p>
+      <ul id="lines" class="lines"></ul>
+      <details class="detail"><summary>세부 점수 보기</summary><div id="dims" class="dims"></div><p id="firstFix" class="hint"></p></details>
+
+      <div id="askBox" class="askbox">
+        <p id="say" class="say"></p>
+        <h2 id="ask2" class="ask"></h2>
+        <button class="mic" data-mic="x" aria-label="말하기"><span>🎙</span></button>
+        <p class="micstate" data-state="x">말하기</p>
+        <textarea id="x" rows="3" placeholder="20초 정도면 충분해요. 있었던 일 그대로."></textarea>
+        <div class="row2"><button id="noIdea" class="ghost">없어요 / 잘 모르겠어요</button><button id="addBtn" class="primary big">추가하기</button></div>
+      </div>
+
+      <div id="buildBox" class="buildbox" hidden>
+        <p id="buildSay" class="say"></p>
+        <div class="expect"><span id="expNow">72</span><span>→</span><b id="expNext">88</b><small>개선 예상</small></div>
+        <button id="buildBtn" class="primary big wide">내 경험으로 답변 만들기</button>
+      </div>
       <p id="aiState" class="hint" hidden></p>
+    </section>
+
+    <!-- ⑤ 개선 답변 + 다시 말하기 -->
+    <section id="s4" class="screen">
+      <p class="qline" id="qShow4"></p>
       <h2 class="h-better">면접관에게 더 잘 전달되는 답변</h2>
-      <textarea id="better" rows="7"></textarea>
+      <textarea id="better" rows="8"></textarea>
       <ul id="changes" class="changes"></ul>
       <div class="row2">
-        <button id="listen" class="ghost">🔊 답변 들어보기</button>
-        <button id="again" class="primary big">🎙 다시 말해 보기</button>
+        <button id="listen" class="ghost">🔊 들어보기</button>
+        <button id="again" class="primary big">🎙 이 답변으로 다시 말하기</button>
       </div>
+      <p class="hint center">외우지 말고, 내 말로 말해 보세요. 다시 말하면 점수가 기록됩니다.</p>
       <button id="nextQ" class="ghost wide">다음 예상질문 →</button>
 
       <div id="offer" class="offer" hidden>
-        <h3>이 방식으로 계속 연습하시겠어요?</h3>
-        <p><b id="offerPrice">5문항 4,900원</b> · 예상 꼬리질문까지 포함</p>
+        <p id="offerGain" class="gain"></p>
+        <h3>이제 실제 면접처럼 계속 연습해 보세요.</h3>
+        <p><b>5문항 4,900원</b> · 예상 꼬리질문 포함</p>
         <button id="offerBtn" class="primary big wide">계속 연습하기</button>
         <p id="offerNote" class="hint"></p>
       </div>

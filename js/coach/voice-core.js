@@ -210,3 +210,69 @@ export function improveAnswer({ transcript, question, dept, type, target = 50 })
   if (dropped.length) changes.push(`${target}초에 맞추려고 덜 중요한 문장 ${dropped.length}개를 뺐습니다.`);
   return { answer: text || joinSentences(parts), changes };
 }
+
+// ───────── 적응형 코칭: 부족한 것 하나 찾기 ─────────
+const JOSA_EUL = (w) => { const c = (w || "").slice(-1).charCodeAt(0) - 0xac00; return c >= 0 && c <= 11171 && c % 28 ? "을" : "를"; };
+
+// "책임감이 제일 중요하다고" → "책임감"
+export function keyClaim(formal) {
+  const a = formal.match(/(?:역량|자질|덕목|능력|태도|것)(?:은|는)\s*([가-힣]{2,10}?)(?:이)?라고/);
+  if (a) return a[1];
+  const m = formal.match(/([가-힣]{2,12}?)(?:이|가|은|는)\s*(?:제일|가장|정말|꼭|무엇보다)?\s*(?:중요|필요|핵심)/);
+  return m ? m[1] : "";
+}
+
+export function diagnose({ score, formal, question, type, dept, target = 50 }) {
+  const T = QTYPES[type] || QTYPES.general;
+  const sents = splitSentences(formal);
+  const concrete = sents.filter(isConcrete);
+  const learned = sents.some((s) => /배웠|깨달|알게 되/.test(s));
+  const claim = keyClaim(formal);
+  const d = score.dims;
+  if (score.seconds > target + 15) {
+    return { kind: "long", say: `좋아요. 그런데 실제 면접에서는 약 ${score.seconds}초가 걸립니다. 핵심을 ${target}초로 줄여 볼게요.`, ask: null };
+  }
+  if (d["질문 적합성"] < 55) {
+    return { kind: "offtopic", say: `좋은 이야기지만 면접관이 물어본 것은 ‘${T.label}’입니다. ${T.looks[0]}을(를) 더 듣고 싶어 합니다.`, ask: "질문에 맞춰 한 번 더 답해 볼까요?", retry: true };
+  }
+  if (!concrete.length) {
+    const q = claim ? `${claim}${JOSA_EUL(claim)} 실제로 보여 준 경험이 있나요?` : ((SPOKEN[type] || SPOKEN.general).find(([k]) => /situation|evidence|proof|did|trigger|myhabit|experience/.test(k)) || [null, "이 생각이 드러난 내 경험이 있나요?"])[1];
+    return { kind: "experience", say: "본인의 실제 경험 하나만 추가하면 이 답변이 크게 좋아질 수 있습니다.", ask: q, field: "experience" };
+  }
+  if (!learned) return { kind: "learned", say: "경험은 좋아요. 그 경험에서 무엇을 배웠는지가 들어가면 ‘나만의 답변’이 됩니다.", ask: "그 경험으로 무엇을 배웠어요? 한 문장이면 돼요.", field: "learned" };
+  if (d["전공적합성"] < 70) return { kind: "major", say: "지원 학과와의 연결이 약해요.", ask: `이 경험이 ${dept || "지원 학과"} 지원과 어떻게 연결된다고 생각해요?`, field: "major" };
+  return { kind: "good", say: "좋아요. 면접관에게 잘 전달되는 답변이에요. 문장만 다듬어 드릴게요.", ask: null };
+}
+
+// 추가로 말한 내용을 원래 답변에 합치기
+export function mergeAnswer(transcript, add, field) {
+  const a = formalize(add || "");
+  if (!a) return transcript;
+  if (field === "learned" && !/배웠|깨달|알게/.test(a)) return `${transcript} 이 경험으로 ${a.replace(/[.]$/, "")}라는 것을 배웠습니다.`;
+  return `${transcript} ${a}`;
+}
+
+// 점수를 학생 말로: ✓/△ 세 줄과 한 줄 총평
+export function summaryLines(score, dept) {
+  const d = score.dims;
+  const good = {
+    "질문 적합성": "질문에는 제대로 답했어요", "전공적합성": `${dept || "지원 학과"}와도 연결돼요`, "구체성": "내가 한 행동이 구체적이에요",
+    "차별성": "나만의 경험이 들어가 있어요", "전달력": "길이와 말하기가 적당해요",
+  };
+  const bad = {
+    "질문 적합성": "질문이 묻는 것과 조금 다른 이야기를 했어요", "전공적합성": "지원 학과와의 연결이 약해요", "구체성": "내가 실제로 한 행동이 잘 안 보여요",
+    "차별성": "그런데 다른 지원자도 거의 같은 말을 할 수 있어요", "전달력": "길이나 말하기를 다듬어야 해요",
+  };
+  const sorted = Object.entries(d).sort((a, b) => b[1] - a[1]);
+  const lines = sorted.filter(([, v]) => v >= 80).slice(0, 2).map(([k]) => ({ ok: true, t: good[k] }));
+  const low = sorted[sorted.length - 1];
+  if (low[1] < 80) lines.push({ ok: false, t: bad[low[0]] });
+  const head = score.total >= 85 ? "면접관에게 잘 전달되는 답변이에요." : low[0] === "차별성" ? "내용은 맞지만, 아직 ‘너만의 답변’은 아니에요." : score.total >= 70 ? "방향은 좋아요. 한 가지만 보완하면 훨씬 좋아져요." : "아직 면접관에게 전달이 약해요. 하나씩 고쳐 볼게요.";
+  return { head, lines, first: low[1] < 80 ? low[0] : "" };
+}
+
+// 빈칸([✎ …]) 문장을 뺀 '예상 점수'
+export function expectedScore({ answer, question, dept, type, target = 50 }) {
+  const clean = answer.replace(/\[✎[^\]]*\]\.?/g, "").trim();
+  return scoreSpoken({ transcript: clean, question, dept, type, seconds: secondsOf(clean), target });
+}

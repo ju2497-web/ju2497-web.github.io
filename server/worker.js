@@ -43,6 +43,28 @@ export default {
 
     const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
 
+    // 사진 속 면접 질문 읽기
+    if (body.mode === "ocr") {
+      const img = body.payload?.image || "", type = body.payload?.mediaType || "image/jpeg";
+      if (!/^image\/(jpeg|png|webp)$/.test(type) || typeof img !== "string" || img.length < 100 || img.length > 5_000_000) {
+        return json({ error: "사진 형식이나 크기가 올바르지 않습니다." }, 400, headers);
+      }
+      try {
+        const msg = await client.messages.create({
+          model: MODEL, max_tokens: 4000,
+          output_config: { effort: "low", format: { type: "json_schema", schema: { type: "object", additionalProperties: false, required: ["questions"], properties: { questions: { type: "array", items: { type: "string" } } } } } },
+          messages: [{ role: "user", content: [
+            { type: "image", source: { type: "base64", media_type: type, data: img } },
+            { type: "text", text: "이 사진에 있는 대학 면접 질문 문장만 그대로 옮겨 적으세요. 번호·머리말은 빼고, 질문이 여러 개면 각각 따로 적습니다. 질문이 없으면 빈 배열을 돌려주세요." },
+          ] }],
+        });
+        if (msg.stop_reason === "refusal") return json({ error: "사진을 읽지 못했습니다." }, 422, headers);
+        return json({ result: JSON.parse(msg.content.filter((b) => b.type === "text").map((b) => b.text).join("")) }, 200, headers);
+      } catch {
+        return json({ error: "사진을 읽지 못했습니다." }, 502, headers);
+      }
+    }
+
     // 말로 하는 면접 코치: 평가 → 재작성 → 재평가 루프
     if (body.mode === "voice") {
       const bad = validateVoice(body.payload);

@@ -1,18 +1,16 @@
 import { CONFIG } from "./config.js";
 import { QTYPES } from "./framework.js";
-import { detectType, runBasic, secondsOf } from "./engine.js";
-import { SPOKEN, formalize, scoreSpoken, improveAnswer } from "./voice-core.js";
-import { canDeep, callVoice } from "./ai-call.js";
-import { toDims } from "./voice-loop.js";
+import { detectType, secondsOf } from "./engine.js";
+import { formalize, scoreSpoken, improveAnswer, diagnose, mergeAnswer, summaryLines, expectedScore } from "./voice-core.js";
+import { canDeep, callVoice, canOcr, callOcr } from "./ai-call.js";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-const TARGET = 50;
-const FREE_QUESTIONS = 1;
-const st = { q: "", dept: "", type: "general", history: [], startAt: 0, guided: null, followIdx: 0 };
+const TARGET = 50, FREE_QUESTIONS = 1;
 const ls = { get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
-st.dept = ls.get("voice.dept", "");
+const st = { q: "", dept: ls.get("voice.dept", ""), type: "general", transcript: "", history: [], diag: null, improved: null, expected: 0, spoken: 0, startAt: 0, followIdx: 0 };
+const code = () => ls.get("coach.code", "");
 const used = () => ls.get("voice.used", []);
 
 function show(id) { document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id)); window.scrollTo({ top: 0 }); }
@@ -23,23 +21,21 @@ function speak(text) {
     if (!("speechSynthesis" in window) || !text) return res();
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "ko-KR"; u.onend = res; u.onerror = res;
-      speechSynthesis.speak(u);
-      setTimeout(res, Math.min(20000, text.length * 180));
+      const u = new SpeechSynthesisUtterance(text); u.lang = "ko-KR"; u.onend = res; u.onerror = res;
+      speechSynthesis.speak(u); setTimeout(res, Math.min(20000, text.length * 180));
     } catch { res(); }
   });
 }
 let rec = null, recKey = null;
-function stopRec() { if (rec) { try { rec.stop(); } catch {} } }
+const stopRec = () => { if (rec) { try { rec.stop(); } catch {} } };
+const label = (k, t) => { const s = document.querySelector(`[data-state="${k}"]`); if (s) s.textContent = t; };
 function mic(key, { onStart, onStop } = {}) {
-  const btn = document.querySelector(`[data-mic="${key}"]`), box = $(`#${key}`), state = document.querySelector(`[data-state="${key}"]`);
+  const btn = document.querySelector(`[data-mic="${key}"]`), box = $(`#${key}`);
   if (rec && recKey === key) { stopRec(); return; }
   stopRec();
   if (!SR) { box.focus(); return; }
   try { speechSynthesis.cancel(); } catch {}
-  const r = new SR();
-  r.lang = "ko-KR"; r.interimResults = true; r.continuous = true;
+  const r = new SR(); r.lang = "ko-KR"; r.interimResults = true; r.continuous = true;
   const base = box.value ? box.value.trim() + " " : "";
   let fin = "";
   r.onresult = (e) => {
@@ -47,19 +43,15 @@ function mic(key, { onStart, onStop } = {}) {
     for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t + " "; else interim += t; }
     box.value = (base + fin + interim).trim();
   };
-  r.onend = () => { btn.classList.remove("rec"); rec = null; recKey = null; if (state) state.dataset.done = "1"; onStop?.(); };
-  r.onerror = (e) => { if (state) state.textContent = e.error === "not-allowed" ? "마이크 권한을 허용해 주세요" : "다시 눌러 말해 주세요"; };
-  rec = r; recKey = key; btn.classList.add("rec");
-  if (state) state.textContent = "듣고 있어요… 다 말하면 다시 누르세요";
+  r.onend = () => { btn.classList.remove("rec"); rec = null; recKey = null; label(key, "다시 말하려면 누르세요"); onStop?.(); };
+  r.onerror = (e) => label(key, e.error === "not-allowed" ? "마이크 권한을 허용해 주세요" : "다시 눌러 말해 주세요");
+  rec = r; recKey = key; btn.classList.add("rec"); label(key, "듣고 있어요… 다 말하면 다시 누르세요");
   r.start(); onStart?.();
 }
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-mic]"); if (!b) return;
-  const k = b.dataset.mic;
-  if (k === "a") mic("a", { onStart: startTimer, onStop: () => { stopTimer(); setLabel("a", "다시 말하려면 누르세요"); } });
-  else mic(k, { onStop: () => setLabel(k, "다시 말하려면 누르세요") });
+  if (b.dataset.mic === "a") mic("a", { onStart: startTimer, onStop: stopTimer }); else mic(b.dataset.mic);
 });
-const setLabel = (k, t) => { const s = document.querySelector(`[data-state="${k}"]`); if (s) s.textContent = t; };
 if (!SR) { $(".nomic").hidden = false; document.querySelectorAll(".micstate").forEach((m) => (m.textContent = "아래에 입력하세요")); }
 
 let tick = null;
@@ -71,126 +63,174 @@ function startTimer() {
     $("#timer").classList.toggle("over", s > TARGET + 5);
   }, 250);
 }
-function stopTimer() { clearInterval(tick); tick = null; st.spoken = st.startAt ? Math.round((Date.now() - st.startAt) / 1000) : 0; st.startAt = 0; }
+function stopTimer() { clearInterval(tick); tick = null; if (st.startAt) st.spoken = Math.round((Date.now() - st.startAt) / 1000); st.startAt = 0; }
 
-// ───────── 1. 질문 ─────────
+// ───────── ① 질문 ─────────
 const ROLE2DEPT = [[/간호사/, "간호학과"], [/임상병리사/, "임상병리학과"], [/물리치료사/, "물리치료학과"], [/작업치료사/, "작업치료학과"], [/방사선사/, "방사선학과"], [/치과위생사/, "치위생학과"], [/응급구조사/, "응급구조학과"], [/교사|선생님/, "교육학과"], [/사회복지사/, "사회복지학과"]];
-function setQuestion(q) {
-  st.q = q; st.type = detectType(q); st.history = [];
+function setQuestion(q, keepType) {
+  st.q = q; st.type = detectType(q); if (keepType && st.type === "general") st.type = keepType;
+  st.history = []; st.transcript = ""; st.spoken = 0;
   const auto = (ROLE2DEPT.find(([re]) => re.test(q)) || [])[1];
   if (auto) st.dept = auto;
   $("#dept").value = st.dept;
-  ["#qShow", "#qShow2", "#qShow3"].forEach((s) => ($(s).textContent = `Q. ${q}`));
-  $("#a").value = ""; $("#timer").textContent = "00:00"; st.spoken = 0;
-  setLabel("a", "내 답변 말하기");
+  ["#qShow", "#qShow3", "#qShow4"].forEach((s) => ($(s).textContent = `Q. ${q}`));
+  resetAnswer("이 질문에 지금 답해 보세요.", "잘하려고 하지 않아도 됩니다.");
+}
+function resetAnswer(title, sub) {
+  $("#s2title").textContent = title; $("#s2sub").textContent = sub;
+  $("#a").value = ""; $("#timer").textContent = "00:00"; st.spoken = 0; label("a", "답변 시작");
 }
 $("#go1").addEventListener("click", () => {
   stopRec();
   const q = $("#q").value.trim();
   if (q.length < 6) { speak("면접 질문을 먼저 말해 주세요."); $("#q").focus(); return; }
-  setQuestion(q);
-  show("s2");
-  speak("이 질문에 본인은 어떻게 답하시겠어요?");
+  setQuestion(q); show("s2");
+  speak("이 질문에 지금 답해 보세요. 잘하려고 하지 않아도 됩니다.");
 });
 $("#dept").addEventListener("change", () => { st.dept = $("#dept").value.trim(); ls.set("voice.dept", st.dept); });
 
-// ───────── 2. 채점 ─────────
+// 사진으로 넣기(AI 서버가 있을 때만)
+$("#photoBtn").hidden = !canOcr();
+$("#photo").addEventListener("change", async (e) => {
+  const file = e.target.files[0]; if (!file) return;
+  $("#photoPick").innerHTML = `<p class="hint">사진 속 질문을 읽고 있어요…</p>`;
+  try {
+    const { data, type } = await shrink(file);
+    const qs = await callOcr(data, type, code());
+    if (!qs.length) throw new Error("질문을 찾지 못했어요");
+    if (qs.length === 1) { $("#q").value = qs[0]; $("#photoPick").innerHTML = ""; }
+    else $("#photoPick").innerHTML = `<p class="hint">연습할 질문을 고르세요</p>` + qs.map((q, i) => `<button class="ghost" data-pick="${i}">${esc(q)}</button>`).join("");
+    $("#photoPick").onclick = (ev) => { const b = ev.target.closest("[data-pick]"); if (b) { $("#q").value = qs[+b.dataset.pick]; $("#photoPick").innerHTML = ""; } };
+  } catch (err) { $("#photoPick").innerHTML = `<p class="hint">${esc(err.message)}. 직접 입력해 주세요.</p>`; }
+  e.target.value = "";
+});
+function shrink(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 1600 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      res({ data: c.toDataURL("image/jpeg", 0.85).split(",")[1], type: "image/jpeg" });
+    };
+    img.onerror = () => rej(new Error("사진을 열 수 없어요"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// ───────── ② → ③ 면접관 분석 ─────────
 $("#gradeBtn").addEventListener("click", () => {
   stopRec(); if (st.startAt) stopTimer();
   const t = $("#a").value.trim();
-  if (t.replace(/\s/g, "").length < 15) { speak("답변을 조금 더 말해 주세요."); return; }
+  if (t.replace(/\s/g, "").length < 15) { speak("조금만 더 말해 주세요."); return; }
+  st.transcript = t;
   const seconds = st.spoken >= 3 ? st.spoken : secondsOf(formalize(t));
-  grade(t, seconds);
+  const sc = scoreSpoken({ transcript: t, question: st.q, dept: st.dept, type: st.type, seconds, target: TARGET });
+  st.history.push(sc.total);
+  st.score = sc;
+  renderAnalysis(sc);
+  st.diag = diagnose({ score: sc, formal: sc.formal, question: st.q, type: st.type, dept: st.dept, target: TARGET });
+  renderStep();
+  show("s3"); markUsed();
+  speak(`${sc.total}점입니다. ${st.diag.say} ${st.diag.ask || ""}`);
 });
 
-function grade(transcript, seconds) {
-  const sc = scoreSpoken({ transcript, question: st.q, dept: st.dept, type: st.type, seconds, target: TARGET });
-  const im = improveAnswer({ transcript, question: st.q, dept: st.dept, type: st.type, target: TARGET });
-  st.history.push(sc.total);
-  render({ total: sc.total, dims: sc.dims, problem: sc.problem, answer: im.answer, changes: im.changes, label: st.history.length > 1 ? "다시 말한 답변" : "현재 답변" });
-  show("s3");
-  markUsed();
-  if (canDeep()) deep(transcript);
-}
-
-function render({ total, dims, problem, answer, changes, label }) {
-  $("#scoreLbl").textContent = label;
-  $("#score").textContent = total;
+function renderAnalysis(sc) {
+  const s = summaryLines(sc, st.dept);
+  $("#score").textContent = sc.total;
   $("#history").innerHTML = st.history.length > 1 ? st.history.map((v, i) => (i ? `<span>→</span><b>${v}</b>` : `<span>${v}</span>`)).join("") : "";
-  $("#dims").innerHTML = Object.entries(dims).map(([k, v]) => `<div class="dim"><span>${esc(k)}</span><span class="bar"><i class="${v < 60 ? "low" : ""}" style="width:${Math.max(3, v)}%"></i></span><span class="v">${v}</span></div>`).join("");
-  $("#problem").textContent = problem;
-  $("#better").value = answer;
-  $("#changes").innerHTML = (changes || []).map((c) => `<li>${esc(c)}</li>`).join("");
-  $("#offer").hidden = !(st.history.length >= 2 || used().length >= FREE_QUESTIONS);
-  $("#offerPrice").textContent = "5문항 4,900원";
-  $("#offerNote").textContent = CONFIG.beta ? "지금은 베타 기간이라 무료로 계속하실 수 있습니다." : "결제 기능은 준비 중입니다.";
+  $("#head").textContent = s.head;
+  $("#lines").innerHTML = s.lines.map((l) => `<li class="${l.ok ? "ok" : "no"}">${esc(l.t)}</li>`).join("");
+  $("#dims").innerHTML = Object.entries(sc.dims).map(([k, v]) => `<div class="dim"><span>${esc(k)}</span><span class="bar"><i class="${v < 60 ? "low" : ""}" style="width:${Math.max(3, v)}%"></i></span><span class="v">${v}</span></div>`).join("");
+  $("#firstFix").textContent = s.first ? `가장 먼저 고칠 것: ${s.first}` : "";
 }
 
-async function deep(transcript) {
-  const s = $("#aiState");
-  s.hidden = false; s.textContent = "AI 면접관이 다시 듣고 있어요… (최대 1~2분)";
-  try {
-    const r = await callVoice({ question: st.q, transcript, dept: st.dept, type: st.type }, ls.get("coach.code", ""));
-    st.history[st.history.length - 1] = r.before.total;
-    render({ total: r.before.total, dims: toDims(r.before.scores), problem: r.before.biggest_problem, answer: r.answer, changes: [...r.changes, `개선 답변 예상 점수 ${r.after.total}점 (면접관 평가 ${r.rounds}회 반복)`], label: st.history.length > 1 ? "다시 말한 답변" : "현재 답변" });
-    s.textContent = "AI 면접관 평가로 바뀌었습니다.";
-  } catch (err) {
-    s.textContent = `AI 면접관 평가를 못 했어요(${err.message}). 기본 평가를 보여 드립니다.`;
+function renderStep() {
+  const d = st.diag;
+  $("#say").textContent = d.say;
+  $("#aiState").hidden = true;
+  if (d.ask && !d.retry) {
+    $("#askBox").hidden = false; $("#buildBox").hidden = true;
+    $("#ask2").textContent = d.ask;
+    ["[data-mic=x]", "#x", "[data-state=x]", "#noIdea"].forEach((s) => ($(s).hidden = false));
+    $("#x").value = ""; label("x", "말하기"); $("#addBtn").textContent = "추가하기";
+  } else if (d.retry) {
+    $("#askBox").hidden = false; $("#buildBox").hidden = true;
+    $("#ask2").textContent = d.ask;
+    ["[data-mic=x]", "#x", "[data-state=x]", "#noIdea"].forEach((s) => ($(s).hidden = true));
+    $("#addBtn").textContent = "다시 답하기";
+  } else {
+    $("#askBox").hidden = true;
+    prepareBuild(d.say);
   }
 }
 
-// ───────── 2b. 답변 만들어줘 ─────────
-$("#makeBtn").addEventListener("click", () => {
+// ④ 부족한 것 하나 추가 → 개선 예상
+$("#addBtn").addEventListener("click", () => {
   stopRec();
-  st.guided = { steps: SPOKEN[st.type] || SPOKEN.general, i: 0, fields: {} };
-  show("s2b"); ask();
+  if (st.diag.retry) { resetAnswer("질문에 맞춰 다시 답해 보세요.", st.diag.say); show("s2"); return; }
+  const add = $("#x").value.trim();
+  if (add.replace(/\s/g, "").length < 6) { speak("조금만 더 말해 주세요. 없으면 없어요를 눌러 주세요."); return; }
+  st.transcript = mergeAnswer(st.transcript, add, st.diag.field);
+  $("#askBox").hidden = true;
+  prepareBuild("좋아요. 이 내용을 넣으면 훨씬 강해집니다.");
 });
-function ask() {
-  const g = st.guided, [, text] = g.steps[g.i];
-  $("#dots").innerHTML = g.steps.map((_, k) => `<i class="${k <= g.i ? "on" : ""}"></i>`).join("");
-  $("#ask").textContent = text; $("#g").value = "";
-  setLabel("g", "있었던 일 그대로 말하기");
-  speak(text);
-}
-function advance(save) {
+$("#noIdea").addEventListener("click", () => {
   stopRec();
-  const g = st.guided;
-  g.fields[g.steps[g.i][0]] = save ? formalize($("#g").value) : "";
-  if (g.i < g.steps.length - 1) { g.i++; ask(); return; }
-  const r = runBasic({ question: st.q, dept: st.dept, fields: g.fields, targetSec: TARGET });
-  render({ total: r.score, dims: dimsFromBasic(r), problem: r.issues[0] ? `${r.issues[0].title}. ${r.issues[0].fix}` : "큰 감점 요인이 없어요. 이제 직접 말해 보세요.", answer: r.answer, changes: ["말해 준 경험으로 답변을 만들었습니다. 이제 이 답변을 보고 직접 말해 보세요."], label: "만든 답변" });
-  show("s3"); markUsed();
-}
-function dimsFromBasic(r) {
-  const c = Object.fromEntries(r.cats.map((x) => [x.name, Math.round((100 * x.got) / x.max)]));
-  return { "질문 적합성": c["질문 요구 충족"], "구체성": c["구체성(나의 행동)"], "차별성": Math.round((c["진정성(평범한 표현 없음)"] + c["성찰(배운 점)"]) / 2), "전공적합성": c["전공 연결"], "전달력": Math.round((c["말하기 시간"] + c["두괄식(첫 문장 결론)"]) / 2) };
-}
-$("#next").addEventListener("click", () => advance(true));
-$("#skip").addEventListener("click", () => advance(false));
+  $("#askBox").hidden = true;
+  prepareBuild(st.diag.kind === "experience"
+    ? "괜찮아요. 큰 활동이 아니어도 됩니다. 수업, 조별과제, 동아리, 봉사 중 작은 일이라도 떠오르면 채워 보세요. 우선 그 자리를 비워 둔 답변을 만들어 드릴게요."
+    : "괜찮아요. 우선 지금 내용으로 답변을 다듬어 드릴게요.");
+});
 
-// ───────── 3. 결과 → 다시/다음 ─────────
-$("#listen").addEventListener("click", () => speak($("#better").value));
+function prepareBuild(say) {
+  st.improved = improveAnswer({ transcript: st.transcript, question: st.q, dept: st.dept, type: st.type, target: TARGET });
+  const ex = expectedScore({ answer: st.improved.answer, question: st.q, dept: st.dept, type: st.type, target: TARGET });
+  st.expected = Math.max(ex.total, st.history[st.history.length - 1]);
+  $("#buildBox").hidden = false;
+  $("#buildSay").textContent = say;
+  $("#expNow").textContent = st.history[st.history.length - 1];
+  $("#expNext").textContent = st.expected;
+}
+
+// ⑤ 개선 답변
+$("#buildBtn").addEventListener("click", async () => {
+  renderBetter(st.improved.answer, st.improved.changes);
+  show("s4");
+  if (canDeep()) {
+    const s = $("#aiState"); s.hidden = false;
+    $("#changes").insertAdjacentHTML("afterbegin", `<li id="aiWait">AI 면접관이 다시 다듬고 있어요… (최대 1~2분)</li>`);
+    try {
+      const r = await callVoice({ question: st.q, transcript: st.transcript, dept: st.dept, type: st.type }, code());
+      st.expected = r.after.total;
+      renderBetter(r.answer, [...r.changes, `AI 면접관 예상 점수 ${r.after.total}점 (평가 ${r.rounds}회 반복)`]);
+    } catch (err) { $("#aiWait")?.remove(); $("#changes").insertAdjacentHTML("beforeend", `<li>AI 다듬기를 못 했어요(${esc(err.message)}). 기본 개선 답변입니다.</li>`); }
+  }
+});
+function renderBetter(answer, changes) {
+  $("#better").value = answer;
+  $("#changes").innerHTML = (changes || []).map((c) => `<li>${esc(c)}</li>`).join("");
+  $("#offer").hidden = false;
+  $("#offerGain").textContent = `첫 답변 ${st.history[0]}점 → 개선 답변 ${st.expected}점`;
+  $("#offerNote").textContent = CONFIG.beta ? "지금은 베타 기간이라 무료로 계속하실 수 있습니다." : "결제 기능은 준비 중입니다.";
+}
+$("#listen").addEventListener("click", () => speak($("#better").value.replace(/\[✎[^\]]*\]\.?/g, "")));
 $("#again").addEventListener("click", () => {
-  $("#a").value = ""; $("#timer").textContent = "00:00"; st.spoken = 0; setLabel("a", "개선 답변을 떠올리며 다시 말하기");
-  show("s2");
-  speak("좋아요. 개선 답변을 떠올리면서 다시 말해 보세요.");
+  resetAnswer("이 답변을 떠올리며 다시 말해 보세요.", "외우지 말고 내 말로. 다시 말하면 점수가 기록됩니다.");
+  show("s2"); speak("좋아요. 이제 다시 말해 보세요.");
 });
 $("#nextQ").addEventListener("click", () => {
   if (!gate()) return;
   const fu = QTYPES[st.type].followups;
-  const q = fu[st.followIdx % fu.length]?.q || "방금 말한 내용을 뒷받침하는 다른 경험이 있나요?";
-  st.followIdx++;
-  const keepType = st.type;
-  setQuestion(q);
-  if (st.type === "general") st.type = keepType;
-  show("s2");
+  const q = fu[st.followIdx++ % fu.length]?.q || "방금 말한 내용을 뒷받침하는 다른 경험이 있나요?";
+  setQuestion(q, st.type); show("s2");
   speak(`다음 질문입니다. ${q}`);
 });
-$("#offerBtn").addEventListener("click", () => { if (CONFIG.beta) { $("#offer").hidden = true; $("#nextQ").click(); } });
+$("#offerBtn").addEventListener("click", () => { if (CONFIG.beta) $("#nextQ").click(); });
 
 function markUsed() { const u = used(); if (!u.includes(st.q)) { u.push(st.q); ls.set("voice.used", u); } }
 function gate() {
   if (CONFIG.beta || used().length < FREE_QUESTIONS) return true;
-  $("#offer").hidden = false; $("#offer").scrollIntoView({ behavior: "smooth" });
+  $("#offer").scrollIntoView({ behavior: "smooth" });
   return false;
 }

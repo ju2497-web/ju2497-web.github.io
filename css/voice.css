@@ -59,3 +59,19 @@
 .offer { margin-top: 20px; border: 2px solid var(--brand); border-radius: 14px; padding: 14px; background: var(--brand-soft); }
 .offer h3 { margin: 0 0 4px; }
 .offer p { margin: 0; }
+.photo { margin-top: 10px; }
+.pickq { display: grid; gap: 6px; margin-top: 8px; text-align: left; }
+.pickq button { justify-content: flex-start; text-align: left; font-size: .88rem; }
+.head { font-weight: 700; font-size: 1.05rem; margin: 10px 0 4px; }
+.lines { list-style: none; padding: 0; margin: 0 auto; display: inline-grid; gap: 4px; text-align: left; font-size: .95rem; }
+.lines li.ok::before { content: "✓ "; color: var(--ok); font-weight: 700; }
+.lines li.no::before { content: "△ "; color: var(--dept); font-weight: 700; }
+.detail { text-align: left; margin-top: 10px; font-size: .9rem; }
+.detail summary { cursor: pointer; color: var(--brand); text-align: center; }
+.askbox, .buildbox { margin-top: 18px; border-top: 1px dashed var(--line); padding-top: 14px; }
+.say { margin: 0; color: var(--muted); }
+.expect { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin: 10px 0 0; font-variant-numeric: tabular-nums; }
+.expect span { font-size: 1.6rem; color: var(--muted); }
+.expect b { font-size: 2.6rem; color: var(--ok); font-weight: 800; }
+.expect small { color: var(--muted); }
+.gain { font-weight: 700; color: var(--ok); margin: 0 0 6px !important; }

@@ -85,3 +85,15 @@ export async function callVoice(payload, accessCode = "") {
   };
   return voiceLoop(call, payload);
 }
+
+// 사진 속 면접 질문 읽기(AI 서버가 있을 때만)
+export const canOcr = () => !!CONFIG.aiEndpoint;
+export async function callOcr(image, mediaType, accessCode = "") {
+  const r = await fetch(CONFIG.aiEndpoint, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: "ocr", payload: { image, mediaType }, accessCode }),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `서버 오류(${r.status})`);
+  return data.result.questions || [];
+}
