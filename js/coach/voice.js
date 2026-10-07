@@ -1,15 +1,19 @@
 import { CONFIG } from "./config.js";
-import { QTYPES, COMPETENCIES } from "./framework.js";
-import { detectType, runBasic, deptProfile, secondsOf } from "./engine.js";
-import { SPOKEN, formalize, practiceFeedback, followupFeedback } from "./voice-core.js";
-import { canDeep, callDeep, fromAI } from "./ai-call.js";
+import { QTYPES } from "./framework.js";
+import { detectType, runBasic, secondsOf } from "./engine.js";
+import { SPOKEN, formalize, scoreSpoken, improveAnswer } from "./voice-core.js";
+import { canDeep, callVoice } from "./ai-call.js";
+import { toDims } from "./voice-loop.js";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const TARGET = 50;
-const st = { q: "", dept: "", type: "general", steps: [], i: 0, fields: {}, result: null, practiceStart: 0, fu: "" };
-try { st.dept = localStorage.getItem("voice.dept") || ""; } catch {}
+const FREE_QUESTIONS = 1;
+const st = { q: "", dept: "", type: "general", history: [], startAt: 0, guided: null, followIdx: 0 };
+const ls = { get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+st.dept = ls.get("voice.dept", "");
+const used = () => ls.get("voice.used", []);
 
 function show(id) { document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id)); window.scrollTo({ top: 0 }); }
 
@@ -20,176 +24,173 @@ function speak(text) {
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = "ko-KR"; u.rate = 1; u.onend = res; u.onerror = res;
+      u.lang = "ko-KR"; u.onend = res; u.onerror = res;
       speechSynthesis.speak(u);
-      setTimeout(res, Math.min(15000, text.length * 180)); // 일부 브라우저는 onend가 오지 않음
+      setTimeout(res, Math.min(20000, text.length * 180));
     } catch { res(); }
   });
 }
 let rec = null, recKey = null;
 function stopRec() { if (rec) { try { rec.stop(); } catch {} } }
-function toggleMic(key, { onStart, onStop } = {}) {
-  const btn = document.querySelector(`[data-mic="${key}"]`);
-  const box = $(`#${key}`);
-  const state = document.querySelector(`[data-state="${key}"]`);
+function mic(key, { onStart, onStop } = {}) {
+  const btn = document.querySelector(`[data-mic="${key}"]`), box = $(`#${key}`), state = document.querySelector(`[data-state="${key}"]`);
   if (rec && recKey === key) { stopRec(); return; }
   stopRec();
   if (!SR) { box.focus(); return; }
-  speechSynthesis?.cancel();
+  try { speechSynthesis.cancel(); } catch {}
   const r = new SR();
   r.lang = "ko-KR"; r.interimResults = true; r.continuous = true;
   const base = box.value ? box.value.trim() + " " : "";
-  let finalText = "";
+  let fin = "";
   r.onresult = (e) => {
     let interim = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const t = e.results[i][0].transcript;
-      if (e.results[i].isFinal) finalText += t + " "; else interim += t;
-    }
-    box.value = (base + finalText + interim).trim();
+    for (let i = e.resultIndex; i < e.results.length; i++) { const t = e.results[i][0].transcript; if (e.results[i].isFinal) fin += t + " "; else interim += t; }
+    box.value = (base + fin + interim).trim();
   };
-  r.onend = () => { btn.classList.remove("rec"); if (state) state.textContent = "눌러서 다시 말하기"; rec = null; recKey = null; onStop?.(); };
+  r.onend = () => { btn.classList.remove("rec"); rec = null; recKey = null; if (state) state.dataset.done = "1"; onStop?.(); };
   r.onerror = (e) => { if (state) state.textContent = e.error === "not-allowed" ? "마이크 권한을 허용해 주세요" : "다시 눌러 말해 주세요"; };
-  rec = r; recKey = key;
-  btn.classList.add("rec"); if (state) state.textContent = "듣고 있어요… 다 말하면 다시 누르세요";
+  rec = r; recKey = key; btn.classList.add("rec");
+  if (state) state.textContent = "듣고 있어요… 다 말하면 다시 누르세요";
   r.start(); onStart?.();
 }
 document.addEventListener("click", (e) => {
-  const b = e.target.closest("[data-mic]");
-  if (!b) return;
+  const b = e.target.closest("[data-mic]"); if (!b) return;
   const k = b.dataset.mic;
-  if (k === "p") toggleMic("p", { onStart: startTimer, onStop: () => { stopTimer(); gradePractice(); } });
-  else toggleMic(k);
+  if (k === "a") mic("a", { onStart: startTimer, onStop: () => { stopTimer(); setLabel("a", "다시 말하려면 누르세요"); } });
+  else mic(k, { onStop: () => setLabel(k, "다시 말하려면 누르세요") });
 });
-if (!SR) { document.querySelector(".nomic").hidden = false; document.querySelectorAll(".micstate").forEach((m) => (m.textContent = "아래에 입력하세요")); }
+const setLabel = (k, t) => { const s = document.querySelector(`[data-state="${k}"]`); if (s) s.textContent = t; };
+if (!SR) { $(".nomic").hidden = false; document.querySelectorAll(".micstate").forEach((m) => (m.textContent = "아래에 입력하세요")); }
 
-// ───────── 1. 질문 ─────────
-$("#dept").value = st.dept;
-fetch(CONFIG.questionBankUrl).then((r) => r.json()).then((d) => {
-  const sets = (d.sets || []).filter((s) => !CONFIG.blockedUniversities.includes(s.university));
-  $("#bank").innerHTML += sets.map((s) => `<optgroup label="${esc(`${s.university} ${s.department} ${s.year || ""}`)}">${s.questions.map((q) => `<option data-dept="${esc(s.department)}">${esc(q)}</option>`).join("")}</optgroup>`).join("");
-}).catch(() => {});
-$("#bank").addEventListener("change", (e) => {
-  const o = e.target.selectedOptions[0];
-  if (!o?.value) return;
-  $("#q").value = o.value;
-  if (o.dataset.dept && !/모든/.test(o.dataset.dept)) $("#dept").value = o.dataset.dept;
-});
-$("#go1").addEventListener("click", () => {
-  stopRec();
-  st.q = $("#q").value.trim();
-  if (st.q.length < 6) { speak("면접 질문을 먼저 말해 주세요."); $("#q").focus(); return; }
-  st.dept = $("#dept").value.trim();
-  try { localStorage.setItem("voice.dept", st.dept); } catch {}
-  st.type = detectType(st.q);
-  const T = QTYPES[st.type];
-  st.steps = SPOKEN[st.type] || SPOKEN.general;
-  st.i = 0; st.fields = {};
-  $("#typeChips").innerHTML = `<span class="chip type">${esc(T.label)}</span>${T.comps.map((c) => `<span class="chip comp">${esc(COMPETENCIES[c])}</span>`).join("")}`;
-  $("#intent").textContent = `면접관은 이 질문에서 ${T.looks.slice(0, 2).join(", ")}을(를) 봅니다.`;
-  show("s2"); ask();
-});
-
-// ───────── 2. 되묻기 ─────────
-function ask() {
-  const [, text] = st.steps[st.i];
-  $("#dots").innerHTML = st.steps.map((_, k) => `<i class="${k <= st.i ? "on" : ""}"></i>`).join("");
-  $("#ask").textContent = text;
-  $("#a").value = st.fields[st.steps[st.i][0]] || "";
-  speak(text);
-}
-$("#reAsk").addEventListener("click", () => speak($("#ask").textContent));
-function advance(save) {
-  stopRec();
-  const [k] = st.steps[st.i];
-  st.fields[k] = save ? formalize($("#a").value) : "";
-  if (st.i < st.steps.length - 1) { st.i++; ask(); } else build();
-}
-$("#next").addEventListener("click", () => advance(true));
-$("#skip").addEventListener("click", () => advance(false));
-
-// ───────── 3. 결과 ─────────
-function build() {
-  st.result = runBasic({ question: st.q, dept: st.dept, fields: st.fields, targetSec: TARGET });
-  renderResult();
-  show("s3");
-}
-const STOP = /^(저는|제가|저도|친구|친구가|친구와|친구는|따로|계속|먼저|같이|함께|좀|다시|처음엔|처음에|나중에|그때|정말|너무|많이|조금|그래서|그리고|이유|경험|생각)$/;
-const VERBISH = /(서|고|는데|니다|다|요|게|며|지|어|아|던|은|는|한|된|면|도록|려고)$/;
-function keywords() {
-  const out = [];
-  for (const [k] of st.steps) {
-    const words = (st.fields[k] || "").replace(/[.,]/g, " ").split(/\s+/)
-      .map((w) => w.replace(/(에서|으로|에게|이랑|하고|까지|부터|을|를|이|가|은|는|와|과|의|에|로|도)$/, ""))
-      .filter((w) => w.length >= 2 && !STOP.test(w) && !VERBISH.test(w) && !/(하|되|있|없|했|됐|싶)$/.test(w));
-    if (words[0] && !out.includes(words[0])) out.push(words[0]);
-  }
-  return out.slice(0, 3);
-}
-function renderResult() {
-  const r = st.result;
-  $("#score").textContent = r.score;
-  $("#gauge").style.setProperty("--p", r.score);
-  $("#grade").textContent = r.grade;
-  $("#top").textContent = r.issues[0] ? `보완하면 좋은 점: ${r.issues[0].title}. ${r.issues[0].fix}` : "큰 감점 요인이 없어요.";
-  $("#answer").value = r.answer;
-  $("#kw").innerHTML = keywords().map((k) => `<span class="kw-chip">${esc(k)}</span>`).join("");
-  $("#deep").hidden = !canDeep();
-}
-$("#listen").addEventListener("click", () => speak($("#answer").value));
-$("#deep").addEventListener("click", async (e) => {
-  const b = e.currentTarget; b.disabled = true; b.textContent = "AI 다듬는 중…";
-  const p = { question: st.q, university: "", department: st.dept, track: "", year: "", fields: st.fields, targetSec: TARGET, type: st.type, basicAnswer: st.result.answer, draft: "" };
-  try { st.result = fromAI(await callDeep(p, (() => { try { return JSON.parse(localStorage.getItem("coach.code") || '""'); } catch { return ""; } })()), st.result, p); renderResult(); }
-  catch (err) { alert(`AI 다듬기 실패: ${err.message}`); }
-  b.disabled = false; b.textContent = "AI로 더 다듬기";
-});
-
-// ───────── 4. 말하기 연습 ─────────
 let tick = null;
 function startTimer() {
-  st.practiceStart = Date.now();
-  clearInterval(tick);
+  st.startAt = Date.now(); clearInterval(tick);
   tick = setInterval(() => {
-    const s = Math.floor((Date.now() - st.practiceStart) / 1000);
+    const s = Math.floor((Date.now() - st.startAt) / 1000);
     $("#timer").textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
     $("#timer").classList.toggle("over", s > TARGET + 5);
   }, 250);
 }
-function stopTimer() { clearInterval(tick); tick = null; }
-const elapsed = () => (st.practiceStart ? Math.round((Date.now() - st.practiceStart) / 1000) : secondsOf($("#p").value));
+function stopTimer() { clearInterval(tick); tick = null; st.spoken = st.startAt ? Math.round((Date.now() - st.startAt) / 1000) : 0; st.startAt = 0; }
 
-$("#toPractice").addEventListener("click", async () => {
-  st.result.answer = $("#answer").value;
-  $("#tgt").textContent = TARGET;
-  $("#pq").textContent = st.q;
-  $("#kw2").innerHTML = $("#kw").innerHTML;
-  $("#p").value = ""; $("#fb").hidden = true; $("#fuBox").hidden = true; $("#endBox").hidden = true; $("#timer").textContent = "00:00";
-  st.practiceStart = 0;
-  show("s4");
-  await speak(`질문 드리겠습니다. ${st.q}`);
-});
-function gradePractice() {
-  const spoken = st.practiceStart ? Math.round((Date.now() - st.practiceStart) / 1000) : 0;
-  const sec = spoken >= 3 ? spoken : secondsOf($("#p").value); // 직접 입력한 경우 글자 수로 추정
-  const fb = practiceFeedback({ transcript: $("#p").value, seconds: sec, target: TARGET, keywords: keywords() });
-  $("#fb").hidden = false;
-  $("#fb").innerHTML = `<b>말하기 ${fb.score}점</b><ul>${fb.tips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
-  const list = st.result.followups;
-  st.fu = list[Math.floor(Math.random() * list.length)]?.q || "방금 말한 내용을 뒷받침하는 다른 경험이 있나요?";
-  $("#fuQ").textContent = st.fu;
-  $("#fuBox").hidden = false;
-  $("#f").value = "";
-  speak(`좋습니다. 하나 더 여쭤볼게요. ${st.fu}`).then(() => { st.fuStart = Date.now(); });
+// ───────── 1. 질문 ─────────
+const ROLE2DEPT = [[/간호사/, "간호학과"], [/임상병리사/, "임상병리학과"], [/물리치료사/, "물리치료학과"], [/작업치료사/, "작업치료학과"], [/방사선사/, "방사선학과"], [/치과위생사/, "치위생학과"], [/응급구조사/, "응급구조학과"], [/교사|선생님/, "교육학과"], [/사회복지사/, "사회복지학과"]];
+function setQuestion(q) {
+  st.q = q; st.type = detectType(q); st.history = [];
+  const auto = (ROLE2DEPT.find(([re]) => re.test(q)) || [])[1];
+  if (auto) st.dept = auto;
+  $("#dept").value = st.dept;
+  ["#qShow", "#qShow2", "#qShow3"].forEach((s) => ($(s).textContent = `Q. ${q}`));
+  $("#a").value = ""; $("#timer").textContent = "00:00"; st.spoken = 0;
+  setLabel("a", "내 답변 말하기");
 }
-$("#grade1").addEventListener("click", () => { stopRec(); stopTimer(); gradePractice(); });
-$("#grade2").addEventListener("click", () => {
+$("#go1").addEventListener("click", () => {
   stopRec();
-  const sec = st.fuStart ? Math.round((Date.now() - st.fuStart) / 1000) : secondsOf($("#f").value);
-  const tips = followupFeedback({ transcript: $("#f").value, seconds: Math.min(sec, secondsOf($("#f").value) + 15) });
-  $("#fb2").hidden = false;
-  $("#fb2").innerHTML = `<ul>${tips.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>`;
-  $("#endBox").hidden = false;
+  const q = $("#q").value.trim();
+  if (q.length < 6) { speak("면접 질문을 먼저 말해 주세요."); $("#q").focus(); return; }
+  setQuestion(q);
+  show("s2");
+  speak("이 질문에 본인은 어떻게 답하시겠어요?");
 });
-$("#retry").addEventListener("click", () => { $("#toPractice").click(); });
-$("#again").addEventListener("click", () => { $("#q").value = ""; $("#bank").value = ""; show("s1"); });
+$("#dept").addEventListener("change", () => { st.dept = $("#dept").value.trim(); ls.set("voice.dept", st.dept); });
+
+// ───────── 2. 채점 ─────────
+$("#gradeBtn").addEventListener("click", () => {
+  stopRec(); if (st.startAt) stopTimer();
+  const t = $("#a").value.trim();
+  if (t.replace(/\s/g, "").length < 15) { speak("답변을 조금 더 말해 주세요."); return; }
+  const seconds = st.spoken >= 3 ? st.spoken : secondsOf(formalize(t));
+  grade(t, seconds);
+});
+
+function grade(transcript, seconds) {
+  const sc = scoreSpoken({ transcript, question: st.q, dept: st.dept, type: st.type, seconds, target: TARGET });
+  const im = improveAnswer({ transcript, question: st.q, dept: st.dept, type: st.type, target: TARGET });
+  st.history.push(sc.total);
+  render({ total: sc.total, dims: sc.dims, problem: sc.problem, answer: im.answer, changes: im.changes, label: st.history.length > 1 ? "다시 말한 답변" : "현재 답변" });
+  show("s3");
+  markUsed();
+  if (canDeep()) deep(transcript);
+}
+
+function render({ total, dims, problem, answer, changes, label }) {
+  $("#scoreLbl").textContent = label;
+  $("#score").textContent = total;
+  $("#history").innerHTML = st.history.length > 1 ? st.history.map((v, i) => (i ? `<span>→</span><b>${v}</b>` : `<span>${v}</span>`)).join("") : "";
+  $("#dims").innerHTML = Object.entries(dims).map(([k, v]) => `<div class="dim"><span>${esc(k)}</span><span class="bar"><i class="${v < 60 ? "low" : ""}" style="width:${Math.max(3, v)}%"></i></span><span class="v">${v}</span></div>`).join("");
+  $("#problem").textContent = problem;
+  $("#better").value = answer;
+  $("#changes").innerHTML = (changes || []).map((c) => `<li>${esc(c)}</li>`).join("");
+  $("#offer").hidden = !(st.history.length >= 2 || used().length >= FREE_QUESTIONS);
+  $("#offerPrice").textContent = "5문항 4,900원";
+  $("#offerNote").textContent = CONFIG.beta ? "지금은 베타 기간이라 무료로 계속하실 수 있습니다." : "결제 기능은 준비 중입니다.";
+}
+
+async function deep(transcript) {
+  const s = $("#aiState");
+  s.hidden = false; s.textContent = "AI 면접관이 다시 듣고 있어요… (최대 1~2분)";
+  try {
+    const r = await callVoice({ question: st.q, transcript, dept: st.dept, type: st.type }, ls.get("coach.code", ""));
+    st.history[st.history.length - 1] = r.before.total;
+    render({ total: r.before.total, dims: toDims(r.before.scores), problem: r.before.biggest_problem, answer: r.answer, changes: [...r.changes, `개선 답변 예상 점수 ${r.after.total}점 (면접관 평가 ${r.rounds}회 반복)`], label: st.history.length > 1 ? "다시 말한 답변" : "현재 답변" });
+    s.textContent = "AI 면접관 평가로 바뀌었습니다.";
+  } catch (err) {
+    s.textContent = `AI 면접관 평가를 못 했어요(${err.message}). 기본 평가를 보여 드립니다.`;
+  }
+}
+
+// ───────── 2b. 답변 만들어줘 ─────────
+$("#makeBtn").addEventListener("click", () => {
+  stopRec();
+  st.guided = { steps: SPOKEN[st.type] || SPOKEN.general, i: 0, fields: {} };
+  show("s2b"); ask();
+});
+function ask() {
+  const g = st.guided, [, text] = g.steps[g.i];
+  $("#dots").innerHTML = g.steps.map((_, k) => `<i class="${k <= g.i ? "on" : ""}"></i>`).join("");
+  $("#ask").textContent = text; $("#g").value = "";
+  setLabel("g", "있었던 일 그대로 말하기");
+  speak(text);
+}
+function advance(save) {
+  stopRec();
+  const g = st.guided;
+  g.fields[g.steps[g.i][0]] = save ? formalize($("#g").value) : "";
+  if (g.i < g.steps.length - 1) { g.i++; ask(); return; }
+  const r = runBasic({ question: st.q, dept: st.dept, fields: g.fields, targetSec: TARGET });
+  render({ total: r.score, dims: dimsFromBasic(r), problem: r.issues[0] ? `${r.issues[0].title}. ${r.issues[0].fix}` : "큰 감점 요인이 없어요. 이제 직접 말해 보세요.", answer: r.answer, changes: ["말해 준 경험으로 답변을 만들었습니다. 이제 이 답변을 보고 직접 말해 보세요."], label: "만든 답변" });
+  show("s3"); markUsed();
+}
+function dimsFromBasic(r) {
+  const c = Object.fromEntries(r.cats.map((x) => [x.name, Math.round((100 * x.got) / x.max)]));
+  return { "질문 적합성": c["질문 요구 충족"], "구체성": c["구체성(나의 행동)"], "차별성": Math.round((c["진정성(평범한 표현 없음)"] + c["성찰(배운 점)"]) / 2), "전공적합성": c["전공 연결"], "전달력": Math.round((c["말하기 시간"] + c["두괄식(첫 문장 결론)"]) / 2) };
+}
+$("#next").addEventListener("click", () => advance(true));
+$("#skip").addEventListener("click", () => advance(false));
+
+// ───────── 3. 결과 → 다시/다음 ─────────
+$("#listen").addEventListener("click", () => speak($("#better").value));
+$("#again").addEventListener("click", () => {
+  $("#a").value = ""; $("#timer").textContent = "00:00"; st.spoken = 0; setLabel("a", "개선 답변을 떠올리며 다시 말하기");
+  show("s2");
+  speak("좋아요. 개선 답변을 떠올리면서 다시 말해 보세요.");
+});
+$("#nextQ").addEventListener("click", () => {
+  if (!gate()) return;
+  const fu = QTYPES[st.type].followups;
+  const q = fu[st.followIdx % fu.length]?.q || "방금 말한 내용을 뒷받침하는 다른 경험이 있나요?";
+  st.followIdx++;
+  const keepType = st.type;
+  setQuestion(q);
+  if (st.type === "general") st.type = keepType;
+  show("s2");
+  speak(`다음 질문입니다. ${q}`);
+});
+$("#offerBtn").addEventListener("click", () => { if (CONFIG.beta) { $("#offer").hidden = true; $("#nextQ").click(); } });
+
+function markUsed() { const u = used(); if (!u.includes(st.q)) { u.push(st.q); ls.set("voice.used", u); } }
+function gate() {
+  if (CONFIG.beta || used().length < FREE_QUESTIONS) return true;
+  $("#offer").hidden = false; $("#offer").scrollIntoView({ behavior: "smooth" });
+  return false;
+}

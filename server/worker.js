@@ -3,7 +3,8 @@
 // 배포 방법은 server/README.md 참고.
 
 import Anthropic from "@anthropic-ai/sdk";
-import { buildRequest, validatePayload } from "../js/coach/prompt.js";
+import { buildRequest, validatePayload, MODEL } from "../js/coach/prompt.js";
+import { voiceLoop, validateVoice } from "../js/coach/voice-loop.js";
 
 function cors(env, origin) {
   const allowed = (env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -40,11 +41,35 @@ export default {
       return json({ error: "이 대학 문항은 이 서비스에서 제공하지 않습니다." }, 403, headers);
     }
 
+    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
+
+    // 말로 하는 면접 코치: 평가 → 재작성 → 재평가 루프
+    if (body.mode === "voice") {
+      const bad = validateVoice(body.payload);
+      if (bad) return json({ error: bad }, 400, headers);
+      try {
+        const call = async (system, user, schema, effort) => {
+          const msg = await client.beta.messages.create({
+            model: MODEL, max_tokens: 16000,
+            betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+            output_config: { effort, format: { type: "json_schema", schema } },
+            system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+            messages: [{ role: "user", content: user }],
+          });
+          if (msg.stop_reason === "refusal" || msg.stop_reason === "max_tokens") throw new Error(msg.stop_reason);
+          return JSON.parse(msg.content.filter((b) => b.type === "text").map((b) => b.text).join(""));
+        };
+        return json({ result: await voiceLoop(call, body.payload) }, 200, headers);
+      } catch (err) {
+        if (err instanceof Anthropic.RateLimitError) return json({ error: "요청이 많습니다. 잠시 후 다시 시도해 주세요." }, 429, headers);
+        return json({ error: "AI 면접관 평가를 완료하지 못했습니다." }, 502, headers);
+      }
+    }
+
     const problem = validatePayload(body.payload);
     if (problem) return json({ error: problem }, 400, headers);
 
     const { system, user, schema, model } = buildRequest(body.payload);
-    const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
     try {
       const msg = await client.beta.messages.create({
         model,

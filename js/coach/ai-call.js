@@ -1,7 +1,8 @@
 // AI 심층형 호출(학생 화면·교수 작업실 공통): 서버가 설정되어 있으면 서버로,
 // 없으면 이 브라우저에 저장된 교수용 API 키로 직접 호출합니다.
 import { CONFIG } from "./config.js";
-import { buildRequest } from "./prompt.js";
+import { buildRequest, MODEL } from "./prompt.js";
+import { voiceLoop } from "./voice-loop.js";
 import { evaluate, speakingScript } from "./engine.js";
 
 const devKey = () => { try { return JSON.parse(localStorage.getItem("adm.ai.v1") || "{}").apiKey || ""; } catch { return ""; } };
@@ -54,4 +55,33 @@ export function fromAI(ai, basic, p) {
     script: ai.script || speakingScript(ai.final_answer, []),
     coaching: ai.coaching?.length ? ai.coaching : basic.coaching,
   };
+}
+
+// 말로 하는 면접 코치: AI 면접관 루프(서버가 있으면 서버에서, 없으면 교수용 키로 브라우저에서)
+export async function callVoice(payload, accessCode = "") {
+  if (CONFIG.aiEndpoint) {
+    const r = await fetch(CONFIG.aiEndpoint, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mode: "voice", payload, accessCode }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || `서버 오류(${r.status})`);
+    return data.result;
+  }
+  const { loadSdk } = await import("../ai.js");
+  const Anthropic = await loadSdk();
+  const client = new Anthropic({ apiKey: devKey(), dangerouslyAllowBrowser: true });
+  const call = async (system, user, schema, effort) => {
+    const msg = await client.beta.messages.create({
+      model: MODEL, max_tokens: 16000,
+      betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+      output_config: { effort, format: { type: "json_schema", schema } },
+      system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
+      messages: [{ role: "user", content: user }],
+    });
+    if (msg.stop_reason === "refusal") throw new Error("AI가 이 요청을 처리하지 않았습니다.");
+    if (msg.stop_reason === "max_tokens") throw new Error("응답이 길어 중단되었습니다.");
+    return JSON.parse(msg.content.filter((b) => b.type === "text").map((b) => b.text).join(""));
+  };
+  return voiceLoop(call, payload);
 }

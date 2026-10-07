@@ -36,3 +36,26 @@
 .row2 { display: flex; }
 .row2 > * { flex: 1; }
 .row2 > .primary { flex: 2; }
+.qline { margin: 0 0 6px; font-weight: 700; color: var(--muted); font-size: .92rem; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.link { background: none; border: 0; color: var(--brand); text-decoration: underline; margin-top: 12px; padding: 4px; font-size: .95rem; }
+.deptline { display: flex; align-items: center; gap: 8px; margin-top: 18px; font-size: .8rem; color: var(--muted); }
+.deptline input { flex: 1; font-size: .85rem; padding: 6px 10px; }
+.bigscore { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin-top: 6px; }
+.bigscore b { font-size: 3.2rem; font-weight: 800; color: var(--brand); line-height: 1; font-variant-numeric: tabular-nums; }
+.bigscore span { color: var(--muted); }
+.history { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 10px; font-variant-numeric: tabular-nums; }
+.history span { font-size: .85rem; color: var(--muted); }
+.history b { color: var(--ok); }
+.dims { display: grid; gap: 6px; text-align: left; margin: 8px 0 12px; }
+.dim { display: grid; grid-template-columns: 6.5em 1fr 2.2em; gap: 8px; align-items: center; font-size: .85rem; }
+.dim .bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.dim .bar i { display: block; height: 100%; background: var(--brand); }
+.dim .bar i.low { background: var(--dept); }
+.dim .v { text-align: right; font-variant-numeric: tabular-nums; }
+.problem { text-align: left; background: var(--warn-bg); color: var(--warn-ink); border-radius: 12px; padding: 10px 14px; }
+.problem p { margin: 4px 0 0; }
+.h-better { font-size: 1.05rem; text-align: left; margin: 18px 0 0; }
+.changes { text-align: left; font-size: .82rem; color: var(--muted); padding-left: 1.1rem; margin: 6px 0 0; }
+.offer { margin-top: 20px; border: 2px solid var(--brand); border-radius: 14px; padding: 14px; background: var(--brand-soft); }
+.offer h3 { margin: 0 0 4px; }
+.offer p { margin: 0; }

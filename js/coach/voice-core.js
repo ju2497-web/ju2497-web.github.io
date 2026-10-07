@@ -75,6 +75,7 @@ export function formalize(t) {
     .replace(/([았었였했])거든요/g, "$1습니다").replace(/있거든요/g, "있습니다").replace(/거든요/g, "습니다")
     .replace(/([가-힣])대요/g, (m, c) => (jong(c) === 20 ? `${c}다고 했습니다` : m))
     .replace(/([가-힣])어요/g, (m, c) => (jong(c) === 20 ? `${c}습니다` : m))
+    .replace(/([가-힣])니까요/g, "$1기 때문입니다")
     .replace(/(이에요|예요)/g, "입니다").replace(/해요/g, "합니다").replace(/돼요/g, "됩니다")
     .replace(/있어요/g, "있습니다").replace(/없어요/g, "없습니다").replace(/같아요/g, "같습니다").replace(/싶어요/g, "싶습니다")
     .replace(/봐요/g, "봅니다").replace(/줘요/g, "줍니다").replace(/와요/g, "옵니다").replace(/거예요/g, "것입니다")
@@ -115,4 +116,97 @@ export function followupFeedback({ transcript, seconds }) {
   else tips.push("‘제가 ~했습니다’처럼 실제 행동을 하나 넣어 보세요.");
   if (/모르겠|잘 모르/.test(t)) tips.push("모를 때는 ‘아는 부분까지 말하고, 입학 후 더 공부하겠다’로 마무리하면 감점이 적어요.");
   return tips;
+}
+
+// ───────── 말한 답변 채점(무료 엔진) ─────────
+import { evaluate, deptProfile, secondsOf, fitLength, joinSentences } from "./engine.js";
+import { QTYPES } from "./framework.js";
+
+const CONCRETE = /[0-9]|번|명|시간|분|매일|주일|개월|학년|동아리|봉사|실험|탐구|과제|프로젝트|수업|보고서|병원|모둠|조별|대회/;
+const ACTED = { test: (s) => [...s.matchAll(/([가-힣])습니다/g)].some((m) => { const c = m[1].charCodeAt(0) - 0xac00; return c >= 0 && c % 28 === 20; }) };
+const splitSentences = (t) => {
+  const parts = t.split(/(?<=[.?!])\s+/).filter(Boolean)
+    .flatMap((p) => p.split(/\s(?=(?:그래서|그런데|근데|그리고|왜냐하면|그 결과|결국|예를 들어|특히)\s)/))
+    .map((s) => s.trim().replace(/^(그리고|근데|그런데)\s+/, "")).filter((s) => s.length > 1);
+  return parts.map((s) => (/[.?!]$/.test(s) ? s : s + "."));
+};
+const isConcrete = (s) => CONCRETE.test(s) && ACTED.test(s);
+const isCliche = (s) => CLICHES.some(([re]) => re.test(s));
+
+export function scoreSpoken({ transcript, question, dept, type, seconds, target = 50 }) {
+  const formal = formalize(transcript);
+  const ev = evaluate(formal, question, dept, target, type);
+  const cat = Object.fromEntries(ev.cats.map((c) => [c.name, c.got / c.max]));
+  const sents = splitSentences(formal);
+  const concreteCount = sents.filter(isConcrete).length;
+  const cliches = sents.filter(isCliche).length;
+  const fillers = countFillers(transcript);
+  const sec = seconds || secondsOf(formal);
+  const timeFit = Math.max(0, 1 - Math.max(0, Math.abs(sec - target) - 5) / 25);
+  const dims = {
+    "질문 적합성": Math.round(100 * (0.7 * cat["질문 요구 충족"] + 0.3 * cat["두괄식(첫 문장 결론)"])),
+    "구체성": Math.round(100 * cat["구체성(나의 행동)"]),
+    "차별성": Math.max(0, Math.min(100, 40 + concreteCount * 22 - cliches * 25 + (cat["성찰(배운 점)"] >= 1 ? 15 : 0))),
+    "전공적합성": Math.round(100 * cat["전공 연결"]),
+    "전달력": Math.max(0, Math.round(100 * (0.6 * timeFit + 0.4 * cat["두괄식(첫 문장 결론)"])) - Math.max(0, fillers - 2) * 6),
+  };
+  const total = Math.round(Object.values(dims).reduce((a, b) => a + b, 0) / 5);
+  // 첫 20초(약 100음절)가 일반론인지
+  let acc = "", first20 = [];
+  for (const s of sents) { if (acc.replace(/\s/g, "").length >= 100) break; acc += s; first20.push(s); }
+  const genericStart = !first20.some(isConcrete) && sents.some(isConcrete);
+  const problem = pickProblem({ dims, genericStart, cliches, concreteCount, fillers, sec, target, ev });
+  return { total, dims, problem, formal, seconds: sec, fillers };
+}
+
+function pickProblem({ dims, genericStart, cliches, concreteCount, fillers, sec, target, ev }) {
+  if (ev.issues.some((i) => i.cat === "블라인드")) return ev.issues.find((i) => i.cat === "블라인드").title + ". 출신 학교·가족 직업·이름은 말하지 않습니다.";
+  if (genericStart) return "첫 20초가 너무 일반적입니다. 면접관이 기억할 만한 내 경험을 앞으로 옮겼습니다.";
+  if (!concreteCount) return "결론은 있지만 다른 지원자와 구별되는 내 경험이 없습니다. 실제로 했던 일 하나를 넣어야 합니다.";
+  if (cliches) return "누구나 하는 표현이 들어 있어 면접관 기억에 남지 않습니다. 그 표현을 내 경험 문장으로 바꿨습니다.";
+  const low = Object.entries(dims).sort((a, b) => a[1] - b[1])[0];
+  const msg = {
+    "질문 적합성": "질문이 요구한 것을 다 답하지 않았습니다. 질문의 하위 질문(이유·방법 등)을 한 문장씩 채웠습니다.",
+    "구체성": "‘내가 한 행동’이 부족합니다. ‘저는 ~했습니다’ 문장을 늘렸습니다.",
+    "차별성": "배운 점이 분명하지 않아 평범하게 들립니다. 경험에서 배운 점을 한 문장으로 정리했습니다.",
+    "전공적합성": "지원 학과와의 연결이 약합니다. 마지막 문장을 전공·직업과 이었습니다.",
+    "전달력": sec > target + 5 ? `${sec}초로 깁니다. 45~55초로 줄였습니다.` : fillers > 2 ? "‘음·어’ 같은 군말이 많습니다. 문장 사이에 잠깐 멈추세요." : `${sec}초로 짧습니다. 장면 하나를 더 말해 보세요.`,
+  }[low[0]];
+  return msg;
+}
+
+// ───────── 학생 답변 재구성(무료 엔진) ─────────
+export function improveAnswer({ transcript, question, dept, type, target = 50 }) {
+  const formal = formalize(transcript);
+  const sents = splitSentences(formal);
+  const changes = [];
+  const dp = deptProfile(dept);
+  const kept = sents.filter((s) => { if (isCliche(s)) { changes.push(`진부한 표현 삭제: “${s.slice(0, 24)}…”`); return false; } return true; });
+  const concrete = kept.filter(isConcrete);
+  const learnedS = kept.filter((s) => !isConcrete(s) && /배웠|깨달|알게 되/.test(s));
+  const general = kept.filter((s) => !concrete.includes(s) && !learnedS.includes(s));
+  const conclusion = general.find((s) => /생각|중요|역량|입니다|합니다/.test(s)) || general[0];
+  const parts = [];
+  if (conclusion) parts.push({ t: conclusion });
+  else parts.push({ t: `${"[✎ 질문에 대한 내 결론 한 문장]"}.` });
+  const reason = general.find((s) => s !== conclusion && /때문|이유/.test(s));
+  if (reason) parts.push({ t: reason });
+  if (concrete.length) {
+    if (sents.indexOf(concrete[0]) > sents.indexOf(conclusion ?? sents[0]) + 1) changes.push("기억에 남는 내 경험을 앞으로 옮겼습니다.");
+    concrete.forEach((s) => parts.push({ t: s }));
+  } else {
+    parts.push({ t: "[✎ 이 생각이 드러난 내 경험 한 가지: 언제·무엇을·어떻게].", });
+    changes.push("경험 문장이 없어 채울 자리를 만들었습니다.");
+  }
+  general.filter((s) => s !== conclusion && s !== reason).slice(0, 1).forEach((s) => parts.push({ t: s, opt: true }));
+  learnedS.forEach((s) => parts.push({ t: s }));
+  if (!learnedS.length && concrete.length) { parts.push({ t: "[✎ 이 경험에서 배운 점 한 문장]." }); changes.push("배운 점을 말할 자리를 만들었습니다. 이 한 문장이 차별성을 올립니다."); }
+  const joined = parts.map((p) => p.t).join(" ");
+  if (!dp.words.some((w) => joined.includes(w))) {
+    parts.push({ t: dp.words.includes("환자") ? `이 태도를 환자 곁에서 일하는 ${dp.role}의 일로 이어 가겠습니다.` : `이 태도를 ${dp.role}의 일에서도 지켜 가겠습니다.` });
+    changes.push("마지막에 전공·직업과의 연결을 넣었습니다.");
+  }
+  const { text, dropped } = fitLength(parts, target);
+  if (dropped.length) changes.push(`${target}초에 맞추려고 덜 중요한 문장 ${dropped.length}개를 뺐습니다.`);
+  return { answer: text || joinSentences(parts), changes };
 }
