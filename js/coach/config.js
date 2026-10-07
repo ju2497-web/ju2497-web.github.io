@@ -12,4 +12,15 @@ export const CONFIG = {
   blockedUniversities: [],
   // 문항 DB 파일
   questionBankUrl: "data/questions.json",
+  // 숨고 판매 상품(숨고 응답기 soomgo.html 견적 문안에 들어갑니다). 금액은 교수님이 정하세요.
+  soomgo: {
+    plans: [
+      { key: "simple", name: "간편형", price: 29000, desc: "공개문항 전체 답변 + 문항별 질문 의도 + 예상 꼬리질문 3개" },
+      { key: "precise", name: "정밀형", price: 49000, desc: "간편형 + 학생부 반영 + 말하기 대본·연습 포인트 + 교수 총평" },
+    ],
+    zoom: { name: "줌 모의면접(선택)", price: 40000, minutes: 30, desc: "실제 면접처럼 질문·꼬리질문 후 바로 피드백" },
+    deliveryHours: 48,          // 자료를 받은 뒤 답변 전달까지
+    quoteCash: 5090,            // 견적 1건 발송 캐시(2026-09 실측)
+    minDaysBeforeInterview: 2,  // 면접까지 이보다 적게 남으면 '보류'로 판정
+  },
 };

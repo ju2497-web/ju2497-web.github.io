@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>숨고 응답기</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%92%AC%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/coach.css">
+  <link rel="stylesheet" href="css/soomgo.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">💬</span>
+      <div><h1>숨고 응답기</h1>
+        <p class="sub">면접 답변 요청 → 보낼지 판정 → 맞춤 견적 → 고용 후 자료 요청 → 답장은 <a href="studio.html">작업실</a>로</p></div>
+    </div>
+  </header>
+
+  <main class="coach sg">
+    <section class="card">
+      <h2><span class="num">1</span> 요청 내용 붙여넣기</h2>
+      <p class="hint">숨고 요청서의 고객 답변(대학·학과·면접일·요청 사항)을 그대로 붙여 넣으세요.</p>
+      <textarea id="req" rows="5" placeholder="예) 가천대 간호학과 학생부종합 면접 준비 도와주세요. 면접은 10월 25일이고 공개 문항 있어요. 줌으로 연습도 하고 싶어요"></textarea>
+      <div class="actions"><button id="btnRun" class="primary big">판정 · 견적 만들기</button><button id="btnClear" class="ghost small">지우기</button></div>
+    </section>
+
+    <section id="out" hidden>
+      <div class="card">
+        <div class="verdict"><span id="verdict" class="vbadge"></span><div id="why"></div></div>
+        <div class="form cols4">
+          <label>대학<input id="fUniv"></label>
+          <label>학과<input id="fDept"></label>
+          <label>전형<input id="fTrack"></label>
+          <label>면접일<input id="fDate" placeholder="예) 10월 25일"></label>
+        </div>
+        <p id="cash" class="hint"></p>
+      </div>
+
+      <div class="card">
+        <div class="row-between"><h2><span class="num">2</span> 견적 메시지 <small id="qLen"></small></h2>
+          <div class="actions tight"><button class="primary small" data-copy="quote">복사</button><button id="btnSent" class="ghost small">견적 보냄 +1</button></div></div>
+        <textarea id="quote" rows="18"></textarea>
+        <p class="hint">숨고는 외부 링크·연락처 공유를 제한하므로 문안에 링크·전화번호를 넣지 마세요. 세부 정책은 고수센터에서 확인하세요.</p>
+      </div>
+
+      <div class="card">
+        <div class="row-between"><h2><span class="num">3</span> 고용되면: 자료 요청(①~⑦)</h2>
+          <div class="actions tight"><button class="primary small" data-copy="materials">복사</button><button id="btnHired" class="ghost small">고용됨 +1</button></div></div>
+        <textarea id="materials" rows="14"></textarea>
+        <p class="hint">학생이 양식을 채워 답장하면, 그 답장을 통째로 복사해 <a href="studio.html">작업실</a>의 [불러오기]에 붙여 넣으세요. 문항별 답변이 자동으로 만들어집니다.</p>
+      </div>
+
+      <div class="card">
+        <div class="row-between"><h2><span class="num">4</span> 미열람·무응답 후속(1회만)</h2>
+          <button class="ghost small" data-copy="followup">복사</button></div>
+        <textarea id="followup" rows="4"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>자주 묻는 질문 바로 답하기</h2>
+      <div id="faq" class="faq"></div>
+    </section>
+
+    <section class="card">
+      <div class="row-between"><h2>성사율 기록 <small>가격 결정용</small></h2><button id="btnResetLog" class="ghost small danger">기록 초기화</button></div>
+      <div id="stats" class="stats"></div>
+      <p id="beHint" class="hint"></p>
+    </section>
+    <span id="toast" class="toast floating"></span>
+  </main>
+  <script type="module" src="js/coach/soomgo-app.js"></script>
+</body>
+</html>

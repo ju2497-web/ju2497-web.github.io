@@ -1,0 +1,18 @@
+.sg { max-width: 860px; }
+#out { display: grid; gap: 16px; }
+.verdict { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 12px; }
+.vbadge { font-weight: 800; font-size: 1.1rem; padding: 6px 14px; border-radius: 10px; white-space: nowrap; }
+.vbadge.보냄 { background: #e3f6ea; color: #13703a; }
+.vbadge.보류 { background: var(--warn-bg); color: var(--warn-ink); }
+.vbadge.거절 { background: #fde8e6; color: var(--danger); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .vbadge.보냄 { background: #123222; color: var(--ok); } :root:not([data-theme="light"]) .vbadge.거절 { background: #3a1714; } }
+#why ul { margin: 0; padding-left: 1.1rem; font-size: .88rem; }
+#why .plus { color: var(--ok); }
+.form.cols4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+@media (max-width: 700px) { .form.cols4 { grid-template-columns: 1fr 1fr; } }
+.faq { display: grid; gap: 8px; }
+.faq details { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.faq summary { cursor: pointer; font-weight: 500; }
+.faq p { margin: 6px 0; font-size: .9rem; white-space: pre-wrap; }
+.toast.floating { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 999px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.floating.show { opacity: 1; }

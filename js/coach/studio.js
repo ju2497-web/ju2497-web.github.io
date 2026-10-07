@@ -3,6 +3,7 @@ import { decodeApplication, assignExperiences, buildForQuestion, applicationCont
 import { evaluate, speakingScript, secondsOf } from "./engine.js";
 import { validatePayload } from "./prompt.js";
 import { canDeep, needsCode, callDeep, fromAI } from "./ai-call.js";
+import { parseChatReply } from "./soomgo.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -59,8 +60,11 @@ function open(app) {
 }
 function select(id) { cur = store[id] || null; renderList(); render(); }
 $("#btnLoad").addEventListener("click", () => {
-  try { open(decodeApplication($("#codeIn").value)); $("#codeIn").value = ""; }
-  catch (e) { alert(`불러오기 실패: ${e.message}`); }
+  const text = $("#codeIn").value;
+  let app;
+  try { app = decodeApplication(text); }
+  catch { try { app = parseChatReply(text); } catch (e) { alert(`불러오기 실패: 신청 코드(IVAPP1:…)나 ①~⑦ 양식 답장을 붙여 넣어 주세요.`); return; } }
+  open(app); $("#codeIn").value = "";
 });
 $("#fileIn").addEventListener("change", async (e) => {
   try { open(JSON.parse(await e.target.files[0].text())); } catch (err) { alert(`파일을 읽지 못했습니다: ${err.message}`); }
