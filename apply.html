@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>면접답변 제작 신청서</title>
+  <meta name="description" content="대학·학과와 공개 면접 문항, 실제 있었던 경험만 알려 주면 면접관의 질문 의도에 맞는 답변으로 구성해 드리는 5분 신청서">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/coach.css">
+  <link rel="stylesheet" href="css/apply.css">
+</head>
+<body>
+  <main class="coach apply">
+    <section class="card intro">
+      <p class="eyebrow">면접답변 제작 신청서 · 약 5분</p>
+      <h1>대학·학과와 공개 면접문항을 알려 주세요.</h1>
+      <p class="lead">그리고 <b>문장을 쓰려고 하지 마세요.</b> 실제 있었던 경험만 알려 주시면, 나머지는 면접관의 질문 의도에 맞게 구성해 드립니다.</p>
+      <ul class="promise">
+        <li>질문의 평가 의도 → 지원자 경험 → 차별화된 답변 → 예상 꼬리질문 → 답변 보완 순서로 제작합니다.</li>
+        <li>허위 경험이나 사실과 다른 내용은 답변에 넣지 않습니다.</li>
+      </ul>
+      <div class="progress"><div id="bar"></div></div>
+      <p id="progressText" class="hint"></p>
+    </section>
+
+    <form id="f" novalidate>
+      <!-- 1 지원정보 -->
+      <section class="card">
+        <h2><span class="num">1</span> 지원정보</h2>
+        <div class="form cols3">
+          <label>대학<input name="university" list="univList" placeholder="예) ○○대학교" required></label>
+          <label>학과<input name="department" list="deptList" placeholder="예) 간호학과" required></label>
+          <label>전형<input name="track" placeholder="예) 학생부종합(면접형)"></label>
+        </div>
+        <datalist id="univList"></datalist><datalist id="deptList"></datalist>
+      </section>
+
+      <!-- 2 공개문항 -->
+      <section class="card">
+        <h2><span class="num">2</span> 공개 면접문항</h2>
+        <div id="bankHit" class="banner" hidden></div>
+        <p class="hint">대학이 공개한 문항을 그대로 붙여 넣어 주세요. 번호가 있으면 문항별로 자동으로 나눕니다. 캡처·파일만 있다면 신청 후 메시지로 함께 보내 주세요.</p>
+        <textarea name="questionsRaw" rows="6" placeholder="1. 친구나 다른 사람과 의견 차이로 갈등을 겪었던 경험이 있다면…&#10;2. 간호사가 환자의 안전을 지키기 위해 갖추어야 할 역량은…"></textarea>
+        <label class="inline">문항 출처(선택)<input name="questionSource" placeholder="예) 입학처 홈페이지 기출 공개 / 선행학습 영향평가 보고서"></label>
+        <p id="qCount" class="hint"></p>
+      </section>
+
+      <!-- 3 학생자료 -->
+      <section class="card">
+        <h2><span class="num">3</span> 학생자료 <small>정밀형부터 활용 · 간편형은 비워도 됩니다</small></h2>
+        <div class="tiers" id="tiers"></div>
+        <div id="recordBox">
+          <p class="hint">학생부 전체가 부담스러우면 답변에 쓰고 싶은 부분(세특·창체·행특)만 복사해 붙여 넣어 주세요. PDF는 신청 후 메시지로 보내셔도 됩니다. <b>학교명·이름 등 개인 정보는 지우고</b> 붙여 넣어 주세요.</p>
+          <textarea name="record" rows="5" placeholder="예) [생명과학Ⅰ 세특] 항상성 단원에서 운동 전후 맥박 변화를 측정하는 탐구를 설계함…"></textarea>
+        </div>
+      </section>
+
+      <!-- 4 전공지원 이유 -->
+      <section class="card">
+        <h2><span class="num">4</span> 왜 이 학과인가요?</h2>
+        <p class="hint">완성된 문장이 아니어도 됩니다. 떠오르는 대로 편하게 적어 주세요.</p>
+        <textarea name="motive" rows="3" placeholder="예) 할머니 입원 때 간호사가 작은 변화를 먼저 알아채는 걸 보고 전문직이라고 느낌"></textarea>
+      </section>
+
+      <!-- 5 대표경험 -->
+      <section class="card">
+        <h2><span class="num">5</span> 대표 경험 3~5개</h2>
+        <p class="hint">있었던 일을 <b>사실대로, 짧게</b> 적어 주세요. 예) “생명과학 조별과제에서 한 친구가 계속 자료를 늦게 줌. 처음엔 화냈는데 나중에 동생을 돌보고 있다는 걸 알게 됨. 역할을 다시 나눔.” 이 정도면 충분합니다. 숫자(횟수·기간)가 있으면 더 좋습니다.</p>
+        <div id="exps" class="exps"></div>
+        <button type="button" id="addExp" class="ghost small">+ 경험 추가</button>
+      </section>
+
+      <!-- 6 나의 강점 -->
+      <section class="card">
+        <h2><span class="num">6</span> 나의 강점</h2>
+        <p class="hint">해당하는 것을 골라 주세요(가장 자신 있는 것을 먼저).</p>
+        <div id="strengths" class="pick"></div>
+        <input name="strengthNote" placeholder="그 밖의 강점(선택)">
+      </section>
+
+      <!-- 7 특별 요청 -->
+      <section class="card">
+        <h2><span class="num">7</span> 특별 요청</h2>
+        <p class="hint">면접에서 걱정되는 점이나 꼭 강조하고 싶은 점을 알려 주세요.</p>
+        <div id="concerns" class="pick"></div>
+        <textarea name="concernNote" rows="2" placeholder="예) 2번 문항이 특히 어렵습니다 / 봉사 경험을 꼭 강조하고 싶어요"></textarea>
+      </section>
+
+      <!-- 연락처 -->
+      <section class="card">
+        <h2>받으실 연락처</h2>
+        <div class="form cols">
+          <label>이름 또는 닉네임<input name="name" required></label>
+          <label>연락처(휴대폰·이메일·숨고 아이디 등)<input name="reach" required></label>
+        </div>
+        <label class="agree"><input type="checkbox" name="agree"> 면접 답변 제작을 위해 입력한 내용을 제작자(교수)에게 전달하고 활용하는 데 동의합니다. 제작이 끝나면 요청 시 삭제합니다.</label>
+        <div id="missing" class="warn" hidden></div>
+        <div class="actions">
+          <button type="button" id="btnSubmit" class="primary big">신청서 완성하기</button>
+          <button type="button" id="btnReset" class="ghost small danger">처음부터 다시</button>
+        </div>
+      </section>
+    </form>
+
+    <section id="done" class="card" hidden>
+      <h2>신청서가 완성되었습니다 ✅</h2>
+      <p class="hint">아래 <b>신청 코드</b>를 복사해 문의하신 곳(숨고·카카오톡·문자·이메일)으로 보내 주세요. 코드 안에 작성하신 내용이 모두 들어 있습니다. 학생부 PDF나 문항 캡처가 있으면 함께 보내 주세요.</p>
+      <textarea id="code" rows="4" readonly></textarea>
+      <div class="actions">
+        <button id="btnCopy" class="primary">신청 코드 복사</button>
+        <button id="btnFile" class="ghost">파일로 저장</button>
+        <a id="btnMail" class="btnlike ghost" hidden>이메일로 보내기</a>
+        <button id="btnEdit" class="ghost">내용 고치기</button>
+      </div>
+      <details><summary>보낸 내용 미리 보기</summary><pre id="preview" class="script"></pre></details>
+    </section>
+
+    <p class="legal hint">본 서비스는 대학이 공개한 면접 문항을 활용한 면접 교육·훈련 서비스이며, 특정 대학의 평가·선발과 관계가 없습니다. 작성 내용은 이 기기에 임시 저장되며, 신청 코드를 보내기 전까지 외부로 전송되지 않습니다.</p>
+  </main>
+  <script type="module" src="js/coach/apply.js"></script>
+</body>
+</html>

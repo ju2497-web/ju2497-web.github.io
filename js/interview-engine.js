@@ -29,8 +29,16 @@ const isSentence = (s) => /[다요]$/.test(s);
 const CONTRACT = { 20: 6, 13: 14, 8: 9, 0: 0, 4: 4, 1: 1, 5: 5, 18: 4, 11: 10 };
 function nomToPast(s) {
   const code = (ch) => ch.charCodeAt(0) - 0xac00;
+  if (/(었|았|였|했|겠)음$/.test(s)) return s.slice(0, -1) + "습니다.";
   const last = s.slice(-1), c = code(last);
   if (c < 0 || c > 11171) return null;
+  if (last === "름" && s.length >= 2) { // 르 불규칙: 오름→올랐습니다, 부름→불렀습니다
+    const p = code(s.slice(-2, -1));
+    if (p >= 0 && p <= 11171 && p % 28 === 0) {
+      const vow = Math.floor((p % 588) / 28);
+      return s.slice(0, -2) + String.fromCharCode(0xac00 + p + 8) + (vow === 0 || vow === 8 ? "랐" : "렀") + "습니다.";
+    }
+  }
   if (last === "음" && s.length >= 2) {
     const p = code(s.slice(-2, -1));
     if (p < 0 || p > 11171 || p % 28 === 0) return null;

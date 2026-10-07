@@ -193,7 +193,7 @@ function fitLength(parts, targetSec) {
 // ───────── ⑥ 평가 ─────────
 const ASKS = [
   { when: /이유/, label: "이유", need: /때문|이유|왜냐하면/ },
-  { when: /어떻게 해결|해결했/, label: "해결 방법", need: /제안|나누|바꾸|조정|정하|맡기|함께|설명|대화|물어|물었/ },
+  { when: /어떻게 해결|해결했/, label: "해결 방법", need: /제안|나누|나눴|나눠|바꾸|바꿨|조정|정하|정했|맡기|맡겼|함께|설명|대화|물어|물었/ },
   { when: /입장/, label: "상대 입장을 이해한 노력", need: /입장|사정|이유를 (물|들)|들었|헤아|이해하려|물어보/ },
   { when: /감정/, label: "감정 조절 방법", need: /감정|마음|가라앉|물러|숨|진정|멈추|참/ },
   { when: /노력/, label: "노력의 구체적 방법", need: /노력|연습|매일|꾸준|정리|바꾸|하고 있|순서|위해|위하여/ },
@@ -348,3 +348,6 @@ export function runBasic({ question, dept, fields, targetSec = 50, draft = "" })
     coaching: coaching(type, evalFinal.seconds, targetSec),
   };
 }
+
+// 신청서 기반 재구성(application.js)에서 재사용
+export { fitLength, coaching, happened, healthy, joinSentences };

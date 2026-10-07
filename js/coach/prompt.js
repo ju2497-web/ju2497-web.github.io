@@ -58,10 +58,19 @@ export const SYSTEM_PROMPT = `당신은 대학 입학 면접 평가 경력이 �
 평범한 표현(감점 대상): ${CLICHES.map((c) => c[1]).join(" / ")}.
 최종 답변은 감점 요인을 고친 뒤의 답변이며, 1차 점수보다 낮아지면 안 됩니다. 점수는 후하게 주지 말고 실제 면접관처럼 냉정하게 매깁니다.`;
 
-export function buildRequest({ question, university, department, track, year, fields = {}, targetSec = 50, type, basicAnswer = "", draft = "" }) {
+export function buildRequest({ question, university, department, track, year, fields = {}, targetSec = 50, type, basicAnswer = "", draft = "", context = null }) {
   const T = QTYPES[type] || QTYPES.general;
   const chars = Math.round(targetSec * 5);
-  const exp = T.fields.map((f) => `- ${f.label}: ${(fields[f.k] || "").trim() || "(입력 없음)"}`).join("\n");
+  const exp = context
+    ? `이 문항에 배정된 경험(학생의 짧은 사실 메모): ${context.focusExperience || "(배정 없음)"}
+그 밖의 경험:
+${context.otherExperiences || "(없음)"}
+학과 지원 이유 메모: ${context.motiveNote || "(없음)"}
+본인이 생각하는 강점: ${context.strengths || "(없음)"}
+걱정·강조 요청: ${context.concerns || "(없음)"}${context.record ? `\n학교생활기록부 발췌(정밀형):\n${context.record}` : ""}
+
+재구성 지침: 경험 메모는 문장이 아닌 사실 메모입니다. 상황 → 갈등·문제 → 예상과 다른 사실의 발견 → 행동 변화 → 결과 → 배운 점 순서로 재구성하고, 메모에 없는 결과·배운 점은 지어내지 말고 [✎ …]로 남깁니다. 배정된 경험이 문항에 맞지 않으면 그 밖의 경험 중 더 맞는 것을 쓰고 extracted_experience 첫 줄에 어떤 경험을 썼는지 적습니다. 걱정 사항(예: 말이 길어짐)은 coaching에 반영합니다.`
+    : T.fields.map((f) => `- ${f.label}: ${(fields[f.k] || "").trim() || "(입력 없음)"}`).join("\n");
   const user = `면접 문항: ${question}
 대학/학과/전형/연도: ${[university, department, track, year].filter(Boolean).join(" / ") || "(미지정)"}
 지원 직업: ${roleOf(department)}
@@ -91,6 +100,13 @@ export function validatePayload(p) {
     if (val.length > 800) return "경험 입력 한 칸은 800자 이하로 적어 주세요.";
   }
   if ((p.draft || "").length > 3000) return "직접 쓴 답변은 3,000자 이하로 적어 주세요.";
+  if (p.context) {
+    const c = p.context;
+    if ((c.record || "").length > 8000) return "학생부 발췌는 8,000자 이하로 붙여 넣어 주세요.";
+    for (const k of ["focusExperience", "otherExperiences", "motiveNote", "strengths", "concerns"]) {
+      if (typeof (c[k] ?? "") !== "string" || (c[k] || "").length > 4000) return `신청서 항목이 너무 깁니다: ${k}`;
+    }
+  }
   const t = Number(p.targetSec);
   if (!(t >= 30 && t <= 120)) return "목표 시간은 30~120초 사이여야 합니다.";
   return null;

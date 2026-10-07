@@ -77,3 +77,8 @@ button.big { padding: 11px 20px; font-size: 1rem; }
 .agree { flex-direction: row !important; align-items: center; gap: 8px !important; color: var(--ink) !important; }
 .agree input { width: auto; }
 .legal { text-align: center; }
+.form.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 640px) { .form.cols3 { grid-template-columns: 1fr; } }
+.form.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form.cols .span2 { grid-column: 1 / -1; }
+@media (max-width: 640px) { .form.cols { grid-template-columns: 1fr; } }

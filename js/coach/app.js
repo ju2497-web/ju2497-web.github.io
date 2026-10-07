@@ -1,7 +1,8 @@
 import { CONFIG } from "./config.js";
 import { QTYPES, COMPETENCIES } from "./framework.js";
 import { runBasic, evaluate, detectType, speakingScript, secondsOf } from "./engine.js";
-import { buildRequest, validatePayload } from "./prompt.js";
+import { validatePayload } from "./prompt.js";
+import { canDeep, needsCode, callDeep, fromAI } from "./ai-call.js";
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -212,11 +213,9 @@ $("#btnCopy").addEventListener("click", async () => {
 });
 
 // ───────── AI 심층형 ─────────
-const devKey = () => load("adm.ai.v1", {}).apiKey || "";
 function setupDeep() {
-  const can = !!CONFIG.aiEndpoint || !!devKey();
-  $("#btnDeep").hidden = !can;
-  $("#codeWrap").hidden = !CONFIG.aiEndpoint;
+  $("#btnDeep").hidden = !canDeep();
+  $("#codeWrap").hidden = !needsCode();
   $("#accessCode").value = load(K.code, "");
 }
 $("#accessCode").addEventListener("change", () => save(K.code, $("#accessCode").value.trim()));
@@ -232,8 +231,8 @@ $("#btnDeep").addEventListener("click", async () => {
   const btn = $("#btnDeep"); const label = btn.textContent;
   btn.disabled = true; btn.textContent = "AI 분석 중… (최대 1~2분)";
   try {
-    const ai = CONFIG.aiEndpoint ? await viaServer(p) : await viaBrowser(p);
-    state.result = fromAI(ai, basic, p);
+    const ai = await callDeep(p, $("#accessCode").value.trim());
+    state.result = { ...fromAI(ai, basic, p), question: p.question, meta: p };
     render();
   } catch (err) {
     console.error(err);
@@ -242,56 +241,6 @@ $("#btnDeep").addEventListener("click", async () => {
     render();
   } finally { btn.disabled = false; btn.textContent = label; }
 });
-
-async function viaServer(p) {
-  const r = await fetch(CONFIG.aiEndpoint, {
-    method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ payload: p, accessCode: $("#accessCode").value.trim() }),
-  });
-  const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.error || `서버 오류(${r.status})`);
-  return data.result;
-}
-
-// 교수님 테스트용: 서버 없이 같은 브라우저에 저장한 API 키로 직접 호출
-async function viaBrowser(p) {
-  const { loadSdk } = await import("../ai.js");
-  const Anthropic = await loadSdk();
-  const client = new Anthropic({ apiKey: devKey(), dangerouslyAllowBrowser: true });
-  const { system, user, schema, model } = buildRequest(p);
-  const msg = await client.beta.messages.create({
-    model, max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
-    output_config: { effort: "medium", format: { type: "json_schema", schema } },
-    system: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: user }],
-  });
-  if (msg.stop_reason === "refusal") throw new Error("AI가 이 요청을 처리하지 않았습니다.");
-  if (msg.stop_reason === "max_tokens") throw new Error("응답이 길어 중단되었습니다. 다시 시도해 주세요.");
-  return JSON.parse(msg.content.filter((b) => b.type === "text").map((b) => b.text).join(""));
-}
-
-function fromAI(ai, basic, p) {
-  const finalEval = evaluate(ai.final_answer, p.question, p.department, p.targetSec, basic.type);
-  return {
-    ...basic,
-    mode: "deep",
-    question: p.question, meta: p,
-    intent: ai.intent || basic.intent,
-    competencies: ai.competencies?.length ? ai.competencies : basic.competencies,
-    answer: ai.final_answer,
-    score: finalEval.score, grade: finalEval.grade,
-    issues: finalEval.issues.length ? finalEval.issues : [],
-    fixes: [
-      `AI 1차 답변 예상 점수 ${ai.score}점 → 감점 요인 수정 후 최종 답변으로 교체했습니다.`,
-      ...(ai.deductions || []).map((d) => `수정함: ${d.issue} → ${d.fix}`),
-      ...(ai.plain_pitfalls || []).map((x) => `피한 함정: ${x}`),
-    ],
-    followups: (ai.followups || []).map((f) => ({ q: f.question, answer: f.answer, dir: "" })),
-    script: ai.script || speakingScript(ai.final_answer, []),
-    coaching: ai.coaching?.length ? ai.coaching : basic.coaching,
-  };
-}
 
 // ───────── 연습 ─────────
 let timer = null;
