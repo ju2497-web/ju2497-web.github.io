@@ -1,0 +1,13 @@
+name = "interview-coach-api"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# 쉼표로 구분. 예: "https://ju2497-web.github.io"
+ALLOWED_ORIGINS = "https://ju2497-web.github.io"
+# 베타 접근 코드(쉼표 구분). 비우면 누구나 사용 가능하니 반드시 설정하세요.
+ACCESS_CODES = ""
+# 이해충돌 방지로 차단할 대학명(문항 DB의 university 값과 같게)
+BLOCKED_UNIVERSITIES = ""
+# ANTHROPIC_API_KEY 는 여기 적지 말고: npx wrangler secret put ANTHROPIC_API_KEY

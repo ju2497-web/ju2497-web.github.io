@@ -1,0 +1,33 @@
+.studio { max-width: 1040px; }
+#work { display: grid; gap: 16px; }
+.summary h2 { margin-bottom: 4px; }
+.summary .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; font-size: .88rem; }
+.summary .grid div b { color: var(--muted); font-weight: 500; margin-right: 6px; }
+.summary .exps { margin: 8px 0 0; padding-left: 1.2rem; font-size: .86rem; }
+@media (max-width: 700px) { .summary .grid { grid-template-columns: 1fr; } }
+.items { display: grid; gap: 14px; }
+.item { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+.item header { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start; }
+.item .mini { width: 58px; height: 58px; }
+.item .mini b { font-size: 1.2rem; }
+.item .qt { font-weight: 700; }
+.item .meta { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.item .ctrl { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+.item .ctrl select { width: auto; max-width: 100%; font-size: .82rem; padding: 4px 8px; }
+.item textarea { margin-top: 8px; }
+.item .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; font-size: .85rem; }
+.item .two ul, .item .two ol { margin: 4px 0 0; padding-left: 1.1rem; }
+.item h4 { margin: 0; font-size: .8rem; color: var(--muted); font-weight: 500; }
+.item .issues li span { font-size: .82rem; }
+.item details { margin-top: 8px; font-size: .85rem; }
+.item details summary { cursor: pointer; color: var(--brand); }
+@media (max-width: 700px) { .item .two { grid-template-columns: 1fr; } .item header { grid-template-columns: auto 1fr; } }
+.print-area { display: none; }
+@media print {
+  body > *:not(.print-area) { display: none !important; }
+  .print-area { display: block; white-space: pre-wrap; font: 11pt/1.7 "Noto Sans KR", sans-serif; color: #000; }
+}
+.items > *, .item header > div { min-width: 0; }
+.item header { grid-template-columns: auto minmax(0, 1fr) auto; }
+.item .ctrl select { min-width: 0; flex: 1 1 200px; }
+@media (max-width: 700px) { .item header { grid-template-columns: auto minmax(0, 1fr); } }

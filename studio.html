@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>면접답변 작업실</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%A7%91%E2%80%8D%F0%9F%8F%AB%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/coach.css">
+  <link rel="stylesheet" href="css/studio.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">🧑‍🏫</span>
+      <div><h1>면접답변 작업실</h1>
+        <p class="sub">신청서 불러오기 → 문항별 경험 자동 배정 → 답변 생성 → 교수 검수 → 학생 전달 · <a href="apply.html" target="_blank">신청서 화면</a> · <a href="soomgo.html">숨고 응답기</a> · <a href="coach-admin.html">문항 DB</a></p></div>
+    </div>
+  </header>
+
+  <main class="coach studio">
+    <section class="card">
+      <div class="row-between">
+        <h2>신청서 불러오기</h2>
+        <div class="actions tight">
+          <button id="btnGuide" class="ghost small">학생에게 보낼 안내문 복사</button>
+          <button id="btnSample" class="ghost small">예시 신청서</button>
+        </div>
+      </div>
+      <p class="hint">숨고 채팅으로 받은 <b>①~⑦ 양식 답장</b>이나 <b>신청 코드(IVAPP1:…)</b>를 통째로 붙여 넣거나, 신청서 파일(.json)을 여세요.</p>
+      <textarea id="codeIn" rows="3" placeholder="[면접답변 제작 신청] 홍길동 / ○○대학교 간호학과&#10;IVAPP1:eyJ2Ijox…"></textarea>
+      <div class="actions">
+        <button id="btnLoad" class="primary">불러오기</button>
+        <label class="ghost btnlike small">파일 열기<input id="fileIn" type="file" accept=".json" hidden></label>
+        <select id="appList" aria-label="불러온 신청서"></select>
+        <button id="btnDelApp" class="ghost small danger">이 신청서 삭제</button>
+      </div>
+    </section>
+
+    <section id="work" hidden>
+      <div class="card summary" id="summary"></div>
+
+      <div class="card">
+        <div class="row-between">
+          <h2>문항별 답변 <small id="avg"></small></h2>
+          <div class="actions tight">
+            <button id="btnRegenAll" class="ghost small">전체 기본형 다시 만들기</button>
+            <button id="btnDeepAll" class="primary small" hidden>전체 AI 심층 생성</button>
+            <label id="codeWrap" class="code" hidden>접근 코드<input id="accessCode" autocomplete="off"></label>
+          </div>
+        </div>
+        <p class="hint">경험 배정이 맞지 않으면 문항마다 바꿀 수 있습니다. <code>[✎ …]</code>는 학생 메모에 없어 채워야 할 부분입니다. 지어내지 말고 학생에게 확인하거나 교수 검수 때 채우세요.</p>
+        <div id="items" class="items"></div>
+      </div>
+
+      <div class="card">
+        <h2>학생 전달</h2>
+        <label class="inline">교수 총평(학생 전달 문서 맨 앞에 들어갑니다)<textarea id="overall" rows="4" placeholder="예) 공동체역량 문항은 경험이 구체적이라 강점입니다. 전공 문항은 이유를 한 문장 더 보강해 연습하세요."></textarea></label>
+        <div class="actions">
+          <button id="btnDoc" class="primary">학생 전달 문서 저장(.txt)</button>
+          <button id="btnDocCopy" class="ghost">문서 복사</button>
+          <button id="btnPrint" class="ghost">인쇄·PDF</button>
+          <label class="agree"><input type="checkbox" id="reviewed"> 교수 검수 완료</label>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="printArea" class="print-area"></div>
+  <script type="module" src="js/coach/studio.js"></script>
+</body>
+</html>
