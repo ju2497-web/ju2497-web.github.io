@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>학생 검증 기록표</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9C%85%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/coach.css">
+  <style>
+    .vd { max-width: 960px; }
+    .crit { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .crit div { border: 1px solid var(--line); border-radius: 10px; padding: 10px; font-size: .85rem; }
+    .crit b { display: block; font-size: 1.4rem; font-variant-numeric: tabular-nums; }
+    .crit .pass b { color: var(--ok); } .crit .fail b { color: var(--danger); }
+    @media (max-width: 700px) { .crit { grid-template-columns: 1fr 1fr; } }
+    .tbl input, .tbl select { padding: 4px 6px; font-size: .82rem; }
+    .tbl td { padding: 4px; }
+  </style>
+</head>
+<body>
+  <main class="coach vd">
+    <section class="card">
+      <h1>학생 10~20명 검증 기록표</h1>
+      <p class="hint">기능을 더 만들기 전에, 실제 학생이 “GPT보다 낫다”고 느끼고 돈을 내는지 확인하는 단계입니다. 기록은 이 브라우저에만 저장됩니다.</p>
+      <h3>진행 방법 (학생 1명당 약 10분)</h3>
+      <ol class="hint">
+        <li>학생에게 <a href="voice.html" target="_blank">AI 면접 트레이너</a> 링크를 보냅니다(크롬·사파리로 열기).</li>
+        <li>본인이 실제로 볼 대학의 공개 문항 1개로 질문 말하기 → 답변 → 추가 질문 → 다시 말하기까지 해 보게 합니다.</li>
+        <li>먼저 같은 질문을 ChatGPT나 Claude에 물어보게 한 뒤 비교하게 하면 가장 정확합니다.</li>
+        <li>앱 마지막 설문(또는 아래 표)에 답을 남기게 합니다. <b>결제 의향은 말이 아니라 실제 결제(또는 사전 신청)로 확인</b>합니다.</li>
+      </ol>
+      <h3>통과 기준</h3>
+      <div class="crit" id="crit"></div>
+    </section>
+    <section class="card">
+      <div class="row-between"><h2>기록 <small id="cnt"></small></h2>
+        <div class="actions tight"><button id="add" class="primary small">+ 학생 추가</button><button id="csv" class="ghost small">CSV 내려받기</button></div></div>
+      <div class="table-wrap"><table class="tbl" id="tbl"><thead><tr><th>#</th><th>학생(별칭)</th><th>학교·학과</th><th>첫 점수</th><th>최고 점수</th><th>GPT 대비</th><th>4,900원 결제 의향</th><th>실제 결제</th><th>한마디</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+  </main>
+  <script>
+    const KEY = "validation.rows.v1";
+    const $ = (s) => document.querySelector(s);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    let rows = []; try { rows = JSON.parse(localStorage.getItem(KEY)) || []; } catch {}
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(rows)); } catch {} render(); };
+    const sel = (k, v, opts) => `<select data-k="${k}">${["", ...opts].map((o) => `<option ${o === v ? "selected" : ""}>${o}</option>`).join("")}</select>`;
+    function render() {
+      $("#cnt").textContent = `${rows.length}명`;
+      $("#tbl tbody").innerHTML = rows.map((r, i) => `<tr data-i="${i}"><td>${i + 1}</td>
+        <td><input data-k="name" value="${esc(r.name)}" size="6"></td><td><input data-k="school" value="${esc(r.school)}" size="12"></td>
+        <td><input data-k="first" type="number" value="${esc(r.first)}" style="width:4.5em"></td><td><input data-k="best" type="number" value="${esc(r.best)}" style="width:4.5em"></td>
+        <td>${sel("q1", r.q1, ["훨씬 낫다", "비슷하다", "못하다", "안 써 봤다"])}</td><td>${sel("q2", r.q2, ["예", "아마도", "아니오"])}</td>
+        <td>${sel("paid", r.paid, ["결제함", "사전신청", "안 함"])}</td><td><input data-k="note" value="${esc(r.note)}" size="16"></td>
+        <td><button class="ghost small danger" data-del>삭제</button></td></tr>`).join("");
+      const n = rows.length || 1;
+      const better = rows.filter((r) => r.q1 === "훨씬 낫다").length;
+      const will = rows.filter((r) => r.q2 === "예").length;
+      const paid = rows.filter((r) => r.paid === "결제함" || r.paid === "사전신청").length;
+      const gains = rows.filter((r) => r.first && r.best).map((r) => r.best - r.first);
+      const gain = gains.length ? Math.round(gains.reduce((a, b) => a + b, 0) / gains.length) : 0;
+      const c = [
+        ["참여 학생", rows.length, "10명 이상", rows.length >= 10],
+        ["GPT보다 ‘훨씬 낫다’", `${Math.round((better / n) * 100)}%`, "60% 이상", rows.length && better / n >= 0.6],
+        ["실제 결제·사전신청", `${paid}명`, "3명 이상", paid >= 3],
+        ["평균 점수 상승", `+${gain}`, "+15점 이상", gain >= 15],
+      ];
+      $("#crit").innerHTML = c.map(([t, v, goal, ok]) => `<div class="${rows.length ? (ok ? "pass" : "fail") : ""}">${t}<b>${v}</b><span class="hint">기준 ${goal}</span></div>`).join("") + `<div style="grid-column:1/-1" class="hint">결제 의향 ‘예’ ${will}명. 네 기준을 모두 넘기면 대량 홍보로 넘어가고, 못 넘기면 무엇이 GPT와 비슷하다고 느꼈는지 ‘한마디’를 먼저 고칩니다.</div>`;
+    }
+    $("#add").onclick = () => { rows.push({}); save(); };
+    $("#tbl").addEventListener("change", (e) => { const t = e.target, i = +t.closest("tr").dataset.i; rows[i][t.dataset.k] = t.type === "number" ? +t.value : t.value; save(); });
+    $("#tbl").addEventListener("click", (e) => { if (e.target.dataset.del !== undefined && confirm("삭제할까요?")) { rows.splice(+e.target.closest("tr").dataset.i, 1); save(); } });
+    $("#csv").onclick = () => {
+      const head = ["학생", "학교학과", "첫점수", "최고점수", "GPT대비", "결제의향", "실제결제", "한마디"];
+      const lines = [head, ...rows.map((r) => [r.name, r.school, r.first, r.best, r.q1, r.q2, r.paid, r.note])].map((l) => l.map((x) => `"${String(x ?? "").replace(/"/g, '""')}"`).join(","));
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv" })); a.download = "학생검증기록.csv"; a.click();
+    };
+    render();
+  </script>
+</body>
+</html>

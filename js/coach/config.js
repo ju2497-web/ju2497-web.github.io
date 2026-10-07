@@ -12,6 +12,9 @@ export const CONFIG = {
   blockedUniversities: [],
   // 문항 DB 파일
   questionBankUrl: "data/questions.json",
+  // 학생 검증 설문을 모을 구글 폼 '미리 채운 링크'. {q1} {q2} {q3} {first} {best} {question} 자리에 값이 들어갑니다.
+  // 비우면 설문 결과는 그 학생 기기에만 저장되고, 검증 기록표(validation.html)에 직접 옮겨 적습니다.
+  feedbackUrl: "",
   // 숨고 판매 상품(숨고 응답기 soomgo.html 견적 문안에 들어갑니다). 금액은 교수님이 정하세요.
   soomgo: {
     plans: [

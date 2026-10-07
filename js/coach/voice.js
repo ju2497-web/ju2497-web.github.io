@@ -3,6 +3,10 @@ import { QTYPES } from "./framework.js";
 import { detectType, secondsOf } from "./engine.js";
 import { formalize, scoreSpoken, improveAnswer, diagnose, mergeAnswer, summaryLines, expectedScore } from "./voice-core.js";
 import { canDeep, callVoice, canOcr, callOcr } from "./ai-call.js";
+import { loadAnchors, findAnchor, placement } from "./anchors.js";
+
+let ANCHORS = [];
+loadAnchors().then((a) => (ANCHORS = a));
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -143,6 +147,20 @@ function renderAnalysis(sc) {
   $("#lines").innerHTML = s.lines.map((l) => `<li class="${l.ok ? "ok" : "no"}">${esc(l.t)}</li>`).join("");
   $("#dims").innerHTML = Object.entries(sc.dims).map(([k, v]) => `<div class="dim"><span>${esc(k)}</span><span class="bar"><i class="${v < 60 ? "low" : ""}" style="width:${Math.max(3, v)}%"></i></span><span class="v">${v}</span></div>`).join("");
   $("#firstFix").textContent = s.first ? `가장 먼저 고칠 것: ${s.first}` : "";
+  renderAnchor(sc.total);
+}
+
+// 같은 질문의 교수 채점 기준점(평범·보통·우수)과 내 위치
+function renderAnchor(score) {
+  const a = findAnchor(ANCHORS, st.q);
+  $("#anchorBox").hidden = !a;
+  if (!a) return;
+  $("#anchorBadge").textContent = a.reviewed ? "교수 확정" : "교수 확정 전 초안";
+  $("#anchorBadge").className = `badge-s ${a.reviewed ? "ok" : ""}`;
+  $("#anchorPlace").textContent = placement(score, a.levels);
+  const near = [...a.levels].sort((x, y) => Math.abs(x.score - score) - Math.abs(y.score - score))[0];
+  $("#anchorLevels").innerHTML = a.levels.map((l) => `<details class="${l === near ? "mine" : ""}"><summary><span>${esc(l.level)}</span><b>${l.score}점</b></summary>
+    <p class="cm">교수 한 줄평: ${esc(l.comment)}</p><p class="ans">${esc(l.answer)}</p></details>`).join("");
 }
 
 function renderStep() {
@@ -211,6 +229,7 @@ function renderBetter(answer, changes) {
   $("#better").value = answer;
   $("#changes").innerHTML = (changes || []).map((c) => `<li>${esc(c)}</li>`).join("");
   $("#offer").hidden = false;
+  $("#survey").hidden = ls.get("voice.surveyed", false);
   $("#offerGain").textContent = `첫 답변 ${st.history[0]}점 → 개선 답변 ${st.expected}점`;
   $("#offerNote").textContent = CONFIG.beta ? "지금은 베타 기간이라 무료로 계속하실 수 있습니다." : "결제 기능은 준비 중입니다.";
 }
@@ -227,6 +246,25 @@ $("#nextQ").addEventListener("click", () => {
   speak(`다음 질문입니다. ${q}`);
 });
 $("#offerBtn").addEventListener("click", () => { if (CONFIG.beta) $("#nextQ").click(); });
+
+// ───────── 학생 검증 설문 ─────────
+const survey = {};
+document.querySelectorAll(".opts4").forEach((g) => g.addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-v]"); if (!b) return;
+  g.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+  survey[g.dataset.q] = b.dataset.v;
+}));
+$("#surveyBtn").addEventListener("click", () => {
+  if (!survey.q1 || !survey.q2) { speak("두 질문에 답해 주세요."); return; }
+  const rec = { at: new Date().toISOString(), question: st.q, q1: survey.q1, q2: survey.q2, q3: $("#q3").value.trim(), first: st.history[0], best: Math.max(...st.history, st.expected || 0) };
+  const all = ls.get("voice.feedback", []); all.push(rec); ls.set("voice.feedback", all);
+  if (CONFIG.feedbackUrl) {
+    const url = CONFIG.feedbackUrl.replace(/\{(\w+)\}/g, (_, k) => encodeURIComponent(rec[k] ?? ""));
+    window.open(url, "_blank", "noopener");
+  }
+  $("#surveyBtn").hidden = true; $("#surveyDone").hidden = false;
+  ls.set("voice.surveyed", true);
+});
 
 function markUsed() { const u = used(); if (!u.includes(st.q)) { u.push(st.q); ls.set("voice.used", u); } }
 function gate() {

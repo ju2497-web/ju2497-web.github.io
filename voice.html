@@ -49,6 +49,12 @@
       <ul id="lines" class="lines"></ul>
       <details class="detail"><summary>세부 점수 보기</summary><div id="dims" class="dims"></div><p id="firstFix" class="hint"></p></details>
 
+      <div id="anchorBox" class="anchorbox" hidden>
+        <p class="anchor-head"><b>같은 질문, 교수가 채점한 답변</b> <span id="anchorBadge" class="badge-s"></span></p>
+        <p id="anchorPlace" class="place"></p>
+        <div id="anchorLevels" class="levels"></div>
+      </div>
+
       <div id="askBox" class="askbox">
         <p id="say" class="say"></p>
         <h2 id="ask2" class="ask"></h2>
@@ -78,6 +84,17 @@
       </div>
       <p class="hint center">외우지 말고, 내 말로 말해 보세요. 다시 말하면 점수가 기록됩니다.</p>
       <button id="nextQ" class="ghost wide">다음 예상질문 →</button>
+
+      <div id="survey" class="survey" hidden>
+        <h3>잠깐, 한 가지만 알려 주세요</h3>
+        <p class="sq">ChatGPT·Claude에 직접 물어본 것보다 도움이 됐나요?</p>
+        <div class="opts4" data-q="q1"><button data-v="훨씬 낫다">훨씬 낫다</button><button data-v="비슷하다">비슷하다</button><button data-v="못하다">못하다</button><button data-v="안 써 봤다">안 써 봤다</button></div>
+        <p class="sq">5문항 4,900원이면 결제하시겠어요?</p>
+        <div class="opts4" data-q="q2"><button data-v="예">예</button><button data-v="아마도">아마도</button><button data-v="아니오">아니오</button></div>
+        <textarea id="q3" rows="2" placeholder="좋았던 점이나 아쉬운 점 한마디(선택)"></textarea>
+        <button id="surveyBtn" class="ghost wide">보내기</button>
+        <p id="surveyDone" class="hint" hidden>고맙습니다. 더 좋은 연습 도구로 만들겠습니다.</p>
+      </div>
 
       <div id="offer" class="offer" hidden>
         <p id="offerGain" class="gain"></p>

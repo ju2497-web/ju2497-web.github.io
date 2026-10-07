@@ -37,6 +37,29 @@
       <div id="list" class="vault"></div>
     </section>
     <section class="card">
+      <h2>보고서에서 문항 추출</h2>
+      <p class="hint">선행학습 영향평가 보고서(PDF)를 열어 면접 문항 부분을 복사해 붙여 넣으세요. 질문 문장을 자동으로 골라 드립니다. 확인 후 대학·학과·연도를 넣고 추가하면 <b>원문 대조 완료(verified)</b>로 등록됩니다.</p>
+      <textarea id="rptText" rows="8" placeholder="보고서 본문을 그대로 붙여 넣으세요"></textarea>
+      <div class="actions"><button id="btnExtract" class="primary small">질문 찾기</button><span id="exStat" class="hint"></span></div>
+      <div id="exList" class="vault"></div>
+      <div class="form cols3" id="exMeta" hidden>
+        <label>대학<input id="exUniv"></label><label>학과<input id="exDept"></label><label>전형<input id="exTrack"></label>
+        <label>연도<input id="exYear" type="number" value="2025"></label><label class="span2">출처(보고서 이름·URL)<input id="exSrc"></label>
+      </div>
+      <div class="actions" id="exAddWrap" hidden><button id="btnExAdd" class="primary small">선택한 문항을 세트로 추가</button></div>
+    </section>
+    <section class="card">
+      <h2>수집 대상 보고서 <small id="srcCnt"></small></h2>
+      <p class="hint">웹 검색으로 존재를 확인한 2025학년도 보고서입니다. 보건계열 문항이 있는지는 열어 봐야 압니다.</p>
+      <ul id="srcList" class="hint"></ul>
+    </section>
+    <section class="card">
+      <div class="row-between"><h2>교수 채점 기준점 확정 <small id="ancCnt"></small></h2>
+        <button id="btnAncExport" class="primary small">기준점 내보내기(anchors.json)</button></div>
+      <p class="hint">학생 앱의 “같은 질문, 교수가 채점한 답변”에 쓰입니다. 점수와 한 줄평을 교수님 기준으로 고치고 [확정]을 체크하세요. 고친 내용은 이 브라우저에 바로 반영되고, 내보낸 파일로 <code>data/anchors.json</code>을 교체하면 모든 학생에게 반영됩니다.</p>
+      <div id="ancList" class="vault"></div>
+    </section>
+    <section class="card">
       <h2>운영 설정 확인</h2>
       <div id="cfg" class="hint"></div>
     </section>
@@ -88,6 +111,71 @@
       e.target.value = "";
     });
     render();
+  </script>
+  <script type="module">
+    import { CONFIG } from "./js/coach/config.js";
+    const $ = (q) => document.querySelector(q);
+    const esc = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    // 보고서 → 질문 후보
+    const Q_END = /(\?|말씀해\s?주세요|말해\s?보세요|설명하시오|설명해\s?보세요|하겠습니까|무엇입니까|어떻게 생각합니까|생각하나요|있나요|무엇인가요|말하시오|서술하시오)\s*\.?$/;
+    let cands = [];
+    $("#btnExtract").onclick = () => {
+      const text = $("#rptText").value.replace(/\r/g, "");
+      const lines = text.split(/\n+/).map((l) => l.replace(/^\s*(?:\d+[.)]|[①-⑳]|문항\s*\d+[.:)]?|Q\d*[.:)]?|[-•·])\s*/, "").trim()).filter(Boolean);
+      // 줄이 잘린 질문은 이어 붙이고, 머리말·설명 줄에서 끊음
+      cands = [];
+      const HEADER = /^(면접\s?문항|평가\s?요소|출제\s?의도|문항\s?해설|채점\s?기준|제시문|답변\s?예시|활용\s?자료|교육과정)/;
+      let buf = "";
+      for (const line of lines) {
+        if (HEADER.test(line)) { buf = ""; continue; }
+        buf = buf ? `${buf} ${line}` : line;
+        if (Q_END.test(buf)) { if (buf.length >= 12 && buf.length <= 400 && !cands.includes(buf)) cands.push(buf); buf = ""; }
+        else if (/[.:]$/.test(line) || buf.length > 300) buf = "";
+      }
+      $("#exStat").textContent = `${cands.length}개 후보`;
+      $("#exList").innerHTML = cands.map((c, i) => `<label class="vitem"><span>${esc(c)}</span><input type="checkbox" data-i="${i}" checked></label>`).join("");
+      $("#exMeta").hidden = $("#exAddWrap").hidden = !cands.length;
+    };
+    $("#btnExAdd").onclick = () => {
+      const qs = [...document.querySelectorAll("#exList input:checked")].map((x) => cands[+x.dataset.i]);
+      if (!qs.length || !$("#exUniv").value.trim() || !$("#exDept").value.trim()) { alert("문항과 대학·학과를 확인하세요."); return; }
+      const KEY = "coach.qbank.local";
+      let local = []; try { local = JSON.parse(localStorage.getItem(KEY)) || []; } catch {}
+      local.push({ id: `r-${Date.now().toString(36)}`, university: $("#exUniv").value.trim(), department: $("#exDept").value.trim(), track: $("#exTrack").value.trim(), year: +$("#exYear").value || "", source: $("#exSrc").value.trim(), sourceUrl: "", verified: true, questions: qs });
+      try { localStorage.setItem(KEY, JSON.stringify(local)); } catch {}
+      alert(`${qs.length}문항을 추가했습니다. 새로고침하면 위 목록에 보입니다.`); location.reload();
+    };
+    // 수집 대상
+    try {
+      const src = await (await fetch("data/sources.json", { cache: "no-cache" })).json();
+      $("#srcCnt").textContent = `${src.reports.length}곳`;
+      $("#srcList").innerHTML = src.reports.map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.university)}</a> · ${esc(r.status)}</li>`).join("");
+    } catch {}
+    // 기준점 확정
+    const AKEY = "coach.anchors.local";
+    let anchors = [];
+    try { anchors = (await (await fetch("data/anchors.json", { cache: "no-cache" })).json()).items || []; } catch {}
+    try { const l = JSON.parse(localStorage.getItem(AKEY) || "null"); if (Array.isArray(l)) { const m = new Map(anchors.map((x) => [x.id, x])); l.forEach((x) => m.set(x.id, x)); anchors = [...m.values()]; } } catch {}
+    const saveA = () => { try { localStorage.setItem(AKEY, JSON.stringify(anchors)); } catch {} renderA(); };
+    function renderA() {
+      $("#ancCnt").textContent = `${anchors.length}문항 · 확정 ${anchors.filter((a) => a.reviewed).length}`;
+      $("#ancList").innerHTML = anchors.map((a, i) => `<div class="vitem" style="grid-template-columns:1fr"><div class="vq">${esc(a.question)}</div>
+        ${a.levels.map((l, k) => `<div class="form cols3" style="margin-top:6px"><label>${esc(l.level)} 점수<input type="number" data-a="${i}" data-l="${k}" data-f="score" value="${l.score}"></label>
+          <label class="span2">교수 한 줄평<textarea rows="2" data-a="${i}" data-l="${k}" data-f="comment">${esc(l.comment)}</textarea></label>
+          <label class="span2" style="grid-column:1/-1">답변<textarea rows="3" data-a="${i}" data-l="${k}" data-f="answer">${esc(l.answer)}</textarea></label></div>`).join("")}
+        <label class="agree"><input type="checkbox" data-a="${i}" data-f="reviewed" ${a.reviewed ? "checked" : ""}> 교수 확정</label></div>`).join("");
+    }
+    $("#ancList").addEventListener("change", (e) => {
+      const t = e.target, a = anchors[+t.dataset.a]; if (!a) return;
+      if (t.dataset.f === "reviewed") a.reviewed = t.checked;
+      else { const l = a.levels[+t.dataset.l]; l[t.dataset.f] = t.dataset.f === "score" ? +t.value : t.value; a.reviewed = false; }
+      saveA();
+    });
+    $("#btnAncExport").onclick = () => {
+      const blob = new Blob([JSON.stringify({ updated: new Date().toISOString().slice(0, 10), note: "교수 채점 기준점(모범답안 3단계)", items: anchors }, null, 2)], { type: "application/json" });
+      const x = document.createElement("a"); x.href = URL.createObjectURL(blob); x.download = "anchors.json"; x.click();
+    };
+    renderA();
   </script>
 </body>
 </html>
