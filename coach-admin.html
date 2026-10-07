@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>면접 문항 DB 관리</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%97%82%3C/text%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/coach.css">
+</head>
+<body>
+  <header class="top"><div class="brand"><span class="logo">🗂</span><div><h1>면접 문항 DB 관리</h1>
+    <p class="sub">대학·학과·전형·연도별 공개 문항을 쌓아 두는 곳 · <a href="coach.html">학생 화면 보기</a></p></div></div></header>
+  <main class="coach">
+    <section class="card">
+      <h2>문항 세트 추가</h2>
+      <p class="hint">공개 출처(선행학습 영향평가 보고서, 대학 입학처 기출 공개 자료 등)가 있는 문항만 등록하세요. 여기서 추가한 세트는 이 브라우저의 학생 화면에 바로 반영되고, [DB 내보내기]로 받은 파일을 저장소의 <code>data/questions.json</code>으로 교체하면 모든 학생에게 반영됩니다.</p>
+      <form id="setForm" class="form cols">
+        <label>대학<input name="university" required placeholder="예) ○○대학교"></label>
+        <label>학과<input name="department" required placeholder="예) 간호학과"></label>
+        <label>전형<input name="track" placeholder="예) 학생부종합(면접)"></label>
+        <label>연도<input name="year" type="number" placeholder="2026"></label>
+        <label>출처<input name="source" placeholder="예) 2025 선행학습 영향평가 보고서"></label>
+        <label>출처 URL<input name="sourceUrl" placeholder="https://"></label>
+        <label class="span2">문항(번호 또는 줄바꿈으로 구분)<textarea name="questions" rows="7" required></textarea></label>
+      </form>
+      <div class="actions"><button id="btnAdd" class="primary">세트 추가</button><span id="addStat" class="hint"></span></div>
+    </section>
+    <section class="card">
+      <div class="row-between"><h2>등록된 세트 <small id="cnt"></small></h2>
+        <div class="actions tight">
+          <button id="btnExport" class="primary small">DB 내보내기(questions.json)</button>
+          <label class="ghost btnlike small">가져오기<input id="imp" type="file" accept=".json" hidden></label>
+        </div></div>
+      <div id="list" class="vault"></div>
+    </section>
+    <section class="card">
+      <h2>운영 설정 확인</h2>
+      <div id="cfg" class="hint"></div>
+    </section>
+  </main>
+  <script type="module">
+    import { CONFIG } from "./js/coach/config.js";
+    import { parseQuestions } from "./js/interview-engine.js";
+    import { detectType } from "./js/coach/engine.js";
+    import { QTYPES } from "./js/coach/framework.js";
+    const $ = (s) => document.querySelector(s);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const KEY = "coach.qbank.local";
+    const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } };
+    const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch {} };
+    let base = [], local = load();
+    try { base = (await (await fetch(CONFIG.questionBankUrl, { cache: "no-cache" })).json()).sets || []; } catch {}
+    const all = () => { const m = new Map(base.map((s) => [s.id, { ...s, _from: "파일" }])); local.forEach((s) => m.set(s.id, { ...s, _from: "이 브라우저" })); return [...m.values()]; };
+    function render() {
+      const sets = all();
+      $("#cnt").textContent = `${sets.length}세트 · ${sets.reduce((n, s) => n + s.questions.length, 0)}문항`;
+      $("#list").innerHTML = sets.map((s) => `<div class="vitem"><div>
+        <div class="vq">${esc(s.university)} · ${esc(s.department)} · ${esc(s.track || "")} · ${esc(s.year || "")}
+          ${CONFIG.blockedUniversities.includes(s.university) ? '<span class="lost"> 차단 대학(학생에게 표시 안 됨)</span>' : ""}</div>
+        <div class="vm">${esc(s._from)} · 출처: ${esc(s.source || "미기재")}</div>
+        <ol class="hint">${s.questions.map((q) => `<li>${esc(q)} <i>[${esc(QTYPES[detectType(q)].label)}]</i></li>`).join("")}</ol></div>
+        <div class="btns">${s._from === "이 브라우저" ? `<button class="ghost danger" data-id="${esc(s.id)}">삭제</button>` : ""}</div></div>`).join("");
+      $("#cfg").innerHTML = `AI 심층형 서버: <b>${CONFIG.aiEndpoint ? esc(CONFIG.aiEndpoint) : "미설정(기본형만 동작)"}</b><br>
+        베타 무료: <b>${CONFIG.beta ? "예" : "아니오"}</b> · 가격: 기본 ${CONFIG.prices.basic.toLocaleString()} / 심층 ${CONFIG.prices.deep.toLocaleString()} / 검수 +${CONFIG.prices.review.toLocaleString()}원<br>
+        검수 신청 이메일: <b>${esc(CONFIG.reviewContact || "미설정")}</b><br>
+        이해충돌 차단 대학: <b>${esc(CONFIG.blockedUniversities.join(", ") || "없음 — 교수님 소속 대학을 js/coach/config.js와 서버 BLOCKED_UNIVERSITIES에 꼭 넣으세요")}</b>`;
+    }
+    $("#list").addEventListener("click", (e) => { const id = e.target.dataset.id; if (!id || !confirm("삭제할까요?")) return; local = local.filter((s) => s.id !== id); save(local); render(); });
+    $("#btnAdd").addEventListener("click", () => {
+      const f = $("#setForm"); if (!f.reportValidity()) return;
+      const qs = parseQuestions(f.questions.value);
+      if (!qs.length) return;
+      const s = { id: `u-${Date.now().toString(36)}`, university: f.university.value.trim(), department: f.department.value.trim(), track: f.track.value.trim(), year: +f.year.value || "", source: f.source.value.trim(), sourceUrl: f.sourceUrl.value.trim(), questions: qs };
+      local.push(s); save(local); render(); f.questions.value = "";
+      $("#addStat").textContent = `${qs.length}문항을 추가했습니다.`;
+    });
+    $("#btnExport").addEventListener("click", () => {
+      const data = { updated: new Date().toISOString().slice(0, 10), note: "대학·학과·전형·연도별 공개 면접 문항 DB", sets: all().map(({ _from, ...s }) => s) };
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })); a.download = "questions.json"; a.click();
+    });
+    $("#imp").addEventListener("change", async (e) => {
+      try { const d = JSON.parse(await e.target.files[0].text()); const sets = Array.isArray(d) ? d : d.sets; if (!Array.isArray(sets)) throw new Error("sets 없음");
+        local = [...local.filter((x) => !sets.some((s) => s.id === x.id)), ...sets.map((s) => ({ ...s, id: s.id || `i-${Math.random().toString(36).slice(2, 8)}` }))]; save(local); render();
+      } catch (err) { alert(`가져오기 실패: ${err.message}`); }
+      e.target.value = "";
+    });
+    render();
+  </script>
+</body>
+</html>

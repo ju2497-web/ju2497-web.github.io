@@ -22,8 +22,26 @@ const J = {
   입: () => "입니다",
 };
 
-const SINO = /(작성|조사|분석|실험|발표|참여|진행|탐구|정리|제작|기획|운영|봉사|비교|측정|관찰|설계|해결|제안|개선|활동|공부|연구|토론|수행|배양|기록|참가|담당|발견|확인|계산|검토|구상|구현|개발|체험|견학|학습|노력|연습|도전|시도|협력|소통|설득|조율|결정|제출|준비)$/;
+const SINO = /(작성|조사|분석|실험|발표|참여|진행|탐구|정리|제작|기획|운영|봉사|비교|측정|관찰|설계|해결|제안|개선|활동|공부|연구|토론|수행|배양|기록|참가|담당|발견|확인|계산|검토|구상|구현|개발|체험|견학|학습|노력|연습|도전|시도|협력|소통|설득|조율|결정|제출|준비|완성|마무리|성공|향상|합의|화해|질문|보고|설명|사과|대화|실천|극복|공유|변경|조정)$/;
 const isSentence = (s) => /[다요]$/.test(s);
+
+// 명사형 어미 "-(으)ㅁ"을 과거 서술로: 기다림→기다렸습니다, 맞춤→맞췄습니다, 받음→받았습니다, 있음→있었습니다
+const CONTRACT = { 20: 6, 13: 14, 8: 9, 0: 0, 4: 4, 1: 1, 5: 5, 18: 4, 11: 10 };
+function nomToPast(s) {
+  const code = (ch) => ch.charCodeAt(0) - 0xac00;
+  const last = s.slice(-1), c = code(last);
+  if (c < 0 || c > 11171) return null;
+  if (last === "음" && s.length >= 2) {
+    const p = code(s.slice(-2, -1));
+    if (p < 0 || p > 11171 || p % 28 === 0) return null;
+    const vow = Math.floor((p % 588) / 28);
+    return s.slice(0, -1) + (vow === 0 || vow === 8 ? "았" : "었") + "습니다.";
+  }
+  if (c % 28 !== 16) return null; // 받침 ㅁ
+  const cho = Math.floor(c / 588), vow = Math.floor((c % 588) / 28);
+  if (!(vow in CONTRACT)) return null;
+  return s.slice(0, -1) + String.fromCharCode(0xac00 + cho * 588 + CONTRACT[vow] * 28 + 20) + "습니다.";
+}
 
 // 행동을 과거 서술로: "보고서를 작성" → "보고서를 작성했습니다."
 function past(s) {
@@ -34,6 +52,8 @@ function past(s) {
   if (/함$/.test(s)) return s.replace(/함$/, "했습니다.");
   if (/됨$/.test(s)) return s.replace(/됨$/, "되었습니다.");
   if (SINO.test(s)) return s + "했습니다.";
+  const n = nomToPast(s);
+  if (n) return n;
   if (/고$/.test(s)) return s + " 있었습니다.";
   return s + J.이었(s) + ".";
 }
@@ -346,3 +366,6 @@ export function buildAnswer(question, type, profile) {
     tips: TIPS[type] || TIPS.general,
   };
 }
+
+// 면접 코치(coach.html)에서 재사용하는 문장 도우미
+export { clean, J, isSentence, past, present, progressive, learned };
