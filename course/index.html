@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>코딩 0줄, 교수가 Claude로 만든 것들</title>
+<meta name="description" content="개발자가 아닌 대학교수가 Claude에게 한국어로 말해서 3일 만에 만든 판매 페이지 20개, 쇼츠 8편, 인스타툰 5편, 웹사이트 1개. 그 과정을 그대로 따라 하는 강의.">
+<meta property="og:title" content="코딩 0줄, 교수가 Claude로 3일 만에 만든 것들">
+<meta property="og:description" content="판매 페이지 20개 · 쇼츠 8편 · 인스타툰 5편 · 웹사이트 1개. 전부 '말로' 시켰습니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"NSK";src:url(fonts/NotoSansKR.ttf);font-weight:100 900}
+:root{--ink:#111;--muted:#555;--line:#e8e8e8;--brand:#ff5a3c;--brand-ink:#fff;--soft:#fff3ef;--dark:#121212;--gold:#ffd166}
+*{box-sizing:border-box;margin:0}
+body{background:#f2f2f2;color:var(--ink);font-family:"NSK","Noto Sans KR","Apple SD Gothic Neo",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.page{max-width:720px;margin:0 auto;background:#fff;padding-bottom:110px}
+section{padding:72px 28px}
+.center{text-align:center}
+h2{font-size:34px;line-height:1.35;font-weight:900;letter-spacing:-.02em}
+h3{font-size:24px;font-weight:900;line-height:1.4}
+.eyebrow{display:inline-block;font-weight:700;font-size:16px;color:var(--brand);margin-bottom:12px;letter-spacing:.04em}
+.mark{background:linear-gradient(transparent 58%,#ffe08a 58%)}
+.red{color:var(--brand)}
+img{display:block;width:100%;height:auto}
+.shot{border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.15);margin:22px 0 10px}
+.cap{font-size:15px;color:var(--muted);text-align:center}
+/* 히어로 */
+.hero{background:var(--dark);color:#fff;padding:56px 28px 0}
+.badge{display:inline-block;background:var(--brand);color:#fff;font-weight:900;font-size:15px;padding:6px 14px;border-radius:30px}
+.hero h1{font-size:44px;line-height:1.3;font-weight:900;margin:22px 0 16px;letter-spacing:-.03em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p.sub{font-size:19px;color:#ccc}
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:32px 0}
+.nums div{background:#222;border:1px solid #333;border-radius:14px;padding:14px 4px;text-align:center}
+.nums b{display:block;font-size:34px;font-weight:900;color:var(--gold);line-height:1.1}
+.nums span{font-size:13px;color:#bbb}
+.hero .shot{margin:0 -28px;border-radius:0;box-shadow:none;max-height:620px}
+.hero .shot img{object-fit:cover;object-position:top}
+/* 공감 */
+.chat{display:flex;flex-direction:column;gap:12px;margin-top:28px}
+.chat p{align-self:flex-start;background:#f1f1f1;border-radius:20px 20px 20px 4px;padding:14px 18px;font-size:18px;max-width:88%}
+.chat p:nth-child(even){align-self:flex-end;background:#fee500;border-radius:20px 20px 4px 20px}
+/* 반전 */
+.turn{background:var(--soft)}
+.big{font-size:40px;font-weight:900;line-height:1.3;margin:16px 0}
+.timeline{margin-top:30px;border-left:4px solid var(--brand);padding-left:22px}
+.timeline div{margin-bottom:22px}
+.timeline b{display:block;color:var(--brand);font-size:15px}
+.timeline span{font-size:19px;font-weight:700}
+/* 증거 */
+.proof h3{margin-top:46px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* 차별점 */
+.diff{background:var(--dark);color:#fff}
+.card3{display:grid;gap:14px;margin-top:28px}
+.card3 div{background:#1f1f1f;border:1px solid #333;border-radius:16px;padding:22px}
+.card3 b{color:var(--gold);font-size:20px;display:block;margin-bottom:6px}
+.card3 p{color:#ccc;font-size:17px}
+/* 커리큘럼 */
+.cur{margin-top:26px;border:2px solid var(--ink);border-radius:18px;overflow:hidden}
+.cur div{display:flex;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);align-items:flex-start}
+.cur div:last-child{border-bottom:0}
+.cur i{font-style:normal;flex:0 0 52px;font-weight:900;color:var(--brand)}
+.cur span{font-size:17px}
+.cur small{display:block;color:var(--muted);font-size:14px}
+/* 대상 */
+.who{display:grid;gap:14px;margin-top:26px}
+.who div{border-radius:16px;padding:20px 22px}
+.who .yes{background:#ecfdf3}.who .no{background:#f5f5f5}
+.who li{margin:6px 0 6px 18px;font-size:17px}
+/* 강사 */
+.teacher{background:var(--soft)}
+.teacher ul{margin-top:18px;padding-left:20px}
+.teacher li{font-size:18px;margin:6px 0}
+/* 가격 */
+.price{background:var(--dark);color:#fff}
+.pbox{background:#fff;color:var(--ink);border-radius:22px;padding:30px 24px;margin-top:26px;text-align:center}
+.pbox s{color:#999;font-size:20px}
+.pbox .now{font-size:52px;font-weight:900;color:var(--brand);line-height:1.2}
+.pbox .now small{font-size:22px}
+.pbox ul{text-align:left;margin:20px 0 24px;padding-left:22px}
+.pbox li{margin:6px 0;font-size:17px}
+.btn{display:block;width:100%;border:0;border-radius:16px;background:var(--brand);color:#fff;font:inherit;font-size:22px;font-weight:900;padding:20px;text-align:center;text-decoration:none;cursor:pointer}
+.limit{margin-top:12px;font-size:15px;color:var(--brand);font-weight:700}
+/* FAQ */
+.faq details{border-bottom:1px solid var(--line);padding:16px 0}
+.faq summary{font-weight:700;font-size:18px;cursor:pointer}
+.faq p{margin-top:8px;color:var(--muted)}
+.notice{font-size:13px;color:#999;padding:24px 28px 40px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);border-top:1px solid var(--line);z-index:5}
+.bar .in{max-width:688px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.bar .p{flex:0 0 auto;font-weight:900;line-height:1.2}
+.bar .p s{display:block;font-size:12px;color:#999;font-weight:400}
+.bar .btn{font-size:19px;padding:16px}
+@media (max-width:480px){.hero h1{font-size:34px}h2{font-size:28px}.big{font-size:32px}.nums b{font-size:26px}.pbox .now{font-size:42px}}
+.render .bar{display:none}.render .page{padding-bottom:0}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <span class="badge">🔥 얼리버드 선착순 100명</span>
+  <h1>코딩 0줄.<br>대학교수가 <em>3일 동안</em><br>Claude에게 <em>‘말로’</em> 시켜서<br>만든 것들</h1>
+  <p class="sub">저는 개발자가 아닙니다. 임상병리학과 교수입니다.</p>
+  <div class="nums">
+    <div><b>20</b><span>판매 페이지</span></div>
+    <div><b>8</b><span>쇼츠 영상</span></div>
+    <div><b>5</b><span>인스타툰</span></div>
+    <div><b>1</b><span>웹사이트</span></div>
+  </div>
+  <div class="shot"><img src="img/lab-list.jpg" alt="Claude로 만든 판매 페이지 목록"></div>
+</header>
+
+<section class="center">
+  <span class="eyebrow">혹시 이런 생각, 해 보셨나요?</span>
+  <h2>“AI로 돈 번다는데,<br><span class="mark">왜 나만 못 하지?</span>”</h2>
+  <div class="chat">
+    <p>AI로 부업한다는 영상만 수십 개 봤어요</p>
+    <p>코딩을 배워야 하나… 이 나이에?</p>
+    <p>따라 하다가 영어 오류 메시지 뜨면 끝이에요</p>
+    <p>아이디어는 있는데 만들 줄을 몰라요</p>
+  </div>
+</section>
+
+<section class="turn center">
+  <span class="eyebrow">저도 똑같았습니다</span>
+  <p class="big">그런데 Claude에게<br><span class="red">한국어로 말만 했더니</span></p>
+  <div class="timeline" style="text-align:left">
+    <div><b>1일차</b><span>유튜브 영상 요약을 붙여넣었더니 → 퀴즈 게임 사이트가 생겼습니다</span></div>
+    <div><b>2일차</b><span>“돈 되는 아이디어 찾아줘” → 실제 매출 데이터를 조사해 왔습니다</span></div>
+    <div><b>3일차</b><span>판매 페이지 20개, 쇼츠 8편, 인스타툰 5편이 한꺼번에 나왔습니다</span></div>
+  </div>
+</section>
+
+<section class="proof">
+  <div class="center"><span class="eyebrow">말이 아니라 결과로 보여드립니다</span>
+  <h2>전부 실제로<br>만든 화면입니다</h2></div>
+
+  <h3>① 1시간 만에 만든 웹사이트</h3>
+  <div class="pair"><div class="shot"><img src="img/site-quiz.jpg" alt="퀴즈 게임 사이트"></div>
+  <div style="align-self:center"><p style="font-size:18px">국가고시 퀴즈 게임과 단위 환산기.<br><b>“영상 요약 보고 수익형 사이트 하나 만들어 줘”</b> 한 줄이 시작이었습니다.</p></div></div>
+
+  <h3>② 판매 페이지 20개 공장</h3>
+  <div class="pair">
+    <div class="shot"><img src="img/lab-anchor.jpg" alt="판매 페이지 예시 1"></div>
+    <div class="shot"><img src="img/lab-spouse.jpg" alt="판매 페이지 예시 2"></div>
+  </div>
+  <p class="cap">문구 · 가격 · 결제 버튼 · 광고 문구까지. 아이디어만 말하면 페이지가 나옵니다.</p>
+
+  <h3>③ 캐릭터 그림부터 쇼츠 영상까지</h3>
+  <div class="shot"><img src="img/toon.jpg" alt="인스타툰 4컷"></div>
+  <div class="shot"><img src="img/shorts-animal.jpg" alt="쇼츠 영상 장면"></div>
+
+  <h3>④ 명언 쇼츠 여러 편을 한 번에</h3>
+  <div class="shot"><img src="img/shorts-philo.jpg" alt="철학 명언 쇼츠 장면"></div>
+</section>
+
+<section class="diff">
+  <div class="center"><span class="eyebrow" style="color:var(--gold)">이 강의가 다른 이유</span>
+  <h2>“이렇게 하면 됩니다”가 아니라<br><span style="color:var(--gold)">“제가 이렇게 했습니다”</span></h2></div>
+  <div class="card3">
+    <div><b>① 코딩 설명 0분</b><p>프로그래밍 문법은 한 줄도 가르치지 않습니다. Claude에게 무엇을, 어떻게 말하는지만 배웁니다.</p></div>
+    <div><b>② 실패까지 전부 공개</b><p>숨고·크몽에서 건당 노동만 하다 지친 이야기, 아이디어 10개를 갈아엎은 과정까지 보여드립니다. 같은 시행착오를 건너뛰세요.</p></div>
+    <div><b>③ 만든 도구를 그대로 드립니다</b><p>판매 페이지 공장, 쇼츠 자동 제작 도구를 받아서 내 아이디어만 넣으면 됩니다.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="center"><span class="eyebrow">커리큘럼</span><h2>따라만 오시면<br>내 것이 나옵니다</h2></div>
+  <div class="cur">
+    <div><i>00</i><span>코딩 0줄로 가능한 이유<small>Claude는 ‘말로 일하는 직원’입니다</small></span></div>
+    <div><i>01</i><span>Claude에게 일 잘 시키는 말 공식<small>한 번에 원하는 결과가 나오는 요청법</small></span></div>
+    <div><i>02</i><span>1시간 만에 내 웹사이트 만들고 무료로 공개하기<small>퀴즈 게임 · 계산기 실습</small></span></div>
+    <div><i>03</i><span>판매 페이지 공장 만들기<small>아이디어 → 페이지 → 광고 문구 자동 생성</small></span></div>
+    <div><i>04</i><span>돈 낼 사람이 있는지 3일 만에 확인하기<small>만들기 전에 먼저 파는 ‘가짜 문 테스트’</small></span></div>
+    <div><i>05</i><span>인스타툰 · 쇼츠 한 번에 여러 편 만들기<small>캐릭터, 대본, 영상 파일까지</small></span></div>
+    <div><i>06</i><span>실사 AI 영상 연결하기<small>Claude가 만든 대본으로 영상 AI 돌리기</small></span></div>
+    <div><i>07</i><span>수익 연결과 솔직한 실패 기록<small>무엇이 안 됐고, 왜 안 됐는지</small></span></div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="who">
+    <div class="yes"><h3>✅ 이런 분께 추천합니다</h3><ul>
+      <li>코딩은 모르지만 AI로 뭔가 만들어 보고 싶은 분</li>
+      <li>아이디어는 많은데 실행이 막혀 있던 분</li>
+      <li>강사 · 교사 · 1인 사업자처럼 내 콘텐츠가 있는 분</li></ul></div>
+    <div class="no"><h3>🙅 이런 분께는 맞지 않습니다</h3><ul>
+      <li>버튼 하나로 월 천만 원을 원하시는 분</li>
+      <li>수익 보장을 기대하시는 분</li></ul></div>
+  </div>
+</section>
+
+<section class="teacher">
+  <span class="eyebrow">강사 소개</span>
+  <h2>OOO 교수</h2>
+  <ul>
+    <li>현직 대학교 임상병리학과 교수</li>
+    <li>대학 입학처장 역임</li>
+    <li>대학 · 기관 특강 및 이러닝 과정 다수 제작</li>
+    <li>개발 경력 <b>0년</b></li>
+  </ul>
+</section>
+
+<section class="price">
+  <div class="center"><span class="eyebrow" style="color:var(--gold)">얼리버드 특가</span><h2>지금 신청하면</h2></div>
+  <div class="pbox">
+    <s>정가 149,000원</s>
+    <div class="now">69,000<small>원</small></div>
+    <ul>
+      <li>강의 8개 챕터 평생 소장</li>
+      <li>판매 페이지 공장 템플릿</li>
+      <li>쇼츠 · 인스타툰 제작 도구</li>
+      <li>강의에 쓴 요청문(프롬프트) 모음</li>
+      <li>업데이트되는 새 실습 무료 제공</li>
+    </ul>
+    <a class="btn" href="#buy" data-buy>얼리버드로 지금 시작하기</a>
+    <p class="limit">선착순 100명 마감 시 정가로 전환됩니다</p>
+  </div>
+</section>
+
+<section class="faq">
+  <h2 style="margin-bottom:12px">자주 묻는 질문</h2>
+  <details><summary>컴퓨터를 잘 못 다뤄도 되나요?</summary><p>복사 · 붙여넣기를 할 수 있으면 됩니다. 모든 과정을 화면으로 따라 하도록 구성했습니다.</p></details>
+  <details><summary>따로 돈이 드는 게 있나요?</summary><p>Claude 유료 요금제가 필요할 수 있습니다. 실사 영상 AI는 선택 사항이며 사용량만큼 요금이 듭니다. 강의에서 무료로 할 수 있는 범위부터 안내합니다.</p></details>
+  <details><summary>맥 · 윈도우 모두 되나요?</summary><p>네, 웹 브라우저로 진행합니다.</p></details>
+  <details><summary>환불되나요?</summary><p>판매 플랫폼의 환불 규정을 따릅니다.</p></details>
+</section>
+
+<p class="notice">※ 소개된 결과물은 강사가 실제로 만든 것입니다. 강의는 제작 방법을 알려 드리며 수익을 보장하지 않습니다.</p>
+</div>
+
+<div class="bar"><div class="in"><div class="p"><s>149,000원</s>69,000원</div><a class="btn" href="#buy" data-buy>얼리버드 신청하기</a></div></div>
+<script>if (location.hash === "#render") document.documentElement.classList.add("render");</script>
+</body>
+</html>
