@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>회식하는 동물들 스튜디오</title>
+<style>
+@font-face{font-family:"Jua";src:url(fonts/Jua-Regular.ttf)}
+@font-face{font-family:"Do Hyeon";src:url(fonts/DoHyeon-Regular.ttf)}
+*{box-sizing:border-box;margin:0}
+body{background:#fff7ed;font-family:"Jua",sans-serif;color:#1c1917;overflow:hidden}
+.panel{position:relative;width:510px;height:565px;border:4px solid #1c1917;border-radius:16px;overflow:hidden;background:#fff}
+.panel svg{position:absolute;inset:0;display:block}
+.narr{position:absolute;left:12px;top:12px;background:#fde047;border:3px solid #1c1917;border-radius:8px;padding:3px 10px;font-family:"Do Hyeon";font-size:22px;z-index:3;max-width:480px}
+.b{position:absolute;background:#fff;border:3px solid #1c1917;border-radius:22px;padding:9px 14px;font-size:24px;line-height:1.25;text-align:center;white-space:pre-line;z-index:2;transform-origin:50% 100%}
+.b .tail{position:absolute;width:20px;height:20px;background:inherit;border-right:3px solid #1c1917;border-bottom:3px solid #1c1917;transform:rotate(45deg);bottom:-12px;left:calc(50% - 10px)}
+.b .tail.l{left:30px}.b .tail.r{left:auto;right:30px}
+.b.shout{font-size:31px;color:#b91c1c;border-width:4px;background:#fff7ed}
+.b.shout .tail{border-width:0 4px 4px 0}
+.b.think{border-style:dashed;border-radius:40px;background:#f1f5f9}
+.b.msg{width:auto!important;max-width:480px;background:#fff;border:none;border-radius:16px;padding:10px 14px;text-align:left;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.b.msg .from{font-size:17px;color:#57534e;margin-bottom:4px}
+.b.msg .txt{display:inline-block;background:#fee500;border-radius:12px;padding:6px 12px;font-size:23px}
+.b.sfx{background:none;border:none;font-family:"Do Hyeon";font-size:42px;color:#f59e0b;-webkit-text-stroke:2px #fff;paint-order:stroke fill;transform:rotate(-8deg);padding:0}
+/* 4컷 */
+.comic{width:1080px;height:1350px;padding:0 20px;position:relative}
+.comic header{height:150px;display:flex;flex-direction:column;justify-content:center}
+.series{font-family:"Do Hyeon";font-size:30px;color:#c2410c}
+.eptitle{font-size:58px;line-height:1.1}
+.grid{display:grid;grid-template-columns:510px 510px;gap:20px}
+.handle{position:absolute;right:24px;bottom:4px;font-size:20px;color:#a8a29e}
+/* 쇼츠 */
+.video{width:1080px;height:1920px;position:relative}
+.video header{position:absolute;top:120px;left:0;right:0;text-align:center}
+.video header .series{font-size:44px}
+.video header .eptitle{font-size:84px}
+.stage{position:absolute;left:30px;top:340px;width:1020px;height:1130px}
+.stage .panel{position:absolute;left:0;top:0;zoom:2;opacity:0}
+.dots{position:absolute;top:1510px;left:0;right:0;display:flex;justify-content:center;gap:18px}
+.dots i{width:22px;height:22px;border-radius:50%;background:#e7e5e4;display:block}
+.dots i.on{background:#ea580c}
+.vfoot{position:absolute;bottom:150px;left:0;right:0;text-align:center;font-size:38px;color:#78716c}
+.end{position:absolute;inset:0;background:#1e1b4b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;text-align:center}
+.end h2{font-size:96px;line-height:1.15}
+.end p{font-size:44px;color:#fde047;margin-top:24px}
+.end svg{margin-top:50px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="characters.js"></script>
+<script src="episodes.js"></script>
+<script src="studio.js"></script>
+</body>
+</html>
