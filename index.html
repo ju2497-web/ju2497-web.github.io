@@ -43,6 +43,11 @@
   h2 { font-size: clamp(24px, 5vw, 32px); margin: 0 0 20px; }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; margin: 14px 0; }
   .q { border-left: 4px solid var(--accent); padding-left: 14px; font-weight: 500; margin: 10px 0; }
+  .jobs { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .job { display: flex; flex-direction: column; gap: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; text-decoration: none; color: var(--text); }
+  .job b { font-size: 17px; } .job small { color: var(--muted); font-size: 13px; }
+  .job span { margin-top: 8px; font-weight: 900; color: var(--good); }
+  .job.off { opacity: .6; pointer-events: none; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
   .grid .card { margin: 0; }
   .grid .card b { display: block; font-size: 15px; color: var(--muted); }
@@ -109,6 +114,23 @@
   <details><summary>병원마다 질문이 다르지 않나요?</summary><p>병원별 질문은 다르지만 평가하는 원칙(환자안전, 보고 체계, 조직 적응력)은 같습니다. 이 책은 그 원칙으로 답하는 법을 다룹니다. 각 병원의 지침이 항상 우선합니다.</p></details>
   <details><summary>합격이 보장되나요?</summary><p>보장하지 않습니다. 준비 방향과 답변 구조를 제공합니다.</p></details>
 </div></section>
+<section id="jobs"><div class="wrap">
+  <h2>내 직종만 필요하다면</h2>
+  <p>핵심 10문항 + 내 직종 직무 12문항(전부 모범 답변) + 워크북. PDF 16쪽, 각 4,900원입니다.</p>
+  <div class="jobs">
+    <a class="job" data-job="nurse" href="#jobs"><b>간호사</b><small>투약 · 환자 확인 · 낙상</small><span>4,900원 →</span></a>
+    <a class="job" data-job="clinical-lab" href="#jobs"><b>임상병리사</b><small>검체 · 정도관리 · 위험값</small><span>4,900원 →</span></a>
+    <a class="job" data-job="radiology" href="#jobs"><b>방사선사</b><small>방어 원칙 · 조영제</small><span>4,900원 →</span></a>
+    <a class="job" data-job="physical-therapy" href="#jobs"><b>물리치료사</b><small>평가 · 금기 · 낙상</small><span>4,900원 →</span></a>
+    <a class="job" data-job="dental-hygiene" href="#jobs"><b>치과위생사</b><small>감염관리 · 멸균</small><span>4,900원 →</span></a>
+    <a class="job" data-job="nurse-aide" href="#jobs"><b>간호조무사</b><small>업무 범위 · 활력징후</small><span>4,900원 →</span></a>
+    <a class="job" data-job="emt" href="#jobs"><b>응급구조사</b><small>현장 안전 · CPR</small><span>4,900원 →</span></a>
+    <a class="job" data-job="occupational-therapy" href="#jobs"><b>작업치료사</b><small>일상생활 · 인지 · 연하</small><span>4,900원 →</span></a>
+    <a class="job" data-job="hospital-admin" href="#jobs"><b>병원 행정·원무</b><small>본인 확인 · 수납 · 청구</small><span>4,900원 →</span></a>
+  </div>
+  <p class="muted" style="margin-top:14px">두 개 이상 직종이 필요하거나 공통 질문 30까지 원하시면 완전판(148문항)이 더 저렴합니다.</p>
+</div></section>
+
 <section class="final" id="buy"><div class="wrap">
   <h2>하반기 채용 시즌 가격은 12월 31일까지</h2>
   <a class="btn buy" href="#buy">PDF 받기</a>
@@ -122,12 +144,21 @@
   const CONFIG = {
     buyUrl: "",         // 크몽·래피드 등 판매 페이지 주소
     serviceUrl: "",     // 원고 정밀진단 서비스 주소
+    jobUrls: {          // 직종별 낱권 판매 페이지 주소
+      "nurse": "", "clinical-lab": "", "radiology": "", "physical-therapy": "", "dental-hygiene": "",
+      "nurse-aide": "", "emt": "", "occupational-therapy": "", "hospital-admin": ""
+    },
     price: 9900,        // 현재 판매가(원)
     priceRule: "12월 31일까지 · 1월부터 14,900원"
   };
   const won = n => n.toLocaleString('ko-KR') + '원';
   document.querySelectorAll('.price-now').forEach(el => el.textContent = won(CONFIG.price));
   document.querySelectorAll('.price-rule').forEach(el => el.textContent = CONFIG.priceRule);
+  document.querySelectorAll('.job').forEach(el => {
+    const url = CONFIG.jobUrls[el.dataset.job];
+    if (url) { el.href = url; el.target = '_blank'; el.rel = 'noopener'; }
+    else { el.classList.add('off'); el.querySelector('span').textContent = '곧 오픈합니다'; }
+  });
   document.querySelectorAll('.buy').forEach(el => {
     if (CONFIG.buyUrl) { el.href = CONFIG.buyUrl; el.target = '_blank'; el.rel = 'noopener'; }
     else { el.textContent = '곧 오픈합니다'; el.removeAttribute('href'); el.style.opacity = .7; }
