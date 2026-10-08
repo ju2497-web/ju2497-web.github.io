@@ -1,0 +1,511 @@
+<title>면접 30초 노트 펀딩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: 크라우드펀딩 프로젝트 페이지 구조. 상단 요약(달성률·남은 일수·리워드) → 고정 탭 → 스토리 → 진행 일정 → 리워드 → 메이커 → 정책 → Q&A. 모바일은 하단 고정 '참여하기' 바. */
+:root {
+  --bg: #ffffff;
+  --sub: #f5f6f7;
+  --fg: #1c2024;
+  --soft: #6b7178;
+  --line: #e6e8ea;
+  --mint: #00b2b2;
+  --mint-deep: #008f8f;
+  --mint-bg: #e6f7f7;
+  --mint-ink: #ffffff;
+  --coral: #ff5a4f;
+  --yellow: #ffe14d;
+  --yellow-ink: #1c2024;
+  --night: #14181c;
+  --night-ink: #f3f5f6;
+  --font: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101417; --sub: #181d21; --fg: #f1f3f4; --soft: #9aa2a9; --line: #272d33;
+    --mint: #1fcfcf; --mint-deep: #1fcfcf; --mint-bg: #12302f; --mint-ink: #08201f; --coral: #ff7a70;
+    --night: #070a0c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101417; --sub: #181d21; --fg: #f1f3f4; --soft: #9aa2a9; --line: #272d33;
+  --mint: #1fcfcf; --mint-deep: #1fcfcf; --mint-bg: #12302f; --mint-ink: #08201f; --coral: #ff7a70;
+  --night: #070a0c; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16.5px; line-height: 1.8; margin: 0; padding-block: 0 92px; word-break: keep-all; }
+.wrap { max-width: 720px; margin-inline: auto; padding-inline: 20px; }
+h1, h2, h3, p { margin: 0; }
+h2 { font-size: clamp(24px, 6.2vw, 32px); font-weight: 900; letter-spacing: -.03em; line-height: 1.38; text-wrap: balance; }
+h3 { font-size: 18px; font-weight: 900; letter-spacing: -.02em; }
+.soft { color: var(--soft); }
+.hl { background: linear-gradient(transparent 60%, var(--yellow) 60%); color: inherit; padding-inline: 2px; }
+.mint { color: var(--mint-deep); }
+.todo { display: inline-block; font-family: var(--mono); font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--yellow-ink); padding: 1px 8px; border-radius: 4px; line-height: 1.6; }
+.chip { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 4px; background: var(--sub); color: var(--soft); }
+.chip.m { background: var(--mint-bg); color: var(--mint-deep); }
+
+/* 상단 요약 */
+.top { padding-block: 22px 8px; }
+.top .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.top h1 { font-size: clamp(25px, 6.6vw, 34px); font-weight: 900; letter-spacing: -.035em; line-height: 1.35; text-wrap: balance; }
+.top .maker-line { margin-top: 10px; font-size: 14px; color: var(--soft); }
+.cover { margin-top: 18px; border-radius: 14px; overflow: hidden; background: var(--night); color: var(--night-ink); padding: 26px 22px 22px; position: relative; }
+.cover .eyebrow { font-size: 12.5px; font-weight: 700; color: var(--mint); letter-spacing: .06em; }
+.cover .headline { font-size: clamp(26px, 7.4vw, 38px); font-weight: 900; letter-spacing: -.035em; line-height: 1.32; margin-block: 8px 18px; text-wrap: balance; }
+.mini-sheet { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.18); border-radius: 10px; padding: 6px 14px; }
+.mini-sheet .r { display: grid; grid-template-columns: 1fr auto; gap: 12px; padding-block: 9px; border-bottom: 1px dashed rgba(255,255,255,.2); font-size: 14px; min-width: 0; }
+.mini-sheet .r:last-child { border-bottom: 0; }
+.mini-sheet b { font-family: var(--mono); font-weight: 700; }
+.mini-sheet .bad { color: #ff8c82; }
+.cover .stamp { position: absolute; right: 16px; top: 18px; transform: rotate(8deg); border: 2px solid #ff8c82; color: #ff8c82; font-weight: 900; font-size: 15px; padding: 1px 9px; border-radius: 4px; }
+
+.stats { margin-top: 18px; }
+.stats .money { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.stats .pct { font-size: 34px; font-weight: 900; color: var(--mint-deep); letter-spacing: -.03em; line-height: 1.1; }
+.stats .amt { font-size: 18px; font-weight: 700; }
+.bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin-block: 10px 14px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--mint); border-radius: 999px; transition: width .5s; }
+.nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.nums div { background: var(--sub); border-radius: 10px; padding: 10px 8px; text-align: center; }
+.nums b { display: block; font-size: 20px; font-weight: 900; letter-spacing: -.02em; line-height: 1.3; font-variant-numeric: tabular-nums; }
+.nums span { font-size: 12.5px; color: var(--soft); }
+.stats .note { font-size: 12.5px; color: var(--soft); margin-top: 8px; }
+
+.actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 16px; }
+.btn { display: flex; align-items: center; justify-content: center; text-decoration: none; text-align: center; border: 0; font-family: inherit; font-size: 17px; font-weight: 900; line-height: 1.4; padding: 16px 20px; border-radius: 10px; cursor: pointer; background: var(--mint); color: var(--mint-ink); width: 100%; }
+.btn.line { background: var(--bg); color: var(--fg); border: 1px solid var(--line); font-weight: 700; font-size: 15px; padding: 13px; }
+.btn:focus-visible, .tab:focus-visible, .rw:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+/* 탭 */
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); margin-top: 22px; }
+.tabs-in { max-width: 720px; margin-inline: auto; display: flex; overflow-x: auto; padding-inline: 8px; scrollbar-width: none; }
+.tabs-in::-webkit-scrollbar { display: none; }
+.tab { flex: 0 0 auto; text-decoration: none; color: var(--soft); font-weight: 700; font-size: 15px; padding: 14px 14px 12px; border-bottom: 3px solid transparent; white-space: nowrap; }
+.tab.on { color: var(--fg); border-bottom-color: var(--mint); }
+
+/* 스토리 */
+.sec { padding-block: 52px; }
+.sec + .sec { border-top: 8px solid var(--sub); }
+.sec-title { font-size: 13px; font-weight: 900; color: var(--mint-deep); letter-spacing: .06em; display: block; margin-bottom: 8px; }
+.story { text-align: center; }
+.story .stmt { font-size: clamp(22px, 5.8vw, 30px); font-weight: 900; letter-spacing: -.035em; line-height: 1.5; text-wrap: balance; }
+.story .stmt + .stmt, .story .stmt + p, .story p + .stmt { margin-top: 1.3em; }
+.story p { font-size: 17.5px; color: var(--soft); }
+.story p + p { margin-top: 1em; }
+.story .gap { height: 56px; }
+.big-card { margin-top: 26px; border-radius: 14px; background: var(--night); color: var(--night-ink); padding: 30px 22px; }
+.big-card .stmt { color: var(--night-ink); }
+.big-card p { color: rgba(243,245,246,.72); }
+
+.ask { text-align: left; display: grid; gap: 10px; margin-top: 24px; padding: 0; list-style: none; }
+.ask li { display: grid; grid-template-columns: 26px 1fr; gap: 12px; background: var(--sub); border-radius: 12px; padding: 14px 16px; font-weight: 500; }
+.ask li::before { content: "?"; width: 24px; height: 24px; border-radius: 50%; background: var(--coral); color: #fff; font-weight: 900; font-size: 14px; display: grid; place-content: center; margin-top: 2px; }
+
+.point { text-align: left; margin-top: 28px; background: var(--mint-bg); border-radius: 14px; padding: 22px 20px; }
+.point .k { font-size: 13px; font-weight: 900; color: var(--mint-deep); letter-spacing: .06em; }
+.point h3 { font-size: 21px; margin-block: 4px 8px; line-height: 1.45; }
+.point p { font-size: 16px; color: var(--fg); text-align: left; }
+
+.chat { text-align: left; background: var(--sub); border-radius: 14px; padding: 16px; margin-top: 24px; display: grid; gap: 10px; }
+.chat-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; font-size: 12px; font-weight: 700; color: var(--soft); }
+.b { max-width: 90%; padding: 10px 14px; border-radius: 16px; font-size: 15px; line-height: 1.65; color: var(--fg); }
+.b .who { display: block; font-size: 11.5px; font-weight: 900; opacity: .6; }
+.b.ai { background: var(--bg); border-bottom-left-radius: 4px; }
+.b.me { background: var(--mint); color: var(--mint-ink); margin-left: auto; border-bottom-right-radius: 4px; }
+.score { border: 2px dashed var(--coral); border-radius: 12px; padding: 12px 14px; font-size: 14.5px; color: var(--fg); background: color-mix(in srgb, var(--coral) 7%, transparent); }
+.score b { color: var(--coral); }
+
+.ba { display: grid; gap: 12px; margin-top: 24px; text-align: left; }
+.ba > div { border-radius: 12px; padding: 18px; background: var(--sub); }
+.ba .lab { display: block; font-size: 12px; font-weight: 900; letter-spacing: .06em; margin-bottom: 6px; }
+.ba .bad .lab { color: var(--coral); }
+.ba .good { background: var(--mint); color: var(--mint-ink); }
+.ba q { display: block; quotes: none; font-weight: 700; font-size: 16px; line-height: 1.65; }
+
+.prompt { text-align: left; background: var(--night); color: var(--night-ink); border-radius: 12px; padding: 16px; font-family: var(--mono); font-size: 13px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; margin-top: 22px; }
+.prompt em { font-style: normal; color: var(--yellow); }
+.copy-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; text-align: left; }
+.copy { font: inherit; font-weight: 900; font-size: 14.5px; padding: 11px 16px; border-radius: 8px; border: 1px solid var(--mint); background: var(--bg); color: var(--mint-deep); cursor: pointer; }
+.copy:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+.toc { list-style: none; padding: 0; margin: 22px 0 0; text-align: left; border-top: 2px solid var(--fg); }
+.toc li { display: grid; grid-template-columns: 54px 1fr; gap: 10px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.toc .ch { font-family: var(--mono); font-weight: 700; color: var(--mint-deep); font-size: 13.5px; padding-top: 3px; }
+.toc b { display: block; font-size: 16.5px; letter-spacing: -.02em; }
+.toc span { color: var(--soft); font-size: 14px; }
+.toc .free { font-size: 11px; font-weight: 900; background: var(--yellow); color: var(--yellow-ink); padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+
+/* 일정 */
+.sched { list-style: none; margin: 22px 0 0; padding: 0; }
+.sched li { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding-block: 14px; border-bottom: 1px solid var(--line); align-items: start; }
+.sched .d { font-family: var(--mono); font-weight: 700; font-size: 14px; color: var(--mint-deep); font-variant-numeric: tabular-nums; }
+.sched b { display: block; }
+.sched span { color: var(--soft); font-size: 14.5px; }
+
+/* 리워드 */
+.rws { display: grid; gap: 12px; margin-top: 22px; }
+.rw { display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 18px 18px 16px; cursor: pointer; }
+.rw[aria-pressed="true"] { border-color: var(--mint); background: var(--mint-bg); }
+.rw .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.rw .price { font-size: 26px; font-weight: 900; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.rw .price s { font-size: 14px; color: var(--soft); font-weight: 500; margin-left: 6px; }
+.rw .name { font-weight: 900; font-size: 17px; margin-top: 4px; letter-spacing: -.02em; }
+.rw ul { margin: 10px 0 0; padding-left: 1.1em; font-size: 14.5px; color: var(--soft); }
+.rw .meta { margin-top: 10px; font-size: 12.5px; color: var(--soft); display: flex; gap: 6px; flex-wrap: wrap; }
+.rw .tag { font-size: 12px; font-weight: 900; background: var(--coral); color: #fff; padding: 2px 9px; border-radius: 999px; }
+
+/* 메이커 */
+.maker { display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: center; margin-top: 18px; }
+.avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--mint); color: var(--mint-ink); display: grid; place-content: center; font-weight: 900; font-size: 22px; }
+.maker-list { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+.maker-list li { background: var(--sub); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+
+/* 정책 */
+.policy h3 { margin-top: 24px; margin-bottom: 8px; }
+.policy ul { margin: 0; padding-left: 1.1em; color: var(--soft); font-size: 15px; }
+.policy li { margin-bottom: 4px; }
+
+details { border-bottom: 1px solid var(--line); padding-block: 15px; }
+details:first-of-type { border-top: 1px solid var(--line); margin-top: 20px; }
+summary { cursor: pointer; font-weight: 700; list-style: none; display: grid; grid-template-columns: 24px 1fr 20px; gap: 8px; }
+summary::before { content: "Q"; font-weight: 900; color: var(--mint-deep); }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; text-align: right; font-family: var(--mono); color: var(--soft); }
+details[open] summary::after { content: "−"; }
+summary:focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+details p { color: var(--soft); font-size: 15.5px; margin: 10px 0 0 32px; }
+
+.foot { background: var(--sub); padding-block: 30px 20px; font-size: 12.5px; color: var(--soft); line-height: 1.7; }
+.foot h3 { font-size: 13px; color: var(--fg); margin-bottom: 4px; }
+.foot ul { margin: 0 0 14px; padding-left: 1.1em; }
+
+/* 하단 바 */
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--bg); border-top: 1px solid var(--line); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); }
+.dock-in { max-width: 720px; margin-inline: auto; display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; }
+.dock .l { text-align: center; font-size: 11.5px; color: var(--soft); line-height: 1.3; padding-inline: 4px; }
+.dock .l b { display: block; font-size: 17px; color: var(--mint-deep); font-weight: 900; }
+.dock .btn { padding: 14px 16px; font-size: 16px; }
+
+@media (min-width: 640px) { .ba { grid-template-columns: 1fr 1fr; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .bar i { transition: none; } }
+</style>
+
+<main>
+<!-- 상단 요약 -->
+<header class="top">
+  <div class="wrap">
+    <div class="tags"><span class="chip m">전자책·입시</span><span class="chip">2026 수시 면접 시즌</span><span class="chip" id="dday">D-?</span></div>
+    <h1>입학처장이 면접장 밖으로 꺼내 온 평가표, 면접 30초 노트</h1>
+    <p class="maker-line">메이커 · 입학처장 출신 교수 <span class="todo">이름 기입</span></p>
+
+    <div class="cover" aria-label="상품 소개 이미지">
+      <span class="eyebrow">면접 점수는 첫 30초에 기웁니다</span>
+      <p class="headline">외운 답은<br>1분 안에 티가 납니다.</p>
+      <div class="mini-sheet">
+        <div class="r"><span>전공 적합성</span><b>17 / 20</b></div>
+        <div class="r"><span>학업 역량</span><b>15 / 20</b></div>
+        <div class="r"><span>태도·인성</span><b class="bad">9 / 20</b></div>
+        <div class="r"><span>꼬리질문 대응</span><b class="bad">8 / 20</b></div>
+      </div>
+      <span class="stamp" aria-hidden="true">감점</span>
+    </div>
+
+    <div class="stats">
+      <div class="money"><span class="pct" id="pct">0%</span><span class="amt" id="amt">0원 달성</span></div>
+      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="pbar"><i id="pfill"></i></div>
+      <div class="nums">
+        <div><b id="supporters">0명</b><span>참여한 분</span></div>
+        <div><b id="nowprice">9,900원</b><span>지금 가격</span></div>
+        <div><b id="left">-</b><span>남은 기간</span></div>
+      </div>
+      <p class="note">전자책(PDF)은 결제 직후 다운로드됩니다. 가격은 1권 판매될 때마다 1,000원씩 오릅니다.</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="#rewards" data-go="rewards">참여하기</a>
+      <a class="btn line" data-buy href="#">무료 샘플 먼저 받기</a>
+    </div>
+  </div>
+</header>
+
+<!-- 탭 -->
+<nav class="tabs" aria-label="프로젝트 구성">
+  <div class="tabs-in">
+    <a class="tab on" href="#story">스토리</a>
+    <a class="tab" href="#schedule">진행 일정</a>
+    <a class="tab" href="#rewards">리워드</a>
+    <a class="tab" href="#maker">메이커</a>
+    <a class="tab" href="#policy">정책</a>
+    <a class="tab" href="#qna">Q&amp;A</a>
+  </div>
+</nav>
+
+<!-- 스토리 -->
+<section class="sec" id="story">
+  <div class="wrap story">
+    <p class="stmt">면접이 일주일 남았습니다.</p>
+    <p class="stmt">새벽 2시, 아이 방의 불이 아직 켜져 있습니다.</p>
+    <p>자기소개서를 열 번째 읽는 아이.<br>방문을 열면 “괜찮아” 하고 웃습니다.<br>그 웃음이 괜찮지 않다는 걸 부모는 압니다.</p>
+    <div class="gap"></div>
+    <p class="stmt">“면접에서 뭘 물어볼지 알면<br>덜 무서울 텐데.”</p>
+
+    <ul class="ask">
+      <li>학원 견적을 받아 놓고 결정을 못 한 채 며칠이 지났습니다.</li>
+      <li>유튜브 면접 영상은 많은데 우리 학과 이야기는 없습니다.</li>
+      <li>모의면접을 해 줄 사람이 없고, 부모가 하면 싸움이 됩니다.</li>
+      <li>열심히 준비했는데 점수가 왜 깎이는지 알 수 없습니다.</li>
+    </ul>
+
+    <div class="gap"></div>
+    <div class="big-card">
+      <p class="stmt">열심히 준비한 아이가<br>떨어지는 이유는 실력이 아닙니다.</p>
+      <p class="stmt"><span class="hl" style="color:var(--night-ink)">평가표를 본 적이 없어서</span>입니다.</p>
+      <p style="margin-top:1.2em">면접은 말 잘하기 대회가 아닙니다.<br>“이 학생을 우리 학과에서 가르칠 수 있는가”를 확인하는 15분입니다.</p>
+    </div>
+
+    <div class="gap"></div>
+    <h2>그래서 평가하던 사람이<br>직접 정리했습니다</h2>
+    <p style="margin-top:14px">입학처장으로 면접과 평가 제도를 운영하며 본 것을<br>학부모와 수험생의 눈높이로 옮겼습니다.</p>
+
+    <div class="point"><span class="k">POINT 01</span><h3>면접관 시선의 평가 공식</h3><p>외운 답변이 왜 첫 문장에서 티가 나는지, 인상이 첫 30초에 어떻게 기우는지, “잘 모르겠습니다” 뒤에 어떤 문장이 이어져야 하는지. 평가하는 쪽에서 본 기준을 순서대로 풀었습니다.</p></div>
+    <div class="point"><span class="k">POINT 02</span><h3>새벽 2시에도 되는 AI 모의면접</h3><p>프롬프트를 복사해 붙이면 AI가 면접관이 되어 질문하고, 꼬리질문을 이어 가고, 채점과 감점 이유까지 알려 줍니다. 같은 질문을 점수가 오를 때까지 반복할 수 있습니다.</p></div>
+    <div class="point"><span class="k">POINT 03</span><h3>부모가 해도 싸우지 않는 한 장 가이드</h3><p>면접 전날 부모가 해도 되는 말과 하지 말아야 할 말을 한 장으로 정리했습니다. 아이가 AI 연습을 거부할 때 시작하는 방법도 담았습니다.</p></div>
+
+    <div class="gap"></div>
+    <h2>이렇게 연습합니다</h2>
+    <div class="chat" role="group" aria-label="모의면접 예시 화면">
+      <div class="chat-top"><span>모의면접 예시 화면</span><span>※ 설명을 위한 예시</span></div>
+      <div class="b ai"><span class="who">AI 면접관</span>지원 동기를 말씀해 주세요.</div>
+      <div class="b me"><span class="who">학생</span>사람들에게 도움이 되고 싶어서 의료 분야에 관심을 가졌습니다.</div>
+      <div class="b ai"><span class="who">AI 면접관 · 꼬리질문</span>“도움이 되고 싶다”는 말은 다른 지원자도 합니다. 이 학과여야 하는 이유는요?</div>
+      <div class="score"><b>9 / 20</b> · 감점: 동기가 학과와 연결되지 않고 경험이 없음<br>면접관 속마음: “준비된 문장 같다.”<br>더 나은 첫 문장: “봉사활동에서 검사 결과를 기다리던 어르신을 보고…”</div>
+    </div>
+    <div class="ba">
+      <div class="bad"><span class="lab">BEFORE · 외운 답</span><q>“사람들을 돕는 의료인이 되고 싶어서 지원했습니다.”</q></div>
+      <div class="good"><span class="lab">AFTER · 면접관이 멈추는 답</span><q>“결과를 기다리던 어르신을 보고 검사 뒤의 사람을 생각하게 됐습니다. 그래서 진단을 돕는 이 학과를 택했습니다.”</q></div>
+    </div>
+    <p class="soft" style="font-size:12.5px;margin-top:10px">※ 설명을 위한 예시이며 점수나 합격을 보장하지 않습니다.</p>
+
+    <div class="prompt" id="sample">너는 <em>[지원 학과]</em> 면접관이다.
+아래 <em>[생활기록부 요약]</em>을 바탕으로 질문 1개를 던져라.
+학생이 답하면 꼬리질문을 최대 3단계까지 이어 가라.
+매 답변마다 다음을 출력해라.
+1) 20점 만점 점수
+2) 감점 이유 한 줄
+3) 면접관이 속으로 한 생각 한 줄
+4) 더 나은 답변의 첫 문장 예시
+먼저 학생이 준비되었는지 물어봐라.</div>
+    <div class="copy-row"><button class="copy" id="copyBtn" type="button">샘플 프롬프트 복사해서 지금 해보기</button><span class="soft" id="copyMsg" role="status" style="font-size:14px"></span></div>
+
+    <div class="gap"></div>
+    <h2>책 구성</h2>
+    <ol class="toc">
+      <li><span class="ch">CH.1</span><div><b>면접관은 이 순서로 평가표를 채운다</b><span>입장부터 퇴장까지, 점수가 갈리는 지점</span></div></li>
+      <li><span class="ch">CH.2</span><div><b>첫 30초 공식<span class="free">무료 샘플</span></b><span>인사·시선·목소리·첫 문장 템플릿</span></div></li>
+      <li><span class="ch">CH.3</span><div><b>감점 답변 TOP 10과 바꿔 말하기</b><span>외운 티가 나는 답이 왜 손해인지</span></div></li>
+      <li><span class="ch">CH.4</span><div><b>꼬리질문 3단 방어법</b><span>모르는 질문에도 무너지지 않는 구조</span></div></li>
+      <li><span class="ch">CH.5</span><div><b>생활기록부 활동을 말로 바꾸는 법</b><span>활동 → 이유 → 배움 → 전공 연결</span></div></li>
+      <li><span class="ch">CH.6</span><div><b>AI 모의면접 프롬프트 30선</b><span>압박 면접·집단 면접·약점 진단</span></div></li>
+      <li><span class="ch">CH.7</span><div><b>D-7, D-1, 당일 체크리스트</b><span>컨디션·복장·이동·마지막 10분</span></div></li>
+      <li><span class="ch">CH.8</span><div><b>정시 지원 마지막 점검표</b><span>수능 직후 지원 전략 질문 15개</span></div></li>
+    </ol>
+    <p class="soft" style="margin-top:14px;font-size:14px">보너스: 면접 질문 은행 100선 · 셀프 감점 체크표 · 학부모용 한 장 가이드</p>
+  </div>
+</section>
+
+<!-- 일정 -->
+<section class="sec" id="schedule">
+  <div class="wrap">
+    <span class="sec-title">PROJECT SCHEDULE</span>
+    <h2>진행 일정</h2>
+    <ul class="sched">
+      <li><span class="d" id="d-open">-</span><div><b>프로젝트 공개</b><span>가장 낮은 가격으로 참여할 수 있습니다.</span></div></li>
+      <li><span class="d" id="d-end">-</span><div><b>참여 마감</b><span>마감 후에는 정가로 판매됩니다. <span class="todo">정책 확인</span></span></div></li>
+      <li><span class="d">결제 즉시</span><div><b>전자책 PDF 다운로드</b><span>배송이 없습니다. 결제 직후 링크가 열립니다.</span></div></li>
+      <li><span class="d">수시 면접 전</span><div><b>업데이트 안내</b><span>시즌 중 추가되는 질문과 프롬프트는 구매자에게 공유합니다. <span class="todo">제공 여부 확인</span></span></div></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 리워드 -->
+<section class="sec" id="rewards">
+  <div class="wrap">
+    <span class="sec-title">REWARD</span>
+    <h2>리워드 선택</h2>
+    <p class="soft" style="margin-top:8px;font-size:15px">원하는 구성을 고르고 하단의 참여하기를 누르세요.</p>
+    <div class="rws" id="rws">
+      <button class="rw" type="button" aria-pressed="false" data-id="sample">
+        <div class="row1"><span class="price">1,000원</span><span class="tag">입문</span></div>
+        <div class="name">첫 30초 체크리스트</div>
+        <ul><li>CH.2 「첫 30초 공식」 요약본 PDF</li><li>셀프 감점 체크표 1장</li></ul>
+        <div class="meta"><span>결제 즉시 다운로드</span></div>
+      </button>
+      <button class="rw" type="button" aria-pressed="true" data-id="main">
+        <div class="row1"><span class="price" id="rwPrice">9,900원</span><span class="tag">추천</span></div>
+        <div class="name">면접 30초 노트 풀패키지</div>
+        <ul><li>전자책 본문 8개 챕터</li><li>AI 모의면접 프롬프트 30선</li><li>면접 질문 은행 100선 · 셀프 감점 체크표 · 학부모용 가이드</li></ul>
+        <div class="meta"><span>가격은 판매 시마다 +1,000원</span><span>결제 즉시 다운로드</span></div>
+      </button>
+      <button class="rw" type="button" aria-pressed="false" data-id="pro">
+        <div class="row1"><span class="price"><span class="todo">가격 입력</span></span><span class="tag">한정</span></div>
+        <div class="name">풀패키지 + 답변 피드백 1회</div>
+        <ul><li>풀패키지 전체</li><li>학생의 면접 답변 텍스트 3문항에 대한 교수 피드백 <span class="todo">제공 방식·기한 확인</span></li></ul>
+        <div class="meta"><span>한정 수량 <span class="todo">수량 입력</span></span></div>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- 메이커 -->
+<section class="sec" id="maker">
+  <div class="wrap">
+    <span class="sec-title">MAKER</span>
+    <h2>메이커 소개</h2>
+    <div class="maker"><div class="avatar" aria-hidden="true">教</div><div><b>입학처장 출신 교수</b> <span class="todo">이름 기입</span><br><span class="soft" style="font-size:14.5px">임상병리학과 교수</span></div></div>
+    <ul class="maker-list">
+      <li>대학 입학처장 2년 재직, 면접·평가 제도 운영 경험</li>
+      <li>암세포유전학 리뷰 논문 다수 집필</li>
+      <li>대학 특강·이러닝 강의 제작 경력</li>
+      <li><span class="todo">교수님 확인 후 기입</span> 입시 성과 수치와 출처</li>
+    </ul>
+    <p class="soft" style="margin-top:16px;font-size:14.5px">이 책은 소속 대학의 비공개 평가 자료를 담지 않습니다. 공개된 평가 요소와 일반 원칙, 면접을 지켜본 경험의 정리입니다.</p>
+    <p class="soft" style="margin-top:12px;font-size:14.5px"><span class="todo">실제 구매 후기만 삽입</span> 지어낸 후기나 숫자는 넣지 않습니다.</p>
+  </div>
+</section>
+
+<!-- 정책 -->
+<section class="sec policy" id="policy">
+  <div class="wrap">
+    <span class="sec-title">POLICY</span>
+    <h2>환불 및 유의사항</h2>
+    <h3>상품 제공</h3>
+    <ul><li>전자책(PDF)이며 실물 배송이 없습니다.</li><li>결제 직후 다운로드 링크가 제공됩니다.</li></ul>
+    <h3>환불 규정</h3>
+    <ul><li><span class="todo">판매 플랫폼의 환불 규정 원문을 그대로 복사해 삽입</span></li></ul>
+    <h3>유의사항</h3>
+    <ul>
+      <li>합격, 점수, 성적 향상을 보장하지 않습니다.</li>
+      <li>본문의 대화·점수는 설명을 위한 예시입니다.</li>
+      <li>특정 대학의 비공개 평가 자료, 내부 정보는 포함하지 않습니다.</li>
+      <li>AI 답변은 부정확할 수 있으며 최종 판단은 이용자에게 있습니다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Q&A -->
+<section class="sec" id="qna">
+  <div class="wrap">
+    <span class="sec-title">Q&amp;A</span>
+    <h2>자주 묻는 질문</h2>
+    <details><summary>합격이 보장되나요?</summary><p>아닙니다. 합격은 누구도 보장할 수 없습니다. 이 책은 면접에서 불필요하게 잃는 점수를 줄이는 방법을 다룹니다.</p></details>
+    <details><summary>AI를 써 본 적이 없는데 따라 할 수 있나요?</summary><p>복사해서 붙여 넣는 방식입니다. 무료 AI 서비스에서도 동작하며 설정 화면 캡처가 함께 들어 있습니다.</p></details>
+    <details><summary>어느 대학, 어느 학과에 맞나요?</summary><p>보건·의료계열 중심이며 공통 원칙은 다른 계열에도 적용됩니다. 대학마다 평가 방식이 다르므로 모집요강을 함께 확인하세요.</p></details>
+    <details><summary>면접이 며칠 안 남았는데 늦지 않았나요?</summary><p>D-7, D-1, 당일 체크리스트와 하루 만에 끝내는 프롬프트 순서가 들어 있습니다.</p></details>
+    <details><summary>학원과 비교하면 어떤가요?</summary><p>학원이 필요 없다는 뜻이 아닙니다. 대면 피드백이 필요하면 병행하세요. 이 책은 그 전에 혼자서 많은 부분을 준비하는 용도입니다.</p></details>
+    <details><summary>환불은 되나요?</summary><p>전자책은 다운로드 후 환불이 제한됩니다. 정확한 기준은 판매 플랫폼의 규정을 따르며 정책 탭에서 확인할 수 있습니다. 망설여진다면 무료 샘플이나 1,000원 리워드를 먼저 받아 보세요.</p></details>
+  </div>
+</section>
+
+<div class="foot">
+  <div class="wrap">
+    <h3>판매자 정보</h3>
+    <ul><li><span class="todo">상호·대표자·사업자등록번호·통신판매업 신고번호·연락처</span></li></ul>
+    <p>이 페이지의 진행 현황 수치는 판매 데이터를 직접 입력해 표시합니다.</p>
+  </div>
+</div>
+</main>
+
+<div class="dock">
+  <div class="dock-in">
+    <div class="l"><b id="dockPct">0%</b>달성</div>
+    <a class="btn" data-buy href="#rewards" id="dockBtn">참여하기</a>
+  </div>
+</div>
+
+<script>
+  // ── 운영자가 수정하는 값 (실제 판매 데이터를 입력) ──
+  var CONFIG = {
+    BUY_URL: "",          // 결제 페이지 주소
+    BASE_PRICE: 9900,     // 첫 구매 가격
+    STEP: 1000,           // 1권 판매마다 오르는 금액
+    SOLD: 0,              // 현재까지 판매된 권수
+    GOAL: 1000000,        // 목표 금액(원)
+    OPEN: "2026-10-08",   // 공개일
+    END: "2026-10-31"     // 참여 마감일 (비우면 '상시')
+  };
+
+  function won(n) { return n.toLocaleString("ko-KR") + "원"; }
+  var price = CONFIG.BASE_PRICE + CONFIG.STEP * CONFIG.SOLD;
+  var raised = 0;
+  for (var i = 0; i < CONFIG.SOLD; i++) raised += CONFIG.BASE_PRICE + CONFIG.STEP * i;
+  var pct = Math.min(100, Math.round(raised / CONFIG.GOAL * 100));
+
+  document.getElementById("pct").textContent = pct + "%";
+  document.getElementById("amt").textContent = won(raised) + " 달성";
+  document.getElementById("supporters").textContent = CONFIG.SOLD + "명";
+  document.getElementById("nowprice").textContent = won(price);
+  document.getElementById("rwPrice").textContent = won(price);
+  document.getElementById("dockPct").textContent = pct + "%";
+  document.getElementById("pfill").style.width = pct + "%";
+  document.getElementById("pbar").setAttribute("aria-valuenow", pct);
+
+  // 남은 기간
+  var leftEl = document.getElementById("left"), dday = document.getElementById("dday");
+  if (CONFIG.END) {
+    var end = new Date(CONFIG.END + "T23:59:59");
+    var days = Math.ceil((end - new Date()) / 86400000);
+    if (days >= 0) { leftEl.textContent = days + "일"; dday.textContent = days === 0 ? "오늘 마감" : "D-" + days; }
+    else { leftEl.textContent = "마감"; dday.textContent = "마감"; }
+    document.getElementById("d-end").textContent = CONFIG.END.slice(5).replace("-", ".");
+  } else { leftEl.textContent = "상시"; dday.textContent = "상시"; document.getElementById("d-end").textContent = "상시"; }
+  document.getElementById("d-open").textContent = CONFIG.OPEN.slice(5).replace("-", ".");
+
+  // 구매 링크
+  document.querySelectorAll("[data-buy]").forEach(function (a) {
+    if (CONFIG.BUY_URL && a.id !== "dockBtn") { a.href = CONFIG.BUY_URL; a.target = "_blank"; a.rel = "noopener"; }
+    else if (a.getAttribute("href") === "#") { a.href = "#rewards"; }
+  });
+  document.getElementById("dockBtn").addEventListener("click", function (e) {
+    if (CONFIG.BUY_URL && location.hash === "#rewards") { e.preventDefault(); window.open(CONFIG.BUY_URL, "_blank", "noopener"); }
+  });
+
+  // 리워드 선택
+  var rws = document.querySelectorAll(".rw");
+  rws.forEach(function (r) {
+    r.addEventListener("click", function () {
+      rws.forEach(function (x) { x.setAttribute("aria-pressed", x === r ? "true" : "false"); });
+    });
+  });
+
+  // 탭 활성화
+  var tabs = document.querySelectorAll(".tab");
+  var ids = ["story", "schedule", "rewards", "maker", "policy", "qna"];
+  function onScroll() {
+    var cur = ids[0];
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 90) cur = id;
+    });
+    tabs.forEach(function (t) { t.classList.toggle("on", t.getAttribute("href") === "#" + cur); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // 프롬프트 복사
+  var btn = document.getElementById("copyBtn"), msg = document.getElementById("copyMsg");
+  btn.addEventListener("click", function () {
+    var el = document.getElementById("sample");
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      msg.textContent = "선택되었습니다. 복사해 주세요.";
+    }
+    try {
+      navigator.clipboard.writeText(el.innerText).then(function () { msg.textContent = "복사되었습니다. AI 채팅창에 붙여 넣으세요."; }, fallback);
+    } catch (e) { fallback(); }
+  });
+</script>
