@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>마흔의 철학 한 줄</title>
+<style>
+@font-face{font-family:"Myeongjo";src:url(fonts/NanumMyeongjo-Regular.ttf)}
+@font-face{font-family:"MyeongjoXB";src:url(fonts/NanumMyeongjo-ExtraBold.ttf)}
+*{box-sizing:border-box;margin:0}
+body{width:1080px;height:1920px;overflow:hidden;background:#0d0f14;color:#f3ead8;font-family:"Myeongjo",serif}
+.bg{position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 35%,#2a2a33 0%,#14151b 55%,#08090c 100%)}
+.grain{position:absolute;inset:0;opacity:.07;background-image:repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 4px)}
+.portrait{position:absolute;left:50%;top:150px;transform:translateX(-50%);opacity:.22}
+.top{position:absolute;top:110px;left:0;right:0;text-align:center;font-size:36px;letter-spacing:.3em;color:#d4a95f}
+.scene{position:absolute;left:90px;right:90px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;opacity:0}
+.hook{font-family:"MyeongjoXB";font-size:96px;line-height:1.35;white-space:pre-line}
+.who{margin-top:40px;font-size:38px;color:#d4a95f}
+.q .mark{font-family:"MyeongjoXB";font-size:180px;line-height:.6;color:#d4a95f;opacity:.8}
+.q .line{font-family:"MyeongjoXB";font-size:84px;line-height:1.45;opacity:0}
+.q .src{margin-top:60px;font-size:32px;color:#a8a29e;opacity:0}
+.n .label{font-size:40px;color:#0d0f14;background:#d4a95f;padding:8px 26px;border-radius:40px;margin-bottom:60px}
+.n .line{font-size:68px;line-height:1.55;opacity:0}
+.end h2{font-family:"MyeongjoXB";font-size:88px;line-height:1.3}
+.end p{margin-top:40px;font-size:42px;color:#d4a95f}
+.end small{margin-top:80px;font-size:30px;color:#78716c}
+.foot{position:absolute;bottom:130px;left:0;right:0;text-align:center;font-size:34px;color:#78716c}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="grain"></div>
+<svg class="portrait" width="620" height="760" viewBox="0 0 400 490" fill="none" stroke="#d4a95f" stroke-width="2.5" stroke-linecap="round">
+  <!-- 쇼펜하우어 실루엣: 넓은 이마, 옆머리 뭉치, 높은 깃 -->
+  <path d="M200,60 C150,60 120,100 118,150 C116,190 122,230 140,262 C158,292 180,306 200,306 C220,306 242,292 260,262 C278,230 284,190 282,150 C280,100 250,60 200,60 Z"/>
+  <path d="M120,150 C96,140 80,160 88,184 C76,196 84,222 104,224 C100,240 116,252 132,244"/>
+  <path d="M280,150 C304,140 320,160 312,184 C324,196 316,222 296,224 C300,240 284,252 268,244"/>
+  <path d="M160,170 Q176,162 190,170 M210,170 Q224,162 240,170"/>
+  <path d="M165,190 Q177,196 188,190 M212,190 Q223,196 235,190"/>
+  <path d="M200,195 L196,236 Q200,242 208,238"/>
+  <path d="M172,262 Q200,252 228,262"/>
+  <path d="M172,262 Q200,280 228,262"/>
+  <path d="M150,300 L130,350 L200,390 L270,350 L250,300"/>
+  <path d="M60,490 C70,400 110,360 150,340 M340,490 C330,400 290,360 250,340"/>
+  <path d="M182,372 L200,392 L218,372 L200,410 Z"/>
+</svg>
+<div class="top">마흔의 철학 한 줄</div>
+<div id="root"></div>
+<div class="foot">@마흔의철학한줄</div>
+<script src="quotes.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const ep = EPISODES.find((e) => e.id === q.get("ep")) || EPISODES[0];
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+document.getElementById("root").innerHTML = `
+  <div class="scene h"><div class="hook">${esc(ep.hook)}</div><div class="who">— 쇼펜하우어 —</div></div>
+  <div class="scene q"><div class="mark">“</div>${ep.quote.map((l) => `<div class="line">${esc(l)}</div>`).join("")}<div class="src">${esc(ep.source)}</div></div>
+  <div class="scene n"><div class="label">교수의 한 줄 해석</div>${ep.note.map((l) => `<div class="line">${esc(l)}</div>`).join("")}</div>
+  <div class="scene end"><h2>마흔,<br>철학이 필요한 나이</h2><p>매일 한 줄, 구독하고 받아보세요</p><small>${esc(ep.source)}</small></div>`;
+
+// 시간표 (초)
+const H = 2.8, QL = 0.9, QHOLD = 2.2, NL = 0.8, NHOLD = 2.4, END = 2.4;
+const tQ = H, tN = tQ + ep.quote.length * QL + QHOLD, tE = tN + ep.note.length * NL + NHOLD;
+window.DURATION = tE + END;
+const ease = (x) => 1 - Math.pow(1 - Math.min(Math.max(x, 0), 1), 3);
+const scenes = document.querySelectorAll(".scene");
+function vis(el, a, b, t) { el.style.opacity = Math.min(ease((t - a) / 0.5), 1 - ease((t - (b - 0.4)) / 0.4)); }
+window.setTime = function (t) {
+  vis(scenes[0], 0, tQ, t);
+  vis(scenes[1], tQ, tN, t);
+  vis(scenes[2], tN, tE, t);
+  scenes[3].style.opacity = ease((t - tE) / 0.6);
+  scenes[1].querySelectorAll(".line").forEach((l, i) => {
+    const k = ease((t - tQ - 0.3 - i * QL) / 0.6); l.style.opacity = k; l.style.transform = `translateY(${(1 - k) * 24}px)`;
+  });
+  scenes[1].querySelector(".src").style.opacity = ease((t - tQ - 0.3 - ep.quote.length * QL) / 0.6);
+  scenes[2].querySelectorAll(".line").forEach((l, i) => {
+    const k = ease((t - tN - 0.5 - i * NL) / 0.6); l.style.opacity = k; l.style.transform = `translateY(${(1 - k) * 20}px)`;
+  });
+  const p = document.querySelector(".portrait");
+  p.style.transform = `translateX(-50%) scale(${1 + t * 0.006})`;
+  p.style.opacity = t < tQ ? 0.28 : 0.12;
+};
+window.setTime(0);
+</script>
+</body>
+</html>
