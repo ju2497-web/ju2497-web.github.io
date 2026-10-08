@@ -1,0 +1,395 @@
+<title>면접 평가의 구조</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 학술 단행본의 절제된 편집 디자인. 좌측 정렬 본문, 가는 괘선, 표 중심 정보 구성. 장식·강조 효과 없이 논리와 신뢰로 설득한다. */
+:root {
+  --bg: #faf9f6;
+  --paper: #ffffff;
+  --fg: #16212e;
+  --soft: #5a6573;
+  --line: #d9d6cc;
+  --navy: #14284b;
+  --navy-ink: #f4f1e8;
+  --brass: #8c6d2f;
+  --brass-soft: #efe8d6;
+  --font-serif: "Noto Serif KR", "Nanum Myeongjo", serif;
+  --font-sans: "Noto Sans KR", system-ui, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1520; --paper: #151e2b; --fg: #e9e6dc; --soft: #98a2b0; --line: #2a3546;
+    --navy: #0a1220; --navy-ink: #ece8da; --brass: #c9a65e; --brass-soft: #241f14;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1520; --paper: #151e2b; --fg: #e9e6dc; --soft: #98a2b0; --line: #2a3546;
+  --navy: #0a1220; --navy-ink: #ece8da; --brass: #c9a65e; --brass-soft: #241f14;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-sans); font-size: 16.5px; line-height: 1.85; margin: 0; padding-block: 0 56px; word-break: keep-all; }
+.wrap { max-width: 760px; margin-inline: auto; padding-inline: 24px; }
+h1, h2, h3, p { margin: 0; }
+h1, h2 { font-family: var(--font-serif); font-weight: 700; letter-spacing: -.02em; line-height: 1.4; text-wrap: balance; }
+h2 { font-size: clamp(25px, 5.6vw, 32px); }
+h3 { font-family: var(--font-serif); font-size: 18px; font-weight: 600; letter-spacing: -.01em; }
+p + p { margin-top: 1em; }
+.label { display: block; font-size: 12.5px; font-weight: 500; letter-spacing: .14em; color: var(--brass); margin-bottom: 14px; text-transform: uppercase; }
+.soft { color: var(--soft); }
+section { padding-block: 72px; border-top: 1px solid var(--line); }
+.lead { font-size: 18px; color: var(--soft); margin-top: 18px; max-width: 38em; }
+.fill { font-family: var(--mono); font-size: 12px; color: var(--brass); border: 1px dashed var(--brass); padding: 0 7px; border-radius: 3px; white-space: nowrap; }
+
+/* 상단 바 */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--bg) 94%, transparent); border-bottom: 1px solid var(--line); backdrop-filter: blur(6px); }
+.bar-in { max-width: 760px; margin-inline: auto; padding: 10px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.bar b { font-family: var(--font-serif); font-size: 15px; font-weight: 700; }
+.bar a.buy { font-size: 14px; font-weight: 700; color: var(--navy-ink); background: var(--navy); padding: 8px 16px; border-radius: 3px; text-decoration: none; white-space: nowrap; }
+.bar nav { display: none; gap: 20px; font-size: 14px; }
+.bar nav a { color: var(--soft); text-decoration: none; }
+.bar nav a:hover { color: var(--fg); }
+@media (min-width: 720px) { .bar nav { display: flex; } }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+/* hero */
+.hero { padding-block: 64px 72px; border-top: 0; }
+.hero-grid { display: grid; gap: 40px; align-items: center; }
+.hero h1 { font-size: clamp(34px, 8.4vw, 52px); }
+.hero .sub { font-size: 19px; color: var(--soft); margin-top: 20px; }
+.hero .meta { margin-top: 26px; font-size: 14.5px; color: var(--soft); padding-top: 18px; border-top: 1px solid var(--line); }
+.hero .meta b { color: var(--fg); font-weight: 500; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; align-items: center; }
+.btn { display: inline-block; text-decoration: none; font-family: inherit; font-size: 16px; font-weight: 700; padding: 15px 28px; border-radius: 3px; border: 1px solid var(--navy); background: var(--navy); color: var(--navy-ink); cursor: pointer; text-align: center; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--fg); font-weight: 500; }
+.price-note { font-size: 14px; color: var(--soft); }
+
+.cover { width: min(100%, 300px); margin-inline: auto; aspect-ratio: 3 / 4; background: var(--navy); color: var(--navy-ink); padding: 26px 24px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--brass); outline: 1px solid var(--brass); outline-offset: -9px; box-shadow: 0 18px 40px rgba(10, 18, 32, .22); }
+.cover .t1 { font-size: 11px; letter-spacing: .24em; color: var(--brass); }
+.cover .t2 { font-family: var(--font-serif); font-size: 31px; font-weight: 700; line-height: 1.35; letter-spacing: -.02em; }
+.cover .t3 { font-size: 12.5px; line-height: 1.6; opacity: .85; }
+.cover hr { border: 0; border-top: 1px solid var(--brass); width: 36px; margin: 14px 0; }
+@media (min-width: 720px) { .hero-grid { grid-template-columns: 1fr 300px; } }
+
+/* 표 공통 */
+.tbl { overflow-x: auto; margin-top: 30px; }
+table { border-collapse: collapse; width: 100%; min-width: 540px; font-size: 15px; }
+th, td { padding: 14px 14px 14px 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); line-height: 1.7; }
+thead th { font-size: 12.5px; font-weight: 500; letter-spacing: .1em; color: var(--soft); border-bottom: 1px solid var(--fg); }
+tbody th { font-weight: 700; width: 18%; font-family: var(--font-sans); }
+td.em { font-weight: 500; }
+
+/* 평가 흐름 도식 */
+.flow { margin-top: 32px; overflow-x: auto; }
+.flow svg { display: block; min-width: 640px; width: 100%; height: auto; }
+.flow .box { fill: var(--paper); stroke: var(--fg); stroke-width: 1; }
+.flow .box.key { fill: var(--navy); stroke: var(--navy); }
+.flow .tx { fill: var(--fg); font-family: var(--font-sans); font-size: 14px; font-weight: 700; }
+.flow .tx.key { fill: var(--navy-ink); }
+.flow .sm { fill: var(--soft); font-family: var(--font-sans); font-size: 12px; }
+.flow .sm.key { fill: var(--navy-ink); opacity: .85; }
+.flow .arrow { stroke: var(--soft); stroke-width: 1; fill: none; }
+.flow .tick { fill: var(--brass); font-family: var(--mono); font-size: 11px; }
+.caption { font-size: 13.5px; color: var(--soft); margin-top: 14px; }
+
+/* 발췌 */
+.excerpt { margin-top: 30px; background: var(--paper); border: 1px solid var(--line); padding: 34px 32px; font-family: var(--font-serif); font-size: 17px; line-height: 2; position: relative; }
+.excerpt .src { display: block; font-family: var(--font-sans); font-size: 12.5px; letter-spacing: .1em; color: var(--brass); margin-bottom: 16px; }
+.excerpt p + p { margin-top: .6em; }
+
+/* 대화록 */
+.transcript { margin-top: 30px; border: 1px solid var(--line); background: var(--paper); }
+.tr-row { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 15px 20px; border-bottom: 1px solid var(--line); font-size: 15.5px; line-height: 1.75; }
+.tr-row:last-child { border-bottom: 0; }
+.tr-row .who { font-size: 12.5px; font-weight: 500; letter-spacing: .06em; color: var(--soft); padding-top: 2px; }
+.tr-row.eval { background: var(--brass-soft); }
+.tr-row.eval .who { color: var(--brass); font-weight: 700; }
+.tr-head { padding: 12px 20px; border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--soft); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 520px) { .tr-row { grid-template-columns: 1fr; gap: 2px; } }
+
+.code { margin-top: 28px; background: var(--navy); color: var(--navy-ink); padding: 22px 24px; font-family: var(--mono); font-size: 13.5px; line-height: 1.85; white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 3px; }
+.code em { font-style: normal; color: var(--brass); filter: brightness(1.35); }
+.copy-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 12px; }
+.copy { font: inherit; font-size: 14.5px; font-weight: 500; padding: 10px 18px; border: 1px solid var(--fg); border-radius: 3px; background: transparent; color: var(--fg); cursor: pointer; }
+
+/* 저자 */
+.author { display: grid; gap: 28px; margin-top: 28px; }
+.author dl { margin: 0; }
+.author dt { font-size: 12.5px; letter-spacing: .1em; color: var(--brass); margin-top: 18px; }
+.author dt:first-child { margin-top: 0; }
+.author dd { margin: 4px 0 0; font-size: 16px; }
+.note-box { border-left: 2px solid var(--brass); padding: 4px 0 4px 18px; margin-top: 30px; color: var(--soft); font-size: 15px; }
+
+/* 가격 */
+.offer { margin-top: 30px; background: var(--paper); border: 1px solid var(--fg); }
+.offer-head { padding: 20px 26px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.offer-head .p { font-family: var(--font-serif); font-size: 32px; font-weight: 700; letter-spacing: -.02em; }
+.offer-head .p small { font-family: var(--font-sans); font-size: 14px; font-weight: 400; color: var(--soft); margin-left: 8px; }
+.offer ul { list-style: none; padding: 8px 26px; margin: 0; }
+.offer li { display: flex; justify-content: space-between; gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+.offer li:last-child { border-bottom: 0; }
+.offer li span:last-child { color: var(--soft); white-space: nowrap; font-size: 14px; }
+.offer-foot { padding: 22px 26px 26px; border-top: 1px solid var(--line); }
+.offer-foot .btn { width: 100%; }
+.offer-foot p { font-size: 13.5px; color: var(--soft); margin-top: 12px; text-align: center; }
+
+details { border-bottom: 1px solid var(--line); padding-block: 18px; }
+details:first-of-type { border-top: 1px solid var(--fg); margin-top: 28px; }
+summary { cursor: pointer; font-weight: 500; list-style: none; display: grid; grid-template-columns: 1fr 20px; gap: 12px; font-size: 16.5px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--mono); text-align: right; color: var(--soft); }
+details[open] summary::after { content: "−"; }
+details p { color: var(--soft); margin-top: 10px; font-size: 15.5px; max-width: 40em; }
+
+.foot { border-top: 1px solid var(--fg); padding-block: 36px 24px; font-size: 13px; color: var(--soft); line-height: 1.8; }
+.foot h3 { font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--fg); margin-bottom: 6px; letter-spacing: 0; }
+.foot ul { margin: 0 0 18px; padding-left: 1.1em; }
+
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <b>면접 평가의 구조</b>
+    <nav aria-label="목차"><a href="#why">문제</a><a href="#structure">평가 구조</a><a href="#contents">구성</a><a href="#tool">연습 도구</a><a href="#author">저자</a><a href="#offer">구매</a></nav>
+    <a class="buy" data-buy href="#offer">구매하기</a>
+  </div>
+</header>
+
+<main>
+<!-- 1. 표지 -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="label">2026 수시 면접 · 정시 지원 대비 · 전자책</span>
+      <h1>면접 평가는<br>어떻게 이루어지는가</h1>
+      <p class="sub">입학처장을 지낸 교수가 평가자의 관점에서 정리한 면접 준비 체계</p>
+      <div class="cta-row">
+        <a class="btn" data-buy href="#offer">전자책 구매하기</a>
+        <a class="btn ghost" data-buy href="#offer">무료 샘플 받기</a>
+      </div>
+      <p class="price-note" style="margin-top:14px">9,900원부터 · 결제 직후 PDF 다운로드</p>
+      <p class="meta"><b>저자</b> 입학처장 출신 교수 <span class="fill">이름 기입</span> · 임상병리학과</p>
+    </div>
+    <div class="cover" role="img" aria-label="전자책 표지 예시">
+      <div><div class="t1">INTERVIEW EVALUATION</div></div>
+      <div><hr><div class="t2">면접 평가의 구조</div><hr><div class="t3">평가자의 관점에서 정리한<br>면접 준비 체계</div></div>
+      <div class="t3">입학처장 출신 교수</div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 문제 제기 -->
+<section id="why">
+  <div class="wrap">
+    <span class="label">문제 제기</span>
+    <h2>준비의 방향과 평가의 기준이<br>서로 어긋나 있습니다</h2>
+    <p class="lead">많은 수험생이 면접을 답변을 외우는 시험으로 준비합니다. 평가자는 답변의 내용보다 그 답변이 만들어지는 과정을 확인합니다. 이 간극에서 불필요한 감점이 발생합니다.</p>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>항목</th><th>일반적인 준비 방식</th><th>평가자가 확인하는 것</th></tr></thead>
+        <tbody>
+          <tr><th>답변</th><td>모범 답안의 암기</td><td class="em">답변의 근거와 자기 언어로의 전달</td></tr>
+          <tr><th>기록 활용</th><td>자기소개서 문장의 반복 낭독</td><td class="em">기록된 활동의 동기, 과정, 배움</td></tr>
+          <tr><th>첫인상</th><td>내용 위주, 태도는 후순위</td><td class="em">입장, 인사, 시선, 음성</td></tr>
+          <tr><th>꼬리질문</th><td>예상 질문 범위에 한정한 대비</td><td class="em">질문 의도의 파악과 논리의 전개</td></tr>
+          <tr><th>연습</th><td>혼자 또는 가족과의 비정기 연습</td><td class="em">기준이 있는 반복 가능한 피드백</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">대학과 전형에 따라 평가 방식은 다릅니다. 이 책은 공개된 평가 요소와 면접 현장의 일반 원칙을 다룹니다.</p>
+  </div>
+</section>
+
+<!-- 3. 평가 구조 -->
+<section id="structure">
+  <div class="wrap">
+    <span class="label">평가 구조</span>
+    <h2>면접은 다섯 단계로<br>읽힙니다</h2>
+    <p class="lead">입장부터 종료까지, 평가자가 판단을 쌓아 가는 순서를 기준으로 책 전체를 구성했습니다.</p>
+    <div class="flow">
+      <svg viewBox="0 0 700 150" role="img" aria-label="면접 평가 흐름: 입장과 인사, 첫 문장, 답변의 근거, 꼬리질문, 종합 판단">
+        <g>
+          <rect class="box" x="4" y="34" width="118" height="76" rx="2"/><text class="tx" x="63" y="68" text-anchor="middle">입장·인사</text><text class="sm" x="63" y="90" text-anchor="middle">태도, 시선, 음성</text>
+          <rect class="box key" x="146" y="34" width="118" height="76" rx="2"/><text class="tx key" x="205" y="68" text-anchor="middle">첫 문장</text><text class="sm key" x="205" y="90" text-anchor="middle">자기 언어 여부</text>
+          <rect class="box" x="288" y="34" width="118" height="76" rx="2"/><text class="tx" x="347" y="68" text-anchor="middle">답변의 근거</text><text class="sm" x="347" y="90" text-anchor="middle">경험과 전공 연결</text>
+          <rect class="box key" x="430" y="34" width="118" height="76" rx="2"/><text class="tx key" x="489" y="68" text-anchor="middle">꼬리질문</text><text class="sm key" x="489" y="90" text-anchor="middle">의도 파악, 논리</text>
+          <rect class="box" x="572" y="34" width="124" height="76" rx="2"/><text class="tx" x="634" y="68" text-anchor="middle">종합 판단</text><text class="sm" x="634" y="90" text-anchor="middle">학과 적합성</text>
+          <path class="arrow" d="M122 72 H146 M264 72 H288 M406 72 H430 M548 72 H572"/>
+          <text class="tick" x="4" y="22">0–5초</text><text class="tick" x="146" y="22">5–15초</text><text class="tick" x="288" y="22">15–60초</text><text class="tick" x="430" y="22">질의응답</text><text class="tick" x="572" y="22">종료 후</text>
+        </g>
+      </svg>
+    </div>
+    <p class="caption">강조된 두 단계(첫 문장, 꼬리질문)에서 외운 답변과 준비된 답변이 가장 뚜렷하게 구분됩니다. 시간 구간은 이해를 돕기 위한 예시입니다.</p>
+
+    <div class="excerpt">
+      <span class="src">본문 발췌 · 제2장 「첫 30초」 (예시 구성)</span>
+      <p>평가자는 학생이 입장하는 순간부터 판단을 시작합니다. 이 단계에서 확인하는 것은 화술이 아니라 준비의 정도입니다.</p>
+      <p>인사는 짧고 분명하게, 시선은 질문자에게 둡니다. 첫 문장은 자기소개서의 문장이 아니라 자신의 말로 시작해야 합니다. 외운 문장은 억양에서 드러나고, 이어지는 꼬리질문에서 구조가 무너집니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 구성 -->
+<section id="contents">
+  <div class="wrap">
+    <span class="label">책의 구성</span>
+    <h2>여덟 개의 장,<br>그리고 부록</h2>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>장</th><th>제목</th><th>다루는 질문</th></tr></thead>
+        <tbody>
+          <tr><th>1</th><td class="em">평가표의 구조</td><td>평가자는 어떤 순서로 무엇을 기록하는가</td></tr>
+          <tr><th>2</th><td class="em">첫 30초</td><td>인상은 어떻게 형성되고 이후 답변에 어떤 영향을 주는가 <span class="fill">무료 샘플</span></td></tr>
+          <tr><th>3</th><td class="em">감점 답변 유형 10가지</td><td>외운 답변은 왜 손해가 되며 어떻게 고쳐 말하는가</td></tr>
+          <tr><th>4</th><td class="em">꼬리질문 대응</td><td>예상하지 못한 질문에서 논리를 유지하는 구조</td></tr>
+          <tr><th>5</th><td class="em">기록의 언어화</td><td>생활기록부 활동을 동기, 과정, 배움, 전공 연결로 말하는 법</td></tr>
+          <tr><th>6</th><td class="em">AI 모의면접</td><td>구조화된 프롬프트 30선과 사용 방법</td></tr>
+          <tr><th>7</th><td class="em">직전 점검</td><td>D-7, D-1, 당일의 점검 목록</td></tr>
+          <tr><th>8</th><td class="em">정시 지원 점검</td><td>수능 직후 지원 전략을 정리하는 질문 15개</td></tr>
+          <tr><th>부록</th><td class="em">질문 은행 100선 · 자가 점검표 · 학부모용 안내</td><td>보건·의료계열 중심의 질문 분류와 가족의 역할</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 연습 도구 -->
+<section id="tool">
+  <div class="wrap">
+    <span class="label">연습 도구</span>
+    <h2>평가 기준에 따라 반복하는<br>구조화된 모의면접</h2>
+    <p class="lead">책에 수록된 프롬프트를 AI에 입력하면 질문, 꼬리질문, 채점과 감점 사유가 정해진 형식으로 제공됩니다. 같은 질문을 기준에 맞춰 반복 연습할 수 있습니다.</p>
+
+    <div class="transcript" role="group" aria-label="모의면접 기록 예시">
+      <div class="tr-head"><span>모의면접 기록 (예시)</span><span>설명을 위한 가상의 대화입니다</span></div>
+      <div class="tr-row"><span class="who">면접관</span><span>지원 동기를 말씀해 주세요.</span></div>
+      <div class="tr-row"><span class="who">학생</span><span>사람들에게 도움이 되고 싶어서 의료 분야에 관심을 가졌습니다.</span></div>
+      <div class="tr-row"><span class="who">면접관</span><span>그 이유는 다른 지원자도 말합니다. 이 학과여야 하는 이유는 무엇입니까?</span></div>
+      <div class="tr-row eval"><span class="who">평가</span><span><b>9 / 20</b> · 동기가 학과와 연결되지 않았고 구체적 경험이 제시되지 않았습니다.<br>보완 방향: 경험 한 가지를 먼저 제시하고 전공과 연결하는 순서로 재구성합니다.</span></div>
+    </div>
+
+    <div class="code" id="sample">너는 <em>[지원 학과]</em> 면접관이다.
+아래 <em>[생활기록부 요약]</em>을 바탕으로 질문 1개를 던져라.
+학생이 답하면 꼬리질문을 최대 3단계까지 이어 가라.
+매 답변마다 다음을 출력해라.
+1) 20점 만점 점수
+2) 감점 사유 한 줄
+3) 면접관의 판단 한 줄
+4) 보완된 답변의 첫 문장 예시
+먼저 학생이 준비되었는지 물어봐라.</div>
+    <div class="copy-row"><button class="copy" id="copyBtn" type="button">샘플 프롬프트 복사</button><span class="soft" id="copyMsg" role="status" style="font-size:14px"></span></div>
+    <p class="caption">AI의 응답은 부정확할 수 있으며, 점수는 연습용 참고 지표입니다.</p>
+  </div>
+</section>
+
+<!-- 6. 저자 -->
+<section id="author">
+  <div class="wrap">
+    <span class="label">저자</span>
+    <h2>평가의 자리에서<br>본 것을 정리했습니다</h2>
+    <div class="author">
+      <dl>
+        <dt>직위</dt><dd>임상병리학과 교수 · 전 입학처장(2년) <span class="fill">이름·소속 기입</span></dd>
+        <dt>경력</dt><dd>대학 입학처장으로 면접과 평가 제도 운영 · 대학 특강 및 이러닝 강의 제작 · 암세포유전학 리뷰 논문 다수 집필</dd>
+        <dt>입시 성과</dt><dd><span class="fill">수치와 출처 기입</span></dd>
+      </dl>
+    </div>
+    <div class="note-box">면접장에서 가장 안타까웠던 것은 학생의 실력이 아니라, 열심히 준비한 학생이 어디서 점수를 잃는지 모른 채 돌아가는 모습이었습니다. 부족한 것은 능력이 아니라 평가 기준에 대한 정보라고 생각했고, 공개할 수 있는 범위에서 이를 체계화했습니다.</div>
+    <p class="caption" style="margin-top:20px">이 책은 소속 대학의 비공개 평가 자료를 포함하지 않으며, 합격을 보장하지 않습니다.</p>
+  </div>
+</section>
+
+<!-- 7. 구매 -->
+<section id="offer">
+  <div class="wrap">
+    <span class="label">구매 안내</span>
+    <h2>구성과 가격</h2>
+    <p class="lead">판매 수량에 따라 가격이 단계적으로 조정됩니다. 1부가 판매될 때마다 1,000원씩 상승하며, 현재 가격은 결제 화면에서 확인하실 수 있습니다.</p>
+
+    <div class="offer">
+      <div class="offer-head"><span>면접 평가의 구조 · 전자책 패키지</span><span class="p">9,900원<small>부터</small></span></div>
+      <ul>
+        <li><span>전자책 본문 (8개 장)</span><span>PDF</span></li>
+        <li><span>AI 모의면접 프롬프트 30선</span><span>포함</span></li>
+        <li><span>면접 질문 은행 100선</span><span>부록</span></li>
+        <li><span>셀프 점검표</span><span>부록</span></li>
+        <li><span>학부모용 안내문</span><span>부록</span></li>
+      </ul>
+      <div class="offer-foot">
+        <a class="btn" data-buy href="#">전자책 구매하기</a>
+        <p>결제 직후 다운로드 · 망설여지시면 제2장 무료 샘플을 먼저 받아 보세요 <span class="fill">샘플 링크 기입</span></p>
+      </div>
+    </div>
+
+    <div class="tbl">
+      <table style="min-width:0">
+        <thead><tr><th>판매 순서</th><th>가격</th></tr></thead>
+        <tbody>
+          <tr><td>1번째</td><td class="em">9,900원</td></tr>
+          <tr><td>2번째</td><td>10,900원</td></tr>
+          <tr><td>3번째</td><td>11,900원</td></tr>
+          <tr><td>목표 가격 도달 이후</td><td><span class="fill">정가 기입</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 8. FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <span class="label">자주 묻는 질문</span>
+    <h2>구매 전에 확인하실 사항</h2>
+    <details><summary>합격이 보장됩니까?</summary><p>보장하지 않습니다. 합격은 다수의 요인으로 결정됩니다. 이 책은 면접에서 불필요하게 발생하는 감점을 줄이는 방법을 다룹니다.</p></details>
+    <details><summary>AI 도구를 사용해 본 적이 없어도 가능합니까?</summary><p>수록된 프롬프트를 복사해 입력하는 방식입니다. 무료로 이용할 수 있는 AI 서비스에서도 사용할 수 있으며, 화면 안내가 함께 제공됩니다.</p></details>
+    <details><summary>어느 대학, 어느 계열에 적합합니까?</summary><p>보건·의료계열을 중심으로 서술했고, 공통 원칙은 다른 계열에도 적용됩니다. 대학별 평가 방식은 모집요강으로 확인하셔야 합니다.</p></details>
+    <details><summary>면접까지 남은 기간이 짧아도 활용할 수 있습니까?</summary><p>제7장에 D-7, D-1, 당일 점검 목록과 하루 단위 연습 순서를 수록했습니다.</p></details>
+    <details><summary>면접 학원이나 컨설팅을 대체합니까?</summary><p>대체하지 않습니다. 대면 피드백이 필요하시면 병행하시기 바랍니다. 이 책은 그 이전에 스스로 준비할 수 있는 범위를 넓히기 위한 자료입니다.</p></details>
+    <details><summary>환불이 가능합니까?</summary><p>전자책은 다운로드 후 환불이 제한됩니다. 정확한 기준은 판매 플랫폼의 환불 규정을 따르며, 아래 안내에 명시합니다. 구매가 망설여지시면 무료 샘플을 먼저 이용하시기 바랍니다.</p></details>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <h3>유의사항</h3>
+    <ul>
+      <li>전자책(PDF)이며 실물 배송이 없습니다.</li>
+      <li>합격, 점수, 성적 향상을 보장하지 않으며, 본문의 대화와 점수는 설명을 위한 예시입니다.</li>
+      <li>특정 대학의 비공개 평가 자료와 내부 정보는 포함하지 않습니다.</li>
+      <li>AI의 응답은 부정확할 수 있으며 최종 판단은 이용자에게 있습니다.</li>
+    </ul>
+    <h3>환불 규정</h3>
+    <ul><li><span class="fill">판매 플랫폼의 환불 규정 원문을 그대로 기입</span></li></ul>
+    <h3>판매자 정보</h3>
+    <ul><li><span class="fill">상호 · 대표자 · 사업자등록번호 · 통신판매업 신고번호 · 연락처</span></li></ul>
+  </div>
+</footer>
+</main>
+
+<script>
+  // 결제 페이지 주소를 한 곳에서 지정한다. 비워 두면 구매 안내 영역으로 이동한다.
+  var BUY_URL = "";
+  document.querySelectorAll("[data-buy]").forEach(function (a) {
+    if (BUY_URL) { a.href = BUY_URL; a.target = "_blank"; a.rel = "noopener"; }
+    else if (a.getAttribute("href") === "#") { a.href = "#offer"; }
+  });
+
+  var btn = document.getElementById("copyBtn"), msg = document.getElementById("copyMsg");
+  btn.addEventListener("click", function () {
+    var el = document.getElementById("sample");
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(el);
+      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      msg.textContent = "선택되었습니다. 복사해 주세요.";
+    }
+    try {
+      navigator.clipboard.writeText(el.innerText).then(function () { msg.textContent = "복사되었습니다."; }, fallback);
+    } catch (e) { fallback(); }
+  });
+</script>
