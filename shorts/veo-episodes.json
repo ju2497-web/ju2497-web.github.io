@@ -1,0 +1,35 @@
+{
+  "style": "Vertical 9:16. Photorealistic, looks like real phone footage, natural lighting, shallow depth of field, documentary feel. The animal behaves exactly like an exhausted Korean office worker, with deadpan comedic timing. No on-screen text, no brand logos.",
+  "episodes": [
+    {
+      "id": "ep1",
+      "title": "EP.1 소맥 장인 김대리 (말티즈)",
+      "prompt": "A fluffy white Maltese dog wearing a tiny white dress shirt and loosened red tie sits at a plastic table in a Korean street food tent at night, orange tent walls, green glass bottles and small beer glasses on the table. The dog proudly taps a spoon on a glass to make a beer-and-soju tornado, then slides the glass to a big brown bear in a gray suit and glasses. The dog's phone on the table lights up. The dog reads it, freezes, slowly picks up the glass, drinks the whole thing in one long gulp, puts it down, and stares straight into the camera without blinking.",
+      "dialogue": "(강아지, 뿌듯하게) \"부장님, 황금비율입니다.\" … (문자 확인 후, 무표정) \"…한 잔 더 말겠습니다.\""
+    },
+    {
+      "id": "ep2",
+      "title": "EP.2 숙취 출근 박과장 (회색 고양이)",
+      "prompt": "A gray tabby cat in a slightly wrinkled navy suit and sunglasses stands in a packed Seoul subway car at 8 a.m., holding a small hangover-relief drink bottle with no label. The train sways. The cat's head slowly slides down the metal pole until its forehead rests against it. The doors open and close; the cat does not move. It lets out one long, quiet sigh.",
+      "dialogue": "(작게, 쉰 목소리) \"다시는… 안 마신다…\""
+    },
+    {
+      "id": "ep3",
+      "title": "EP.3 노래방 막내 햄찡 (햄스터)",
+      "prompt": "A small golden hamster wearing a tiny office lanyard stands on a karaoke room table under purple and pink neon lights, holding a microphone bigger than itself. It sings a slow, dramatic ballad with full emotion, eyes closed, one paw raised to the ceiling. Behind it a Maltese dog, a gray cat and a brown bear in suits are asleep on the sofa. At the final note, the hamster opens its eyes, looks at the sleeping audience, and slowly drops the microphone.",
+      "dialogue": "(햄스터, 비장하게) \"한 곡만… 더.\""
+    },
+    {
+      "id": "ep4",
+      "title": "EP.4 새벽 3시 택시 (말티즈)",
+      "prompt": "At 3 a.m. on an empty Seoul street with neon signs, a white Maltese dog in a loosened tie stands on the curb raising one paw for a taxi. Three taxis drive past without stopping. The dog lowers its paw, sits down on the curb with dignity, takes out a triangle kimbap from a convenience store bag, and carefully unwraps it while staring into the distance.",
+      "dialogue": "없음 (자막: \"카카오T 대기 37분\")"
+    },
+    {
+      "id": "ep5",
+      "title": "EP.5 해장국 앞 영혼 이탈 (회색 고양이)",
+      "prompt": "Close-up of a gray tabby cat in a suit lying face-down on a table next to a steaming bowl of Korean hangover soup in a small restaurant at noon. After a long pause, the cat slowly lifts its head. A drop of broth falls from its whiskers. It looks directly into the camera, completely serious.",
+      "dialogue": "(낮게) \"…살았다.\""
+    }
+  ]
+}
