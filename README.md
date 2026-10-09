@@ -3,7 +3,7 @@
 수시 면접 코칭 사업의 입구 상품. 현직 입학처장의 채점표, 평범한 답변 11가지, 6단 답변 구조, 문항 10유형 해부(평범한 답변 → 차별화 답변 → 꼬리질문 3개), 7일 준비 플랜, 셀프 채점표. A4 24쪽. 내용은 `js/coach/framework.js`의 평가 프레임과 같은 기준입니다.
 
 - `book/manuscript.html` 원고 → `node book/build.mjs` → `book/면접관은-이렇게-듣는다.pdf` (Playwright·Chromium, 한글 웹폰트 로딩에 네트워크 필요)
-- `book.html` 판매 페이지. 가격 규칙(초판 19,000원, 1권마다 +1,000원, 100부 한정), 판매 수, 구매 링크, 문의처는 `js/book-config.js`에서만 바꿉니다. `sold`는 플랫폼 실제 주문 수와 같게 갱신합니다.
+- `book.html` 판매 페이지(와디즈형 세로 상세페이지). `node book/cards.mjs`로 섹션마다 PNG를 `book/detail/`에 내보내 크몽·래피드 상세 이미지로 올립니다. 가격 규칙(초판 19,000원, 1권마다 +1,000원, 100부 한정), 판매 수, 구매 링크, 문의처는 `js/book-config.js`에서만 바꿉니다. `sold`는 플랫폼 실제 주문 수와 같게 갱신합니다.
 - `marketing/launch-checklist.md` 출시 전 교수님이 직접 할 일(저장소 공개 여부, 겸직 규정, 플랫폼 등록, 환불 규정, 사업자). **저장소가 공개이면 `book/`의 원고와 PDF가 그대로 노출되므로 판매 전에 옮기세요.**
 - `marketing/threads-posts.md` 홍보 글 10개, `marketing/consult-templates.md` 면접 고민 상담소 답변 틀.
 - `CLAUDE.md` AI 운영 매뉴얼(역할, 검수 규칙, 금지 사항, 매일 루틴).

@@ -36,5 +36,6 @@
 
 ## 개발 규칙
 - 전자책 수정은 `book/manuscript.html`에서 하고 `node book/build.mjs`로 PDF를 다시 만든다(Playwright, 한글 웹폰트 필요).
+- 판매 페이지 수정 후에는 `node book/cards.mjs`로 상세 이미지(`book/detail/*.png`)를 다시 내보낸다.
 - 가격·링크·연락처는 코드가 아니라 `js/book-config.js`, `js/coach/config.js`에서만 바꾼다.
 - 커밋 메시지는 한국어로, 무엇이 바뀌었는지 한 줄.
