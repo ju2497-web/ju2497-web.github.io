@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>주제·요지 추론 고난도 30제</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* 레이아웃: 수학 문제집 한 권 — 모눈 종이 바탕, 한 줄로 이어지는 문항 카드, 하단 고정 채점 바 */
+:root {
+  --paper: #f3f5f2;
+  --sheet: #ffffff;
+  --ink: #1f2b3a;
+  --ink-soft: #5b6878;
+  --rule: #d9dfdc;
+  --grid: rgba(60, 110, 120, .07);
+  --accent: #1f6f78;       /* 청록 잉크: 선택, 버튼 */
+  --accent-ink: #ffffff;
+  --pen: #c8412c;          /* 빨간 펜: 도형 표시 */
+  --ok: #2f7d4a;
+  --ok-bg: #e6f2ea;
+  --bad: #b8322a;
+  --bad-bg: #f8e7e4;
+  --hint-bg: #fff6dc;
+  --fig-fill: rgba(31, 111, 120, .10);
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+    --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+    --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+    --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a1f; --sheet: #1c242b; --ink: #e5eaee; --ink-soft: #9aa7b3; --rule: #2e3943;
+  --grid: rgba(120, 190, 200, .05); --accent: #5fb7bf; --accent-ink: #0d1a1d; --pen: #f08a73;
+  --ok: #7fcf98; --ok-bg: #1d3326; --bad: #f28b80; --bad-bg: #3a2220; --hint-bg: #352f1c;
+  --fig-fill: rgba(95, 183, 191, .14); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 140px; }
+header.top { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--accent); font-weight: 600; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(26px, 5vw, 36px); line-height: 1.2; margin: 0; text-wrap: balance; }
+.lede { color: var(--ink-soft); margin: 0; max-width: 62ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; color: var(--ink-soft); }
+.legend b { color: var(--ink); font-weight: 600; }
+
+.status { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.status .round { font-weight: 700; }
+.bar { flex: 1 1 160px; height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; min-width: 120px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+.status .count { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 13px; }
+
+.result { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; margin-bottom: 18px; display: grid; gap: 10px; }
+.result .score { font-family: var(--f-display); font-size: 40px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.result .score small { font-size: 16px; font-family: var(--f-body); font-weight: 500; color: var(--ink-soft); margin-left: 6px; }
+.result.perfect { border-color: var(--ok); background: var(--ok-bg); }
+.result .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font-size: 12px; font-variant-numeric: tabular-nums; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.bad { color: var(--bad); border-color: var(--bad); background: var(--bad-bg); }
+
+.list { display: grid; gap: 16px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px 20px; scroll-margin-top: 80px; }
+.card.ok { border-color: var(--ok); }
+.card.bad { border-color: var(--bad); box-shadow: inset 4px 0 0 var(--bad); }
+.card .body { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.qhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.num { font-family: var(--f-display); font-weight: 800; font-size: 26px; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+.tag { font-size: 11.5px; letter-spacing: .04em; color: var(--ink-soft); border: 1px solid var(--rule); padding: 1px 8px; border-radius: 4px; }
+.kind { font-size: 11.5px; color: var(--ink-soft); }
+.mark { margin-left: auto; font-weight: 700; font-size: 14px; }
+.mark.ok { color: var(--ok); } .mark.bad { color: var(--bad); }
+.qtext { font-family: var(--f-display); font-size: 16.5px; line-height: 1.85; margin: 0; }
+.bogi { margin-top: 10px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px 14px 10px; position: relative; font-size: 15px; }
+.bogi > span:first-child { position: absolute; top: -11px; left: 12px; background: var(--sheet); padding: 0 8px; font-family: var(--f-body); font-size: 12px; font-weight: 600; color: var(--accent); }
+.fig { grid-column: 2; grid-row: 1 / span 2; width: 300px; max-width: 100%; }
+.fig svg { width: 100%; height: auto; display: block; }
+.opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.opt { font: inherit; text-align: left; display: flex; gap: 8px; align-items: center; background: var(--sheet); color: var(--ink); border: 1.5px solid var(--rule); border-radius: 8px; padding: 9px 12px; cursor: pointer; min-height: 44px; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible, .ans:focus-visible, .btn:focus-visible, .link:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .n { font-family: var(--f-display); font-weight: 700; color: var(--accent); }
+.opt.sel { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt.sel .n { color: var(--accent-ink); }
+.opt[disabled] { cursor: default; }
+.opt.right { border-color: var(--ok); background: var(--ok-bg); color: var(--ink); }
+.opt.right .n { color: var(--ok); }
+.inrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.inrow label { font-size: 13px; color: var(--ink-soft); }
+.ans { font: inherit; font-size: 17px; width: 130px; padding: 8px 12px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--sheet); color: var(--ink); font-variant-numeric: tabular-nums; }
+.ans:focus { border-color: var(--accent); }
+.unit { font-family: var(--f-display); font-weight: 700; }
+.extra { display: grid; gap: 8px; }
+.link { font: inherit; font-size: 13px; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.note { font-size: 14px; border-radius: 8px; padding: 10px 12px; line-height: 1.7; }
+.note.hint { background: var(--hint-bg); }
+.note.sol { background: var(--ok-bg); }
+.note b { font-weight: 700; }
+
+.dock { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--sheet); border-top: 1px solid var(--rule); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.dock .in { max-width: 860px; margin: 0 auto; display: flex; gap: 10px 14px; align-items: center; flex-wrap: wrap; }
+.dock .msg { flex: 1 1 200px; font-size: 13.5px; color: var(--ink-soft); min-width: 0; }
+.btn { font: inherit; font-weight: 600; font-size: 15px; border-radius: 8px; padding: 11px 20px; cursor: pointer; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); min-height: 44px; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn[hidden] { display: none; }
+.foot { margin-top: 28px; font-size: 12.5px; color: var(--ink-soft); }
+
+.psg { font-family: var(--f-body); font-size: 15.5px; line-height: 2.05; }
+.qtext i { font-family: var(--f-body); font-style: normal; display: inline-block; margin-top: 6px; padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.qtext u, .opt u { text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.box { border: 1.5px solid var(--ink); padding: 0 6px; border-radius: 3px; white-space: nowrap; font-weight: 600; }
+@media (max-width: 640px) {
+  .card { grid-template-columns: minmax(0, 1fr); padding: 16px 14px; }
+  .fig { grid-column: 1; grid-row: auto; width: 100%; max-width: 340px; justify-self: center; order: -1; }
+  .card .body { order: 0; }
+  .qtext { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">고등 영어 · 27강 Part 2 독해 · 04 주제 및 요지 추론(1) (p.86~89)</div>
+    <h1>주제·요지 추론 고난도 30제</h1>
+    <p class="lede">27강 독해 04 "주제 및 요지 추론(1)"(p.86~89)을 고등 상위권 수준으로 완벽하게 이해하는 30문항입니다. 주제와 요지의 구분, 사례의 추상화, 오답 유형 분석, Get Started(부상 없이 지배력을 확립하는 동물들), Exercise 1(역경 속에서도 행복을 선택하는 노인들의 지혜), Exercise 2(인류를 굶주림에서 구하는 안전망)의 주제·요지와 구문·함축 의미, 세 글의 구조 비교, 새 지문 적용까지 담았습니다. 틀린 문제만 다시 풀어 100점이 될 때까지 이어집니다.</p>
+    <div class="legend"><span><b>30문항 모두 오지선다</b> 번호를 누르세요</span><span><b>밑줄 문항</b> 틀린 부분의 표현을 고르세요</span></div>
+  </header>
+
+  <div class="status" id="status">
+    <span class="round" id="roundLabel">1회차</span>
+    <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+    <span class="count" id="countLabel">0 / 30 풀이</span>
+  </div>
+
+  <section class="result" id="result" hidden></section>
+  <div class="list" id="list"></div>
+
+  <p class="foot">정답과 해설은 그 문제를 맞힌 뒤에 열립니다. 풀던 기록은 이 브라우저에 저장됩니다. <button class="link" id="resetBtn" type="button">기록 지우고 처음부터</button></p>
+</div>
+
+<div class="dock">
+  <div class="in">
+    <div class="msg" id="dockMsg">30문항을 풀고 채점하세요.</div>
+    <button class="btn" id="mainBtn" type="button">채점하기</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 30문항 (모두 오지선다) — 27강 Part 2 독해 04 주제 및 요지 추론(1) · 고난도 ---------- */
+const P = (label, body) => `<div class="bogi psg"><span>${label}</span>${body}</div>`;
+const S = t => `<i>${t}</i>`;
+const ANIM = P('Get Started 지문', `Many animals have developed ways of establishing dominance without risking serious injury. A defeated wolf, for example, will roll over on its back, exposing its throat to the victor, who will not then choose to tear it out. The now-dominant wolf may still need a future hunting partner, even one as weak as his now-beaten opponent. Bearded dragons wave their front legs peacefully at one another to show their wish for social harmony. Dolphins produce specialized sound pulses while hunting and during other times of high excitement to reduce potential conflict among dominant and subordinate group members.<br><small>*victor 승리자 **bearded dragon 턱수염도마뱀 ***subordinate 종속하는</small>`);
+const ELDER = P('Exercise 1 지문', `In order not for you to think I am painting too rose-colored a picture of our elders, it is important to keep in mind that everyone who reaches their seventies and beyond has experienced tragedy of one kind or another. This is one of the basic sources of elder wisdom and a reason why we need to listen so closely to what they tell us—no other group in society has this much experiential knowledge. They have become experts in walking a balance between accepting loss and maintaining an awareness of life's pleasures. The elders overwhelmingly believe that each of us can choose to be happier and that we can do so in the face of the painful events that inevitably follow the process of living. It's a fact that life will hand us problems and difficulties—if that hasn't happened to you yet, you're lucky. Despite this fact, we all have the power to choose. We can make a conscious decision each day to embrace a positive attitude. It requires convincing yourself that you can wake up and decide to focus on positive emotions.`);
+const FAM = P('Exercise 2 지문', `During the last hundred years, technological, economic and political developments have created an increasingly powerful safety net saving humankind from the biological poverty line. Mass famines still strike some areas from time to time, but they are not common, and almost always caused by human politics rather than by natural disasters. In most parts of the planet, even if a person has lost his job and all of his possessions, he is unlikely to die from hunger. Private insurance plans, government agencies and international NGOs will offer him enough daily calories to survive. As a whole, the global trade network turns droughts and floods into business opportunities, and makes it possible to overcome food shortages quickly and cheaply. Even when wars, earthquakes or tsunamis devastate entire countries, international efforts usually succeed in preventing famine.<br><small>*NGO 비정부기구 **devastate 황폐화시키다</small>`);
+const PROBLEMS = [
+  /* ===== 1~3. 전략 ===== */
+  { tag: '전략 · 주제와 요지', type: 'mc', q: '주제·요지 추론 문항에서 "주제"와 "요지"의 관계를 가장 정확히 설명한 것은?',
+    opts: ['주제는 문장, 요지는 명사구로 나타낸다.', '주제는 글이 다루는 핵심 대상과 관점을 명사구로 압축한 것이고, 요지는 그것에 대한 필자의 핵심 주장·결론을 문장으로 진술한 것이다.', '주제는 첫 문장, 요지는 마지막 문장이다.', '주제와 요지는 언제나 같은 표현이다.', '요지는 글에 나온 예시를 요약한 것이다.'], ans: 2,
+    hint: '"무엇에 대해" vs "그래서 무엇이라고"',
+    sol: '주제는 "무엇에 대하여(핵심 소재 + 관점)"를 명사구로, 요지는 필자가 말하고자 하는 바를 문장으로 표현한다.' },
+  { tag: '전략 · 예시의 기능', type: 'mc', q: '글이 "일반적 진술 → for example → 구체적 사례 여러 개"로 전개될 때, 주제를 찾는 가장 정교한 방법은?',
+    opts: ['가장 인상적인 사례 하나를 주제로 삼는다.', '사례마다 등장하는 동물 이름을 나열한다.', '사례들의 공통점을 추상화하여 앞의 일반적 진술과 일치하는지 확인한다.', '마지막 사례가 주제이다.', '사례의 수를 세어 가장 많이 나온 낱말을 고른다.'], ans: 3,
+    hint: '사례 = 일반 진술의 근거',
+    sol: '사례는 일반 진술을 뒷받침한다. 늑대·턱수염도마뱀·돌고래의 공통점("심각한 부상 없이 지배력을 확립하고 갈등을 줄이는 방법")을 추상화하여 첫 문장과 맞추면 주제가 된다.' },
+  { tag: '전략 · 오답 유형', type: 'mc', q: '주제 선택지의 대표적 오답 유형 중 "지문의 일부 사례에만 해당하는 지엽적 선택지"의 예로 가장 알맞은 것은? (Get Started 지문 기준)',
+    opts: ['strategies of animals for dominance and social harmony', 'predatory behavior in the animal kingdom', 'how dolphins use sound pulses while hunting', 'communication and cooperation between humans and animals', 'evolution of dominance of animal species'], ans: 3,
+    hint: '세 사례 중 하나만 다룬 선택지',
+    sol: '③은 돌고래 사례 하나만 다룬 지엽적 선택지이다. ②는 지문의 hunting을 이용한 함정, ④는 지문에 없는 인간, ⑤는 지문에 없는 "진화"로 범위를 벗어난다.' },
+
+  /* ===== 4~10. Get Started ===== */
+  { tag: 'Get Started · 주제', type: 'mc', q: '다음 글의 주제로 가장 적절한 것은?' + ANIM,
+    opts: ['evolution of dominance of animal species', 'predatory behavior in the animal kingdom', 'environmental factors influencing animals\' dominance', 'strategies of animals for dominance and social harmony', 'communication and cooperation between humans and animals'], ans: 4,
+    hint: '첫 문장 + 세 사례의 공통점',
+    sol: '심각한 부상 없이 지배력을 확립하고(dominance) 사회적 조화(social harmony)를 유지하려는 동물들의 전략 → ④.' },
+  { tag: 'Get Started · 핵심어', type: 'mc', q: '위 글 첫 문장의 <u>without risking serious injury</u>와 의미상 가장 거리가 <b>먼</b> 것은?',
+    opts: ['who will not then choose to tear it out', 'wave their front legs peacefully', 'to reduce potential conflict', 'to show their wish for social harmony', 'while hunting'], ans: 5,
+    hint: '부상·갈등을 피하는 내용이 아닌 것',
+    sol: 'while hunting은 돌고래가 음파를 내는 "상황"일 뿐 부상 회피의 의미가 없다. 나머지는 모두 싸움·부상·갈등을 피하는 행동이다.' },
+  { tag: 'Get Started · 분사구문', type: 'mc', q: S('A defeated wolf will roll over on its back, <u>exposing</u> its throat to the victor') + '<br>밑줄 친 부분에 대한 설명으로 가장 적절한 것은?',
+    opts: ['exposing은 동명사 주어이다.', 'and it exposes로 바꿔 쓸 수 있는 연속 동작의 분사구문이다.', '목적을 나타내는 to expose와 의미가 같다.', 'the victor를 꾸미는 현재분사이다.', '수동의 의미이므로 exposed로 바꿔야 한다.'], ans: 2,
+    hint: '등을 대고 구른다 + 그리하여 목을 드러낸다',
+    sol: '주절과 이어지는 동작을 나타내는 분사구문으로 "(그리하여) 목을 드러낸다" = and it exposes its throat.' },
+  { tag: 'Get Started · 관계사', type: 'mc', q: S('to the victor<u>, who</u> will not then choose to tear it out') + '<br>밑줄 친 부분의 쓰임과 같은 것은?',
+    opts: ['I know the man who lives next door.', 'Who broke the window?', 'I met Tom, who told me the news.', 'The girl who sings is my sister.', 'I wonder who she is.'], ans: 3,
+    hint: '콤마 + who = 계속적 용법(and he)',
+    sol: '콤마 뒤의 who는 계속적 용법(= and he)으로, 앞 명사에 대해 덧붙여 설명한다. ③ Tom, who = and he. ①④ 제한적 용법, ②⑤ 의문사.' },
+  { tag: 'Get Started · 추론', type: 'mc', q: S('The now-dominant wolf may still need a future hunting partner, even one as weak as his now-beaten opponent.') + '<br>이 문장이 앞 문장에 대해 하는 역할로 가장 적절한 것은?',
+    opts: ['앞 내용과 반대되는 사례를 제시한다.', '승리한 늑대가 상대의 목을 물어뜯지 않는 이유를 설명한다.', '늑대의 사냥 방식을 새로 소개한다.', '패배한 늑대가 다시 도전하는 과정을 묘사한다.', '글의 결론을 제시한다.'], ans: 2,
+    hint: '"왜 죽이지 않을까?"에 대한 답',
+    sol: '약해진 상대라도 미래의 사냥 동료로 필요하기 때문에 죽이지 않는다 — 앞 문장의 행동에 대한 이유(원인) 설명이다.' },
+  { tag: 'Get Started · one', type: 'mc', q: S('even <u>one</u> as weak as his now-beaten opponent') + '<br>밑줄 친 one이 가리키는 것은?',
+    opts: ['the victor', 'a future hunting partner', 'its throat', 'a defeated wolf의 등', 'serious injury'], ans: 2,
+    hint: '부정대명사 one = a + 앞의 단수 명사',
+    sol: 'one = a hunting partner. "지금은 패배한 상대만큼 약한 (사냥) 동료라도".' },
+  { tag: 'Get Started · 요지 진술', type: 'mc', q: '위 글의 요지를 한 문장으로 가장 잘 진술한 것은?',
+    opts: ['동물은 약한 개체를 집단에서 쫓아낸다.', '동물들은 다양한 방식으로 심각한 부상의 위험 없이 서열을 정하고 집단 내 갈등을 줄인다.', '동물의 싸움은 언제나 한쪽의 죽음으로 끝난다.', '돌고래는 가장 지능이 높은 동물이다.', '동물은 인간의 행동을 모방한다.'], ans: 2,
+    hint: '주제(명사구) → 요지(문장)',
+    sol: '요지는 주제를 문장으로 진술한 것이다: 동물들은 부상 없이 지배력을 확립하고 갈등을 줄이는 방법을 발달시켜 왔다.' },
+
+  /* ===== 11~19. Exercise 1 ===== */
+  { tag: 'Exercise 1 · 주제', type: 'mc', q: '다음 글의 주제로 가장 적절한 것은?' + ELDER,
+    opts: ['overcoming challenges with youthful energy', 'mastering life\'s balance through loss and joy', 'valuable secrets of life from each generation', 'the relief of elders from life\'s tough challenges', 'lessons from elders on choosing joy in adversity'], ans: 5,
+    hint: '노인들 + 역경 속에서도 행복을 선택할 수 있다',
+    sol: '노인들의 지혜: 고통스러운 일이 있어도 각자 더 행복해지기를 "선택"할 수 있다 → ⑤. ① youthful(젊음) ② mastering(지문은 "전문가"라 했지 숙달 과정이 주제가 아님) ③ each generation(모든 세대 아님) ④ relief(벗어남이 아니라 받아들임)는 강의에서 X 표시한 함정이다.' },
+  { tag: 'Exercise 1 · 오답 분석', type: 'mc', q: '위 주제 문항에서 ③ "valuable secrets of life from each generation"이 오답인 가장 결정적인 이유는?',
+    opts: ['secrets라는 낱말이 어렵기 때문', '지혜의 출처를 "모든 세대"로 확대하여, 70대 이상의 노인이라는 지문의 한정을 벗어났기 때문', 'life가 지문에 나오지 않기 때문', '선택지가 너무 짧기 때문', 'valuable이 부정적 의미이기 때문'], ans: 2,
+    hint: '강의 판서: generation에 X',
+    sol: '지문은 "70대 이상, 비극을 겪은 노인"의 경험적 지식을 말한다. each generation은 범위를 과도하게 확대한 일반화 오류이다.' },
+  { tag: 'Exercise 1 · 구문', type: 'mc', q: S('<u>In order not for you to think</u> I am painting too rose-colored a picture of our elders, ...') + '<br>밑줄 친 부분을 바르게 분석한 것은?',
+    opts: ['for you는 to think의 의미상 주어이며, not은 to부정사를 부정하여 "당신이 ~라고 생각하지 않도록"의 의미이다.', 'for는 "~ 때문에"라는 이유의 접속사이다.', 'not은 문장 전체를 부정한다.', 'to think는 명사적 용법의 주어이다.', 'In order는 "순서대로"라는 뜻이다.'], ans: 1,
+    hint: 'in order (for A) not to V가 원형',
+    sol: 'in order not to V(~하지 않기 위해) + 의미상 주어 for you. 이 문장에서는 not이 for you 앞에 와서 "당신이 ~라고 생각하지 않도록".' },
+  { tag: 'Exercise 1 · too 어순', type: 'mc', q: S('I am painting <u>too rose-colored a picture</u> of our elders') + '<br>밑줄 친 부분과 어순이 같은 것은?',
+    opts: ['a too difficult question', 'so a beautiful day', 'such a nice person', 'as good a player as him', 'very a big house'], ans: 4,
+    hint: 'too / so / as / how + 형용사 + a + 명사',
+    sol: 'too·so·as·how는 "형용사 + a + 명사" 어순: too rose-colored a picture, as good a player. such는 such a nice person(such + a + 형 + 명)이라 다르다.' },
+  { tag: 'Exercise 1 · 함축 의미', type: 'mc', q: S('painting too rose-colored a picture of our elders') + '가 의미하는 바로 가장 적절한 것은?',
+    opts: ['노인들의 초상화를 붉은색으로 그리다', '노인들을 지나치게 낙관적이고 미화된 모습으로 묘사하다', '노인들의 삶을 지나치게 비관적으로 보다', '노인들에게 장미를 선물하다', '노인들의 건강 문제를 과장하다'], ans: 2,
+    hint: 'rose-colored glasses = 낙관적 시각',
+    sol: 'rose-colored는 "장밋빛의, 지나치게 낙관적인". 필자는 노인들이 고통 없이 행복하기만 하다고 미화하는 것이 아님을 밝히기 위해 이 말을 쓴다(그들도 모두 비극을 겪었다).' },
+  { tag: 'Exercise 1 · this fact', type: 'mc', q: S('Despite <u>this fact</u>, we all have the power to choose.') + '<br>밑줄 친 this fact가 가리키는 내용과 Despite의 기능을 바르게 짝지은 것은?',
+    opts: ['노인들이 지혜롭다는 것 – 인과', '삶이 우리에게 문제와 어려움을 건넬 것이라는 것 – 양보(역접)', '우리가 운이 좋다는 것 – 예시', '노인들이 70대가 넘었다는 것 – 첨가', '긍정적 감정에 집중하는 것 – 결과'], ans: 2,
+    hint: 'It\'s a fact that ~ (동격의 that)',
+    sol: 'this fact = "삶이 우리에게 문제와 어려움을 건넬 것이라는 것"(동격 that절). Despite(~에도 불구하고)는 양보로, 뒤에 필자의 핵심 주장(선택의 힘)이 이어진다.' },
+  { tag: 'Exercise 1 · 병렬', type: 'mc', q: S('The elders overwhelmingly believe <u>that</u> each of us can choose to be happier and <u>that</u> we can do so in the face of the painful events ...') + '<br>이 문장에 대한 설명으로 옳지 <b>않은</b> 것은?',
+    opts: ['두 that절이 and로 병렬되어 believe의 목적어 역할을 한다.', 'do so는 choose to be happier를 대신한다.', 'in the face of는 "~에 직면하여, ~에도 불구하고"의 뜻이다.', 'that inevitably follow ~의 that은 관계대명사로 the painful events를 수식한다.', '두 번째 that은 생략해도 의미 변화 없이 문법적으로 반드시 생략해야 한다.'], ans: 5,
+    hint: '병렬된 두 번째 that의 역할',
+    sol: '두 번째 that은 병렬 구조를 명확히 하기 위해 쓰이며, 생략하면 의미가 모호해질 수 있다. "반드시 생략해야 한다"는 틀렸다.' },
+  { tag: 'Exercise 1 · 요지 위치', type: 'mc', q: '위 Exercise 1 글의 구조에 대한 분석으로 가장 적절한 것은?',
+    opts: ['두괄식: 첫 문장에 요지가 있다.', '오해 방지(양보) → 노인 지혜의 원천 → 핵심 주장(행복은 선택할 수 있다) → 실천 방법(매일 긍정적 태도를 선택)의 흐름으로, 요지는 중반 이후에 드러난다.', '사건을 시간 순서로 나열한 글이다.', '두 대상을 대조하는 글이다.', '문제를 제시하고 해결하지 못한 채 끝난다.'], ans: 2,
+    hint: '첫 문장은 In order not for you to think ~(오해 방지)',
+    sol: '첫 문장은 오해를 막는 도입, 핵심은 "The elders overwhelmingly believe that each of us can choose to be happier"와 "we all have the power to choose"이다.' },
+  { tag: 'Exercise 1 · 완료 Quiz', type: 'mc', q: '"인생에 있어서 최고의 행복은 우리가 사랑받고 있음을 확신하는 것이다."<br>' + S('Life\'s greatest happiness is to be ________ we are loved.') + '<br>빈칸에 알맞은 말은?',
+    opts: ['convincing', 'convinced that', 'convince of', 'convinced what', 'convincing that'], ans: 2,
+    hint: 'be convinced that ~ = ~을 확신하다',
+    sol: 'be convinced that S + V "~을 확신하다". 본문의 convincing yourself that you can ~ 과 같은 동사이다.' },
+
+  /* ===== 20~28. Exercise 2 ===== */
+  { tag: 'Exercise 2 · 요지', type: 'mc', q: '다음 글의 요지로 가장 적절한 것은?' + FAM,
+    opts: ['기술의 발전은 지역별 빈부 격차를 심화시켰다.', '기아 퇴치를 위해서 지역별 안전망 구축이 필요하다.', '사회적 안전망 덕에 굶어 죽는 사람의 숫자가 줄어들고 있다.', '기아 문제는 해결되었지만 다른 사회적 문제들이 대두되고 있다.', '정치 행위에 의한 기아 문제가 자연재해로 인한 기아 문제보다 심각해지고 있다.'], ans: 3,
+    hint: '첫 문장: an increasingly powerful safety net saving humankind from the biological poverty line',
+    sol: '지난 100년의 발전이 강력한 안전망을 만들어 인류를 생물학적 빈곤선(굶주림)에서 구하고 있다 → ③. ② "필요하다"는 지문에 없는 당위, ④ 다른 문제는 언급 없음, ⑤ 비교·심화 내용은 없다.' },
+  { tag: 'Exercise 2 · 오답 분석', type: 'mc', q: '위 요지 문항에서 ⑤ "정치 행위에 의한 기아 문제가 자연재해로 인한 기아 문제보다 심각해지고 있다"가 오답인 이유로 가장 정확한 것은?',
+    opts: ['지문에 정치라는 말이 없기 때문', '지문은 오늘날 대기근의 원인이 주로 정치라고 했을 뿐, 그 문제가 "심각해지고 있다"는 변화 추세는 말하지 않았고 이는 글의 중심 내용도 아니기 때문', '자연재해가 더 심각하다고 했기 때문', '대기근이 전혀 없다고 했기 때문', '선택지가 너무 길기 때문'], ans: 2,
+    hint: 'rather than의 비교 대상과 "심각해지고 있다"',
+    sol: '"almost always caused by human politics rather than by natural disasters"는 원인 비교일 뿐 추세 언급이 없다. 세부 정보를 왜곡·확대한 오답이다.' },
+  { tag: 'Exercise 2 · 어휘 추론', type: 'mc', q: S('saving humankind from <u>the biological poverty line</u>') + '<br>밑줄 친 부분의 의미로 가장 적절한 것은?',
+    opts: ['생물학 연구비의 부족', '생존에 필요한 최소한의 음식을 얻지 못해 굶주리는 상태', '빈곤층의 낮은 교육 수준', '생물 다양성의 감소', '소득 불평등의 기준선'], ans: 2,
+    hint: '뒤의 die from hunger, enough daily calories to survive',
+    sol: '"생물학적 빈곤선" = 살아남기 위한 최소한의 칼로리를 얻지 못하는 선, 즉 굶주림. 문맥(굶어 죽지 않음, 하루 칼로리)으로 추론한다.' },
+  { tag: 'Exercise 2 · 시제', type: 'mc', q: S('During the last hundred years, technological, economic and political developments <u>have created</u> ...') + '<br>현재완료가 쓰인 이유로 가장 적절한 것은?',
+    opts: ['과거의 한 시점에서 끝난 일이므로', '지난 100년 동안 계속되어 현재까지 영향을 미치는 결과를 나타내므로', '미래의 일을 예측하므로', '가정법이므로', '수동태를 만들기 위해'], ans: 2,
+    hint: 'During the last ~ years + 현재까지',
+    sol: '"지난 100년 동안 (지금까지) ~을 만들어 왔다" — 과거부터 현재까지 이어지는 결과·계속. 그 결과가 현재 시제의 사례들(are not common, will offer)로 이어진다.' },
+  { tag: 'Exercise 2 · 사례 분류', type: 'mc', q: '위 글에서 "안전망"을 구성하는 요소로 제시된 것이 <b>아닌</b> 것은?',
+    opts: ['Private insurance plans', 'government agencies', 'international NGOs', 'the global trade network', 'mass famines'], ans: 5,
+    hint: '대기근은 안전망이 막아 내는 대상',
+    sol: '보험, 정부 기관, 국제 NGO, 국제 무역망, 국제적 노력은 안전망이다. mass famines는 안전망이 막아 내는 위험이다.' },
+  { tag: 'Exercise 2 · natural disasters', type: 'mc', q: '위 글의 밑줄 친 natural disasters의 예로 본문에 언급된 것만 바르게 묶은 것은?',
+    opts: ['wars, earthquakes, tsunamis', 'droughts, floods, earthquakes, tsunamis', 'famines, wars, floods', 'droughts, wars, tsunamis', 'floods, famines, earthquakes'], ans: 2,
+    hint: 'war는 자연재해가 아닙니다.',
+    sol: 'droughts(가뭄), floods(홍수), earthquakes(지진), tsunamis(쓰나미). wars는 인간이 일으키는 것이므로 자연재해가 아니다(강의에서 X 표시).' },
+  { tag: 'Exercise 2 · 구문', type: 'mc', q: S('the global trade network <u>turns</u> droughts and floods <u>into</u> business opportunities, and <u>makes it possible to</u> overcome food shortages quickly and cheaply') + '<br>이 문장에 대한 설명으로 옳은 것은?',
+    opts: ['turns와 makes는 주어가 다르다.', 'turn A into B는 "A를 B로 바꾸다"이고, makes it possible to ~의 it은 가목적어, to overcome ~이 진목적어이다.', 'it은 the global trade network를 가리킨다.', 'possible은 부사로 바꿔야 한다.', 'into는 to부정사의 to와 같은 역할을 한다.'], ans: 2,
+    hint: '5형식 make + it(가목적어) + 형용사 + to V',
+    sol: '주어 the global trade network가 turns와 makes를 공유한다. make it possible to V: it은 가목적어, to overcome ~이 진목적어.' },
+  { tag: 'Exercise 2 · 함축', type: 'mc', q: S('turns droughts and floods into business opportunities') + '가 의미하는 바로 가장 적절한 것은?',
+    opts: ['가뭄과 홍수를 기술로 완전히 막는다.', '한 지역의 재해로 식량이 부족해지면, 국제 무역을 통해 다른 지역이 식량을 공급하여 이익을 얻으므로 결과적으로 식량 부족이 빠르게 해소된다.', '재해 지역의 기업들이 파산한다.', '재해를 이용하여 전쟁을 일으킨다.', '가뭄과 홍수가 관광 산업을 발전시킨다.'], ans: 2,
+    hint: '재해 → 수요 → 다른 곳에서 공급(사업 기회)',
+    sol: '재해는 식량 수요를 만들고, 국제 무역망에서는 그것이 공급자에게 "사업 기회"가 된다. 그 결과 식량 부족을 빠르고 싸게 극복할 수 있다.' },
+  { tag: 'Exercise 2 · 양보', type: 'mc', q: S('Mass famines still strike some areas from time to time, <u>but</u> they are not common') + '<br>이 문장에서 필자가 but을 사용한 의도로 가장 적절한 것은?',
+    opts: ['앞의 안전망 주장을 부정하기 위해', '예외(대기근이 아직 있다)를 인정하면서도 그것이 드물다고 하여 핵심 주장(안전망의 효과)을 강화하기 위해', '새로운 화제로 넘어가기 위해', '대기근의 원인을 자연재해로 돌리기 위해', '독자에게 행동을 요구하기 위해'], ans: 2,
+    hint: '양보 후 반박',
+    sol: '반론이 될 수 있는 사실(대기근)을 먼저 인정하고 but으로 "흔하지 않다, 대부분 정치 때문이다"라고 하여 주장의 설득력을 높인다.' },
+
+  /* ===== 29~30. 고난도 적용 ===== */
+  { tag: '고난도 · 비교 분석', type: 'mc', q: 'Get Started, Exercise 1, Exercise 2 세 글의 주제·요지가 드러나는 방식을 비교한 것으로 가장 적절한 것은?',
+    opts: ['세 글 모두 마지막 문장에만 요지가 있다.', 'Get Started와 Exercise 2는 첫 문장에 일반적 진술(요지)을 제시하고 사례로 뒷받침하는 두괄식이고, Exercise 1은 양보적 도입 뒤 중반에 핵심 주장이 나온다.', '세 글 모두 질문으로 시작한다.', 'Exercise 1만 사례를 사용한다.', '세 글 모두 요지가 드러나지 않는다.'], ans: 2,
+    hint: '각 글의 첫 문장의 역할',
+    sol: 'Get Started(첫 문장 일반 진술 → 늑대·도마뱀·돌고래), Exercise 2(첫 문장 안전망 → 보험·NGO·무역망)는 두괄식. Exercise 1은 오해 방지 문장 → 노인의 지혜 → 핵심 주장.' },
+  { tag: '고난도 · 새 지문', type: 'mc', q: '다음 글의 요지로 가장 적절한 것은?' + P('새 지문', `For centuries, people believed that intelligence was a fixed trait, something you were either born with or not. Recent research in neuroscience, however, has shown that the brain continues to form new connections throughout life. When we struggle with a difficult problem, our brains actually grow, much like muscles strengthen with exercise. Students who are taught this fact tend to persist longer when facing challenges and achieve higher grades than those who believe their ability cannot change. What matters, then, is not how smart you are now but whether you believe you can grow.`),
+    opts: ['지능은 타고나므로 바꿀 수 없다.', '뇌과학 연구는 아직 신뢰하기 어렵다.', '능력이 성장할 수 있다고 믿는 것이 실제 성취에 큰 영향을 준다.', '어려운 문제는 피하는 것이 학습에 유리하다.', '운동이 지능 발달의 가장 중요한 요인이다.'], ans: 3,
+    hint: 'however 이후 + 마지막 문장 What matters, then, ...',
+    sol: '통념(지능은 고정)을 제시한 뒤 however로 반박하고, 마지막 문장에서 "중요한 것은 지금의 지능이 아니라 성장할 수 있다고 믿는지 여부"라고 결론짓는다. ⑤는 비유(muscles)를 오해한 함정이다.' }
+];
+// 정답 위치를 고르게 나눈다 (선택지 자리만 바꿈)
+[[0, 4], [1, 1], [5, 3], [7, 1], [11, 1], [12, 3], [14, 5], [15, 1], [18, 5], [20, 4], [21, 1], [24, 3], [26, 5], [27, 1], [28, 4]].forEach(([i, to]) => {
+  const p = PROBLEMS[i], a = p.ans - 1, b = to - 1;
+  [p.opts[a], p.opts[b]] = [p.opts[b], p.opts[a]]; p.ans = to;
+});
+
+</script>
+<script>
+(() => {
+  const N = PROBLEMS.length;
+  const CIRC = ['①', '②', '③', '④', '⑤'];
+  const KEY = 'eng27main-v1';
+  const $ = id => document.getElementById(id);
+
+  /* ---------- SVG 도형 그리기 ---------- */
+  const DIRS = { n: [0, -1], s: [0, 1], e: [1, 0], w: [-1, 0], ne: [.75, -.75], nw: [-.75, -.75], se: [.75, .75], sw: [-.75, .75] };
+  function drawFig(fig) {
+    const pts = fig.pts, all = Object.values(pts).slice();
+    (fig.arcs || []).forEach(a => { for (let t = 0; t <= 12; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 12) * Math.PI / 180; all.push([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]); } });
+    (fig.text || []).forEach(t => all.push(t.at));
+    const xs = all.map(p => p[0]), ys = all.map(p => p[1]);
+    const minx = Math.min(...xs), maxx = Math.max(...xs), miny = Math.min(...ys), maxy = Math.max(...ys);
+    const w = maxx - minx || 1, h = maxy - miny || 1, k = Math.min(250 / w, 230 / h), pad = 24;
+    const W = w * k + pad * 2, H = h * k + pad * 2;
+    const T = p => [pad + (p[0] - minx) * k, pad + (maxy - p[1]) * k];
+    const f = n => n.toFixed(1);
+    const P = name => T(pts[name]);
+    const pair = s => Array.isArray(s) ? s : (typeof s === 'string' ? [s[0], s[1]] : [s.a, s.b]);
+    let out = '';
+    (fig.polys || []).forEach(poly => { out += `<polygon points="${poly.map(n => P(n).map(f).join(',')).join(' ')}" style="fill:var(--fig-fill);stroke:none"/>`; });
+    (fig.arcs || []).forEach(a => {
+      const seg = [];
+      for (let t = 0; t <= 24; t++) { const d = (a.a1 + (a.a2 - a.a1) * t / 24) * Math.PI / 180; seg.push(T([a.c[0] + a.r * Math.cos(d), a.c[1] + a.r * Math.sin(d)]).map(f).join(',')); }
+      out += `<polyline points="${seg.join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.1"/>`;
+    });
+    (fig.segs || []).forEach(s => {
+      const [a, b] = pair(s), st = typeof s === 'object' && !Array.isArray(s) ? s.st : '';
+      const A = P(a), B = P(b);
+      let style = 'stroke:var(--ink);stroke-width:1.6;stroke-linecap:round';
+      if (st === 'dash') style = 'stroke:var(--ink-soft);stroke-width:1.1;stroke-dasharray:4 3';
+      if (st === 'red') style = 'stroke:var(--pen);stroke-width:1.8';
+      out += `<line x1="${f(A[0])}" y1="${f(A[1])}" x2="${f(B[0])}" y2="${f(B[1])}" style="${style}"/>`;
+    });
+    (fig.right || []).forEach(([v, a, b]) => {
+      const V = P(v), A = P(a), B = P(b), s = 8;
+      const u = [(A[0] - V[0]), (A[1] - V[1])], wv = [(B[0] - V[0]), (B[1] - V[1])];
+      const lu = Math.hypot(...u), lw = Math.hypot(...wv);
+      const p1 = [V[0] + u[0] / lu * s, V[1] + u[1] / lu * s], p3 = [V[0] + wv[0] / lw * s, V[1] + wv[1] / lw * s];
+      const p2 = [p1[0] + wv[0] / lw * s, p1[1] + wv[1] / lw * s];
+      out += `<polyline points="${[p1, p2, p3].map(p => p.map(f).join(',')).join(' ')}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+    });
+    (fig.ticks || []).forEach(([a, b, n]) => {
+      const A = P(a), B = P(b), m = [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+      const L = Math.hypot(B[0] - A[0], B[1] - A[1]), d = [(B[0] - A[0]) / L, (B[1] - A[1]) / L], nn = [-d[1], d[0]];
+      for (let i = 0; i < n; i++) {
+        const o = (i - (n - 1) / 2) * 4, c = [m[0] + d[0] * o, m[1] + d[1] * o];
+        out += `<line x1="${f(c[0] - nn[0] * 5)}" y1="${f(c[1] - nn[1] * 5)}" x2="${f(c[0] + nn[0] * 5)}" y2="${f(c[1] + nn[1] * 5)}" style="stroke:var(--pen);stroke-width:1.3"/>`;
+      }
+    });
+    (fig.angs || []).forEach(([a, v, b, txt, r0]) => {
+      const V = P(v), A = P(a), B = P(b), r = r0 ? Math.min(r0, 40) * .55 + 6 : 16;
+      const ta = Math.atan2(A[1] - V[1], A[0] - V[0]); let d = Math.atan2(B[1] - V[1], B[0] - V[0]) - ta;
+      while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const s = [V[0] + r * Math.cos(ta), V[1] + r * Math.sin(ta)], e = [V[0] + r * Math.cos(ta + d), V[1] + r * Math.sin(ta + d)];
+      out += `<path d="M${f(s[0])},${f(s[1])} A${r},${r} 0 0 ${d > 0 ? 1 : 0} ${f(e[0])},${f(e[1])}" style="fill:none;stroke:var(--pen);stroke-width:1.2"/>`;
+      const tr = r + (txt === '•' ? -5 : 13), tm = ta + d / 2;
+      out += `<text x="${f(V[0] + tr * Math.cos(tm))}" y="${f(V[1] + tr * Math.sin(tm))}" text-anchor="middle" dominant-baseline="central" style="fill:var(--pen);font:600 ${txt === '•' ? 13 : 11.5}px var(--f-body)">${txt}</text>`;
+    });
+    (fig.text || []).forEach(t => {
+      const p = T(t.at);
+      out += `<text x="${f(p[0])}" y="${f(p[1])}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink-soft);font:${t.it ? 'italic 700 15px var(--f-display)' : '600 12.5px var(--f-body)'}">${t.t}</text>`;
+    });
+    const lab = fig.lab || {};
+    const vis = Object.keys(pts).filter(n => n[0] !== '_');
+    const cx = vis.reduce((s, n) => s + P(n)[0], 0) / vis.length, cy = vis.reduce((s, n) => s + P(n)[1], 0) / vis.length;
+    vis.forEach(n => {
+      const p = P(n); let d = DIRS[lab[n]];
+      if (!d) { const v = [p[0] - cx, p[1] - cy], l = Math.hypot(...v) || 1; d = [v[0] / l, v[1] / l]; }
+      out += `<circle cx="${f(p[0])}" cy="${f(p[1])}" r="1.9" style="fill:var(--ink)"/>`;
+      out += `<text x="${f(p[0] + d[0] * 13)}" y="${f(p[1] + d[1] * 13)}" text-anchor="middle" dominant-baseline="central" style="fill:var(--ink);font:800 15px var(--f-display)">${n}</text>`;
+    });
+    return `<svg viewBox="0 0 ${f(W)} ${f(H)}" role="img" aria-label="문제 그림">${out}</svg>`;
+  }
+  const FIGS = PROBLEMS.map(p => p.fig ? drawFig(p.fig()) : '');
+
+  /* ---------- 상태 ---------- */
+  let S = fresh();
+  function fresh() { return { ans: {}, status: {}, round: 1, active: [...Array(N).keys()], graded: false, history: [] }; }
+  try { const saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.active) S = Object.assign(fresh(), saved); } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  const open = { hint: new Set(), sol: new Set() };
+  let blankWarn = false, resetArm = false;
+
+  const isRight = i => {
+    const p = PROBLEMS[i], a = S.ans[i];
+    if (a === undefined || a === '') return false;
+    if (p.type === 'mc') return a === p.ans;
+    const v = Number(String(a).replace(/[^\d.\-]/g, ''));
+    return String(a).trim() !== '' && Math.abs(v - p.ans) < 1e-6;
+  };
+  const answered = i => S.ans[i] !== undefined && String(S.ans[i]).trim() !== '';
+  const okCount = () => Object.values(S.status).filter(s => s === 'ok').length;
+  const scoreOf = c => c === N ? 100 : Math.round(c / N * 1000) / 10;
+
+  /* ---------- 화면 ---------- */
+  function cardHTML(i) {
+    const p = PROBLEMS[i], st = S.graded ? S.status[i] : null, locked = S.graded;
+    const everWrong = S.round > 1 && S.active.includes(i);
+    let inputs;
+    if (p.type === 'mc') {
+      inputs = `<div class="opts" role="radiogroup" aria-label="${i + 1}번 선택지">` + p.opts.map((o, k) => {
+        const sel = S.ans[i] === k + 1, right = locked && st === 'ok' && p.ans === k + 1;
+        return `<button type="button" class="opt${sel && !right ? ' sel' : ''}${right ? ' right' : ''}" role="radio" aria-checked="${sel}" data-i="${i}" data-k="${k + 1}" ${locked ? 'disabled' : ''}><span class="n">${CIRC[k]}</span><span>${o}</span></button>`;
+      }).join('') + '</div>';
+    } else {
+      inputs = `<div class="inrow"><label for="a${i}">답</label><input class="ans" id="a${i}" data-i="${i}" inputmode="decimal" autocomplete="off" value="${S.ans[i] ?? ''}" ${locked ? 'disabled' : ''}><span class="unit">${p.unit || ''}</span></div>`;
+    }
+    let extra = '';
+    const canHint = (locked && st === 'bad') || (!locked && everWrong);
+    if (canHint) extra += `<button type="button" class="link" data-hint="${i}">${open.hint.has(i) ? '힌트 닫기' : '힌트 보기'}</button>` + (open.hint.has(i) ? `<div class="note hint"><b>힌트</b> ${p.hint}</div>` : '');
+    if (locked && st === 'ok') extra += `<button type="button" class="link" data-sol="${i}">${open.sol.has(i) ? '해설 닫기' : '해설 보기'}</button>` + (open.sol.has(i) ? `<div class="note sol"><b>정답 ${p.type === 'mc' ? CIRC[p.ans - 1] : p.ans + (p.unit || '')}</b> · ${p.sol}</div>` : '');
+    const mark = st === 'ok' ? '<span class="mark ok">✓ 정답</span>' : st === 'bad' ? '<span class="mark bad">✗ 다시 풀기</span>' : '';
+    return `<article class="card${st ? ' ' + st : ''}" id="q${i + 1}">
+      <div class="body">
+        <div class="qhead"><span class="num">${String(i + 1).padStart(2, '0')}</span><span class="tag">${p.tag}</span><span class="kind">${p.type === 'mc' ? '객관식' : '주관식'}</span>${mark}</div>
+        <p class="qtext">${p.q}</p>
+        ${inputs}
+        ${extra ? `<div class="extra">${extra}</div>` : ''}
+      </div>
+      ${FIGS[i] ? `<div class="fig">${FIGS[i]}</div>` : ''}
+    </article>`;
+  }
+
+  function render() {
+    const shown = S.active;
+    $('list').innerHTML = shown.map(cardHTML).join('');
+    renderStatus(); renderResult(); renderDock();
+  }
+  function renderStatus() {
+    const done = S.active.filter(answered).length;
+    $('roundLabel').textContent = S.round === 1 ? '1회차 · 전체 30문항' : `${S.round}회차 · 틀린 ${S.active.length}문항`;
+    $('countLabel').textContent = `${done} / ${S.active.length} 풀이`;
+    $('barFill').style.width = (done / S.active.length * 100) + '%';
+  }
+  function renderResult() {
+    const el = $('result');
+    if (!S.history.length) { el.hidden = true; return; }
+    const c = okCount(), sc = scoreOf(c), perfect = c === N;
+    const trail = S.history.map(h => `${h.round}회차 ${h.score}점`).join(' → ');
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    el.hidden = false;
+    el.className = 'result' + (perfect ? ' perfect' : '');
+    el.innerHTML = `<div class="score">${sc}점<small>${c} / ${N} 정답</small></div>
+      <div>${perfect ? `축하합니다. ${S.round}회차 만에 30문항을 모두 맞혔습니다. 각 문제의 <b>해설 보기</b>로 풀이를 복습해 보세요.` : S.graded ? `틀린 문제 ${wrong.length}개를 다시 풀어 100점을 만드세요.` : `지금은 틀렸던 ${S.active.length}문제를 다시 푸는 중입니다.`}</div>
+      <div class="chips">${[...Array(N).keys()].map(i => `<span class="chip ${S.status[i] === 'ok' ? 'ok' : 'bad'}">${i + 1}</span>`).join('')}</div>
+      <div class="kind">${trail}</div>`;
+  }
+  function renderDock() {
+    const btn = $('mainBtn'), msg = $('dockMsg');
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      btn.textContent = '채점하기';
+      msg.textContent = blankWarn ? `빈칸 ${blanks}개가 있습니다. 빈칸은 오답이 됩니다. 그래도 채점하려면 한 번 더 누르세요.` : blanks ? `남은 문제 ${blanks}개` : '모두 풀었습니다. 채점하세요.';
+    } else if (okCount() === N) {
+      btn.textContent = '처음부터 다시 풀기'; msg.textContent = '100점! 모든 문제를 맞혔습니다.';
+    } else {
+      const w = N - okCount();
+      btn.textContent = `틀린 ${w}문제 다시 풀기`; msg.textContent = `${scoreOf(okCount())}점 · 힌트를 보고 다시 도전하세요.`;
+    }
+  }
+
+  function grade() {
+    S.active.forEach(i => { S.status[i] = isRight(i) ? 'ok' : 'bad'; });
+    S.graded = true; blankWarn = false; open.hint.clear();
+    S.history.push({ round: S.round, score: scoreOf(okCount()) });
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function retry() {
+    const wrong = [...Array(N).keys()].filter(i => S.status[i] !== 'ok');
+    wrong.forEach(i => { delete S.ans[i]; delete S.status[i]; });
+    S.active = wrong; S.round += 1; S.graded = false; open.hint.clear(); open.sol.clear();
+    save(); render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function restart() { S = fresh(); open.hint.clear(); open.sol.clear(); save(); render(); window.scrollTo({ top: 0 }); }
+
+  /* ---------- 이벤트 ---------- */
+  $('list').addEventListener('click', e => {
+    const o = e.target.closest('.opt');
+    if (o && !o.disabled) {
+      const i = +o.dataset.i; S.ans[i] = +o.dataset.k; blankWarn = false; save();
+      o.parentElement.querySelectorAll('.opt').forEach(b => { const on = b === o; b.classList.toggle('sel', on); b.setAttribute('aria-checked', on); });
+      renderStatus(); renderDock(); return;
+    }
+    const h = e.target.closest('[data-hint]'), s = e.target.closest('[data-sol]');
+    if (h || s) {
+      const set = h ? open.hint : open.sol, i = +(h ? h.dataset.hint : s.dataset.sol);
+      set.has(i) ? set.delete(i) : set.add(i);
+      const card = $('q' + (i + 1)); card.outerHTML = cardHTML(i);
+    }
+  });
+  $('list').addEventListener('input', e => {
+    if (!e.target.classList.contains('ans')) return;
+    S.ans[+e.target.dataset.i] = e.target.value; blankWarn = false; save(); renderStatus(); renderDock();
+  });
+  $('list').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.classList.contains('ans')) {
+      const next = e.target.closest('.card').nextElementSibling; if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+  $('mainBtn').addEventListener('click', () => {
+    if (!S.graded) {
+      const blanks = S.active.filter(i => !answered(i)).length;
+      if (blanks && !blankWarn) { blankWarn = true; renderDock(); return; }
+      grade();
+    } else if (okCount() === N) restart();
+    else retry();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!resetArm) { resetArm = true; $('resetBtn').textContent = '정말 지울까요? 한 번 더 누르면 초기화됩니다'; setTimeout(() => { resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; }, 4000); return; }
+    resetArm = false; $('resetBtn').textContent = '기록 지우고 처음부터'; restart();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
