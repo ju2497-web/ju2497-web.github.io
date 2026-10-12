@@ -24,6 +24,7 @@
 
   <main class="coach">
     <div id="betaBanner" class="banner" hidden>베타 테스트 기간입니다. 모든 기능을 무료로 사용할 수 있으며, 입력한 내용은 이 기기 브라우저에만 저장됩니다.</div>
+    <div id="payBanner" class="banner" hidden>문항 선택과 경험 입력은 자유롭게 할 수 있고, <b>답변 분석은 이용 코드가 있어야 열립니다.</b> 코드는 결제 후 채팅·문자로 보내 드립니다. 입력한 내용은 이 기기 브라우저에만 저장됩니다.</div>
 
     <!-- 1. 문항 선택 -->
     <section class="card step">
@@ -65,7 +66,7 @@
       <div class="actions">
         <button id="btnMake" class="primary big">내 면접답변 만들기</button>
         <button id="btnDeep" class="ghost big" hidden>AI 심층 분석</button>
-        <label id="codeWrap" class="code" hidden>접근 코드<input id="accessCode" type="text" autocomplete="off" placeholder="베타 코드"></label>
+        <label id="codeWrap" class="code" hidden>이용 코드<input id="accessCode" type="text" autocomplete="off" placeholder="IV-○○○○-○○○○"></label>
       </div>
     </section>
 
@@ -133,6 +134,21 @@
 
     <p class="legal hint">본 서비스는 대학이 공개한 면접 문항을 활용한 면접 교육·훈련 서비스이며, 특정 대학의 평가·선발과 관계가 없습니다. 예상 점수는 연습용 지표로 실제 평가 결과를 보장하지 않습니다.</p>
   </main>
+
+  <dialog id="payDlg">
+    <div class="form">
+      <h2>이용 코드가 필요합니다</h2>
+      <p class="hint" id="payNote"></p>
+      <div id="payPlans" class="plans"></div>
+      <div id="payLinks" class="actions"></div>
+      <label>이용 코드 입력<input id="payCode" type="text" autocomplete="off" placeholder="IV-○○○○-○○○○"></label>
+      <p id="payMsg" class="warn" hidden></p>
+      <div class="actions">
+        <button id="payOk" class="primary">코드 확인하고 분석하기</button>
+        <button id="payClose" class="ghost">닫기</button>
+      </div>
+    </div>
+  </dialog>
 
   <dialog id="reviewDlg">
     <form method="dialog" class="form" id="reviewForm">

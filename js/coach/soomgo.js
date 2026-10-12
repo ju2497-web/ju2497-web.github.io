@@ -65,7 +65,8 @@ function target(req) {
 
 export function quoteMessage(req, opts = {}) {
   const S = CONFIG.soomgo;
-  const plans = S.plans.map((p) => `· ${p.name} ${won(p.price)}: ${p.desc}`).join("\n");
+  const plans = S.plans.map((p) => `· ${p.name}${p.recommended ? "(추천)" : ""} ${won(p.price)}: ${p.desc}`).join("\n");
+  const zoomLine = S.plans.some((p) => p.includesZoom) ? `· ${S.zoom.name} 단품 +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}` : `· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}`;
   const when = req.interview ? ` ${req.interview} 면접 전에 충분히 연습하실 수 있도록 일정을 맞추겠습니다.` : "";
   const field = req.health ? "보건계열 현직 대학교수로, 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "현직 대학교수로, 면접관이 실제로 보는 평가 기준에 맞춰 구성해 드립니다.";
   return `안녕하세요. 대학 면접 답변을 준비해 드리는 대학교수입니다.
@@ -77,12 +78,12 @@ export function quoteMessage(req, opts = {}) {
 
 [금액]
 ${plans}
-· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}
+${zoomLine}
 
 [진행]
 고용하시면 채팅으로 7가지 자료 양식을 보내 드립니다. 문장을 잘 쓰실 필요 없이 있었던 일만 적어 주시면 되고, 자료를 받은 뒤 ${S.deliveryHours}시간 안에 답변 노트를 전달합니다.${when}
 
-허위 경험은 넣지 않으며, 합격을 보장하는 서비스는 아닙니다. 결제는 숨고페이로 진행해 주세요.${opts.extra ? `\n\n${opts.extra}` : ""}`;
+허위 경험은 넣지 않으며, 합격을 보장하는 서비스는 아닙니다. 무료 샘플은 따로 드리지 않고, 결제(숨고페이) 확인 후 바로 자료 요청과 함께 작업을 시작합니다.${opts.extra ? `\n\n${opts.extra}` : ""}`;
 }
 
 export const MATERIALS_MESSAGE = () => `고용해 주셔서 감사합니다. 면접 답변 제작을 위해 아래 양식을 복사해서 채워 보내 주세요. 약 5분이면 됩니다.
@@ -104,10 +105,16 @@ export const MATERIALS_MESSAGE = () => `고용해 주셔서 감사합니다. 면
 
 자료를 받으면 공개 문항의 평가 의도를 먼저 분석한 뒤, 실제 경험을 반영해 면접에서 말할 수 있는 답변으로 구성하겠습니다.`;
 
-export const FOLLOWUP_MESSAGE = (req) => `안녕하세요. 지난번 ${target(req)} 면접 견적 드렸던 교수입니다. 혹시 결정에 도움이 되실까 해서, 공개 문항 중 1개를 골라 주시면 질문 의도와 답변 방향을 짧게 먼저 보여 드리겠습니다. 이미 다른 곳에서 진행 중이시면 답장 안 주셔도 됩니다. 면접 잘 보시길 바랍니다.`;
+export const FOLLOWUP_MESSAGE = (req) => {
+  const S = CONFIG.soomgo;
+  const when = req.interview ? `${req.interview} 면접까지 자료 접수 후 ${S.deliveryHours}시간 안에 전달하려면 ` : `자료 접수 후 ${S.deliveryHours}시간 안에 전달하므로 `;
+  return `안녕하세요. 지난번 ${target(req)} 면접 견적 드렸던 교수입니다. ${when}늦지 않게 시작하시는 것이 좋아 한 번만 더 연락드립니다. 궁금한 점(문항 수, 학생부 반영 여부, 줌 모의면접 일정)은 채팅으로 바로 답해 드리겠습니다. 이미 다른 곳에서 진행 중이시면 답장 안 주셔도 됩니다. 면접 잘 보시길 바랍니다.`;
+};
 
 export const FAQ = [
   { q: "더 저렴하게 안 되나요?", a: () => `금액은 문항 수가 아니라 작업 범위로 정했습니다. 가장 부담이 적은 간편형(${won(CONFIG.soomgo.plans[0].price)})으로도 공개 문항 전체의 답변과 예상 꼬리질문을 받으실 수 있습니다. 비용을 더 줄이고 싶으시면 꼭 필요한 문항만 골라 진행하는 방법도 상의해 드리겠습니다.` },
+  { q: "무료 샘플이나 맛보기를 먼저 볼 수 있나요?", a: () => "무료 샘플은 드리지 않습니다. 학생 본인의 경험이 없는 상태에서 만든 샘플은 누구에게나 맞는 일반론이 되어 판단에 도움이 되지 않기 때문입니다. 대신 작업 방식(질문 의도 → 본인 경험 → 차별화 답변 → 꼬리질문)과 전달물 구성은 채팅으로 자세히 설명드리고, 결제 후 자료를 받으면 바로 시작합니다." },
+  { q: "패키지는 뭐가 다른가요?", a: () => { const pk = CONFIG.soomgo.plans.find((p) => p.includesZoom); return pk ? `${pk.name}(${won(pk.price)})은 정밀형 답변 노트에 ${CONFIG.soomgo.zoom.minutes}분 줌 모의면접을 더한 상품입니다. 답변을 받는 데서 끝나지 않고 실제로 말해 보고 바로 고치기 때문에 가장 많이 권해 드립니다. 따로 하시면 ${won(CONFIG.soomgo.plans.find((p) => p.key === "precise")?.price + CONFIG.soomgo.zoom.price)}인데 패키지로 하시면 ${won(pk.price)}입니다.` : "현재 패키지 상품은 없습니다."; } },
   { q: "문항이 몇 개까지 되나요?", a: () => "대학이 공개한 문항 전체를 기준으로 합니다. 보통 5~8문항이며, 공개 문항이 10개를 넘으면 미리 말씀드리고 범위를 함께 정하겠습니다." },
   { q: "합격할 수 있을까요? 합격 보장되나요?", a: () => "합격 여부는 대학의 평가로 결정되기 때문에 보장해 드릴 수는 없습니다. 대신 면접관이 각 질문에서 무엇을 보는지 정확히 짚고, 학생 본인의 경험이 가장 잘 드러나도록 답변을 다듬어 드립니다." },
   { q: "특별한 활동이 없는데 괜찮나요?", a: () => "괜찮습니다. 면접에서는 활동의 크기보다 평범한 경험을 얼마나 구체적으로 말하는지가 더 중요합니다. 조별과제, 수업 중 탐구, 친구와의 갈등 같은 일상 경험도 충분히 좋은 답변이 됩니다." },

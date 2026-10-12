@@ -11,14 +11,14 @@
    npx wrangler secret put ANTHROPIC_API_KEY     # Claude API 키 입력
    ```
 3. `wrangler.toml`의 값을 채웁니다.
-   - `ACCESS_CODES`: 베타 학생에게 나눠 줄 접근 코드(쉼표 구분). **비워 두면 누구나 호출해 비용이 나갈 수 있습니다.**
+   - `ACCESS_CODES`: 결제한 학생에게 보낸 이용 코드(쉼표 구분). `coach-admin.html`에서 만든 코드와 같은 값을 넣습니다. **비워 두면 누구나 호출해 비용이 나갈 수 있습니다.**
    - `BLOCKED_UNIVERSITIES`: 이해충돌 방지로 막을 대학명(교수님 소속 대학 등)
    - `ALLOWED_ORIGINS`: 학생 화면 주소(기본 `https://ju2497-web.github.io`)
 4. `npx wrangler deploy` → 출력된 `https://interview-coach-api.<계정>.workers.dev` 주소를
    `js/coach/config.js`의 `aiEndpoint`에 넣고 커밋합니다.
 
 ## 비용 감각
-요청 1건(문항 1개 분석)마다 Claude API 사용료가 발생합니다. 베타 기간에는 접근 코드로 사용자를 제한하고, Anthropic 콘솔에서 월 사용 한도를 설정해 두세요.
+요청 1건(문항 1개 분석)마다 Claude API 사용료가 발생합니다. 이용 코드로 결제한 학생만 호출할 수 있게 하고, Anthropic 콘솔에서 월 사용 한도를 설정해 두세요.
 
 ## 다음 단계(정식 판매 전)
 - 결제(토스페이먼츠 등) 확인 후에만 심층형 호출을 허용하는 검증 추가
