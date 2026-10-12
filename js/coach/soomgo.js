@@ -30,10 +30,11 @@ export function parseRequest(text) {
 }
 
 // ───────── 판정 ─────────
-export function triage(text, req = parseRequest(text)) {
+// blocked: 호출 전에 textHasBlocked(text)로 계산해 넘깁니다(대학명은 저장소에 두지 않으므로 해시 비교가 비동기).
+export function triage(text, req = parseRequest(text), blocked = false) {
   const t = text || "";
   const reasons = [];
-  if (CONFIG.blockedUniversities.some((u) => u && (t.includes(u) || req.univ === u))) {
+  if (blocked) {
     return { verdict: "거절", reasons: ["이해충돌 방지 대상 대학 지원자입니다."] };
   }
   if (/없는 경험|지어|꾸며|만들어 ?(줘|주세요|주실)|거짓|허위/.test(t)) {

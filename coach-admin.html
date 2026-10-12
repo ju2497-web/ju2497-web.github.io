@@ -45,6 +45,10 @@
     <section class="card">
       <h2>운영 설정 확인</h2>
       <div id="cfg" class="hint"></div>
+      <h3>차단 대학 해시 만들기</h3>
+      <p class="hint">대학명을 입력하면 정규화한 이름의 해시를 만듭니다. 이 해시만 <code>js/coach/config.js</code>의 <code>blockedUniversityHashes</code>에 넣으세요. 대학명 자체는 저장소·문항 DB·문서 어디에도 적지 않습니다.</p>
+      <div class="actions"><input id="bUniv" placeholder="대학명" style="width:220px"><button id="btnBlockHash" class="ghost">해시 만들기</button></div>
+      <textarea id="bHash" rows="2" readonly placeholder="해시가 여기에 표시됩니다"></textarea>
     </section>
   </main>
   <script type="module">
@@ -52,6 +56,7 @@
     import { parseQuestions } from "./js/interview-engine.js";
     import { detectType } from "./js/coach/engine.js";
     import { QTYPES } from "./js/coach/framework.js";
+    import { isBlocked, preloadBlocked, normUniv } from "./js/coach/blocked.js";
     const $ = (s) => document.querySelector(s);
     const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const KEY = "coach.qbank.local";
@@ -60,12 +65,13 @@
     let base = [], local = load();
     try { base = (await (await fetch(CONFIG.questionBankUrl, { cache: "no-cache" })).json()).sets || []; } catch {}
     const all = () => { const m = new Map(base.map((s) => [s.id, { ...s, _from: "파일" }])); local.forEach((s) => m.set(s.id, { ...s, _from: "이 브라우저" })); return [...m.values()]; };
-    function render() {
+    async function render() {
       const sets = all();
+      await preloadBlocked(sets.map((s) => s.university));
       $("#cnt").textContent = `${sets.length}세트 · ${sets.reduce((n, s) => n + s.questions.length, 0)}문항`;
       $("#list").innerHTML = sets.map((s) => `<div class="vitem"><div>
         <div class="vq">${esc(s.university)} · ${esc(s.department)} · ${esc(s.track || "")} · ${esc(s.year || "")}
-          ${CONFIG.blockedUniversities.includes(s.university) ? '<span class="lost"> 차단 대학(학생에게 표시 안 됨)</span>' : ""}</div>
+          ${isBlocked(s.university) ? '<span class="lost"> 차단 대학(학생에게 표시 안 됨) — 이 대학 문항은 DB에 넣지 마세요</span>' : ""}</div>
         <div class="vm">${esc(s._from)} · 출처: ${esc(s.source || "미기재")}</div>
         <ol class="hint">${s.questions.map((q) => `<li>${esc(q)} <i>[${esc(QTYPES[detectType(q)].label)}]</i></li>`).join("")}</ol></div>
         <div class="btns">${s._from === "이 브라우저" ? `<button class="ghost danger" data-id="${esc(s.id)}">삭제</button>` : ""}</div></div>`).join("");
@@ -73,7 +79,7 @@
         베타 무료: <b>${CONFIG.beta ? "예(결제 없이 열림)" : "아니오(이용 코드 필요)"}</b> · 등록된 이용 코드 ${CONFIG.access.hashes.length}개 · 앱 가격: 기본 ${CONFIG.prices.basic.toLocaleString()} / 심층 ${CONFIG.prices.deep.toLocaleString()} / 검수 +${CONFIG.prices.review.toLocaleString()}원<br>
         숨고·크몽 상품: ${CONFIG.soomgo.plans.map((p) => `${esc(p.name)} ${p.price.toLocaleString()}원${p.recommended ? "(추천)" : ""}`).join(" / ")} · 결제 링크: 숨고 ${CONFIG.access.payLinks.soomgo ? "설정" : "미설정"} / 크몽 ${CONFIG.access.payLinks.kmong ? "설정" : "미설정"}<br>
         검수 신청 이메일: <b>${esc(CONFIG.reviewContact || "미설정")}</b><br>
-        이해충돌 차단 대학: <b>${esc(CONFIG.blockedUniversities.join(", ") || "없음 — 교수님 소속 대학을 js/coach/config.js와 서버 BLOCKED_UNIVERSITIES에 꼭 넣으세요")}</b>`;
+        이해충돌 차단 대학: <b>${CONFIG.blockedUniversityHashes.length ? `${CONFIG.blockedUniversityHashes.length}개 등록(이름은 저장소에 없음)` : "없음 — 아래 [차단 대학 해시 만들기]로 소속 대학 해시를 config.js에 넣으세요"}</b>`;
     }
     $("#list").addEventListener("click", (e) => { const id = e.target.dataset.id; if (!id || !confirm("삭제할까요?")) return; local = local.filter((s) => s.id !== id); save(local); render(); });
     $("#btnAdd").addEventListener("click", () => {
@@ -93,6 +99,12 @@
         local = [...local.filter((x) => !sets.some((s) => s.id === x.id)), ...sets.map((s) => ({ ...s, id: s.id || `i-${Math.random().toString(36).slice(2, 8)}` }))]; save(local); render();
       } catch (err) { alert(`가져오기 실패: ${err.message}`); }
       e.target.value = "";
+    });
+    $("#btnBlockHash").addEventListener("click", async () => {
+      const k = normUniv($("#bUniv").value);
+      if (!k) return;
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(k));
+      $("#bHash").value = `"${[...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("")}", // ${new Date().toISOString().slice(0, 10)} 등록`;
     });
     $("#btnCode").addEventListener("click", async () => {
       const ab = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
