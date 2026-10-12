@@ -17,7 +17,7 @@
     <div class="brand">
       <span class="logo" aria-hidden="true">💬</span>
       <div><h1>숨고 응답기</h1>
-        <p class="sub">면접 답변 요청 → 보낼지 판정 → 맞춤 견적 → 고용 후 자료 요청 → 답장은 <a href="studio.html">작업실</a>로</p></div>
+        <p class="sub">면접 답변 요청 → 판정 → 견적 → 자료 요청 → 답장은 <a href="studio.html">작업실</a>로 → 전달(이용 코드) → 리뷰 요청</p></div>
     </div>
   </header>
 
@@ -59,6 +59,21 @@
         <div class="row-between"><h2><span class="num">4</span> 미열람·무응답 후속(1회만)</h2>
           <button class="ghost small" data-copy="followup">복사</button></div>
         <textarea id="followup" rows="4"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="row-between"><h2><span class="num">5</span> 답변 노트 전달 + 앱 이용 코드</h2>
+          <button class="primary small" data-copy="delivery">복사</button></div>
+        <div class="form cols4"><label>이용 코드<input id="fCode" placeholder="IV-○○○○-○○○○ (coach-admin에서 생성)"></label></div>
+        <textarea id="delivery" rows="12"></textarea>
+        <p class="hint">코드는 결제 1건마다 <a href="coach-admin.html">관리 화면</a>에서 새로 만들고, 해시를 config.js에 추가해 배포한 뒤 보내세요.</p>
+      </div>
+
+      <div class="card">
+        <div class="row-between"><h2><span class="num">6</span> 면접 뒤 리뷰 요청(1회만)</h2>
+          <button class="ghost small" data-copy="review">복사</button></div>
+        <textarea id="review" rows="4"></textarea>
+        <p class="hint">면접 다음 날 보냅니다. 리뷰는 영상·광고보다 성사율에 직접 영향을 주므로 초기 10건까지는 전달 때마다 빠짐없이 요청하세요.</p>
       </div>
     </section>
 
