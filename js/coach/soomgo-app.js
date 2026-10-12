@@ -1,5 +1,5 @@
 import { CONFIG } from "./config.js";
-import { parseRequest, triage, breakEven, quoteMessage, MATERIALS_MESSAGE, FOLLOWUP_MESSAGE, FAQ } from "./soomgo.js";
+import { parseRequest, triage, breakEven, quoteMessage, MATERIALS_MESSAGE, FOLLOWUP_MESSAGE, DELIVERY_MESSAGE, REVIEW_MESSAGE, FAQ } from "./soomgo.js";
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -34,10 +34,12 @@ function refresh(refuse) {
   $("#qLen").textContent = `${$("#quote").value.replace(/\s/g, "").length}자`;
   $("#materials").value = MATERIALS_MESSAGE();
   $("#followup").value = FOLLOWUP_MESSAGE(r);
+  $("#delivery").value = DELIVERY_MESSAGE(r, $("#fCode").value.trim().toUpperCase());
+  $("#review").value = REVIEW_MESSAGE(r);
 }
 $("#btnRun").addEventListener("click", run);
 $("#btnClear").addEventListener("click", () => { $("#req").value = ""; $("#out").hidden = true; });
-["#fUniv", "#fDept", "#fTrack", "#fDate"].forEach((s) => $(s).addEventListener("input", () => refresh(false)));
+["#fUniv", "#fDept", "#fTrack", "#fDate", "#fCode"].forEach((s) => $(s).addEventListener("input", () => refresh(false)));
 $("#quote").addEventListener("input", () => ($("#qLen").textContent = `${$("#quote").value.replace(/\s/g, "").length}자`));
 document.addEventListener("click", (e) => { const b = e.target.closest("[data-copy]"); if (b) copy($(`#${b.dataset.copy}`).value); });
 
