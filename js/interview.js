@@ -1,6 +1,8 @@
 import { TYPES, SAMPLE_QUESTIONS, EMPTY_PROFILE, EXAMPLE_PROFILE } from "./interview-data.js";
 import { parseQuestions, detectType, buildAnswer, check, speakSeconds } from "./interview-engine.js";
 import { loadSdk, DEFAULT_MODEL } from "./ai.js";
+import { CONFIG } from "./coach/config.js";
+import { gate, PAY_DIALOG_HTML } from "./coach/access.js";
 
 // ───────── 저장소 ─────────
 const KEY = "iv.v1";
@@ -67,14 +69,15 @@ $("#btnExample").addEventListener("click", () => {
   persist(); renderProfile();
   $("#profileWarn").hidden = true;
 });
-$("#btnRegen").addEventListener("click", () => {
+$("#btnRegen").addEventListener("click", () => gate(regenAll));
+function regenAll() {
   if (!state.items.length) { showTab("questions"); return; }
   const edited = state.items.filter((it) => it.edited).length;
   if (edited && !confirm(`직접 고친 답변 ${edited}개도 새 재료로 다시 만들까요?\n[취소]를 누르면 고친 답변은 그대로 둡니다.`)) {
     state.items.forEach((it) => !it.edited && regen(it));
   } else state.items.forEach(regen);
   persist(); showTab("notes");
-});
+}
 
 // ───────── ① 면접 문항 ─────────
 function makeItem(q) {
@@ -97,8 +100,10 @@ function addQuestions(replace) {
   $("#qStat").textContent = `${qs.length}문항을 나눠 답변을 만들었습니다.`;
   showTab("notes");
 }
-$("#btnMake").addEventListener("click", () => addQuestions(true));
-$("#btnAppend").addEventListener("click", () => addQuestions(false));
+$("#btnMake").addEventListener("click", () => gate(() => addQuestions(true)));
+$("#btnAppend").addEventListener("click", () => gate(() => addQuestions(false)));
+document.querySelector("#payMount").innerHTML = PAY_DIALOG_HTML;
+document.querySelector("#payBanner").hidden = CONFIG.beta;
 $("#btnSampleQ").addEventListener("click", () => { $("#qInput").value = SAMPLE_QUESTIONS; });
 $("#qLength").addEventListener("change", () => { state.length = +$("#qLength").value; persist(); });
 
