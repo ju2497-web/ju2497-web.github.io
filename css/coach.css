@@ -82,3 +82,7 @@ button.big { padding: 11px 20px; font-size: 1rem; }
 .form.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .form.cols .span2 { grid-column: 1 / -1; }
 @media (max-width: 640px) { .form.cols { grid-template-columns: 1fr; } }
+.plan.rec { border-color: var(--brand); background: var(--brand-soft); }
+.plan b em { font-style: normal; font-size: .72rem; color: var(--brand-ink); background: var(--brand); border-radius: 999px; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+.plans .span3 { grid-column: 1 / -1; margin: 0; }
+#payDlg .plans { margin: 10px 0 14px; }

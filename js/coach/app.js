@@ -153,13 +153,51 @@ function payload() {
   };
 }
 
-$("#btnMake").addEventListener("click", () => {
+// ───────── 하드 페이월(이용 코드) ─────────
+// 결제한 학생에게 보낸 이용 코드의 SHA-256 해시가 CONFIG.access.hashes에 있어야 분석이 열립니다.
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+const normCode = (c) => (c || "").trim().toUpperCase().replace(/\s+/g, "");
+async function hasAccess(code) {
+  if (CONFIG.beta) return true;
+  const c = normCode(code);
+  if (!c || !crypto.subtle) return false;
+  return CONFIG.access.hashes.includes(await sha256(c));
+}
+function openPaywall(onUnlock) {
+  const A = CONFIG.access;
+  $("#payNote").textContent = A.payNote;
+  $("#payPlans").innerHTML = plansHTML();
+  $("#payLinks").innerHTML = [["soomgo", "숨고에서 결제"], ["kmong", "크몽에서 결제"]]
+    .filter(([k]) => A.payLinks[k]).map(([k, t]) => `<a class="btnlike primary" target="_blank" rel="noopener" href="${esc(A.payLinks[k])}">${t}</a>`).join("");
+  $("#payCode").value = $("#accessCode").value; $("#payMsg").hidden = true;
+  $("#payDlg").showModal();
+  $("#payOk").onclick = async () => {
+    const code = normCode($("#payCode").value);
+    if (await hasAccess(code)) {
+      $("#accessCode").value = code; save(K.code, code);
+      $("#payDlg").close(); onUnlock();
+    } else {
+      $("#payMsg").hidden = false;
+      $("#payMsg").textContent = code ? "이용 코드가 맞지 않습니다. 결제 후 받으신 코드를 그대로 입력해 주세요." : "이용 코드를 입력해 주세요.";
+    }
+  };
+}
+$("#payClose").addEventListener("click", () => $("#payDlg").close());
+async function gate(run) {
+  if (await hasAccess($("#accessCode").value)) run(); else openPaywall(run);
+}
+
+$("#btnMake").addEventListener("click", () => gate(makeBasic));
+function makeBasic() {
   const p = payload();
   if (!p.question) { alert("면접 문항을 먼저 고르거나 입력해 주세요."); return; }
   const r = runBasic({ question: p.question, dept: p.department, fields: p.fields, targetSec: p.targetSec, draft: p.draft });
   state.result = { ...r, question: p.question, meta: p };
   render();
-});
+}
 
 function render() {
   const r = state.result;
@@ -215,12 +253,13 @@ $("#btnCopy").addEventListener("click", async () => {
 // ───────── AI 심층형 ─────────
 function setupDeep() {
   $("#btnDeep").hidden = !canDeep();
-  $("#codeWrap").hidden = !needsCode();
+  $("#codeWrap").hidden = CONFIG.beta && !needsCode();
   $("#accessCode").value = load(K.code, "");
 }
-$("#accessCode").addEventListener("change", () => save(K.code, $("#accessCode").value.trim()));
+$("#accessCode").addEventListener("change", () => save(K.code, normCode($("#accessCode").value)));
 
-$("#btnDeep").addEventListener("click", async () => {
+$("#btnDeep").addEventListener("click", () => gate(makeDeep));
+async function makeDeep() {
   const p = payload();
   if (!p.question) { alert("면접 문항을 먼저 고르거나 입력해 주세요."); return; }
   const problem = validatePayload(p);
@@ -240,7 +279,7 @@ $("#btnDeep").addEventListener("click", async () => {
     state.result = { ...basic, question: p.question, meta: p };
     render();
   } finally { btn.disabled = false; btn.textContent = label; }
-});
+}
 
 // ───────── 연습 ─────────
 let timer = null;
@@ -307,7 +346,7 @@ function refreshReview() {
   const blocked = state.vault.some((v) => isBlocked(v.university));
   $("#reviewCard").classList.toggle("off", blocked);
   $("#btnReview").disabled = blocked || !state.vault.length;
-  $("#reviewPrice").textContent = CONFIG.beta ? `+${won(CONFIG.prices.review)} (베타 기간 무료)` : `+${won(CONFIG.prices.review)}`;
+  $("#reviewPrice").textContent = CONFIG.beta ? `+${won(CONFIG.prices.review)} (베타 기간 무료)` : (CONFIG.aiEndpoint ? `+${won(CONFIG.prices.review)} · AI 심층형 포함 ${won(CONFIG.prices.deep + CONFIG.prices.review)}` : `+${won(CONFIG.prices.review)} · 기본형 포함 ${won(CONFIG.prices.basic + CONFIG.prices.review)}`);
   $("#btnReview").title = blocked ? "이해충돌 방지 대상 대학 문항이 보관함에 있어 검수를 신청할 수 없습니다." : !state.vault.length ? "보관함에 답변을 먼저 저장하세요." : "";
 }
 $("#btnReview").addEventListener("click", () => { $("#rvCount").textContent = state.vault.length; $("#reviewDlg").showModal(); });
@@ -338,13 +377,18 @@ ${vaultText()}`;
 $("#rdCopy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#rdText").value); $("#rdCopy").textContent = "복사됨"; } catch { $("#rdText").select(); document.execCommand("copy"); } });
 $("#rdClose").addEventListener("click", () => $("#reviewDone").close());
 
-function renderPlans() {
+function plansHTML() {
   const p = CONFIG.prices;
   const price = (n) => (CONFIG.beta ? `<s>${won(n)}</s>무료` : won(n));
-  $("#plans").innerHTML = `
-    <div class="plan"><b>기본형</b><span class="won">${price(p.basic)}</span><br>교수 평가 프레임 분석 · 예상 점수 · 답변 · 꼬리질문 · 대본</div>
-    <div class="plan"><b>AI 심층형</b><span class="won">${price(p.deep)}</span><br>10단계 AI 분석 · 꼬리질문 모범 답변 · 감점 수정 이력</div>
-    <div class="plan"><b>교수 검수형</b><span class="won">${price(p.deep + p.review)}</span><br>AI 심층형 + 교수 직접 첨삭</div>`;
+  const deep = CONFIG.aiEndpoint ? `
+    <div class="plan"><b>AI 심층형</b><span class="won">${price(p.deep)}</span><br>기본형 + 10단계 AI 분석 · 꼬리질문 모범 답변 · 감점 수정 이력</div>
+    <div class="plan rec"><b>교수 검수형 <em>추천</em></b><span class="won">${price(p.deep + p.review)}</span><br>AI 심층형 + 교수 직접 첨삭</div>` : `
+    <div class="plan rec"><b>교수 검수형 <em>추천</em></b><span class="won">${price(p.basic + p.review)}</span><br>기본형 + 교수 직접 첨삭(보관함 답변 전체)</div>`;
+  return `
+    <div class="plan"><b>기본형</b><span class="won">${price(p.basic)}</span><br>이용 코드 1개 · 면접일까지 모든 문항 · 교수 평가 프레임 분석 · 예상 점수 · 답변 · 꼬리질문 · 대본</div>${deep}`;
+}
+function renderPlans() {
+  $("#plans").innerHTML = plansHTML() + (CONFIG.beta ? "" : `<p class="hint span3">무료 체험·샘플은 제공하지 않습니다. ${esc(CONFIG.access.payNote)}</p>`);
 }
 
 // ───────── 시작 ─────────
@@ -352,6 +396,7 @@ function renderPlans() {
   $("#svcName").textContent = CONFIG.serviceName;
   document.title = CONFIG.serviceName;
   $("#betaBanner").hidden = !CONFIG.beta;
+  $("#payBanner").hidden = CONFIG.beta;
   $("#dept").value = state.prefs.dept || "";
   $("#target").value = String(state.prefs.target || 50);
   await loadBank();
