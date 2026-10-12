@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { isBlocked, preloadBlocked } from "./blocked.js";
 import { QTYPES, COMPETENCIES } from "./framework.js";
 import { runBasic, evaluate, detectType, speakingScript, secondsOf } from "./engine.js";
 import { validatePayload } from "./prompt.js";
@@ -36,10 +37,10 @@ async function loadBank() {
   const map = new Map(sets.map((s) => [s.id, s]));
   local.forEach((s) => map.set(s.id, s));
   state.sets = [...map.values()];
+  await preloadBlocked([...state.sets.map((s) => s.university), ...state.vault.map((v) => v.university)]);
 }
 
 const uniq = (a) => [...new Set(a)];
-const isBlocked = (u) => CONFIG.blockedUniversities.includes((u || "").trim());
 
 function fillSelect(sel, items, keep) {
   sel.innerHTML = items.map((x) => `<option value="${esc(x.value)}">${esc(x.label)}</option>`).join("");

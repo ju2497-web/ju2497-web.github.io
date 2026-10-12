@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { isBlocked, preloadBlocked, checkBlocked } from "./blocked.js";
 import { emptyApplication, encodeApplication, checkApplication, EXP_CATS, STRENGTHS, CONCERNS, TIERS } from "./application.js";
 import { parseQuestions } from "../interview-engine.js";
 
@@ -79,14 +80,15 @@ $("#addExp").addEventListener("click", () => { if (app.experiences.length < 5) {
 // 공개문항 DB에서 같은 대학·학과를 찾으면 불러오기 제안
 async function loadBank() {
   try { bank = (await (await fetch(CONFIG.questionBankUrl, { cache: "no-cache" })).json()).sets || []; } catch { bank = []; }
-  bank = bank.filter((s) => !CONFIG.blockedUniversities.includes(s.university) && s.university !== "공통 유형");
+  await preloadBlocked(bank.map((s) => s.university));
+  bank = bank.filter((s) => !isBlocked(s.university) && s.university !== "공통 유형");
   $("#univList").innerHTML = [...new Set(bank.map((s) => s.university))].map((u) => `<option value="${esc(u)}">`).join("");
   $("#deptList").innerHTML = [...new Set(bank.map((s) => s.department))].map((d) => `<option value="${esc(d)}">`).join("");
   checkBank();
 }
-function checkBank() {
+async function checkBank() {
   const u = (app.university || "").trim(), d = (app.department || "").trim();
-  const blocked = CONFIG.blockedUniversities.includes(u);
+  const blocked = await checkBlocked(u);
   const hit = bank.filter((s) => s.university === u && s.department === d).sort((a, b) => (b.year || 0) - (a.year || 0))[0];
   const box = $("#bankHit");
   if (blocked) { box.hidden = false; box.textContent = "이해충돌 방지를 위해 이 대학 지원자의 면접 답변 제작은 진행하지 않습니다. 양해 부탁드립니다."; return; }
@@ -100,9 +102,9 @@ function checkBank() {
 }
 
 // ───────── 제출 ─────────
-$("#btnSubmit").addEventListener("click", () => {
+$("#btnSubmit").addEventListener("click", async () => {
   const { miss } = checkApplication(app);
-  if (CONFIG.blockedUniversities.includes((app.university || "").trim())) { alert("이 대학 지원자의 면접 답변 제작은 진행하지 않습니다."); return; }
+  if (await checkBlocked(app.university)) { alert("이 대학 지원자의 면접 답변 제작은 진행하지 않습니다."); return; }
   if (miss.length) {
     $("#missing").hidden = false;
     $("#missing").textContent = `아래 항목을 채워 주세요: ${miss.join(", ")}`;

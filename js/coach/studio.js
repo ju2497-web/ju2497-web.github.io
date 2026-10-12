@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { checkBlocked } from "./blocked.js";
 import { decodeApplication, assignExperiences, buildForQuestion, applicationContext, targetFor, TIERS } from "./application.js";
 import { evaluate, speakingScript, secondsOf } from "./engine.js";
 import { validatePayload } from "./prompt.js";
@@ -48,8 +49,8 @@ const SAMPLE = {
 };
 
 // ───────── 불러오기 ─────────
-function open(app) {
-  if (CONFIG.blockedUniversities.includes((app.university || "").trim())) {
+async function open(app) {
+  if (await checkBlocked(app.university)) {
     alert("이해충돌 방지 대상 대학의 신청서입니다. 제작을 진행하지 않습니다.");
     return;
   }

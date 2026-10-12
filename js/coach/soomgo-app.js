@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { textHasBlocked } from "./blocked.js";
 import { parseRequest, triage, breakEven, quoteMessage, MATERIALS_MESSAGE, FOLLOWUP_MESSAGE, DELIVERY_MESSAGE, REVIEW_MESSAGE, FAQ } from "./soomgo.js";
 
 const $ = (s) => document.querySelector(s);
@@ -12,11 +13,11 @@ function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("s
 async function copy(text) { try { await navigator.clipboard.writeText(text); toast("복사했습니다"); } catch { prompt("복사하세요", text); } }
 
 let req = null;
-function run() {
+async function run() {
   const text = $("#req").value.trim();
   if (!text) { $("#req").focus(); return; }
   req = parseRequest(text);
-  const t = triage(text, req);
+  const t = triage(text, req, await textHasBlocked(text));
   $("#out").hidden = false;
   const v = $("#verdict"); v.textContent = t.verdict; v.className = `vbadge ${t.verdict}`;
   $("#why").innerHTML = `<ul>${(t.plus || []).map((p) => `<li class="plus">${esc(p)}</li>`).join("")}${t.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>`;

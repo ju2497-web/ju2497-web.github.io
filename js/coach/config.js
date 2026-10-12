@@ -19,8 +19,11 @@ export const CONFIG = {
   },
   // 교수 최종검수 신청을 받을 이메일(비우면 신청서를 복사해 직접 보내도록 안내)
   reviewContact: "",
-  // 이해충돌 방지: 교수 본인 소속 대학 등 유료 서비스를 막을 대학명(문항 DB의 university 값과 같게)
-  blockedUniversities: [],
+  // 이해충돌 방지: 교수 본인 소속 대학 지원자 차단. 대학명은 적지 않고 정규화한 이름(공백·끝의 대학교/대학/대 제거)의 SHA-256 해시만 둡니다.
+  // 해시 만들기: coach-admin.html의 [차단 대학 해시 만들기]. 서버(AI 심층형)는 Cloudflare 비밀 변수 BLOCKED_UNIVERSITIES에 이름을 따로 넣습니다.
+  blockedUniversityHashes: [
+    "d5ba6c07687553148b74caceac55910a52ccf7f9e744f02d8488cd11619ac8b0", // 2026-10-12 등록
+  ],
   // 문항 DB 파일
   questionBankUrl: "data/questions.json",
   // 숨고·크몽 판매 상품(숨고 응답기 soomgo.html 견적 문안에 들어갑니다).

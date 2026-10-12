@@ -12,7 +12,7 @@
    ```
 3. `wrangler.toml`의 값을 채웁니다.
    - `ACCESS_CODES`: 결제한 학생에게 보낸 이용 코드(쉼표 구분). `coach-admin.html`에서 만든 코드와 같은 값을 넣습니다. **비워 두면 누구나 호출해 비용이 나갈 수 있습니다.**
-   - `BLOCKED_UNIVERSITIES`: 이해충돌 방지로 막을 대학명(교수님 소속 대학 등)
+   - `BLOCKED_UNIVERSITIES`: 이해충돌 방지로 막을 대학명(교수님 소속 대학 등). Cloudflare 비밀 변수로만 넣고, 저장소 파일(`wrangler.toml` 포함)에는 적지 않습니다.
    - `ALLOWED_ORIGINS`: 학생 화면 주소(기본 `https://ju2497-web.github.io`)
 4. `npx wrangler deploy` → 출력된 `https://interview-coach-api.<계정>.workers.dev` 주소를
    `js/coach/config.js`의 `aiEndpoint`에 넣고 커밋합니다.
