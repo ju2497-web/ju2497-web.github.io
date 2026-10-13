@@ -68,9 +68,11 @@ export function quoteMessage(req, opts = {}) {
   const S = CONFIG.soomgo;
   // 견적에서는 추천 상품을 먼저(가격이 품질 신호로 읽히므로 가장 싼 것을 앞세우지 않음)
   const line = (p) => `· ${p.name}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""} ${won(p.price)}: ${p.desc}`;
-  const ordered = [...S.plans.filter((p) => p.recommended), ...S.plans.filter((p) => !p.recommended).sort((a, b) => a.price - b.price)];
+  const main = S.plans.filter((p) => !p.entry);
+  const ordered = [...main.filter((p) => p.recommended), ...main.filter((p) => !p.recommended).sort((a, b) => a.price - b.price)];
   const zoomLine = S.plans.some((p) => p.includesZoom) ? `· ${S.zoom.name} 단품 +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}` : `· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}`;
-  const plans = ordered.map(line).join("\n") + `\n${zoomLine}` + (S.launchOffer ? `\n${S.launchOffer.text}` : "");
+  const entry = S.plans.filter((p) => p.entry).map((p) => `직접 쓴 답변이 있고 고쳐만 받고 싶으시면 ${p.name} ${won(p.price)}(${p.desc})도 있습니다.`).join("\n");
+  const plans = ordered.map(line).join("\n") + `\n${zoomLine}` + (entry ? `\n${entry}` : "") + (S.launchOffer ? `\n${S.launchOffer.text}` : "");
   const when = req.interview ? ` ${req.interview} 면접 전에 충분히 연습하실 수 있도록 일정을 맞추겠습니다.` : "";
   const field = req.health ? "보건계열 현직 대학교수로, 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "현직 대학교수로, 면접관이 실제로 보는 평가 기준에 맞춰 구성해 드립니다.";
   return `안녕하세요. 대학 면접 답변을 준비해 드리는 대학교수입니다.
@@ -79,6 +81,9 @@ export function quoteMessage(req, opts = {}) {
 
 [작업 범위]
 대학이 공개한 면접 문항 전체에 대해 ① 질문의 평가 의도 ② 학생 본인의 실제 경험으로 만든 답변(문항당 45~55초) ③ 예상 꼬리질문 3개와 대응 방향 ④ 말하기 대본과 핵심 키워드 ⑤ 교수 총평을 정리해 드립니다. 한 번 보고 끝내지 않고, 초안을 드린 뒤 학생이 말해 보고 다시 고칩니다(1회 수정 포함).
+
+[왜 이 가격인가]
+${S.whyPrice}
 
 [금액]
 ${plans}
@@ -133,7 +138,8 @@ export const DELIVERY_MESSAGE = (req, code = "") => {
 export const REVIEW_MESSAGE = (req) => `${target(req)} 면접은 잘 마치셨는지요. 결과와 상관없이, 준비 과정에서 도움이 된 점이나 아쉬운 점을 숨고 리뷰로 짧게 남겨 주시면 다음 학생에게 큰 도움이 됩니다. 어떤 문항이 가장 도움이 됐는지 한 줄만 적어 주셔도 충분합니다. 응원하겠습니다.`;
 
 export const FAQ = [
-  { q: "더 저렴하게 안 되나요?", a: () => { const p0 = [...CONFIG.soomgo.plans].sort((a, b) => a.price - b.price)[0]; return `금액은 문항 수가 아니라 제 작업 시간으로 정했습니다. ${p0.name}(${won(p0.price)})은 학생이 보낸 경험을 제가 직접 읽고 문항마다 답변·꼬리질문·말하기 대본·총평을 만들고 한 번 더 고치는 데 약 ${p0.hours}시간이 드는 금액입니다. 비용을 줄이고 싶으시면 꼭 필요한 문항만 골라 진행하는 방법도 상의해 드리겠습니다.`; } },
+  { q: "왜 이렇게 비싼가요?", a: () => `${CONFIG.soomgo.whyPrice} 합격을 보장하는 서비스는 아닙니다. 대신 평가하는 사람의 기준으로 본인 경험이 가장 잘 드러나는 답변을 만듭니다.` },
+  { q: "더 저렴하게 안 되나요?", a: () => { const p0 = [...CONFIG.soomgo.plans].filter((p) => !p.entry).sort((a, b) => a.price - b.price)[0]; return `금액은 문항 수가 아니라 제 작업 시간으로 정했습니다. ${p0.name}(${won(p0.price)})은 학생이 보낸 경험을 제가 직접 읽고 문항마다 답변·꼬리질문·말하기 대본·총평을 만들고 한 번 더 고치는 데 약 ${p0.hours}시간이 드는 금액입니다. 직접 쓴 답변이 있으시면 그것만 고쳐 드리는 첨삭형(${won(CONFIG.soomgo.plans.find((p) => p.entry)?.price || 0)}, 5문항 이내 1회)도 있습니다.`; } },
   { q: "무료 샘플이나 맛보기를 먼저 볼 수 있나요?", a: () => "무료 샘플은 드리지 않습니다. 학생 본인의 경험이 없는 상태에서 만든 샘플은 누구에게나 맞는 일반론이 되어 판단에 도움이 되지 않기 때문입니다. 대신 작업 방식(질문 의도 → 본인 경험 → 차별화 답변 → 꼬리질문)과 전달물 구성은 채팅으로 자세히 설명드리고, 결제 후 자료를 받으면 바로 시작합니다." },
   { q: "실전형은 뭐가 다른가요?", a: () => { const pk = CONFIG.soomgo.plans.find((p) => p.includesZoom); return pk ? `${pk.name}(${won(pk.price)})은 서면 답변 노트에 30분 줌 모의면접을 더한 상품입니다. 답변을 받는 데서 끝나지 않고 실제로 말해 보고 바로 고치기 때문에 가장 많이 권해 드립니다. ${CONFIG.soomgo.launchOffer ? "첫 3분께는 서면 완성형 가격으로 진행하고 있으니 채팅으로 말씀해 주세요." : ""}` : "현재 패키지 상품은 없습니다."; } },
   { q: "문항이 몇 개까지 되나요?", a: () => "대학이 공개한 문항 전체를 기준으로 합니다. 보통 5~8문항이며, 공개 문항이 10개를 넘으면 미리 말씀드리고 범위를 함께 정하겠습니다." },
