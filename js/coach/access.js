@@ -29,8 +29,8 @@ export function plansHTML() {
   const price = (n) => (CONFIG.beta ? `<s>${won(n)}</s>무료` : won(n));
   const deep = CONFIG.aiEndpoint ? `
     <div class="plan"><b>AI 심층형</b><span class="won">${price(p.deep)}</span><br>기본형 + 10단계 AI 분석 · 꼬리질문 모범 답변 · 감점 수정 이력</div>
-    <div class="plan rec"><b>교수 검수형 <em>추천</em></b><span class="won">${price(p.deep + p.review)}</span><br>AI 심층형 + 교수 직접 첨삭</div>` : `
-    <div class="plan rec"><b>교수 검수형 <em>추천</em></b><span class="won">${price(p.basic + p.review)}</span><br>기본형 + 교수 직접 첨삭(보관함 답변 전체)</div>`;
+    <div class="plan rec"><b>교수 첨삭형 <em>추천</em></b><span class="won">${price(p.deep + p.review)}</span><br>AI 심층형 + 교수 첨삭(보관함 답변 5문항 이내 1회)</div>` : `
+    <div class="plan rec"><b>교수 첨삭형 <em>추천</em></b><span class="won">${price(p.basic + p.review)}</span><br>기본형 + 교수 첨삭(보관함 답변 5문항 이내 1회)</div>`;
   return `
     <div class="plan"><b>기본형</b><span class="won">${price(p.basic)}</span><br>이용 코드 1개 · 면접일까지 모든 문항 · 교수 평가 프레임 분석 · 예상 점수 · 답변 · 꼬리질문 · 대본</div>${deep}`;
 }
