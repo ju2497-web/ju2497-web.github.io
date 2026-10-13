@@ -66,32 +66,28 @@ function target(req) {
 
 export function quoteMessage(req, opts = {}) {
   const S = CONFIG.soomgo;
-  // 견적에서는 추천 상품을 먼저(가격이 품질 신호로 읽히므로 가장 싼 것을 앞세우지 않음)
-  const line = (p) => `· ${p.name}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""} ${won(p.price)}: ${p.desc}`;
+  // 추천 상품을 먼저(가격이 품질 신호로 읽히므로 가장 싼 것을 앞세우지 않음). entry 상품은 맨 끝 한 줄.
+  const line = (p) => `· ${p.name} ${won(p.price)}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""}: ${p.short || p.desc}`;
   const main = S.plans.filter((p) => !p.entry);
   const ordered = [...main.filter((p) => p.recommended), ...main.filter((p) => !p.recommended).sort((a, b) => a.price - b.price)];
-  const zoomLine = S.plans.some((p) => p.includesZoom) ? `· ${S.zoom.name} 단품 +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}` : `· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}`;
-  const entry = S.plans.filter((p) => p.entry).map((p) => `직접 쓴 답변이 있고 고쳐만 받고 싶으시면 ${p.name} ${won(p.price)}(${p.desc})도 있습니다.`).join("\n");
-  const plans = ordered.map(line).join("\n") + `\n${zoomLine}` + (entry ? `\n${entry}` : "") + (S.launchOffer ? `\n${S.launchOffer.text}` : "");
+  const entry = S.plans.filter((p) => p.entry).map(line).join("\n");
+  const plans = ordered.map(line).join("\n") + (entry ? `\n${entry}` : "") + (S.launchOffer ? `\n${S.launchOffer.text}` : "");
   const when = req.interview ? ` ${req.interview} 면접 전에 충분히 연습하실 수 있도록 일정을 맞추겠습니다.` : "";
-  const field = req.health ? "보건계열 현직 대학교수로, 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "현직 대학교수로, 면접관이 실제로 보는 평가 기준에 맞춰 구성해 드립니다.";
-  return `안녕하세요. 대학 면접 답변을 준비해 드리는 대학교수입니다.
+  const field = req.health ? " 보건계열이라 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "";
+  return `입학처장으로 대학 면접 평가를 운영하고 참여해 온 현직 교수입니다.${field}
 
-요청하신 ${target(req)} 면접 준비 견적 드립니다. ${field}
+면접은 전형의 30~40%입니다. 인생의 마지막 결정이 될 수도 있는 기회를, 아무렇게나 준비한 면접으로 보내시겠습니까.
 
-[작업 범위]
-대학이 공개한 면접 문항 전체에 대해 ① 질문의 평가 의도 ② 학생 본인의 실제 경험으로 만든 답변(문항당 45~55초) ③ 예상 꼬리질문 3개와 대응 방향 ④ 말하기 대본과 핵심 키워드 ⑤ 교수 총평을 정리해 드립니다. 한 번 보고 끝내지 않고, 초안을 드린 뒤 학생이 말해 보고 다시 고칩니다(1회 수정 포함).
+어디서든 구할 수 있는 답변은 면접관에게 구분되지 않습니다. 교수가 보는 면접 답변은 다릅니다. 저는 매년 그 답변을 평가표에 적는 사람이고, 학생 한 명의 답변을 서너 시간 읽고 고칩니다. 비싼 가격이 아닙니다. 집에서 다니는 대학과 지방에서 자취하는 대학은 한 달 월세만으로도 이 금액이 갈립니다.
 
-[왜 이 가격인가]
-${S.whyPrice}
+[받으시는 것] ${target(req)} 공개 문항 전체에 대해 ① 면접관이 실제로 보는 평가 의도 ② 학생 본인의 경험으로 만든 45~55초 답변 ③ 예상 꼬리질문 3개와 대응 ④ 말하기 대본과 핵심 키워드 ⑤ 교수 총평. 초안을 드린 뒤 학생이 말해 보고 다시 고칩니다(수정 1회 포함). 면접일까지 쓰는 연습용 앱 이용 코드를 함께 드립니다.
 
-[금액]
+[선택하세요]
 ${plans}
 
-[진행]
-고용하시면 채팅으로 7가지 자료 양식을 보내 드립니다. 문장을 잘 쓰실 필요 없이 있었던 일만 적어 주시면 되고, 자료를 받은 뒤 ${S.deliveryHours}시간 안에 답변 노트를 전달합니다.${when}
+[진행] 결제 확인 → 채팅으로 7가지 자료 양식(약 5분, 있었던 일만 적으시면 됩니다) → 자료 접수 후 ${S.deliveryHours}시간 안에 전달.${when}
 
-허위 경험은 넣지 않으며, 합격을 보장하는 서비스는 아닙니다. 무료 샘플은 따로 드리지 않고, 결제(숨고페이) 확인 후 바로 자료 요청과 함께 작업을 시작합니다.${opts.extra ? `\n\n${opts.extra}` : ""}`;
+지원 대학·학과와 면접일을 알려 주시면 일정이 맞는지 바로 답드리겠습니다. 허위 경험은 넣지 않으며, 합격을 보장하는 서비스는 아닙니다. 기회를 놓치지 마십시오.${opts.extra ? `\n\n${opts.extra}` : ""}`;
 }
 
 export const MATERIALS_MESSAGE = () => `고용해 주셔서 감사합니다. 면접 답변 제작을 위해 아래 양식을 복사해서 채워 보내 주세요. 약 5분이면 됩니다.
