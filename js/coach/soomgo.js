@@ -66,7 +66,7 @@ function target(req) {
 
 export function quoteMessage(req, opts = {}) {
   const S = CONFIG.soomgo;
-  const plans = S.plans.map((p) => `· ${p.name}${p.recommended ? "(추천)" : ""} ${won(p.price)}: ${p.desc}`).join("\n");
+  const plans = S.plans.map((p) => `· ${p.name}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""} ${won(p.price)}: ${p.desc}`).join("\n");
   const zoomLine = S.plans.some((p) => p.includesZoom) ? `· ${S.zoom.name} 단품 +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}` : `· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}`;
   const when = req.interview ? ` ${req.interview} 면접 전에 충분히 연습하실 수 있도록 일정을 맞추겠습니다.` : "";
   const field = req.health ? "보건계열 현직 대학교수로, 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "현직 대학교수로, 면접관이 실제로 보는 평가 기준에 맞춰 구성해 드립니다.";

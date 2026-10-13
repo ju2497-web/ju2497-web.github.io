@@ -27,12 +27,14 @@ export const CONFIG = {
   // 문항 DB 파일
   questionBankUrl: "data/questions.json",
   // 숨고·크몽 판매 상품(숨고 응답기 soomgo.html 견적 문안에 들어갑니다).
-  // 가격 구조: 간편형은 기준점(앵커), 패키지가 추천 상품. 무료 샘플·맛보기는 제공하지 않습니다.
+  // 가격 구조: 간편형은 진입 기준점, 패키지가 추천 상품, 집중 완성형은 위쪽 기준점(앵커). 무료 샘플·맛보기는 제공하지 않습니다.
+  // 2026-10-13: 숨고 상세 설명에 있던 30만/50만 원 단일 고가 구조를 이 4단계로 교체.
   soomgo: {
     plans: [
       { key: "simple", name: "간편형", price: 29000, desc: "공개문항 전체 답변 + 문항별 질문 의도 + 예상 꼬리질문 3개 + 앱 이용 코드" },
       { key: "precise", name: "정밀형", price: 49000, desc: "간편형 + 학생부 반영 + 말하기 대본·연습 포인트 + 교수 총평" },
       { key: "package", name: "실전 패키지", price: 79000, recommended: true, includesZoom: true, desc: "정밀형 + 줌 모의면접 30분(따로 하면 89,000원)" },
+      { key: "intensive", name: "집중 완성형", price: 290000, includesZoom: true, limited: "월 3명", desc: "정밀형 + 줌 모의면접 60분 2회 + 면접 전날 최종 점검 30분 + 수정 무제한" },
     ],
     zoom: { name: "줌 모의면접(선택)", price: 40000, minutes: 30, desc: "실제 면접처럼 질문·꼬리질문 후 바로 피드백" },
     deliveryHours: 48,          // 자료를 받은 뒤 답변 전달까지
