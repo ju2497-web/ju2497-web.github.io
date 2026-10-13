@@ -1,0 +1,16 @@
+.top h1 a { color: inherit; text-decoration: none; }
+main.post { max-width: 720px; }
+.post .card { padding: 24px; }
+.post h2 { font-size: 1.45rem; line-height: 1.4; margin: 4px 0 18px; }
+.post p { font-size: 1.02rem; line-height: 1.85; margin: 0 0 1em; }
+.post .meta { color: var(--muted); font-size: .82rem; margin: 0 0 4px; }
+.post .intro { color: var(--muted); font-size: .95rem; margin: 4px 0 16px; }
+.post .sig { border-top: 1px dashed var(--line); margin-top: 20px; padding-top: 14px; }
+.post .sig p { font-size: .9rem; color: var(--muted); margin: 0; }
+.postnav { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 14px; font-size: .9rem; }
+.postlist { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+.postlist h2 { font-size: 1.15rem; margin: 2px 0 8px; }
+.postlist h2 a { text-decoration: none; }
+.postlist h2 a:hover { text-decoration: underline; }
+.postlist p { margin: 0; font-size: .95rem; color: var(--muted); }
+@media (max-width: 600px) { .post .card { padding: 18px 16px; } .post h2 { font-size: 1.25rem; } }

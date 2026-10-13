@@ -21,6 +21,7 @@
 
 ## 파일 구성
 - `index.html`, `css/style.css` — 화면
+- `blog/` — 「면접관이 실제로 보는 것」 블로그(원고 `docs/블로그-글-10편.md`, 생성 `scripts/build-blog.py`, 복사용 `docs/게시용/`)
 - `js/kb.js` — 기본 지식베이스·설정값·예시 문의
 - `js/engine.js` — 문의 분석과 답변 조립
 - `js/ai.js` — Claude API 연동(선택)
