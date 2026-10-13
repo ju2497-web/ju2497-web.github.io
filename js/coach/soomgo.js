@@ -66,8 +66,12 @@ function target(req) {
 
 export function quoteMessage(req, opts = {}) {
   const S = CONFIG.soomgo;
-  const plans = S.plans.map((p) => `· ${p.name}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""} ${won(p.price)}: ${p.desc}`).join("\n");
+  // 견적에서는 추천 상품을 먼저, 가장 저렴한 상품은 맨 끝에 한 줄로(가격이 품질 신호로 읽히므로 29,000원을 앞세우지 않음)
+  const line = (p) => `· ${p.name}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""} ${won(p.price)}: ${p.desc}`;
+  const cheapest = S.plans.reduce((a, b) => (b.price < a.price ? b : a));
+  const ordered = [...S.plans.filter((p) => p.recommended), ...S.plans.filter((p) => !p.recommended && p !== cheapest).sort((a, b) => a.price - b.price)];
   const zoomLine = S.plans.some((p) => p.includesZoom) ? `· ${S.zoom.name} 단품 +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}` : `· ${S.zoom.name} +${won(S.zoom.price)}: ${S.zoom.minutes}분, ${S.zoom.desc}`;
+  const plans = ordered.map(line).join("\n") + `\n${zoomLine}\n문항이 적거나 예산이 부담되시면 ${cheapest.name} ${won(cheapest.price)}(${cheapest.desc})도 있습니다.`;
   const when = req.interview ? ` ${req.interview} 면접 전에 충분히 연습하실 수 있도록 일정을 맞추겠습니다.` : "";
   const field = req.health ? "보건계열 현직 대학교수로, 전공 관련 꼬리질문까지 정확하게 짚어 드립니다." : "현직 대학교수로, 면접관이 실제로 보는 평가 기준에 맞춰 구성해 드립니다.";
   return `안녕하세요. 대학 면접 답변을 준비해 드리는 대학교수입니다.
@@ -79,7 +83,6 @@ export function quoteMessage(req, opts = {}) {
 
 [금액]
 ${plans}
-${zoomLine}
 
 [진행]
 고용하시면 채팅으로 7가지 자료 양식을 보내 드립니다. 문장을 잘 쓰실 필요 없이 있었던 일만 적어 주시면 되고, 자료를 받은 뒤 ${S.deliveryHours}시간 안에 답변 노트를 전달합니다.${when}
