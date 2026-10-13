@@ -190,3 +190,112 @@ export function parseChatReply(text) {
   app.questionSource = "학생 제공(숨고 채팅)";
   return app;
 }
+
+// ═════════ 논문 컨설팅 모드(숨고 메인 상품, 2026-10-13) ═════════
+const T = () => CONFIG.thesis;
+const wonT = (n) => `${n.toLocaleString("ko-KR")}원`;
+
+// 요청문이 논문인지 면접인지
+export function detectMode(text) {
+  const t = text || "";
+  const thesis = (t.match(/논문|석사|박사|학위|프로포절|연구계획서|심사|통계|고찰|교정|윤문|SPSS|디펜스|대학원/g) || []).length;
+  const interview = (t.match(/면접|입시|대입|수시|학종|학생부|고3|고등학|지원 ?동기|꼬리질문/g) || []).length;
+  return thesis > interview ? "thesis" : interview > thesis ? "interview" : "unknown";
+}
+
+export function parseThesisRequest(text) {
+  const t = text || "";
+  const degree = /박사/.test(t) ? "박사" : /석사/.test(t) ? "석사" : /학사|졸업논문/.test(t) ? "학사" : "";
+  const deep = new RegExp(T().deepFields), logic = new RegExp(T().logicFields);
+  const fieldType = deep.test(t) ? "심층" : logic.test(t) ? "논리" : "확인";
+  const field = (t.match(new RegExp(`(${T().deepFields}|${T().logicFields})[가-힣]{0,4}`)) || [])[0] || "";
+  const stage = /프로포절|연구계획서|proposal/i.test(t) ? "프로포절" : /심사 ?(결과|의견|위원)|디펜스|defense|지적/i.test(t) ? "심사 대응"
+    : /고찰|discussion|논의/i.test(t) ? "고찰" : /통계|분석|SPSS|결과 ?(해석|표)/i.test(t) ? "결과 해석" : /서론|선행연구|이론적 배경/.test(t) ? "서론·선행연구" : "";
+  const dm = t.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/);
+  const wk = t.match(/(\d+)\s*주/); const mo = t.match(/(\d+)\s*(개월|달)/); const dd = t.match(/(\d+)\s*일 ?(후|안|이내|뒤|남)/);
+  let daysLeft = null, deadline = "";
+  if (dm) { const now = new Date(); let d = new Date(now.getFullYear(), +dm[1] - 1, +dm[2]); if (d < now - 86400000 * 60) d = new Date(now.getFullYear() + 1, +dm[1] - 1, +dm[2]); deadline = `${+dm[1]}월 ${+dm[2]}일`; daysLeft = Math.ceil((d - now) / 86400000); }
+  else if (dd) { daysLeft = +dd[1]; deadline = `${dd[1]}일 뒤`; } else if (wk) { daysLeft = +wk[1] * 7; deadline = `${wk[1]}주 뒤`; } else if (mo) { daysLeft = +mo[1] * 30; deadline = `${mo[1]}개월 뒤`; }
+  const pages = +((t.match(/(\d+)\s*(쪽|페이지|p\b|장)/i) || [])[1] || 0);
+  const wants = /맞춤법|오탈자|교정|교열|윤문|문장 ?다듬/.test(t) ? "교정" : /통계|분석|SPSS|R\b/.test(t) ? "통계" : /영문|영어|번역/.test(t) ? "영문" : "";
+  const ghost = /대필|대신 ?써|써 ?주세요|써주실|작성해 ?주|만들어 ?주|완성해 ?주/.test(t) && !/첨삭|지도|검토|봐 ?주/.test(t);
+  const evade = /AI ?탐지|GPT ?탐지|카피킬러 ?우회|표절률 ?(낮춰|회피)|탐지 ?(회피|우회)/i.test(t);
+  const guarantee = /통과 ?보장|무조건 ?통과|100%/.test(t);
+  const structural = /논리|구조|고찰|해석|심사|지적|반려|보완|막혀|막힘|방향/.test(t);
+  return { degree, field, fieldType, stage, deadline, daysLeft, pages, wants, ghost, evade, guarantee, structural };
+}
+
+export function triageThesis(text, req = parseThesisRequest(text)) {
+  if (req.ghost) return { verdict: "거절", reasons: ["대필 요청으로 읽힙니다. 작성은 의뢰인이 한다는 원칙과 충돌합니다."] };
+  if (req.evade) return { verdict: "거절", reasons: ["AI 탐지·표절 검사 회피 요청입니다. 받지 않습니다."] };
+  if (req.guarantee) return { verdict: "거절", reasons: ["통과 보장 요구입니다. 보장할 수 없는 서비스라 받지 않습니다."] };
+  const reasons = [], plus = [];
+  if (req.wants === "영문") reasons.push("영문 교정·번역 요청입니다. 강점 분야가 아니므로 원고를 보고 가능 여부를 먼저 판단하세요.");
+  if (req.wants === "교정" && !req.structural) reasons.push("단순 교정 요청이라 가격 경쟁이 예상됩니다. 의생명 분야면 용어·데이터 서술 정확성 검토를 차별점으로 넣고, 구조 문제가 보이면 정밀진단을 한 줄 제안하세요.");
+  if (req.fieldType === "확인") reasons.push("분야가 요청에 없거나 강점 분야가 아닙니다. 원고를 보고 가능 여부를 먼저 말씀드리는 조건으로 보내세요.");
+  if (req.daysLeft !== null && req.daysLeft <= 7) reasons.push(`마감이 ${req.deadline}입니다. 전 과정은 어렵고 정밀진단 또는 부분 컨설팅만 가능하다고 적으세요.`);
+  if (req.fieldType === "심층") plus.push("의생명·보건 분야(강점)");
+  if (req.fieldType === "논리") plus.push("연구 논리·방법론 검토 분야");
+  if (req.degree) plus.push(`${req.degree} 학위논문 단계`);
+  if (req.stage) plus.push(`${req.stage} 수요`);
+  if (req.structural) plus.push("결과 해석·심사 대응 수요(고단가 리드)");
+  if (req.daysLeft !== null && req.daysLeft > 14) plus.push(`마감까지 ${req.daysLeft}일(제작 여유)`);
+  const verdict = reasons.length >= 2 && plus.length < 2 ? "보류" : "보냄";
+  return { verdict, reasons, plus };
+}
+
+export function thesisQuote(req, opts = {}) {
+  const P = T().plans; const diag = P.find((p) => p.key === "diag");
+  const who = req.degree ? `${req.degree} 학위논문` : "학위논문";
+  const fieldLine = req.fieldType === "심층" ? ` 특히 ${req.field || "의생명·보건"} 분야는 제가 실제 실험·임상 연구와 국제학술지 게재를 해 온 분야라, 데이터 해석과 고찰의 전문성까지 봐 드립니다.`
+    : req.fieldType === "논리" ? ` ${req.field || "해당"} 분야는 연구 질문의 타당성, 변수 설정, 설문·통계 해석, 논리 전개를 중심으로 봅니다.`
+    : " 분야는 원고를 먼저 보고 제가 책임지고 볼 수 있는 연구인지 솔직하게 말씀드리겠습니다.";
+  const stageLine = req.stage === "프로포절" ? "프로포절 단계라면 연구 질문과 방법의 정합성부터 잡는 것이 가장 빠릅니다."
+    : req.stage === "심사 대응" ? "심사 의견을 받으셨다면 지적 문장이 아니라 그 지적이 나온 구조적 원인을 찾는 것이 먼저입니다."
+    : req.stage === "고찰" ? "고찰에서 막히셨다면 결과가 실제로 보여 주는 범위와 선행연구와의 연결점을 다시 잡아야 합니다."
+    : req.stage === "결과 해석" ? "결과는 나왔는데 해석이 막힌 경우, 통계가 틀린 것이 아니라 연구목적과 결과가 다른 방향을 보고 있는 경우가 대부분입니다."
+    : "논문이 막히는 지점은 대개 연구목적·방법·결과·해석·고찰 다섯 축 중 한 곳이 끊긴 자리입니다.";
+  const urgent = req.daysLeft !== null && req.daysLeft <= 7 ? `\n마감이 ${req.deadline}이라 전 과정은 어렵고, 정밀진단 또는 막힌 구간만 보는 부분 컨설팅으로 가장 급한 곳부터 잡아 드리겠습니다.` : "";
+  const editLine = req.wants === "교정" ? `\n교정·윤문은 분량과 상태를 보고 별도 견적을 드립니다${req.fieldType === "심층" ? ". 의생명 분야는 문장뿐 아니라 용어와 데이터 서술의 정확성까지 함께 봅니다" : ""}. 문장 문제가 아니라 구조 문제가 보이면 정밀진단을 먼저 권해 드리겠습니다.` : "";
+  const plans = P.map((p) => `· ${p.name}${p.recommended ? "(먼저 권합니다)" : ""} ${wonT(p.price)}${p.from ? "부터" : ""}: ${p.desc}`).join("\n");
+  return `${who} 심사와 지도를 맡고 있는 현직 대학교수(진단검사의학 박사)입니다. 요청하신 내용을 보고 견적 드립니다.${fieldLine}
+
+${stageLine} 학위논문은 문장을 다듬는 윤문으로 통과하지 않습니다. 심사하는 사람의 눈으로 어디서 논리가 끊겼는지 찾으면 멈춰 있던 논문이 다시 움직입니다.${urgent}${editLine}
+
+[진행 프로그램]
+${plans}
+· 부분 컨설팅: ${T().partial}
+
+정밀진단을 먼저 권하는 이유는, 장기 컨설팅을 덜컥 결제하지 않고 지금 원고가 어디에 서 있는지부터 확인하는 것이 가장 비용이 적게 들기 때문입니다. 원고 접수 후 ${T().deliveryDays} 안에 상담 일정을 잡습니다.
+
+[다음 단계] 원고를 완벽하게 만들어 오지 마시고 지금 상태 그대로 보내 주세요. 메시지로 네 가지만 알려 주시면 됩니다. 학위 과정, 전공과 세부 주제, 현재 단계, 지금 가장 해결하고 싶은 막힘. 자료를 보고 가장 시급한 내용과 현실적인 일정을 먼저 짚어 드리겠습니다.
+
+작성은 의뢰인이 하며 대필은 하지 않습니다. 통과를 보장하지 않으며, 제 소속 대학 대학원생은 받지 않습니다.${opts.extra ? `\n\n${opts.extra}` : ""}`;
+}
+
+export const THESIS_MATERIALS_MESSAGE = () => `고용해 주셔서 감사합니다. 원고를 보기 전에 네 가지만 알려 주세요.
+
+① 학위 과정: 석사 / 박사
+② 전공 분야와 세부 주제:
+③ 현재 단계: (예: 프로포절 준비 중, 분석 완료 후 고찰 진행 중, 본심사 1개월 전)
+④ 지금 가장 해결하고 싶은 막힘:
+
+그리고 가지고 계신 자료를 있는 그대로 보내 주세요. 연구계획서, 진행 중인 원고, 통계 결과표, 설문지, 실험 데이터, 지도교수님 메모, 심사위원 피드백 등 어떤 상태여도 괜찮습니다. 자료를 먼저 확인한 뒤 우선순위와 상담 일정을 말씀드리겠습니다. 원고와 데이터는 작업 후 삭제합니다.`;
+
+export const THESIS_FOLLOWUP_MESSAGE = (req) => `안녕하세요. 지난번 ${req.degree ? req.degree + " " : ""}논문 견적 드렸던 교수입니다. 결정에 도움이 되실까 해서, 원고 중 가장 막힌 부분 2~3쪽을 보내 주시면 어디서 논리가 끊겼는지 짧게 먼저 짚어 드리겠습니다. 이미 다른 곳에서 진행 중이시면 답장 안 주셔도 됩니다.`;
+
+export const THESIS_DELIVERY_MESSAGE = (req) => `정밀진단 리포트를 보내 드립니다. 상담에서 말씀드린 대로 ① 손대지 않아도 되는 부분 ② 심사를 위해 반드시 보완할 취약점 ③ 지도교수님 지적의 구조적 원인 ④ 우선순위와 다음 단계 순서로 정리했습니다.
+
+리포트를 읽고 이해가 안 되는 항목이 있으면 채팅으로 물어봐 주세요. 리포트 범위 안의 질문은 추가 비용 없이 답해 드립니다. 다음 단계(부분 컨설팅 또는 전 과정)로 이어 가실지는 리포트를 보신 뒤 정하셔도 됩니다.`;
+
+export const THESIS_REVIEW_MESSAGE = () => `상담과 리포트가 도움이 되셨는지요. 준비 과정에서 도움이 된 점이나 아쉬운 점을 숨고 리뷰로 짧게 남겨 주시면 다음 연구자에게 큰 도움이 됩니다. 어떤 부분이 가장 도움이 됐는지 한 줄만 적어 주셔도 충분합니다. 심사 잘 마치시길 바랍니다.`;
+
+export const THESIS_FAQ = [
+  { q: "대필도 되나요? 써 주시면 안 되나요?", a: () => "작성은 의뢰인이 하셔야 합니다. 대필은 하지 않습니다. 대신 지금 원고에서 어디가 끊겼는지, 무엇을 먼저 고쳐야 하는지를 심사위원의 기준으로 짚어 드리고, 고친 원고를 다시 봐 드립니다." },
+  { q: "통계만 봐 주실 수 있나요?", a: () => "됩니다. 결과표가 연구 질문에 정면으로 답하고 있는지, 고찰에서 어디까지 책임 있게 해석할 수 있는지까지 함께 봅니다. 많은 경우 통계가 틀린 것이 아니라 연구목적과 결과가 다른 방향을 보고 있는 것이 문제입니다." },
+  { q: "왜 정밀진단을 먼저 하라고 하시나요?", a: () => `${T().plans[0].name}(${wonT(T().plans[0].price)})은 원고를 먼저 보고 60분 상담과 1~2쪽 리포트로 지금 논문이 어디에 서 있는지 확인하는 단계입니다. 전 과정 컨설팅이 필요한지, 막힌 구간만 보면 되는지가 여기서 정해지므로 가장 비용이 적게 드는 시작입니다.` },
+  { q: "어느 분야까지 되나요?", a: () => "의학·간호·보건·의생명·임상 데이터가 들어간 논문이 가장 강합니다. 교육·사회복지·심리·경영 등은 연구 논리와 방법론 중심으로 봅니다. 지엽적인 특수 이론이나 고도의 모델링은 원고를 먼저 보고 제가 책임지고 볼 수 있는지 솔직하게 말씀드립니다." },
+  { q: "기간은 얼마나 걸리나요?", a: () => `정밀진단은 원고 접수 후 보통 ${T().deliveryDays} 안에 상담 일정을 잡습니다. 심사일이 가까우면 먼저 말씀해 주세요. 가능한 범위에서 맞춰 보겠습니다.` },
+  { q: "지도교수님 의견과 다르면 어떻게 하나요?", a: () => "최종 판단은 항상 지도교수님입니다. 저는 지도교수님의 지적이 왜 나왔는지 구조적 원인을 찾고, 그 지적에 맞게 고치는 길을 짚어 드립니다. 지도교수님과 다른 방향을 권하지 않습니다." },
+  { q: "통과할 수 있을까요?", a: () => "통과 여부는 심사위원회가 결정하므로 보장해 드릴 수 없습니다. 대신 심사위원이 어디서 멈추는지, 어떤 해석에서 질문이 나오는지를 미리 짚어 지적받기 전에 보완하도록 돕습니다." },
+];
