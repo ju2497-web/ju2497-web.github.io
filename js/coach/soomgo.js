@@ -226,6 +226,9 @@ export function parseThesisRequest(text) {
 }
 
 export function triageThesis(text, req = parseThesisRequest(text)) {
+  if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서|번역/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
+    return { verdict: "거절", reasons: ["조판·편집·단행본·번역 요청입니다. 학위논문·학술 원고가 아니므로 캐시를 쓰지 않습니다."] };
+  }
   if (req.ghost) return { verdict: "거절", reasons: ["대필 요청으로 읽힙니다. 작성은 의뢰인이 한다는 원칙과 충돌합니다."] };
   if (req.evade) return { verdict: "거절", reasons: ["AI 탐지·표절 검사 회피 요청입니다. 받지 않습니다."] };
   if (req.guarantee) return { verdict: "거절", reasons: ["통과 보장 요구입니다. 보장할 수 없는 서비스라 받지 않습니다."] };
