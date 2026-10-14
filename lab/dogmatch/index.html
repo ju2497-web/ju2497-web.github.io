@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>나와 강아지의 궁합</title>
+  <meta name="description" content="보호자와 강아지의 생일, 성향으로 보는 둘의 궁합 점수와 관계 유형. 집안 서열 1위는 누구일까요.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E💞%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../lab.css">
+  <script src="../config.js"></script>
+  <script src="../lab.js"></script>
+  <style>
+    .tg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tg button { padding: 10px 8px; font-size: .95rem; }
+    .tg button.on { border-color: var(--brand); background: var(--brand-soft); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="lab">
+    <div class="hero"><div class="emoji">💞</div><h1>나와 강아지의 궁합</h1><p>보호자와 강아지, 둘은 어떤 사이일까요</p></div>
+    <div id="form" class="card">
+      <label class="f" for="obirth">보호자 생년월일</label>
+      <input type="date" id="obirth" min="1930-01-01" max="2025-12-31">
+      <label class="f" for="dname">강아지 이름</label>
+      <input type="text" id="dname" placeholder="예: 보리" maxlength="12">
+      <label class="f" for="dage">강아지 생년월일 또는 나이 (선택)</label>
+      <input type="text" id="dage" placeholder="예: 2021-05-03 또는 3살" maxlength="12">
+      <label class="f" for="dsize">강아지 크기</label>
+      <select id="dsize">
+        <option value="소형">소형견</option>
+        <option value="중형">중형견</option>
+        <option value="대형">대형견</option>
+        <option value="모름">잘 모름 / 믹스</option>
+      </select>
+      <label class="f">보호자는 어느 쪽에 가까운가요?</label>
+      <div class="tg" data-key="home"><button data-v="집">집순이 / 집돌이</button><button data-v="밖">밖순이 / 밖돌이</button></div>
+      <label class="f">하루 중 언제 힘이 나나요?</label>
+      <div class="tg" data-key="time"><button data-v="아침">아침형</button><button data-v="저녁">저녁형</button></div>
+      <label class="f">주말 계획은?</label>
+      <div class="tg" data-key="plan"><button data-v="계획">미리 세워 둬요</button><button data-v="즉흥">그날 정해요</button></div>
+      <button class="primary" id="go">궁합 보기</button>
+    </div>
+    <div id="out" hidden></div>
+  </main>
+  <script>
+    Lab.init({ id: "dogmatch", title: "나와 강아지의 궁합" });
+
+    const sel = { home: "", time: "", plan: "" };
+    document.querySelectorAll(".tg").forEach(g => {
+      g.querySelectorAll("button").forEach(b => b.onclick = () => {
+        g.querySelectorAll("button").forEach(x => x.classList.remove("on"));
+        b.classList.add("on"); sel[g.dataset.key] = b.dataset.v;
+      });
+    });
+
+    const ZODIAC = ["원숭이","닭","개","돼지","쥐","소","호랑이","토끼","용","뱀","말","양"];
+
+    const REL = [
+      { n: "서로 껌딱지", d: "떨어지면 둘 다 불안한 사이예요. 화장실까지 따라오는 건 사랑의 증거이고, 보호자도 외출하면 강아지 사진부터 꺼내 봐요." },
+      { n: "츤데레 룸메이트", d: "평소엔 각자 할 일 하다가 결정적인 순간에만 딱 붙는 사이예요. 무심한 척해도 서로 어디 있는지 늘 알고 있어요." },
+      { n: "산책 메이트", d: "집 안보다 밖에서 더 빛나는 콤비예요. 리드줄을 꺼내는 순간 둘 다 눈빛이 달라져요." },
+      { n: "밥 친구", d: "같이 먹을 때 제일 행복한 사이예요. 보호자가 식탁에 앉으면 강아지도 옆자리에 앉는 게 당연한 집이에요." },
+      { n: "낮잠 동맹", d: "느긋함이 통하는 사이예요. 주말 오후 소파에서 같이 자는 시간이 둘에겐 최고의 데이트예요." },
+      { n: "모험 원정대", d: "새로운 곳, 새로운 냄새, 새로운 카페. 둘이 함께라면 어디든 가는 탐험가 콤비예요." },
+      { n: "말 없는 단짝", d: "큰 표현은 없지만 눈빛으로 통하는 사이예요. 보호자가 한숨만 쉬어도 강아지가 먼저 옆에 와 앉아요." },
+      { n: "티격태격 남매", d: "장난감 뺏기, 이불 쟁탈전, 서로 약 올리기. 매일 투닥거리지만 그게 둘만의 애정 표현이에요." },
+      { n: "엄마와 아기", d: "보호자가 챙기고 강아지가 받는 전형적인 보호자형 궁합이에요. 강아지는 그 사랑을 당연하게 누리는 중이에요." },
+      { n: "집사와 상전", d: "누가 봐도 강아지가 주인이에요. 보호자는 기꺼이 집사를 자처하고, 강아지는 우아하게 그 봉사를 받아요." },
+      { n: "운동 파트너", d: "달리고 던지고 뛰는 게 둘의 공통 취미예요. 에너지가 비슷해서 서로 지치지 않는 드문 조합이에요." },
+      { n: "말년의 소울메이트", d: "한참 전부터 알았던 것 같은 사이예요. 오래 함께한 부부처럼, 말하지 않아도 다음 행동을 서로 알아요." }
+    ];
+    const GOOD = [
+      "비 오는 날 창가에서 같이 빗소리 듣기",
+      "새 산책 코스 하나 개척하기",
+      "간식 숨겨 놓고 노즈워크 놀이",
+      "주말 아침 늦잠 같이 자기",
+      "강아지 동반 카페에서 둘만의 티타임",
+      "같이 찍은 사진으로 올해 달력 만들기",
+      "저녁 산책 후 발 닦으며 하루 이야기하기",
+      "이불 빨래한 날 햇볕 냄새 나는 침대에서 뒹굴기",
+      "새 장난감 하나 골라서 반응 관찰하기",
+      "가을 낙엽길 천천히 걷기",
+      "처음 만난 날 기념일 챙기기",
+      "서로 눈 마주치며 아무 말 없이 1분 있기",
+      "강아지 생일에 수제 간식 만들기",
+      "차 타고 가까운 바다나 강 보러 가기",
+      "집에서 작은 장애물 코스 만들어 놀기",
+      "저녁에 둘이 조용히 음악 듣기",
+      "산책 중 만난 친구들과 인사 연습하기",
+      "보호자 운동할 때 옆에서 응원(구경)하기"
+    ];
+    const CAUTION = [
+      "보호자가 바쁠 때 강아지의 눈빛을 못 볼 수 있어요. 하루 한 번은 꼭 쳐다봐 주세요.",
+      "둘 다 고집이 있어서 산책 방향으로 실랑이할 수 있어요. 가끔은 강아지가 고른 길로 가 보세요.",
+      "간식으로 마음을 사는 습관이 들기 쉬워요. 간식 대신 쓰다듬 한 번을 먼저.",
+      "보호자가 외출을 좋아해서 강아지가 혼자인 시간이 길 수 있어요. 돌아오면 먼저 인사부터.",
+      "둘 다 집에 있는 걸 좋아해서 산책이 짧아지기 쉬워요. 날씨 핑계는 하루만.",
+      "보호자가 늦게 자면 강아지도 밤에 깨 있어요. 잠자리 시간은 보호자가 먼저 지켜 주세요.",
+      "아침형 보호자가 강아지를 너무 일찍 깨울 수 있어요. 주말만큼은 강아지도 늦잠을.",
+      "계획이 틀어지면 보호자 기분이 강아지에게 전해져요. 강아지는 계획을 몰라요.",
+      "즉흥적인 외출이 많으면 강아지 밥 시간이 밀려요. 밥 시간만은 고정으로.",
+      "대형견의 힘을 보호자가 얕볼 수 있어요. 리드줄 잡는 손은 늘 단단히.",
+      "소형견이라고 품에 너무 자주 안으면 스스로 걷는 시간이 줄어요. 발로 걷게 해 주세요.",
+      "서로 너무 붙어 있어서 분리불안이 생길 수 있어요. 짧은 외출부터 연습해 보세요."
+    ];
+    const RANK_DOG = [
+      "서열 1위는 단연 {d}. 보호자는 소파 끝자리를 배정받았어요.",
+      "{d}이(가) 1위예요. 이불의 70퍼센트는 {d} 소유라는 게 그 증거예요.",
+      "{d}이(가) 집안 최고 권력자예요. 보호자는 간식 담당 비서쯤 돼요.",
+      "{d}이(가) 1위. 밥 달라는 눈빛 한 번에 보호자가 일어나는 걸 보면 알 수 있어요."
+    ];
+    const RANK_OWNER = [
+      "서열 1위는 보호자. 하지만 {d}이(가) 2위라고 생각하는지는 알 수 없어요.",
+      "보호자가 1위예요. 다만 밤에 침대 한가운데를 차지하는 건 {d}이에요.",
+      "보호자가 1위, {d}이(가) 2위. 간식통 열쇠를 쥔 자가 권력을 가져요.",
+      "보호자가 1위로 보이지만 {d}이(가) 양보해 준 거예요. 아마도요."
+    ];
+
+    document.getElementById("go").onclick = () => {
+      const ob = document.getElementById("obirth").value;
+      const dn = document.getElementById("dname").value.trim();
+      const da = document.getElementById("dage").value.trim();
+      const sz = document.getElementById("dsize").value;
+      if (!ob) { Lab.toast("보호자 생년월일을 넣어 주세요"); return; }
+      if (!dn) { Lab.toast("강아지 이름을 넣어 주세요"); return; }
+      if (!sel.home || !sel.time || !sel.plan) { Lab.toast("성향 세 가지를 골라 주세요"); return; }
+      const key = [ob, dn, da, sz, sel.home, sel.time, sel.plan].join("|");
+      const rnd = Lab.rng(Lab.hash(key));
+      const score = 60 + Math.floor(rnd() * 40);
+      const rel = Lab.pick(REL, rnd);
+      const goods = []; const pool = GOOD.slice();
+      while (goods.length < 3) goods.push(pool.splice(Math.floor(rnd() * pool.length), 1)[0]);
+      const caution = Lab.pick(CAUTION, rnd);
+      const dogTop = rnd() < 0.62;
+      const bat = (c => c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28 !== 0)(dn.charCodeAt(dn.length - 1));
+      const rank = Lab.pick(dogTop ? RANK_DOG : RANK_OWNER, rnd)
+        .replace(/\{d\}이\(가\)/g, dn + (bat ? "이" : "가"))
+        .replace(/\{d\}이에요/g, dn + (bat ? "이에요" : "예요"))
+        .replace(/\{d\}/g, dn);
+      const z = ZODIAC[+ob.slice(0, 4) % 12];
+      const dz = /^\d{4}-\d{2}-\d{2}$/.test(da) ? ZODIAC[+da.slice(0, 4) % 12] + "띠" : (da ? da : "");
+      const mood = score >= 92 ? "전생에 나라를 구한 조합" : score >= 84 ? "매일이 산책날인 조합" : score >= 75 ? "서로 길들이는 중인 조합" : score >= 68 ? "조금씩 맞춰 가는 조합" : "다르지만 그래서 재미있는 조합";
+      const html =
+        '<span class="badge">' + z + "띠 보호자 · " + dn + (dz ? " (" + dz + ")" : "") + " · " + sz + "</span>" +
+        '<div class="big">' + score + "점</div>" +
+        '<p class="sub">' + mood + "</p>" +
+        "<h2>둘의 관계 유형: " + rel.n + "</h2>" +
+        "<p>" + rel.d + "</p>" +
+        "<p><b>둘이 함께 하면 좋은 것</b><br>" + goods.map((g, i) => (i + 1) + ". " + g).join("<br>") + "</p>" +
+        "<p><b>서로 조심할 것</b><br>" + caution + "</p>" +
+        "<p><b>둘 중 집안의 서열 1위는?</b><br>" + rank + "</p>" +
+        '<p><span class="pill">' + sel.home + '에서 노는 보호자</span><span class="pill">' + sel.time + '형</span><span class="pill">' + sel.plan + '형</span></p>';
+      const share = "나와 " + dn + "의 궁합 " + score + "점\n관계 유형: " + rel.n;
+      document.getElementById("form").hidden = true;
+      Lab.result("out", html, share, () => { document.getElementById("form").hidden = false; document.getElementById("out").hidden = true; window.scrollTo({ top: 0, behavior: "smooth" }); });
+    };
+    try { const saved = localStorage.getItem("lab.birth"); if (saved) document.getElementById("obirth").value = saved; } catch (e) {}
+    document.getElementById("obirth").addEventListener("change", e => { try { localStorage.setItem("lab.birth", e.target.value); } catch (x) {} });
+  </script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오늘의 타로 한 장</title>
+  <meta name="description" content="질문 하나와 분야를 고르면 오늘 하루 나만의 메이저 아르카나 한 장을 뒤집어 드려요. 같은 날에는 같은 카드가 나와요.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🃏%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../lab.css">
+  <script src="../config.js"></script>
+  <script src="../lab.js"></script>
+  <style>
+    .stage { display: flex; flex-direction: column; align-items: center; padding: 24px 0 8px; }
+    .scene { width: 200px; height: 320px; perspective: 1200px; cursor: pointer; }
+    .card3d { position: relative; width: 100%; height: 100%; transition: transform .8s cubic-bezier(.4, .1, .2, 1); transform-style: preserve-3d; }
+    .card3d.flipped { transform: rotateY(180deg); }
+    .face { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.25); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .back { background: linear-gradient(135deg, #2b1055 0%, #5a2d8a 45%, #1c0b3b 100%); border: 4px solid #d9b65e; color: #f3dc9a; overflow: hidden; }
+    .back .pat { position: absolute; inset: 8px; border: 1px solid rgba(243,220,154,.5); border-radius: 10px; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; place-items: center; font-size: 1.1rem; opacity: .55; }
+    .back .c { position: relative; font-size: 3rem; text-shadow: 0 0 18px rgba(243,220,154,.8); animation: glow 2s ease-in-out infinite; }
+    @keyframes glow { 0%, 100% { transform: scale(1); opacity: .9 } 50% { transform: scale(1.12); opacity: 1 } }
+    .front { background: linear-gradient(160deg, #fff8ec, #f6e7c8); border: 4px solid #d9b65e; color: #2a2520; transform: rotateY(180deg); padding: 16px; text-align: center; }
+    .front .sym { font-size: 4.2rem; line-height: 1; }
+    .front .num { font-size: .8rem; letter-spacing: .2em; color: #8a6d2f; font-weight: 700; margin-bottom: 8px; }
+    .front .nm { font-size: 1.3rem; font-weight: 800; margin-top: 12px; }
+    .front .en { font-size: .78rem; color: #8a6d2f; letter-spacing: .08em; }
+    .front.rev .sym, .front.rev .nm, .front.rev .en, .front.rev .num { transform: rotate(180deg); }
+    .hint { color: var(--muted); font-size: .9rem; margin-top: 14px; text-align: center; }
+    .mini { display: flex; gap: 14px; align-items: center; margin: 8px 0 10px; }
+    .mini .m { width: 74px; height: 110px; border-radius: 10px; flex: none; background: linear-gradient(160deg, #fff8ec, #f6e7c8); border: 3px solid #d9b65e; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; color: #2a2520; }
+    .mini .m.rev { transform: rotate(180deg); }
+    .mini .t b { display: block; font-size: 1.35rem; line-height: 1.25; }
+    .mini .t span { color: var(--muted); font-size: .85rem; }
+    .kw { margin: 4px 0 10px; }
+    .advice { background: var(--brand-soft); border-radius: 12px; padding: 12px 14px; margin: 10px 0; }
+    .advice small { display: block; color: var(--brand); font-weight: 700; font-size: .78rem; margin-bottom: 2px; }
+    .lock { font-size: .82rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="lab">
+    <div class="hero"><div class="emoji">🃏</div><h1>오늘의 타로 한 장</h1><p>하루에 한 장. 질문을 품고 카드를 뒤집어 보세요</p></div>
+    <div id="form" class="card">
+      <label class="f" for="q">마음속 질문 (선택)</label>
+      <input type="text" id="q" placeholder="예: 이번 주 면접, 잘 될까요?" maxlength="60">
+      <label class="f" for="field">어떤 분야가 궁금한가요</label>
+      <select id="field">
+        <option value="전체">전체</option>
+        <option value="연애">연애</option>
+        <option value="일">일·공부</option>
+        <option value="돈">돈</option>
+        <option value="관계">인간관계</option>
+      </select>
+      <button class="primary" id="go">카드 뽑기</button>
+    </div>
+    <div id="stage" hidden></div>
+    <div id="out" hidden></div>
+  </main>
+  <script>
+    Lab.init({ id: "tarot", title: "오늘의 타로 한 장" });
+
+    // [번호, 한글, 영문, 상징, 정방향 키워드, 역방향 키워드, 정방향 해석, 역방향 해석, 조언{전체,연애,일,돈,관계}]
+    const CARDS = [
+      [0,"바보","The Fool","🌱",["새 출발","순수","모험"],["무모함","망설임","준비 부족"],
+        "아무것도 정해지지 않은 백지의 날입니다. 계산보다 호기심이 앞서도 괜찮은 때예요. 첫발을 떼는 것만으로 절반은 온 셈입니다.",
+        "시작하고 싶지만 발이 안 떨어지는 날입니다. 혹은 너무 가볍게 뛰어들어 넘어질 수 있어요. 가방에 뭘 챙겼는지 한 번만 확인하세요.",
+        {전체:"오늘은 작게라도 새로 시작해 보세요.",연애:"재지 말고 먼저 인사를 건네 보세요.",일:"익숙하지 않은 방법을 하나 시도해 보세요.",돈:"충동 결제 전에 하루만 묵혀 두세요.",관계:"새로운 모임에 한 번 얼굴을 비춰 보세요."}],
+      [1,"마법사","The Magician","🪄",["능력","집중","실행"],["산만함","과장","미루기"],
+        "필요한 도구는 이미 손에 다 있습니다. 머릿속 계획을 꺼내 현실로 옮기기 좋은 날이에요. 말보다 손이 먼저 움직이게 하세요.",
+        "할 줄 아는 건 많은데 한 가지에 마음이 안 붙는 날입니다. 보여 주려는 마음이 앞서면 실수가 나와요. 창을 하나만 열어 두세요.",
+        {전체:"가장 중요한 일 하나를 오전에 끝내세요.",연애:"마음을 말로, 구체적으로 표현해 보세요.",일:"계획서 말고 결과물 하나를 만들어 보세요.",돈:"내 기술로 작게라도 벌 수 있는 길을 적어 보세요.",관계:"도움이 필요한 사람에게 먼저 손을 내밀어 보세요."}],
+      [2,"여사제","The High Priestess","🌙",["직감","비밀","내면"],["혼란","숨김","무시한 신호"],
+        "오늘은 밖의 소음보다 안의 목소리가 정확합니다. 아직 말하지 않은 것이 있다면 그대로 두어도 좋아요. 답은 이미 알고 있습니다.",
+        "느낌이 오는데 자꾸 무시하고 있는 날입니다. 누군가 말하지 않는 부분이 있을 수도 있어요. 모르는 척하지 말고 조용히 물어보세요.",
+        {전체:"결정은 미루고 직감이 하는 말을 적어 두세요.",연애:"상대의 말 뒤에 있는 표정을 읽어 보세요.",일:"서두르지 말고 자료를 한 번 더 살펴보세요.",돈:"확실하지 않은 정보로 움직이지 마세요.",관계:"들어 주는 쪽에 서면 더 많은 것이 보여요."}],
+      [3,"여황제","The Empress","🌾",["풍요","돌봄","창조"],["과잉","의존","소진"],
+        "가꾸는 만큼 자라는 날입니다. 자신에게도 남에게도 넉넉해도 괜찮아요. 맛있는 것, 예쁜 것, 따뜻한 것이 오늘의 연료입니다.",
+        "남을 챙기느라 내 그릇이 비어 있는 날입니다. 혹은 너무 받기만 해서 불편해진 관계가 있을 수 있어요. 돌봄의 방향을 나에게로 조금 돌리세요.",
+        {전체:"오늘은 스스로를 잘 먹이고 잘 재우세요.",연애:"따뜻한 한 끼를 함께하는 것이 백 마디보다 나아요.",일:"팀을 챙기면 성과가 따라옵니다.",돈:"쓰더라도 오래 남을 것에 쓰세요.",관계:"안부를 묻는 사람이 되어 보세요."}],
+      [4,"황제","The Emperor","🏛️",["질서","책임","안정"],["고집","통제","경직"],
+        "틀을 세우면 일이 선명해지는 날입니다. 규칙을 정하고 지키는 사람이 오늘의 주인공이에요. 책임을 지는 자리가 생각보다 어울립니다.",
+        "내 방식만 고집하다 부딪히기 쉬운 날입니다. 통제하려 할수록 손가락 사이로 빠져나가요. 한 번쯤 다른 사람에게 운전대를 넘겨 보세요.",
+        {전체:"오늘 할 일을 세 가지로 줄이고 순서를 정하세요.",연애:"리드하되 상대의 속도를 확인하세요.",일:"기준을 분명히 말하면 팀이 편해집니다.",돈:"예산 틀을 다시 세우기 좋은 날이에요.",관계:"조언은 상대가 물을 때만 하세요."}],
+      [5,"교황","The Hierophant","📜",["전통","배움","조언"],["틀에 갇힘","반항","형식주의"],
+        "검증된 길이 오늘은 가장 빠릅니다. 선배나 책, 오래된 방법에서 답을 찾아보세요. 배우는 자세가 복을 부르는 날입니다.",
+        "늘 하던 대로가 답답하게 느껴지는 날입니다. 규칙을 깨고 싶은 마음이 들지만 이유는 분명히 하세요. 형식보다 본질이 무엇인지 되물어 보세요.",
+        {전체:"잘 아는 사람에게 조언을 구하면 시간이 절약돼요.",연애:"기본에 충실한 데이트가 오히려 통해요.",일:"매뉴얼을 한 번 더 읽으면 실수가 줄어요.",돈:"검증된 방법 외에는 손대지 마세요.",관계:"윗사람과의 대화에서 좋은 힌트가 와요."}],
+      [6,"연인","The Lovers","💞",["사랑","선택","조화"],["갈등","망설임","어긋남"],
+        "마음이 가는 쪽이 정답인 날입니다. 두 갈래 길 앞에서 머리보다 가슴을 믿어도 좋아요. 서로 다른 둘이 맞물리는 기쁨이 있습니다.",
+        "선택을 미루다 둘 다 놓칠 수 있는 날입니다. 가까운 사람과 작은 어긋남이 생길 수 있어요. 솔직한 한마디가 어색함을 풉니다.",
+        {전체:"미뤄 둔 선택 하나를 오늘 정하세요.",연애:"마음을 숨기지 마세요, 오늘은 통하는 날이에요.",일:"함께할 사람을 잘 고르는 것이 일의 절반입니다.",돈:"큰 지출은 함께 결정하세요.",관계:"서로 다른 점을 인정하면 관계가 깊어져요."}],
+      [7,"전차","The Chariot","🏇",["추진","승리","의지"],["폭주","방향 상실","제자리"],
+        "밀어붙이면 뚫리는 날입니다. 고삐를 쥐고 방향을 정하면 속도가 붙어요. 망설이던 일에 가속을 붙이세요.",
+        "힘은 넘치는데 방향이 흔들리는 날입니다. 이리저리 끌려다니다 제자리일 수 있어요. 멈춰서 목적지를 다시 입력하세요.",
+        {전체:"목표 하나를 정하고 곁눈질 없이 달려 보세요.",연애:"적극적으로 다가가면 좋은 반응이 와요.",일:"마감을 앞당겨 잡으면 집중력이 올라가요.",돈:"목표 금액을 정하면 저축이 쉬워져요.",관계:"주도하되 함께 가는 사람을 두고 가지 마세요."}],
+      [8,"힘","Strength","🦁",["용기","인내","부드러운 힘"],["자신감 부족","조급함","무리"],
+        "억지로 이기는 것이 아니라 다독여서 이기는 날입니다. 두려운 일을 부드럽게 길들여 보세요. 내 안의 힘은 생각보다 큽니다.",
+        "자신이 없어 작아지는 날입니다. 혹은 조급해서 힘으로 밀어붙이려 할 수 있어요. 숨을 고르고 천천히 다가가세요.",
+        {전체:"무서운 일부터 한 입 크기로 잘라 시작하세요.",연애:"급하게 몰아붙이지 말고 꾸준히 곁에 있어 주세요.",일:"까다로운 사람도 부드럽게 대하면 풀립니다.",돈:"참는 힘이 오늘의 재테크예요.",관계:"화가 나도 한 박자 쉬고 말하세요."}],
+      [9,"은둔자","The Hermit","🏮",["성찰","고독","탐구"],["고립","회피","외로움"],
+        "혼자 있는 시간이 가장 생산적인 날입니다. 등불 하나 들고 내 안을 들여다보세요. 답은 밖에서 오지 않습니다.",
+        "혼자 있고 싶은 마음이 도망으로 변할 수 있는 날입니다. 외로움과 혼자 있는 것은 달라요. 한 사람에게만은 문을 열어 두세요.",
+        {전체:"알림을 끄고 한 시간만 나와 대화해 보세요.",연애:"잠시 거리를 두면 마음이 선명해져요.",일:"혼자 깊이 파는 작업에 집중하기 좋은 날이에요.",돈:"조용히 가계부를 정리해 보세요.",관계:"꼭 필요한 만남만 가지세요."}],
+      [10,"운명의 수레바퀴","Wheel of Fortune","🎡",["전환","행운","흐름"],["정체","엇박자","저항"],
+        "바퀴가 돌기 시작하는 날입니다. 내 힘이 아닌 흐름이 길을 열어 줘요. 우연처럼 보이는 일을 가볍게 보지 마세요.",
+        "흐름이 잠시 멈춘 듯 답답한 날입니다. 바퀴는 결국 다시 돕니다. 저항하지 말고 때를 기다리세요.",
+        {전체:"우연한 기회가 오면 일단 잡으세요.",연애:"뜻밖의 만남이나 연락이 올 수 있어요.",일:"변화가 있다면 거스르지 말고 올라타세요.",돈:"흐름이 바뀌는 날, 큰 결정은 조금 미루세요.",관계:"오래된 인연이 돌아올 수 있어요."}],
+      [11,"정의","Justice","⚖️",["균형","공정","책임"],["편견","불공정","회피"],
+        "뿌린 대로 돌아오는 날입니다. 원칙대로 하면 잃을 것이 없어요. 저울이 기운 곳을 바로잡기 좋습니다.",
+        "공정하지 않다고 느끼는 일이 있을 수 있는 날입니다. 혹은 내가 한쪽만 보고 있을 수도 있어요. 결정 전에 반대편 이야기를 들어 보세요.",
+        {전체:"미뤄 둔 정리와 정산을 오늘 하세요.",연애:"주고받는 균형을 돌아보세요.",일:"기록을 남기고 근거로 말하세요.",돈:"계약서와 영수증을 다시 확인하세요.",관계:"한쪽 말만 듣고 판단하지 마세요."}],
+      [12,"매달린 사람","The Hanged Man","🙃",["관점 전환","기다림","내려놓음"],["헛된 희생","정체","미련"],
+        "거꾸로 보면 다르게 보이는 날입니다. 멈춘 것 같아도 안에서는 무언가 익어 가요. 억지로 풀려 하지 말고 매달려 보세요.",
+        "기다림이 길어져 지치는 날입니다. 의미 없는 희생을 하고 있는지 점검하세요. 내려올 때가 되었을 수도 있어요.",
+        {전체:"오늘은 결론 대신 다른 각도에서 다시 보세요.",연애:"상대의 입장에서 하루를 상상해 보세요.",일:"막힌 일은 잠시 놓아두면 풀려요.",돈:"당장 움직이지 않는 것이 이득이에요.",관계:"내가 맞다는 생각을 하루만 내려놓아 보세요."}],
+      [13,"죽음","Death","🦋",["끝과 시작","변화","정리"],["변화 거부","집착","지연"],
+        "무서운 이름과 달리 새로움을 데려오는 카드입니다. 끝난 것을 끝났다고 인정하면 다음 문이 열려요. 정리는 상실이 아니라 공간 만들기입니다.",
+        "끝난 줄 알면서 붙잡고 있는 것이 있는 날입니다. 변화를 미룰수록 더 무거워져요. 작은 것부터 하나씩 비워 보세요.",
+        {전체:"더 이상 쓰지 않는 것을 오늘 하나 정리하세요.",연애:"끝난 감정은 보내 주어야 새로운 것이 와요.",일:"오래 끌던 일을 마무리 짓기 좋은 날이에요.",돈:"안 쓰는 구독과 지출을 끊어 보세요.",관계:"멀어진 관계를 억지로 붙잡지 마세요."}],
+      [14,"절제","Temperance","🍶",["균형","조절","회복"],["과잉","불균형","조급함"],
+        "섞고 조절하는 솜씨가 빛나는 날입니다. 너무 많지도 적지도 않게, 중간이 가장 좋아요. 급한 마음을 식히면 몸도 마음도 회복됩니다.",
+        "한쪽으로 치우치기 쉬운 날입니다. 과식, 과로, 과한 말을 조심하세요. 템포를 반으로 줄여 보세요.",
+        {전체:"오늘은 무엇이든 적당히, 천천히 하세요.",연애:"밀당보다 꾸준한 온도가 통해요.",일:"일과 쉼의 비율을 조정해 보세요.",돈:"들어오는 것과 나가는 것의 균형을 확인하세요.",관계:"중재자 역할이 잘 어울리는 날이에요."}],
+      [15,"악마","The Devil","⛓️",["유혹","집착","욕망"],["해방","자각","끊어 냄"],
+        "알면서도 끌리는 것이 있는 날입니다. 쇠사슬은 사실 느슨하게 걸려 있을 뿐이에요. 유혹을 인정하는 순간 힘이 빠집니다.",
+        "나를 묶고 있던 것에서 풀려나는 날입니다. 나쁜 습관이나 관계에 거리를 두기 좋아요. 자유는 생각보다 가까이 있습니다.",
+        {전체:"오늘 나를 가장 많이 끌어당기는 것이 무엇인지 적어 보세요.",연애:"집착인지 애정인지 솔직히 구분해 보세요.",일:"편한 길의 유혹에 하루만 저항해 보세요.",돈:"충동구매를 가장 조심할 날이에요.",관계:"나를 작게 만드는 관계에서 한 걸음 물러나세요."}],
+      [16,"탑","The Tower","⚡",["급변","붕괴","깨달음"],["위기 모면","두려움","미뤄진 변화"],
+        "흔들리는 것은 원래 튼튼하지 않았던 것입니다. 갑작스러운 변화가 오히려 낡은 틀을 치워 줘요. 무너진 자리에 더 나은 것이 세워집니다.",
+        "큰일이 닥칠까 두려워 몸을 사리는 날입니다. 혹은 간신히 위기를 피했을 수 있어요. 두려움보다 점검이 필요한 때입니다.",
+        {전체:"갑작스러운 일이 생기면 당황하지 말고 짚어 보세요.",연애:"숨겨 온 문제가 드러나도 끝은 아니에요.",일:"백업하고 중요한 것부터 지키세요.",돈:"비상금 상태를 오늘 확인하세요.",관계:"터진 갈등은 오히려 대화의 기회예요."}],
+      [17,"별","The Star","⭐",["희망","회복","영감"],["실망","자신감 상실","막연함"],
+        "어두운 밤이 지나고 별이 보이는 날입니다. 조용한 희망이 오래가는 힘이 돼요. 마음이 아물고 있다는 신호입니다.",
+        "희망이 멀게만 느껴지는 날입니다. 기대가 커서 실망도 컸을 수 있어요. 작은 빛 하나부터 다시 보세요.",
+        {전체:"오늘은 바라는 것을 구체적으로 적어 보세요.",연애:"진심은 천천히 전해져요, 조급해하지 마세요.",일:"영감이 오는 날, 아이디어를 모아 두세요.",돈:"긴 목표에 맞춰 작게 시작하세요.",관계:"힘든 사람에게 위로의 말을 건네 보세요."}],
+      [18,"달","The Moon","🌕",["불안","환상","직감"],["명확해짐","불안 해소","진실"],
+        "보이는 것이 전부가 아닌 날입니다. 불안은 커 보이지만 달빛 때문에 그림자가 길어졌을 뿐이에요. 직감은 믿되 사실은 확인하세요.",
+        "안개가 걷히고 상황이 또렷해지는 날입니다. 막연했던 걱정의 정체가 드러나요. 알고 나면 생각보다 별것 아닙니다.",
+        {전체:"밤에 하는 결정은 아침에 다시 보세요.",연애:"의심이 들면 상상하지 말고 물어보세요.",일:"소문보다 자료를 믿으세요.",돈:"확실하지 않은 이야기에 돈을 넣지 마세요.",관계:"오해가 생기기 쉬운 날, 문자보다 통화가 나아요."}],
+      [19,"태양","The Sun","☀️",["성공","기쁨","활력"],["과신","잠깐의 흐림","소진"],
+        "가장 밝은 카드가 나왔습니다. 숨기지 말고 드러내도 좋은 날이에요. 아이처럼 즐거워하면 운이 따라옵니다.",
+        "좋은 날인데 구름이 살짝 낀 느낌입니다. 자신감이 지나쳐 실수가 나올 수 있어요. 기쁨은 그대로 두고 확인만 한 번 더 하세요.",
+        {전체:"오늘은 밖으로 나가 햇빛을 쬐며 걸어 보세요.",연애:"밝게 웃는 모습이 가장 매력적인 날이에요.",일:"성과를 당당하게 공유하세요.",돈:"들어오는 것이 있는 날, 감사히 받되 자랑은 조금만.",관계:"모임에서 분위기를 밝히는 사람이 되어 보세요."}],
+      [20,"심판","Judgement","📯",["각성","부활","결산"],["자책","미룸","후회"],
+        "지나온 길을 돌아보고 결산하는 날입니다. 과거의 노력이 부름을 받아요. 다시 일어설 명분이 생깁니다.",
+        "지난 일을 자꾸 곱씹는 날입니다. 후회는 하되 자책은 멈추세요. 판단을 미루면 기회도 함께 미뤄집니다.",
+        {전체:"올해 잘한 일 세 가지를 적어 보세요.",연애:"지난 관계에서 배운 것을 지금에 적용하세요.",일:"평가와 피드백을 피하지 말고 받아들이세요.",돈:"이번 달 수입과 지출을 결산해 보세요.",관계:"사과할 일이 있다면 오늘이 좋아요."}],
+      [21,"세계","The World","🌍",["완성","성취","통합"],["미완성","마무리 지연","공허"],
+        "한 바퀴를 다 돈 완성의 카드입니다. 오래 끌어온 일이 마무리되고 다음 무대가 열려요. 스스로에게 수고했다고 말해 주세요.",
+        "거의 다 왔는데 마지막 한 조각이 빠진 날입니다. 마무리가 미뤄지면 공허함이 와요. 끝내는 데 집중하면 금방입니다.",
+        {전체:"끝내지 못한 일 하나를 오늘 완성하세요.",연애:"관계가 한 단계 정리되는 날이에요.",일:"마무리 보고와 정리에 좋은 날이에요.",돈:"목표 달성 후 다음 목표를 세워 보세요.",관계:"멀리 있는 사람에게 소식을 전해 보세요."}]
+    ];
+    const FIELD = { 전체: "전체", 연애: "연애", 일: "일·공부", 돈: "돈", 관계: "인간관계" };
+    const ROMAN = ["0","I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI","XVII","XVIII","XIX","XX","XXI"];
+    const HINTS = ["카드를 눌러 뒤집어 보세요", "숨을 한 번 고르고, 카드를 눌러 주세요", "질문을 떠올리며 카드를 눌러 보세요", "준비됐다면 카드를 톡 눌러 주세요"];
+    const LOCK = ["오늘은 이 카드예요. 내일 다시 오세요", "하루에 한 장이에요. 다시 뽑아도 오늘은 같은 카드가 나와요", "오늘의 카드는 정해졌어요. 내일은 새 카드가 기다려요"];
+
+    // 방문자 고유 씨앗: localStorage에 한 번 만들고, 안 되면 이 세션 동안만 유지
+    let visitorSeed = "";
+    try {
+      visitorSeed = localStorage.getItem("lab.seed") || "";
+      if (!visitorSeed) { visitorSeed = String(Math.floor(Math.random() * 1e9)); localStorage.setItem("lab.seed", visitorSeed); }
+    } catch (e) {}
+    if (!visitorSeed) { try { visitorSeed = sessionStorage.getItem("lab.seed") || ""; if (!visitorSeed) { visitorSeed = String(Math.floor(Math.random() * 1e9)); sessionStorage.setItem("lab.seed", visitorSeed); } } catch (e) {} }
+    if (!visitorSeed) visitorSeed = String(Math.floor(Math.random() * 1e9));
+
+    function backPattern() { let s = ""; for (let i = 0; i < 28; i++) s += "<span>" + (i % 3 === 0 ? "✦" : i % 3 === 1 ? "✧" : "·") + "</span>"; return s; }
+    function faceHtml(c, rev) {
+      return '<div class="face front' + (rev ? " rev" : "") + '"><div class="num">' + ROMAN[c[0]] + '</div><div class="sym">' + c[3] + '</div><div class="nm">' + c[1] + '</div><div class="en">' + c[2] + "</div></div>";
+    }
+
+    document.getElementById("go").onclick = () => {
+      const q = document.getElementById("q").value.trim().replace(/\s+/g, " ");
+      const field = document.getElementById("field").value;
+      const today = Lab.today();
+      const rnd = Lab.rng(Lab.hash("tarot|" + q + "|" + field + "|" + today + "|" + visitorSeed));
+      const card = CARDS[Math.floor(rnd() * CARDS.length)];
+      const rev = rnd() < 0.3;
+      const hint = Lab.pick(HINTS, rnd), lock = Lab.pick(LOCK, rnd);
+      const key = today + "|" + q + "|" + field;
+      let seenToday = false;
+      try { seenToday = localStorage.getItem("lab.tarot.last") === key; localStorage.setItem("lab.tarot.last", key); } catch (e) {}
+
+      document.getElementById("form").hidden = true;
+      document.getElementById("out").hidden = true;
+      const stage = document.getElementById("stage");
+      stage.className = "card stage";
+      stage.innerHTML =
+        (q ? '<p class="sub" style="margin:0 0 6px;text-align:center">"' + q.replace(/</g, "&lt;") + '"</p>' : "") +
+        '<div class="scene" id="scene"><div class="card3d" id="c3d"><div class="face back"><div class="pat">' + backPattern() + '</div><div class="c">✦</div></div>' + faceHtml(card, rev) + "</div></div>" +
+        '<div class="hint" id="hint">' + (seenToday ? "오늘 이미 한 번 뒤집었던 카드예요. 다시 확인해 볼까요" : hint) + "</div>";
+      stage.hidden = false;
+      stage.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      let flipped = false;
+      document.getElementById("scene").onclick = () => {
+        if (flipped) return; flipped = true;
+        document.getElementById("c3d").classList.add("flipped");
+        document.getElementById("hint").textContent = rev ? "역방향으로 나왔어요" : "정방향이에요";
+        setTimeout(() => showResult(card, rev, field, q, lock), 1100);
+      };
+    };
+
+    function showResult(c, rev, field, q, lock) {
+      const kws = rev ? c[5] : c[4];
+      const body = rev ? c[7] : c[6];
+      const adviceMain = c[8][field];
+      const adviceAll = field !== "전체" ? c[8]["전체"] : null;
+      const html =
+        '<span class="badge">' + Lab.today().replace(/-/g, ".") + " · " + FIELD[field] + " · " + (rev ? "역방향" : "정방향") + "</span>" +
+        '<div class="mini"><div class="m' + (rev ? " rev" : "") + '">' + c[3] + '</div><div class="t"><b>' + c[1] + (rev ? " (역)" : "") + "</b><span>" + ROMAN[c[0]] + " · " + c[2] + "</span></div></div>" +
+        '<div class="kw">' + kws.map(k => '<span class="pill">' + k + "</span>").join("") + "</div>" +
+        (q ? '<p class="sub">"' + q.replace(/</g, "&lt;") + '"에 대한 답이에요.</p>' : "") +
+        "<p>" + body + "</p>" +
+        '<div class="advice"><small>' + FIELD[field] + " 조언</small>" + adviceMain + "</div>" +
+        (adviceAll ? '<p class="sub">하루 전체로는: ' + adviceAll + "</p>" : "") +
+        '<p class="lock">' + lock + ".</p>";
+      const share = "오늘의 타로: " + c[1] + (rev ? " (역방향)" : "") + " " + c[3] + "\n" + kws.join(" · ") + "\n" + adviceMain;
+      Lab.result("out", html, share, () => {
+        document.getElementById("form").hidden = false;
+        document.getElementById("stage").hidden = true;
+        document.getElementById("out").hidden = true;
+      });
+      document.getElementById("stage").hidden = true;
+    }
+  </script>
+</body>
+</html>

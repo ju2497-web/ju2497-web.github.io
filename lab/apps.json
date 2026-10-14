@@ -1,0 +1,16 @@
+{
+  "note": "실험 앱 목록. status: live(공개) / retired(내림). 순환 규칙은 docs/실험앱-운영규칙.md",
+  "cycle": 1,
+  "apps": [
+    { "id": "fortune",   "emoji": "🔆", "name": "오늘의 운세",            "tagline": "생년월일로 보는 오늘 하루의 흐름",         "launched": "2026-10-14", "status": "live" },
+    { "id": "saju",      "emoji": "☯",  "name": "사주 오행 풀이",          "tagline": "네 기둥과 목화토금수 비율로 보는 타고난 성향", "launched": "2026-10-14", "status": "live" },
+    { "id": "dogbti",    "emoji": "🐶", "name": "우리 강아지 성격 유형",    "tagline": "12문항으로 알아보는 견BTI",               "launched": "2026-10-14", "status": "live" },
+    { "id": "dogmatch",  "emoji": "💞", "name": "나와 강아지의 궁합",       "tagline": "우리 집 서열 1위는 누구일까",             "launched": "2026-10-14", "status": "live" },
+    { "id": "namematch", "emoji": "💌", "name": "이름 궁합",              "tagline": "획수로 보는 두 사람의 궁합 퍼센트",        "launched": "2026-10-14", "status": "live" },
+    { "id": "pastlife",  "emoji": "🔮", "name": "전생 테스트",             "tagline": "당신은 전생에 어느 시대 누구였을까",       "launched": "2026-10-14", "status": "live" },
+    { "id": "menu",      "emoji": "🍜", "name": "오늘 뭐 먹지?",           "tagline": "기분과 상황에 맞춰 메뉴를 정해 드려요",     "launched": "2026-10-14", "status": "live" },
+    { "id": "lucky",     "emoji": "🍀", "name": "오늘의 행운 번호",         "tagline": "행운 숫자, 색, 방향, 시간대",             "launched": "2026-10-14", "status": "live" },
+    { "id": "dream",     "emoji": "🌙", "name": "꿈 해몽 사전",            "tagline": "꿈 내용을 붙여 넣으면 키워드를 찾아 풀이",   "launched": "2026-10-14", "status": "live" },
+    { "id": "tarot",     "emoji": "🃏", "name": "오늘의 타로 한 장",        "tagline": "하루 한 장, 질문을 품고 뽑는 카드",        "launched": "2026-10-14", "status": "live" }
+  ]
+}

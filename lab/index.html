@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>작은 실험실</title>
+  <meta name="description" content="운세, 사주, 궁합, 반려견 성격 유형, 꿈 해몽, 타로. 1분 안에 끝나는 작은 재미 모음.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🧪%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lab.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <main class="lab">
+    <div class="hero"><div class="emoji">🧪</div><h1>작은 실험실</h1><p>1분 안에 끝나는 작은 재미. 입력한 내용은 기기 밖으로 나가지 않아요.</p></div>
+    <div class="applist" id="list" style="margin-top:14px"></div>
+  </main>
+  <footer class="lab-foot">모든 결과는 재미로 보는 것입니다. 반응이 없는 실험은 조용히 사라지고 새 실험이 들어옵니다.</footer>
+  <script>
+    fetch("apps.json").then(r => r.json()).then(d => {
+      const list = document.getElementById("list");
+      d.apps.filter(a => a.status === "live").forEach(a => {
+        const el = document.createElement("a"); el.href = a.id + "/";
+        el.innerHTML = '<div class="emoji">' + a.emoji + "</div><div><b>" + a.name + "</b><span>" + a.tagline + "</span></div>";
+        list.append(el);
+      });
+    });
+    const cfg = window.LAB_CONFIG || {};
+    if (cfg.goatcounter) { const s = document.createElement("script"); s.async = true; s.src = "https://gc.zgo.at/count.js"; s.dataset.goatcounter = "https://" + cfg.goatcounter + ".goatcounter.com/count"; document.head.append(s); }
+  </script>
+</body>
+</html>
