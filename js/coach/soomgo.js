@@ -26,7 +26,9 @@ export function parseRequest(text) {
   const hasQuestions = /공개|기출|문항|질문지|선행학습/.test(t);
   const health = /간호|임상병리|보건|물리치료|작업치료|방사선|치위생|응급구조|의예|약학|의생명|바이오|생명/.test(t + dept);
   const wantsZoom = /줌|zoom|화상|모의\s?면접|실전|연습/i.test(t);
-  return { univ, dept, track, interview, daysLeft, hasQuestions, health, wantsZoom };
+  // 병원·취업 면접(간호사·임상병리사 등): 대입이 아니라 채용 면접. 20대·병원·취업·채용·공채 신호
+  const hospital = /병원 ?면접|취업 ?면접|채용|공채|간호사 ?면접|임상병리사|물리치료사|방사선사|신규 ?간호사|20대|30대/.test(t) && !/대입|수시|학종|고3|고등학/.test(t);
+  return { univ, dept, track, interview, daysLeft, hasQuestions, health, wantsZoom, hospital };
 }
 
 // ───────── 판정 ─────────
@@ -64,7 +66,46 @@ function target(req) {
   return [req.univ, req.dept, req.track].filter(Boolean).join(" ") || "지원하시는 대학·학과";
 }
 
+// 병원·취업 면접 견적(대입 문안과 다름: 입학처장 대신 "매년 졸업생을 병원에 보내는 교수")
+export function hospitalQuote(req, opts = {}) {
+  const S = CONFIG.soomgo;
+  const line = (p) => `· ${p.name} ${won(p.price)}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""}: ${p.short || p.desc}`;
+  const main = S.plans.filter((p) => !p.entry);
+  const ordered = [...main.filter((p) => p.recommended), ...main.filter((p) => !p.recommended).sort((a, b) => a.price - b.price)];
+  const entry = S.plans.filter((p) => p.entry).map(line).join("\n");
+  const plans = ordered.map(line).join("\n") + (entry ? `\n${entry}` : "") + (S.launchOffer ? `\n${S.launchOffer.text}` : "");
+  const when = req.interview ? ` ${req.interview} 면접 전에 모의면접까지 마칠 수 있도록 일정을 맞추겠습니다.` : "";
+  return `보건계열 현직 대학교수입니다. 매년 졸업생을 병원에 보내며 취업 면접을 지도하고, 대학에서는 입학처장으로 면접 평가를 운영해 온 사람입니다. 자료를 받은 뒤 ${S.deliveryHours}시간 안에 답변 노트를 드리고 줌으로 모의면접까지 하는 일정으로 견적 드립니다.
+
+병원 면접관이 보는 것은 정해져 있습니다. 환자 안전을 먼저 생각하는 사람인가, 교대근무와 조직 생활을 버틸 사람인가, 전공 기본기가 있는가, 그리고 왜 우리 병원인가. 100명이 면접을 보면 80명은 "열심히 하겠습니다"로 끝납니다. 면접관에게 들리는 답은 본인의 실습·경험으로 그 네 가지를 증명하는 답입니다. 저는 그 답변을 서너 시간 읽고 고칩니다.
+
+[받으시는 것] 지원 병원과 직종에 맞춘 예상 문항(자기소개, 지원 동기, 인성·조직 적응, 전공 기본, 상황 판단) 전체에 대해 ① 면접관이 실제로 보는 평가 의도 ② 본인 경험으로 만든 45~55초 답변 ③ 예상 꼬리질문과 대응 ④ 말하기 대본과 핵심 키워드 ⑤ 교수 총평. 초안을 드린 뒤 말해 보고 다시 고칩니다(수정 1회 포함).
+
+[선택하세요]
+${plans}
+
+[진행] 결제 확인 → 채팅으로 자료 양식(약 5분, 실습·경험을 있었던 일 그대로) → 자료 접수 후 ${S.deliveryHours}시간 안에 전달 → 줌 일정 조율.${when}
+
+지원 병원·직종(간호사, 임상병리사 등)과 면접일을 알려 주시면 일정이 맞는지 바로 답드리겠습니다. 없는 경험은 넣지 않으며, 합격을 보장하는 서비스는 아닙니다. 기회를 놓치지 마십시오.${opts.extra ? `\n\n${opts.extra}` : ""}`;
+}
+
+export const HOSPITAL_MATERIALS_MESSAGE = () => `고용해 주셔서 감사합니다. 면접 답변 제작을 위해 아래 양식을 복사해서 채워 보내 주세요. 약 5분이면 됩니다.
+
+① 지원 병원 / 직종 / 부서(희망):
+② 면접일과 면접 형식(알고 있는 범위에서: 인성·전공·토론·PT 등):
+③ 병원이 공개한 문항이나 선배에게 들은 기출이 있으면:
+④ 실습·근무 경험 3~5개(어디서, 무엇을, 어려웠던 점, 배운 점):
+-
+-
+-
+⑤ 지원 동기(왜 이 병원, 왜 이 직종):
+⑥ 본인의 강점 1~2개와 보완점 1개:
+⑦ 걱정되는 부분이나 꼭 강조하고 싶은 점:
+
+문장을 잘 쓰실 필요가 없습니다. 예) "실습 때 채혈 거부하는 환자가 있었음. 이유를 물으니 전에 멍이 크게 들었다고 함. 설명하고 다른 팔로 진행." 이 정도면 충분합니다.`;
+
 export function quoteMessage(req, opts = {}) {
+  if (req.hospital) return hospitalQuote(req, opts);
   const S = CONFIG.soomgo;
   // 추천 상품을 먼저(가격이 품질 신호로 읽히므로 가장 싼 것을 앞세우지 않음). entry 상품은 맨 끝 한 줄.
   const line = (p) => `· ${p.name} ${won(p.price)}${p.recommended ? "(추천)" : ""}${p.limited ? `(${p.limited})` : ""}: ${p.short || p.desc}`;
