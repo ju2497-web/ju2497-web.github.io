@@ -267,8 +267,13 @@ export function parseThesisRequest(text) {
 }
 
 export function triageThesis(text, req = parseThesisRequest(text)) {
-  if (/번역|영문 ?교정/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
-    return { verdict: "거절", reasons: ["번역·영문 교정 요청입니다. 강점 분야가 아니므로 캐시를 쓰지 않습니다."] };
+  if (/번역/.test(text || "")) {
+    return { verdict: "거절", reasons: ["번역 요청입니다. 교정이 아니라 번역이면 받지 않습니다."] };
+  }
+  if (/영어|영문|English/i.test(text || "") && /논문|학술|저널|journal|SCI/i.test(text || "")) {
+    const words = +((text.match(/(\d[\d,]{2,})\s*(단어|words?)/i) || [])[1] || "0").replace(/,/g, "");
+    const R = T().englishProof; const price = Math.max(R.minimum, words * R.perWord);
+    return { verdict: "보냄", reasons: req.fieldType === "확인" ? ["분야가 없습니다. 의생명이면 전문 검토까지, 다른 분야면 언어 교정만이라는 조건으로 보내세요."] : [], plus: ["영문 논문 교정(SCI 제1저자 경험이 근거)", words ? `${words.toLocaleString()}단어 → ${wonT(price)}` : "단어 수 확인 필요"], english: true, words };
   }
   if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
     const pages = req.pages || +((text.match(/(\d{2,4})/) || [])[1] || 0);
@@ -290,6 +295,18 @@ export function triageThesis(text, req = parseThesisRequest(text)) {
   if (req.daysLeft !== null && req.daysLeft > 14) plus.push(`마감까지 ${req.daysLeft}일(제작 여유)`);
   const verdict = reasons.length >= 2 && plus.length < 2 ? "보류" : "보냄";
   return { verdict, reasons, plus };
+}
+
+export function englishProofQuote(words) {
+  const R = T().englishProof; const price = Math.max(R.minimum, (words || 0) * R.perWord);
+  return `SCI(E) 국제학술지에 제1저자 논문 20편 이상을 게재해 온 보건계열 현직 대학교수(진단검사의학 박사)입니다. 영문 논문${words ? ` ${words.toLocaleString()}단어` : ""} 교정 요청을 보고 견적 드립니다.
+
+[작업 범위] 문법·어휘·문장 구조 교정, 학술 영어 관습(시제, 약어, 단위, 수동·능동 표현, 참고문헌 인용 형식) 점검, 저널 투고 양식에 맞춘 표현 정리. 의학·간호·보건·의생명 분야 원고라면 용어와 데이터 서술의 정확성, 결과와 고찰의 논리 연결까지 함께 봅니다. 1차 교정은 전문 교정 도구로 하고, 최종 검토는 제가 직접 합니다. 수정 사항은 변경 내용 추적으로 표시해 드립니다.
+
+[금액] ${words ? `${words.toLocaleString()}단어 기준 ${wonT(price)}` : `단어당 ${R.perWord}원, 최소 ${wonT(R.minimum)}`}. 원고를 보고 상태에 따라 확정합니다.
+[기간] 원고 접수 후 ${R.days}일 안에 전달. 투고 마감이 가까우면 말씀해 주세요.
+
+원고(워드)와 함께 분야, 투고 예정 저널, 마감일을 알려 주시면 하루 안에 범위와 일정을 확정해 드리겠습니다. 게재를 보장하는 서비스는 아니며, 작성은 의뢰인이 하고 저는 교정과 검토만 합니다.`;
 }
 
 export function proofreadingQuote(pages) {
