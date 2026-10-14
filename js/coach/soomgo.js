@@ -226,8 +226,12 @@ export function parseThesisRequest(text) {
 }
 
 export function triageThesis(text, req = parseThesisRequest(text)) {
-  if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서|번역/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
-    return { verdict: "거절", reasons: ["조판·편집·단행본·번역 요청입니다. 학위논문·학술 원고가 아니므로 캐시를 쓰지 않습니다."] };
+  if (/번역|영문 ?교정/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
+    return { verdict: "거절", reasons: ["번역·영문 교정 요청입니다. 강점 분야가 아니므로 캐시를 쓰지 않습니다."] };
+  }
+  if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
+    const pages = req.pages || +((text.match(/(\d{2,4})/) || [])[1] || 0);
+    return { verdict: "보류", reasons: ["일반 문서(단행본·교재 등) 교정 요청입니다. 조판·인디자인은 불가하고 텍스트 교정만 조건부로 가능합니다. 1차는 Claude, 최종 검토는 교수님. 쪽당 단가 견적을 보낼지 결정하세요."], plus: pages ? [`분량 ${pages}쪽 → 교정 견적 ${wonT(Math.max(T().proofreading.minimum, pages * T().proofreading.perPage))}`] : [], proof: true, pages };
   }
   if (req.ghost) return { verdict: "거절", reasons: ["대필 요청으로 읽힙니다. 작성은 의뢰인이 한다는 원칙과 충돌합니다."] };
   if (req.evade) return { verdict: "거절", reasons: ["AI 탐지·표절 검사 회피 요청입니다. 받지 않습니다."] };
@@ -245,6 +249,17 @@ export function triageThesis(text, req = parseThesisRequest(text)) {
   if (req.daysLeft !== null && req.daysLeft > 14) plus.push(`마감까지 ${req.daysLeft}일(제작 여유)`);
   const verdict = reasons.length >= 2 && plus.length < 2 ? "보류" : "보냄";
   return { verdict, reasons, plus };
+}
+
+export function proofreadingQuote(pages) {
+  const R = T().proofreading; const price = Math.max(R.minimum, (pages || 0) * R.perPage);
+  return `현직 대학교수이며 논문·학술 원고 교정을 주로 합니다. 인디자인 조판 작업은 하지 않고, 원고 텍스트(한글·워드·PDF) 교정만 가능해 그 범위로 견적 드립니다.
+
+[작업 범위] 맞춤법·띄어쓰기·오탈자·비문 교정과 문장 다듬기. 1차 교정은 전문 교정 도구로 하고, 최종 검토는 제가 직접 합니다. 수정 사항은 변경 내용 추적으로 표시해 드려 원본과 비교하실 수 있습니다.
+[금액] ${pages ? `${pages}쪽 기준 ${wonT(price)}(쪽당 약 ${wonT(R.perPage)})` : `쪽당 약 ${wonT(R.perPage)}, 최소 ${wonT(R.minimum)}`}. 원고를 보고 분량·상태에 따라 확정합니다.
+[기간] 원고 접수 후 ${R.days}일 안에 전달. 급하시면 분량을 나눠 먼저 보내 드릴 수 있습니다.
+
+인디자인 파일로만 가지고 계시면 텍스트를 내보내 주셔야 작업이 가능합니다. 원고 상태를 보고 하루 안에 범위와 일정을 확정해 드리겠습니다.`;
 }
 
 export function thesisQuote(req, opts = {}) {
