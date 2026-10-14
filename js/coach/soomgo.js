@@ -10,9 +10,12 @@ const clean = (s) => (s || "").trim();
 
 // ───────── 요청 읽기 ─────────
 export function parseRequest(text) {
-  const t = text || "";
+  // 숨고 요청서 양식 라벨("학습 희망 분야: 입시/편입 면접")은 전형이 아니므로 먼저 지웁니다.
+  const t = (text || "").replace(/입시\s*[\/·]\s*편입\s*면접/g, "면접");
   const univ = (t.match(/([가-힣]{2,12}(?:대학교|대학|대))(?![가-힣])/) || [])[1] || "";
-  const dept = (t.replace(univ, "").match(/([가-힣]{2,14}(?:학과|학부|전공|과))(?![가-힣])/) || [])[1] || "";
+  const deptRaw = (t.replace(univ, "").match(/([가-힣]{2,14}(?:학과|학부|전공|과))(?![가-힣])/) || [])[1] || "";
+  // "지원하신 학과의 전공과 …"처럼 학과명이 아닌 일반 표현은 버립니다.
+  const dept = /^(전공과|지원학과|해당학과|희망학과|지원하신학과|학과)$/.test(deptRaw) ? "" : deptRaw;
   const track = (t.match(/(학생부\s?종합|학종|학생부\s?교과|교과|논술|면접형|서류형|지역인재|학교장\s?추천|추천|특기자|편입|정시)[가-힣()·]*/) || [])[0] || "";
   const dm = t.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/) || t.match(/(\d{1,2})[./](\d{1,2})(?![\d])/);
   let interview = "", daysLeft = null;
@@ -23,7 +26,8 @@ export function parseRequest(text) {
     interview = `${+dm[1]}월 ${+dm[2]}일`;
     daysLeft = Math.ceil((d - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400000);
   }
-  const hasQuestions = /공개|기출|문항|질문지|선행학습/.test(t);
+  // 공개 문항: 키워드 또는 "1. … 2. … 3. …"처럼 번호 매긴 질문 2개 이상
+  const hasQuestions = /공개|기출|문항|질문지|선행학습/.test(t) || (t.match(/(?:^|\s)[1-9]\s*[.)]\s*\S/g) || []).length >= 2;
   const health = /간호|임상병리|보건|물리치료|작업치료|방사선|치위생|응급구조|의예|약학|의생명|바이오|생명/.test(t + dept);
   const wantsZoom = /줌|zoom|화상|모의\s?면접|실전|연습/i.test(t);
   // 병원·취업 면접(간호사·임상병리사 등): 대입이 아니라 채용 면접. 20대·병원·취업·채용·공채 신호
@@ -49,6 +53,8 @@ export function triage(text, req = parseRequest(text), blocked = false) {
   const plus = [];
   if (req.health) plus.push("보건·의생명 계열(강점 분야)");
   if (req.hasQuestions) plus.push("공개 문항 언급");
+  // 문항 본문이 요청서에 그대로 있으면 대학명이 없어도 맞춤 견적이 가능합니다.
+  if ((t.match(/(?:^|\s)[1-9]\s*[.)]\s*\S/g) || []).length >= 2) plus.push("문항 본문 포함(맞춤 견적 가능)");
   if (req.univ && req.dept) plus.push("대학·학과 명확");
   if (req.daysLeft !== null && req.daysLeft >= 3) plus.push(`면접까지 ${req.daysLeft}일(제작 여유)`);
   const verdict = reasons.some((r) => /남았습니다|없습니다/.test(r)) && plus.length < 2 ? "보류" : "보냄";
