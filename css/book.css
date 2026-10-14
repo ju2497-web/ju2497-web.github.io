@@ -144,3 +144,28 @@
 .bar a { background: #1f4e9c; color: #fff; text-decoration: none; font-weight: 800; padding: 12px 22px; border-radius: 10px; }
 .bar a.disabled { background: #dfe5ef; color: #5d6b82; pointer-events: none; }
 body { padding-bottom: 70px; }
+/* v3 후킹 강화: 실패 장면, 면접관 속마음, 손실 숫자 */
+.hero2 .shock { font-size: 1.15rem; color: #ffd166; font-weight: 800; margin: 0 0 10px; letter-spacing: .02em; }
+.fails { display: grid; gap: 14px; max-width: 700px; margin: 26px auto 0; text-align: left; }
+.fail { background: #fff; border: 1px solid #dfe5ef; border-radius: 16px; padding: 20px 22px; display: grid; grid-template-columns: 54px 1fr; gap: 16px; }
+.fail .no { width: 54px; height: 54px; border-radius: 14px; background: #fde8e6; color: #b42318; display: grid; place-items: center; font-weight: 900; font-size: 1.2rem; }
+.fail h4 { margin: 0 0 6px; font-size: 1.05rem; }
+.fail p { margin: 0; font-size: .93rem; line-height: 1.75; color: #334155; }
+.fail .mark { display: inline-block; margin-top: 10px; background: #1b2333; color: #ffd166; font-size: .8rem; font-weight: 700; padding: 5px 10px; border-radius: 6px; }
+.fail .mark b { color: #fff; }
+.inner { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 700px; margin: 26px auto 0; }
+.inner div { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 14px; padding: 20px 18px; text-align: left; }
+.inner q { display: block; font-size: 1.15rem; font-weight: 800; color: #fff; quotes: "“" "”"; line-height: 1.5; margin-bottom: 8px; }
+.inner span { font-size: .84rem; color: #c7d2e4; line-height: 1.6; }
+@media (max-width: 600px) { .inner { grid-template-columns: 1fr; } .fail { grid-template-columns: 1fr; } }
+.loss { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 680px; margin: 26px auto 0; }
+.loss div { background: #fff; border: 1px solid #dfe5ef; border-radius: 16px; padding: 22px 10px; }
+.loss b { display: block; font-size: 2.6rem; font-weight: 900; color: #b42318; line-height: 1; margin-bottom: 8px; letter-spacing: -.02em; }
+.loss span { font-size: .86rem; color: #334155; line-height: 1.5; display: block; }
+@media (max-width: 600px) { .loss { grid-template-columns: 1fr; } }
+.strike { text-decoration: line-through; opacity: .6; }
+.cta-big { max-width: 640px; margin: 26px auto 0; }
+.cta-big .line { font-size: 1.45rem; font-weight: 900; line-height: 1.5; color: #fff; margin-bottom: 18px; word-break: keep-all; }
+.cta-big a { display: inline-flex; padding: 18px 44px; font-size: 1.15rem; font-weight: 900; border-radius: 14px; background: #ffd166; color: #1b2333; text-decoration: none; }
+.cta-big a.disabled { background: #334155; color: #8fa0b8; pointer-events: none; }
+.src { font-size: .78rem; color: #8a97ad; margin-top: 16px; }
