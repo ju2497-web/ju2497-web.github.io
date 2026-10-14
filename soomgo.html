@@ -24,19 +24,31 @@
   <main class="coach sg">
     <section class="card">
       <h2><span class="num">1</span> 요청 내용 붙여넣기</h2>
-      <p class="hint">숨고 요청서의 고객 답변(대학·학과·면접일·요청 사항)을 그대로 붙여 넣으세요.</p>
-      <textarea id="req" rows="5" placeholder="예) 가천대 간호학과 학생부종합 면접 준비 도와주세요. 면접은 10월 25일이고 공개 문항 있어요. 줌으로 연습도 하고 싶어요"></textarea>
-      <div class="actions"><button id="btnRun" class="primary big">판정 · 견적 만들기</button><button id="btnClear" class="ghost small">지우기</button></div>
+      <p class="hint">숨고 요청서의 고객 답변을 그대로 붙여 넣으세요. 논문(학위·분야·단계·마감)인지 면접(대학·학과·면접일)인지 자동으로 판별하고, 아래에서 직접 고를 수도 있습니다.</p>
+      <textarea id="req" rows="5" placeholder="예) 간호학 석사 논문인데 통계는 끝났고 고찰에서 막혔어요. 심사는 12월 5일입니다.&#10;예) 가천대 간호학과 학생부종합 면접 준비 도와주세요. 면접은 10월 25일이고 공개 문항 있어요."></textarea>
+      <div class="actions">
+        <label class="code">분야
+          <select id="mode"><option value="auto">자동 판별</option><option value="thesis">논문 컨설팅</option><option value="interview">대입 면접</option></select>
+        </label>
+        <button id="btnRun" class="primary big">판정 · 견적 만들기</button><button id="btnClear" class="ghost small">지우기</button>
+      </div>
     </section>
 
     <section id="out" hidden>
       <div class="card">
         <div class="verdict"><span id="verdict" class="vbadge"></span><div id="why"></div></div>
-        <div class="form cols4">
+        <p id="modeLabel" class="hint"></p>
+        <div class="form cols4" id="ivFields">
           <label>대학<input id="fUniv"></label>
           <label>학과<input id="fDept"></label>
           <label>전형<input id="fTrack"></label>
           <label>면접일<input id="fDate" placeholder="예) 10월 25일"></label>
+        </div>
+        <div class="form cols4" id="thFields" hidden>
+          <label>학위<input id="tDegree" placeholder="석사/박사"></label>
+          <label>분야<input id="tField" placeholder="예) 간호학"></label>
+          <label>단계<input id="tStage" placeholder="예) 고찰"></label>
+          <label>마감<input id="tDeadline" placeholder="예) 12월 5일"></label>
         </div>
         <p id="cash" class="hint"></p>
       </div>
@@ -49,10 +61,10 @@
       </div>
 
       <div class="card">
-        <div class="row-between"><h2><span class="num">3</span> 고용되면: 자료 요청(①~⑦)</h2>
+        <div class="row-between"><h2><span class="num">3</span> 고용되면: 자료 요청 <small id="matLabel">(면접 ①~⑦ / 논문 ①~④ + 원고)</small></h2>
           <div class="actions tight"><button class="primary small" data-copy="materials">복사</button><button id="btnHired" class="ghost small">고용됨 +1</button></div></div>
         <textarea id="materials" rows="14"></textarea>
-        <p class="hint">학생이 양식을 채워 답장하면, 그 답장을 통째로 복사해 <a href="studio.html">작업실</a>의 [불러오기]에 붙여 넣으세요. 문항별 답변이 자동으로 만들어집니다.</p>
+        <p class="hint" id="matHint">면접: 학생이 양식을 채워 답장하면 그 답장을 통째로 복사해 <a href="studio.html">작업실</a>의 [불러오기]에 붙여 넣으세요. 논문: 받은 원고와 ①~④를 Claude에 올리면 정밀진단 보고서 초안을 만듭니다.</p>
       </div>
 
       <div class="card">
@@ -62,15 +74,15 @@
       </div>
 
       <div class="card">
-        <div class="row-between"><h2><span class="num">5</span> 답변 노트 전달 + 앱 이용 코드</h2>
+        <div class="row-between"><h2><span class="num">5</span> <span id="delTitle">답변 노트 전달 + 앱 이용 코드</span></h2>
           <button class="primary small" data-copy="delivery">복사</button></div>
-        <div class="form cols4"><label>이용 코드<input id="fCode" placeholder="IV-○○○○-○○○○ (coach-admin에서 생성)"></label></div>
+        <div class="form cols4" id="codeRow"><label>이용 코드<input id="fCode" placeholder="IV-○○○○-○○○○ (coach-admin에서 생성)"></label></div>
         <textarea id="delivery" rows="12"></textarea>
         <p class="hint">코드는 결제 1건마다 <a href="coach-admin.html">관리 화면</a>에서 새로 만들고, 해시를 config.js에 추가해 배포한 뒤 보내세요.</p>
       </div>
 
       <div class="card">
-        <div class="row-between"><h2><span class="num">6</span> 면접 뒤 리뷰 요청(1회만)</h2>
+        <div class="row-between"><h2><span class="num">6</span> <span id="revTitle">면접 뒤 리뷰 요청(1회만)</span></h2>
           <button class="ghost small" data-copy="review">복사</button></div>
         <textarea id="review" rows="4"></textarea>
         <p class="hint">면접 다음 날 보냅니다. 리뷰는 영상·광고보다 성사율에 직접 영향을 주므로 초기 10건까지는 전달 때마다 빠짐없이 요청하세요.</p>

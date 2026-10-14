@@ -9,9 +9,9 @@ export const EXP_CATS = ["동아리", "탐구활동", "봉사", "조별과제", 
 export const STRENGTHS = ["책임감", "협업", "탐구력", "꼼꼼함", "경청", "끈기", "공감", "리더십", "성실함", "도전정신"];
 export const CONCERNS = ["말이 길어짐", "특별한 활동이 없음", "전공 질문이 어려움", "지원동기가 약함", "긴장을 많이 함", "꼬리질문이 두려움"];
 export const TIERS = {
-  basic: { label: "간편형", desc: "공개문항 + 경험만으로 제작", needsRecord: false },
-  precise: { label: "정밀형", desc: "학생부까지 반영해 제작", needsRecord: true },
-  review: { label: "교수 검수형", desc: "정밀형 + 교수 직접 첨삭", needsRecord: true },
+  basic: { label: "학생부 없이", desc: "공개문항 + 경험만으로 제작", needsRecord: false },
+  precise: { label: "학생부 포함", desc: "학생부까지 반영해 꼬리질문 대비를 촘촘하게", needsRecord: true },
+  review: { label: "학생부 포함 + 교수 첨삭", desc: "학생부 반영 제작 + 교수 1회 첨삭", needsRecord: true },
 };
 
 export function emptyApplication() {
