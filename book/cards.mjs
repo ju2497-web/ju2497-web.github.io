@@ -33,6 +33,7 @@ try {
   await page.emulateMedia({ colorScheme: "light" });
   await page.goto(`http://localhost:${port}/book.html`, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
+  await page.addStyleTag({ content: ".bar{display:none!important} body{padding-bottom:0!important}" });
   const cards = await page.$$("[data-card]");
   for (const el of cards) {
     const name = await el.getAttribute("data-card");
