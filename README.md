@@ -21,6 +21,7 @@
 
 ## 파일 구성
 - `index.html`, `css/style.css` — 화면
+- `lab/` — 「작은 실험실」 재미 앱 10개 순환 실험(운세·사주·궁합·해몽·타로 등, 본 사이트와 링크하지 않음). 규칙 `docs/실험앱-운영규칙.md`, 목록 `lab/apps.json`, 집계 코드 `lab/config.js`
 - `blog/` — 「면접관이 실제로 보는 것」 블로그(원고 `docs/블로그-글-10편.md`, 생성 `scripts/build-blog.py`, 복사용 `docs/게시용/`)
 - `js/kb.js` — 기본 지식베이스·설정값·예시 문의
 - `js/engine.js` — 문의 분석과 답변 조립
