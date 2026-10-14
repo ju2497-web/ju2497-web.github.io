@@ -1,6 +1,6 @@
 import { CONFIG } from "./config.js";
 import { textHasBlocked } from "./blocked.js";
-import { parseRequest, triage, breakEven, quoteMessage, MATERIALS_MESSAGE, FOLLOWUP_MESSAGE, DELIVERY_MESSAGE, REVIEW_MESSAGE, FAQ,
+import { parseRequest, triage, breakEven, quoteMessage, MATERIALS_MESSAGE, HOSPITAL_MATERIALS_MESSAGE, FOLLOWUP_MESSAGE, DELIVERY_MESSAGE, REVIEW_MESSAGE, FAQ,
   detectMode, parseThesisRequest, triageThesis, thesisQuote, proofreadingQuote, THESIS_MATERIALS_MESSAGE, THESIS_FOLLOWUP_MESSAGE, THESIS_DELIVERY_MESSAGE, THESIS_REVIEW_MESSAGE, THESIS_FAQ } from "./soomgo.js";
 
 const $ = (s) => document.querySelector(s);
@@ -17,7 +17,7 @@ let req = null, mode = "interview", refuseNow = false, proofNow = null;
 function setMode(m) {
   mode = m;
   $("#ivFields").hidden = m !== "interview"; $("#thFields").hidden = m !== "thesis"; $("#codeRow").hidden = m !== "interview";
-  $("#modeLabel").textContent = m === "thesis" ? "논문 컨설팅으로 판정했습니다. 아래 칸을 고치면 견적이 다시 조립됩니다." : "대입 면접으로 판정했습니다. 아래 칸을 고치면 견적이 다시 조립됩니다.";
+  $("#modeLabel").textContent = m === "thesis" ? "논문 컨설팅으로 판정했습니다. 아래 칸을 고치면 견적이 다시 조립됩니다." : "면접으로 판정했습니다(병원·취업 면접 신호가 있으면 병원 문안). 아래 칸을 고치면 견적이 다시 조립됩니다.";
   $("#delTitle").textContent = m === "thesis" ? "정밀진단 리포트 전달" : "답변 노트 전달 + 앱 이용 코드";
   $("#revTitle").textContent = m === "thesis" ? "상담 뒤 리뷰 요청(1회만)" : "면접 뒤 리뷰 요청(1회만)";
   renderFaq();
@@ -60,7 +60,7 @@ function refresh() {
     $("#quote").value = refuseNow
       ? "이 요청은 견적을 보내지 않는 것을 권합니다(허위 경험 요청 또는 이해충돌 대상)."
       : quoteMessage(r, { extra: req.wantsZoom ? "실전 연습을 원하신다고 하셔서, 답변 노트와 함께 줌 모의면접을 함께 진행하시는 것을 권해 드립니다." : "" });
-    $("#materials").value = MATERIALS_MESSAGE();
+    $("#materials").value = r.hospital ? HOSPITAL_MATERIALS_MESSAGE() : MATERIALS_MESSAGE();
     $("#followup").value = FOLLOWUP_MESSAGE(r);
     $("#delivery").value = DELIVERY_MESSAGE(r, $("#fCode").value.trim().toUpperCase());
     $("#review").value = REVIEW_MESSAGE(r);
