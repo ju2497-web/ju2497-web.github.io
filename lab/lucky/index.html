@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>오늘의 행운 번호</title>
+  <meta name="description" content="생년월일과 이름으로 오늘 하루의 행운 숫자, 행운 색, 방향, 시간대와 재미로 보는 번호 여섯 개를 뽑아 드려요.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E🍀%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../lab.css">
+  <script src="../config.js"></script>
+  <script src="../lab.js"></script>
+  <style>
+    .lucky { display: flex; align-items: center; gap: 16px; margin: 6px 0 10px; }
+    .lucky .num { width: 84px; height: 84px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); font-size: 2.8rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: none; box-shadow: 0 6px 18px rgba(217, 72, 15, .25); }
+    .lucky .mean b { display: block; font-size: 1.1rem; }
+    .lucky .mean span { color: var(--muted); font-size: .9rem; }
+    .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+    .grid4 div { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+    .grid4 small { display: block; color: var(--muted); font-size: .78rem; }
+    .grid4 b { font-size: 1rem; display: flex; align-items: center; gap: 6px; }
+    .sw { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); }
+    .balls { display: flex; gap: 6px; justify-content: center; margin: 10px 0 6px; flex-wrap: wrap; }
+    .ball { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #1b1b1b; box-shadow: inset -4px -5px 8px rgba(0,0,0,.18), 0 2px 4px rgba(0,0,0,.15); animation: pop .4s cubic-bezier(.2,1.4,.5,1) both; }
+    .ball:nth-child(2) { animation-delay: .08s } .ball:nth-child(3) { animation-delay: .16s } .ball:nth-child(4) { animation-delay: .24s } .ball:nth-child(5) { animation-delay: .32s } .ball:nth-child(6) { animation-delay: .4s }
+    @keyframes pop { from { transform: scale(0); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+    .b1 { background: #fbc400 } .b2 { background: #69c8f2 } .b3 { background: #ff7272 } .b4 { background: #b0b0b0 } .b5 { background: #b0d840 }
+    .tiny { font-size: .78rem; color: var(--muted); text-align: center; margin: 0 0 10px; }
+    .avoid { display: inline-flex; align-items: center; gap: 8px; border: 1px dashed var(--line); border-radius: 12px; padding: 8px 12px; margin-bottom: 10px; }
+    .avoid i { font-style: normal; width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--muted); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 800; text-decoration: line-through; }
+    @media (max-width: 360px) { .ball { width: 38px; height: 38px; font-size: 1rem } }
+  </style>
+</head>
+<body>
+  <main class="lab">
+    <div class="hero"><div class="emoji">🍀</div><h1>오늘의 행운 번호</h1><p>오늘 하루만 유효한, 나만의 행운 숫자를 뽑아 드려요</p></div>
+    <div id="form" class="card">
+      <label class="f" for="birth">생년월일</label>
+      <input type="date" id="birth" min="1930-01-01" max="2025-12-31">
+      <label class="f" for="name">이름 또는 별명 (선택)</label>
+      <input type="text" id="name" placeholder="예: 지우" maxlength="12">
+      <button class="primary" id="go">행운 번호 뽑기</button>
+    </div>
+    <div id="out" hidden></div>
+  </main>
+  <script>
+    Lab.init({ id: "lucky", title: "오늘의 행운 번호" });
+
+    const NUM = {
+      1: ["시작의 숫자", "오늘은 첫발을 떼는 사람에게 복이 와요", "미뤄 둔 일의 첫 줄을 쓰기 좋은 날이에요"],
+      2: ["짝의 숫자", "혼자보다 둘이 할 때 일이 풀려요", "같이 밥 먹을 사람을 먼저 찾아보세요"],
+      3: ["리듬의 숫자", "세 번째 시도에서 길이 열려요", "두 번 안 됐다고 접지 마세요, 한 번 더예요"],
+      4: ["안정의 숫자", "기본을 지키는 하루가 가장 든든해요", "루틴대로만 해도 오늘은 충분히 잘한 거예요"],
+      5: ["변화의 숫자", "작은 변화가 큰 즐거움이 돼요", "늘 가던 길 말고 한 블록 돌아가 보세요"],
+      6: ["조화의 숫자", "주변과 잘 맞물리는 날이에요", "양보 한 번이 하루를 부드럽게 만들어요"],
+      7: ["행운의 숫자", "기대하지 않던 좋은 일이 찾아와요", "오늘은 당첨보다 우연한 발견을 기대하세요"],
+      8: ["풍요의 숫자", "베푸는 만큼 돌아오는 날이에요", "커피 한 잔 쏘면 두 배로 돌아와요"],
+      9: ["완성의 숫자", "마무리에 복이 붙어 있어요", "끝내지 못한 것을 끝내면 홀가분해져요"]
+    };
+    const COLORS = [["빨강","#e03131"],["주황","#f76707"],["노랑","#fcc419"],["연두","#94d82d"],["초록","#2f9e44"],["민트","#20c997"],["하늘색","#4dabf7"],["파랑","#1c7ed6"],["남색","#364fc7"],["보라","#7950f2"],["연보라","#b197fc"],["분홍","#f06595"],["버건디","#862e3c"],["갈색","#8d5524"],["베이지","#e8d5b7"],["크림색","#fff4d6"],["흰색","#ffffff"],["회색","#868e96"],["검정","#212529"],["금색","#d4a017"],["은색","#c0c0c0"],["올리브","#808000"],["머스터드","#e1ad01"],["코랄","#ff7f50"]];
+    const DIRS = ["동쪽","서쪽","남쪽","북쪽","남동쪽","남서쪽","북동쪽","북서쪽"];
+    const DIR_TIP = ["해 뜨는 쪽으로 창을 열어 보세요","퇴근길 노을 쪽을 한 번 봐 주세요","따뜻한 쪽으로 자리를 잡으세요","시원한 바람이 오는 쪽이에요","오전에 그쪽으로 걸어 보세요","오후 산책 방향으로 좋아요","아침 햇살 쪽으로 몸을 돌려 보세요","해 질 녘 그쪽 하늘을 보세요"];
+    const TIMES = ["오전 7시~9시","오전 9시~11시","오전 11시~오후 1시","오후 1시~3시","오후 3시~5시","오후 5시~7시","저녁 7시~9시","밤 9시~11시"];
+    const TIME_TIP = ["중요한 일은 이때 시작하세요","집중이 가장 잘 되는 시간이에요","좋은 소식이 오기 쉬운 시간이에요","결정을 내리기 좋은 시간이에요","연락하기 좋은 시간이에요","사람을 만나기 좋은 시간이에요","나를 위해 쓰기 좋은 시간이에요","하루를 정리하기 좋은 시간이에요"];
+    const ITEMS = ["동전 하나","초록색 펜","손수건","작은 식물","열쇠고리","텀블러","사탕 한 알","손목시계","우산","엽서","이어폰","스티커","립밤","작은 노트","머리끈","배지"];
+    const MOTTO = [
+      "오늘의 행운은 준비된 주머니에 들어가요",
+      "작은 숫자 하나가 하루의 기분을 바꿔요",
+      "행운은 늦게 오는 게 아니라 조용히 와요",
+      "오늘은 숫자보다 사람이 복을 가져와요",
+      "눈에 띄는 숫자를 보면 웃어 주세요, 오늘의 인사예요",
+      "행운 숫자를 본 날은 기분 좋은 일이 하나 더 생겨요",
+      "운은 믿는 만큼 보이고, 웃는 만큼 커져요",
+      "오늘 하루, 번호보다 마음을 잘 챙기세요"
+    ];
+    const NO_PEEK = [
+      "내일 번호는 내일 자정이 지나야 열려요. 미리 보기는 행운의 규칙 위반이에요",
+      "아직 내일이 안 왔는걸요. 내일의 행운은 내일의 나에게 맡겨 두세요",
+      "행운은 선입금이 안 돼요. 날이 바뀌면 다시 와 주세요",
+      "내일 번호는 지금 지구 반대편에서 익는 중이에요. 자정에 배송돼요"
+    ];
+    function ballClass(n) { return n <= 10 ? "b1" : n <= 20 ? "b2" : n <= 30 ? "b3" : n <= 40 ? "b4" : "b5"; }
+
+    document.getElementById("go").onclick = () => {
+      const b = document.getElementById("birth").value;
+      if (!b) { Lab.toast("생년월일을 넣어 주세요"); return; }
+      const name = document.getElementById("name").value.trim();
+      const today = Lab.today();
+      const rnd = Lab.rng(Lab.hash("lucky|" + b + "|" + name + "|" + today));
+      const lucky = 1 + Math.floor(rnd() * 9);
+      let avoid = 1 + Math.floor(rnd() * 9); if (avoid === lucky) avoid = (avoid % 9) + 1;
+      const color = Lab.pick(COLORS, rnd);
+      const di = Math.floor(rnd() * DIRS.length);
+      const ti = Math.floor(rnd() * TIMES.length);
+      const item = Lab.pick(ITEMS, rnd);
+      const motto = Lab.pick(MOTTO, rnd);
+      const meaning = NUM[lucky];
+      // 1~45 섞어서 6개
+      const pool = []; for (let i = 1; i <= 45; i++) pool.push(i);
+      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+      const six = pool.slice(0, 6).sort((a, c) => a - c);
+      const html =
+        '<span class="badge">' + today.replace(/-/g, ".") + (name ? " · " + name : "") + " · 오늘만 유효</span>" +
+        "<h2>오늘의 행운 숫자</h2>" +
+        '<div class="lucky"><div class="num">' + lucky + '</div><div class="mean"><b>' + meaning[0] + "</b><span>" + meaning[1] + "</span></div></div>" +
+        "<p>" + meaning[2] + ".</p>" +
+        '<div class="grid4">' +
+          "<div><small>행운 색</small><b><i class=\"sw\" style=\"background:" + color[1] + "\"></i>" + color[0] + "</b></div>" +
+          "<div><small>행운 방향</small><b>" + DIRS[di] + "</b></div>" +
+          "<div><small>행운 시간대</small><b>" + TIMES[ti] + "</b></div>" +
+          "<div><small>주머니에 넣을 것</small><b>" + item + "</b></div>" +
+        "</div>" +
+        '<p class="sub">' + DIR_TIP[di] + ". " + TIME_TIP[ti] + ".</p>" +
+        '<div class="avoid"><i>' + avoid + "</i><span>오늘 피하면 좋은 숫자. 엘리베이터 층수든 줄 번호든 이 숫자는 한 번 건너뛰어 보세요</span></div>" +
+        "<h2 style=\"margin-top:6px\">재미로 보는 번호 6개</h2>" +
+        '<div class="balls">' + six.map(n => '<span class="ball ' + ballClass(n) + '">' + n + "</span>").join("") + "</div>" +
+        '<p class="tiny">당첨과 무관한 재미용 번호입니다. 오늘 하루 기분 좋은 숫자로만 써 주세요.</p>' +
+        "<p>" + motto + ".</p>" +
+        '<button class="ghost" id="peek" style="width:100%">내일 번호 미리 보기</button>';
+      const share = "오늘의 행운 숫자는 " + lucky + " (" + meaning[0] + ")\n행운 색 " + color[0] + ", 행운 방향 " + DIRS[di] + ", 행운 시간 " + TIMES[ti] + "\n재미용 번호: " + six.join(" ");
+      document.getElementById("form").hidden = true;
+      Lab.result("out", html, share, () => { document.getElementById("form").hidden = false; document.getElementById("out").hidden = true; });
+      let peeks = 0;
+      document.getElementById("peek").onclick = () => {
+        peeks++;
+        Lab.toast(peeks > 3 ? "정말 안 돼요. 대신 오늘 번호를 한 번 더 봐 주세요" : NO_PEEK[(peeks - 1) % NO_PEEK.length]);
+      };
+    };
+    try { const saved = localStorage.getItem("lab.birth"); if (saved) document.getElementById("birth").value = saved; } catch (e) {}
+    document.getElementById("birth").addEventListener("change", e => { try { localStorage.setItem("lab.birth", e.target.value); } catch (x) {} });
+  </script>
+</body>
+</html>
