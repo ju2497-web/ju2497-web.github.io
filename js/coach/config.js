@@ -52,7 +52,7 @@ export const CONFIG = {
     partial: "연구계획서·프로포절 점검, 통계 결과 해석, 심사 결과서 대응, 교정·윤문, 학사 졸업논문은 원고 확인 후 별도 견적",
     deliveryDays: "3~5일",   // 정밀진단: 원고 접수 후 상담 일정까지
     // 일반 교정(단행본·일반 문서): Claude 1차 + 교수 최종 검토. 쪽당 원가 기준(교수 검토 4~5시간/300쪽). 인디자인·조판은 불가.
-    proofreading: { perPage: 2000, minimum: 150000, days: 7 },
+    proofreading: { perPage: 2000, polishPerPage: 2500, minimum: 150000, days: 7, polishDays: 10 }, // 교정·교열 쪽당 2,000 / 윤문 포함 쪽당 2,500(A5·국판 기준. A4는 분량 환산)
     // 영문 논문 교정: SCI(E) 제1저자 20편 이상 경험 기반. Claude 1차 + 교수 최종(학술 표현·데이터 서술).
     // 2026-10-15: 18쪽(4,085단어) 검토에 교수 2.5~3시간 → 단어당 80원, 최소 200,000 (4,085단어 ≈ 330,000).
     englishProof: { perWord: 80, minimum: 200000, days: 3 },
