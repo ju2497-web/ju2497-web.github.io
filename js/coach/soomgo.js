@@ -281,9 +281,11 @@ export function triageThesis(text, req = parseThesisRequest(text)) {
     const R = T().englishProof; const price = Math.round(Math.max(R.minimum, words * R.perWord) / 10000) * 10000;
     return { verdict: "보냄", reasons: req.fieldType === "확인" ? ["분야가 없습니다. 의생명이면 전문 검토까지, 다른 분야면 언어 교정만이라는 조건으로 보내세요."] : [], plus: ["영문 논문 교정(SCI 제1저자 경험이 근거)", words ? `${words.toLocaleString()}단어 → ${wonT(price)}` : "단어 수 확인 필요"], english: true, words };
   }
-  if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서/.test(text || "") && !/논문|학위|학술/.test(text || "")) {
-    const pages = req.pages || +((text.match(/(\d{2,4})/) || [])[1] || 0);
-    return { verdict: "보류", reasons: ["일반 문서(단행본·교재 등) 교정 요청입니다. 조판·인디자인은 불가하고 텍스트 교정만 조건부로 가능합니다. 1차는 Claude, 최종 검토는 교수님. 쪽당 단가 견적을 보낼지 결정하세요."], plus: pages ? [`분량 ${pages}쪽 → 교정 견적 ${wonT(Math.max(T().proofreading.minimum, pages * T().proofreading.perPage))}`] : [], proof: true, pages };
+  if (/인디자인|조판|편집 ?디자인|표지 ?디자인|단행본|자서전|교재|사업계획서|에세이|수필|산문|소설|원고지|국배판|국판|A5|신국판/i.test(text || "") && !/논문|학위|학술/.test(text || "")) {
+    const pages = req.pages || +((text.match(/(\d{2,4})\s*(?:페이지|쪽|p\b)/i) || text.match(/(\d{2,4})/) || [])[1] || 0);
+    const polish = /윤문|문장 ?다듬|리라이팅|가독성/.test(text || "");
+    const R = T().proofreading; const per = polish ? R.polishPerPage : R.perPage;
+    return { verdict: "보류", reasons: [`일반 문서(단행본·에세이·교재 등) ${polish ? "교정·교열 + 윤문" : "교정"} 요청입니다. 조판·인디자인은 불가하고 텍스트 작업만 조건부로 가능합니다. 1차는 Claude, 최종 검토는 교수님. 쪽당 단가 견적을 보낼지 결정하세요.`], plus: pages ? [`분량 ${pages}쪽 → ${polish ? "교정·윤문" : "교정"} 견적 ${wonT(Math.max(R.minimum, pages * per))}`] : [], proof: true, pages, polish };
   }
   if (req.ghost) return { verdict: "거절", reasons: ["대필 요청으로 읽힙니다. 작성은 의뢰인이 한다는 원칙과 충돌합니다."] };
   if (req.evade) return { verdict: "거절", reasons: ["AI 탐지·표절 검사 회피 요청입니다. 받지 않습니다."] };
@@ -315,15 +317,24 @@ export function englishProofQuote(words) {
 원고(워드)와 함께 분야, 투고 예정 저널, 마감일을 알려 주시면 하루 안에 범위와 일정을 확정해 드리겠습니다. 게재를 보장하는 서비스는 아니며, 작성은 의뢰인이 하고 저는 교정과 검토만 합니다.`;
 }
 
-export function proofreadingQuote(pages) {
-  const R = T().proofreading; const price = Math.max(R.minimum, (pages || 0) * R.perPage);
-  return `현직 대학교수이며 논문·학술 원고 교정을 주로 합니다. 인디자인 조판 작업은 하지 않고, 원고 텍스트(한글·워드·PDF) 교정만 가능해 그 범위로 견적 드립니다.
+export function proofreadingQuote(pages, opts = {}) {
+  const R = T().proofreading; const polish = !!opts.polish;
+  const per = polish ? R.polishPerPage : R.perPage; const days = polish ? R.polishDays : R.days;
+  const price = Math.max(R.minimum, (pages || 0) * per);
+  const basePrice = Math.max(R.minimum, (pages || 0) * R.perPage);
+  const scope = polish
+    ? `[작업 범위] ① 교정·교열: 맞춤법·띄어쓰기·오탈자·비문·용어 통일 ② 윤문: 뜻이 흐려지는 문장, 길어진 문장, 반복되는 표현을 저자의 목소리를 지키면서 또렷하게 다듬기. 글의 구성과 내용은 바꾸지 않고, 고친 이유를 메모로 남겨 저자가 되돌릴 수 있게 합니다.`
+    : `[작업 범위] 맞춤법·띄어쓰기·오탈자·비문 교정과 문장 다듬기.`;
+  const options = polish && pages
+    ? `\n[선택] 교정·교열만 원하시면 ${wonT(basePrice)}(쪽당 ${wonT(R.perPage)}). 윤문까지 포함하면 ${wonT(price)}(쪽당 ${wonT(per)}).`
+    : "";
+  return `현직 대학교수입니다. 20년 넘게 글을 쓰고 심사해 왔고, 논문·학술 원고 교정을 주로 합니다. 인디자인 조판 작업은 하지 않고, 원고 텍스트(한글·워드·PDF) 작업만 가능해 그 범위로 견적 드립니다.
 
-[작업 범위] 맞춤법·띄어쓰기·오탈자·비문 교정과 문장 다듬기. 1차 교정은 전문 교정 도구로 하고, 최종 검토는 제가 직접 합니다. 수정 사항은 변경 내용 추적으로 표시해 드려 원본과 비교하실 수 있습니다.
-[금액] ${pages ? `${pages}쪽 기준 ${wonT(price)}(쪽당 약 ${wonT(R.perPage)})` : `쪽당 약 ${wonT(R.perPage)}, 최소 ${wonT(R.minimum)}`}. 원고를 보고 분량·상태에 따라 확정합니다.
-[기간] 원고 접수 후 ${R.days}일 안에 전달. 급하시면 분량을 나눠 먼저 보내 드릴 수 있습니다.
+${scope} 1차 교정은 전문 교정 도구로 하고, 최종 검토는 제가 직접 합니다. 수정 사항은 변경 내용 추적으로 표시해 드려 원본과 비교하실 수 있습니다.
+[금액] ${pages ? `${pages}쪽 기준 ${wonT(price)}(쪽당 약 ${wonT(per)})` : `쪽당 약 ${wonT(per)}, 최소 ${wonT(R.minimum)}`}. 원고를 보고 분량·상태에 따라 확정합니다.${options}
+[기간] 원고 접수 후 ${days}일 안에 전달. 급하시면 분량을 나눠 먼저 보내 드릴 수 있습니다.
 
-인디자인 파일로만 가지고 계시면 텍스트를 내보내 주셔야 작업이 가능합니다. 원고 상태를 보고 하루 안에 범위와 일정을 확정해 드리겠습니다.`;
+원고 중 5쪽을 먼저 보내 주시면 샘플로 교정해 드리고, 그 결과를 보고 범위와 일정을 하루 안에 확정하겠습니다. 인디자인 파일로만 가지고 계시면 텍스트를 내보내 주셔야 작업이 가능합니다.`;
 }
 
 export function thesisQuote(req, opts = {}) {

@@ -13,7 +13,7 @@ const writeLog = (v) => { try { localStorage.setItem(LOG, JSON.stringify(v)); } 
 function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 1500); }
 async function copy(text) { try { await navigator.clipboard.writeText(text); toast("복사했습니다"); } catch { prompt("복사하세요", text); } }
 
-let req = null, mode = "interview", refuseNow = false, proofNow = null, englishNow = null;
+let req = null, mode = "interview", refuseNow = false, proofNow = null, polishNow = false, englishNow = null;
 function setMode(m) {
   mode = m;
   $("#ivFields").hidden = m !== "interview"; $("#thFields").hidden = m !== "thesis"; $("#codeRow").hidden = m !== "interview";
@@ -30,7 +30,7 @@ async function run() {
   setMode(m);
   let t;
   if (m === "thesis") {
-    req = parseThesisRequest(text); t = triageThesis(text, req); proofNow = t.proof ? (t.pages || 0) : null; englishNow = t.english ? (t.words || 0) : null;
+    req = parseThesisRequest(text); t = triageThesis(text, req); proofNow = t.proof ? (t.pages || 0) : null; polishNow = !!t.polish; englishNow = t.english ? (t.words || 0) : null;
     $("#tDegree").value = req.degree; $("#tField").value = req.field; $("#tStage").value = req.stage; $("#tDeadline").value = req.deadline;
     const be = CONFIG.thesis.plans.filter((p) => !p.from).map((p) => `${p.name} ${p.price.toLocaleString()}원은 약 ${breakEven(p.price).rate}%`).join(", ");
     $("#cash").textContent = `견적 1건 약 ${CONFIG.soomgo.quoteCash.toLocaleString()}캐시(요청마다 다름). 견적 비용만 메우는 데 필요한 성사율은 ${be}입니다.`;
@@ -50,7 +50,7 @@ function refresh() {
   if (!req) return;
   if (mode === "thesis") {
     const r = { ...req, degree: $("#tDegree").value.trim(), field: $("#tField").value.trim(), stage: $("#tStage").value.trim(), deadline: $("#tDeadline").value.trim() };
-    $("#quote").value = refuseNow ? "이 요청은 견적을 보내지 않는 것을 권합니다(대필·탐지 회피·통과 보장 요구)." : englishNow !== null ? englishProofQuote(englishNow) : proofNow !== null ? proofreadingQuote(proofNow) : thesisQuote(r);
+    $("#quote").value = refuseNow ? "이 요청은 견적을 보내지 않는 것을 권합니다(대필·탐지 회피·통과 보장 요구)." : englishNow !== null ? englishProofQuote(englishNow) : proofNow !== null ? proofreadingQuote(proofNow, { polish: polishNow }) : thesisQuote(r);
     $("#materials").value = THESIS_MATERIALS_MESSAGE();
     $("#followup").value = THESIS_FOLLOWUP_MESSAGE(r);
     $("#delivery").value = THESIS_DELIVERY_MESSAGE(r);
