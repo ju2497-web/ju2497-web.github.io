@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>기출 마스터 관리</title><link rel="stylesheet" href="histo.css"></head>
+<body>
+  <header class="top"><div class="in"><b>진단조직학 기출 마스터 · 관리</b><a href="./" style="color:inherit">앱으로</a></div></header>
+  <main>
+    <section class="card"><h2>이용 코드 만들기</h2>
+      <p class="hint">결제가 확인되면 여기서 코드를 만들어 <b>코드</b>는 학생에게 보내고, <b>해시</b>는 <code>histo/config.js</code>의 <code>access.hashes</code>에 추가해 배포하세요. 앱은 해시만 비교하므로 저장소를 봐도 코드를 알 수 없습니다. 결제 1건마다 코드 1개를 만듭니다.</p>
+      <div class="actions"><button id="mk" class="primary">코드 만들기</button></div>
+      <label>코드(학생에게 보낼 것)<input id="code" readonly></label>
+      <label>해시(config.js에 넣을 것)<textarea id="hash" rows="2" readonly style="width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)"></textarea></label>
+    </section>
+    <section class="card"><h2>현재 설정</h2><p id="info" class="hint"></p></section>
+  </main>
+  <script type="module">
+    import { CONFIG } from "./config.js";
+    const $ = (s) => document.querySelector(s);
+    $("#info").innerHTML = `가격 <b>${CONFIG.price.toLocaleString()}원</b> · 무료 챕터 <b>${CONFIG.freeChapters.join(", ") || "없음"}</b> · 등록된 이용 코드 <b>${CONFIG.access.hashes.length}개</b> · 결제 링크 ${CONFIG.payLinks.kmong || CONFIG.payLinks.smartstore ? "있음" : "<b>없음(config.js payLinks에 넣으세요)</b>"} · 집계 ${CONFIG.goatcounter || CONFIG.ga4 ? "켜짐" : "<b>꺼짐(config.js goatcounter에 사이트 코드)</b>"}`;
+    $("#mk").onclick = async () => {
+      const a = crypto.getRandomValues(new Uint8Array(8)); const s = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let c = "";
+      for (const b of a) c += s[b % s.length];
+      const code = `HM-${c.slice(0, 4)}-${c.slice(4)}`;
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code));
+      $("#code").value = code;
+      $("#hash").value = `"${[...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("")}", // ${new Date().toISOString().slice(0, 10)} 발급`;
+    };
+  </script>
+</body>
+</html>
