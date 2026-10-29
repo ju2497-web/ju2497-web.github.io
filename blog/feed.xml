@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>강교수가 직접 해 봤습니다</title>
+    <link>https://ju2497-web.github.io/blog/</link>
+    <description>AI로 돈 벌기 · AI 활용 · 건강검진, 보건계열 현직 교수의 실험 기록</description>
+    <language>ko</language>
+    <item>
+      <title>머스크는 &quot;의대 가지 마라&quot;고 했다. 로봇이 해낸 건 쓸개 8개였다</title>
+      <link>https://ju2497-web.github.io/blog/musk-medical-school.html</link>
+      <guid>https://ju2497-web.github.io/blog/musk-medical-school.html</guid>
+      <pubDate>Thu, 29 Oct 2026 07:00:00 +0900</pubDate>
+      <category>그 말, 진짜예요?</category>
+      <description>일론 머스크가 &quot;의대는 무의미하다&quot;고 말했다. 수술 로봇 논문을 직접 찾아 읽어 보니 로봇이 혼자 해낸 일은 몸 밖으로 꺼낸 돼지 쓸개 8개였다. 진로를 바꾸기 전에 알아야 할 것.</description>
+    </item>
+    <item>
+      <title>AI로 판매 사이트를 다 만들었다. 매출은 0원이다</title>
+      <link>https://ju2497-web.github.io/blog/claude-code-store.html</link>
+      <guid>https://ju2497-web.github.io/blog/claude-code-store.html</guid>
+      <pubDate>Thu, 29 Oct 2026 07:00:00 +0900</pubDate>
+      <category>AI로 돈 벌기</category>
+      <description>코딩을 모르는 교수가 클로드 코드와 대화만으로 결제까지 되는 전자책 판매 사이트를 만들었다. 사이트는 완성됐고 매출은 0원이다. 돈이 막힌 곳은 코딩이 아니었다.</description>
+    </item>
+    <item>
+      <title>갈등 경험 질문의 평가표에는 네 칸이 있습니다</title>
+      <link>https://ju2497-web.github.io/blog/03.html</link>
+      <guid>https://ju2497-web.github.io/blog/03.html</guid>
+      <pubDate>Wed, 21 Oct 2026 07:00:00 +0900</pubDate>
+      <category>입시·면접</category>
+      <description>갈등 질문의 평가표는 네 칸입니다. 상대를 이해하려고 한 행동, 내가 먼저 낸 제안, 관계와 과제를 지킨 결과, 그 뒤 달라진 태도. &quot;대화로 해결했다&quot;는 한 칸도 못 채웁니다. &quot;대화했다&quot; 자리에 실제 행동을 넣으세요. 따로 물었다, 끝까지 들었다, 역할을 바꾸자고 </description>
+    </item>
+    <item>
+      <title>지원 동기에서 &quot;어릴 때부터&quot;를 빼야 하는 이유</title>
+      <link>https://ju2497-web.github.io/blog/02.html</link>
+      <guid>https://ju2497-web.github.io/blog/02.html</guid>
+      <pubDate>Tue, 13 Oct 2026 07:00:00 +0900</pubDate>
+      <category>입시·면접</category>
+      <description>지원 동기에서 &quot;어릴 때부터&quot;는 점수가 없습니다. 꿈의 길이는 평가 항목이 아닙니다. 면접관이 보는 건 계기 → 스스로 확인한 과정 → 구체적 목표, 세 단계입니다. 세 문장으로 쪼개세요. 계기 하나, 찾아본 것 하나, 지금 하는 것 하나.</description>
+    </item>
+    <item>
+      <title>대입 면접, 면접관은 답변을 끝까지 듣지 않습니다</title>
+      <link>https://ju2497-web.github.io/blog/01.html</link>
+      <guid>https://ju2497-web.github.io/blog/01.html</guid>
+      <pubDate>Tue, 13 Oct 2026 07:00:00 +0900</pubDate>
+      <category>입시·면접</category>
+      <description>면접관은 답변을 끝까지 안 듣습니다. 첫 10초에 두 가지를 봅니다. 첫 문장에 결론이 있는가, 둘째 문장에 그 증거가 있는가. &quot;열심히 하겠습니다&quot;는 평가표 어느 칸에도 못 적습니다. 오늘 할 일: 모든 답변의 첫 문장을 &quot;저는 ~합니다&quot;로 바꾸기.</description>
+    </item>
+  </channel>
+</rss>

@@ -108,6 +108,7 @@ def head(title, desc, url):
   <title>{html.escape(title)}</title>
   <meta name="description" content="{html.escape(desc)}">
   <link rel="canonical" href="{url}">
+  <link rel="alternate" type="application/rss+xml" title="{NAME}" href="{SITE}/blog/feed.xml">
   <meta property="og:title" content="{html.escape(title)}">
   <meta property="og:description" content="{html.escape(desc)}">
   <meta property="og:type" content="article">
@@ -220,6 +221,30 @@ def main():
     sitemap.append("</urlset>")
     (ROOT / "sitemap.xml").write_text("\n".join(sitemap) + "\n", encoding="utf-8")
     print("sitemap.xml")
+    # 새 글 알림용 RSS. 뉴스레터 자동 발송(RSS 이메일)이나 구독 앱이 이 주소를 읽는다.
+    def rfc822(d):
+        return datetime.datetime.fromisoformat(d).replace(hour=7, tzinfo=KST).strftime("%a, %d %b %Y %H:%M:%S %z")
+    entries = "".join(f"""
+    <item>
+      <title>{html.escape(p["title"])}</title>
+      <link>{SITE}/blog/{p["file"]}</link>
+      <guid>{SITE}/blog/{p["file"]}</guid>
+      <pubDate>{rfc822(p["date"])}</pubDate>
+      <category>{html.escape(p["category"])}</category>
+      <description>{html.escape(p["description"])}</description>
+    </item>""" for p in list(reversed(posts))[:20])
+    feed = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{NAME}</title>
+    <link>{SITE}/blog/</link>
+    <description>{TAGLINE}</description>
+    <language>ko</language>{entries}
+  </channel>
+</rss>
+"""
+    (OUT / "feed.xml").write_text(feed, encoding="utf-8")
+    print("blog/feed.xml")
 
 
 if __name__ == "__main__":
