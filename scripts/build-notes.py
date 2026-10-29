@@ -18,7 +18,7 @@ NAME = "강교수가 직접 해 봤습니다"
 TAGLINE = "AI로 돈 벌기 · AI 활용 · 건강검진, 보건계열 현직 교수의 실험 기록"
 SIGNATURE = "보건계열 현직 교수 강교수가 직접 해 보고 씁니다."
 # 뉴스레터 구독 페이지 주소(스티비·메일리 등). 비어 있으면 구독 칸을 숨긴다.
-SUBSCRIBE_URL = ""
+SUBSCRIBE_URL = "https://page.stibee.com/subscriptions/526841"
 KST = datetime.timezone(datetime.timedelta(hours=9))
 ICON = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%A7%AA%3C/text%3E%3C/svg%3E"
 
@@ -205,6 +205,7 @@ def main():
     index = head(NAME, f"{TAGLINE}. {SIGNATURE}", f"{SITE}/blog/") + f"""
   <main class="post">
     <p class="intro">말로 듣는 AI 이야기 말고, 직접 해 본 결과를 씁니다. AI로 돈 버는 법, AI 도구를 일에 쓰는 법, 건강검진 결과지 읽는 법. 월요일부터 토요일까지 매일 한 편씩 올라옵니다.</p>
+{subscribe_box()}
     <ul class="postlist">
 {items}
     </ul>
