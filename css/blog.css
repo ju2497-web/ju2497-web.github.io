@@ -27,3 +27,6 @@ main.post { max-width: 720px; }
 .post .postlist { padding: 0; }
 .post { word-break: keep-all; overflow-wrap: anywhere; }
 .post th, .post td { overflow-wrap: normal; min-width: 4.5em; }
+.post figure { margin: 1.2em 0 1.4em; }
+.post figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; display: block; }
+.post figcaption { color: var(--muted); font-size: .85rem; margin-top: 6px; text-align: center; }
