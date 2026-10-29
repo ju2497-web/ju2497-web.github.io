@@ -214,10 +214,12 @@ def main():
 """ + FOOT
     (OUT / "index.html").write_text(index, encoding="utf-8")
     print("blog/index.html")
-    urls = [(f"{SITE}/blog/", today)] + [(f"{SITE}/{x}", today) for x in ("coach.html", "interview.html", "apply.html")]
+    # 날짜가 바뀔 때마다 파일이 달라지지 않도록, 목록은 가장 최근 글 날짜를 쓰고 고정 페이지는 날짜를 적지 않는다.
+    latest = max(p["date"] for p in posts)
+    urls = [(f"{SITE}/blog/", latest)] + [(f"{SITE}/{x}", None) for x in ("coach.html", "interview.html", "apply.html")]
     urls += [(f"{SITE}/blog/{p['file']}", p["date"]) for p in posts]
     sitemap = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    sitemap += [f"  <url><loc>{u}</loc><lastmod>{d}</lastmod></url>" for u, d in urls]
+    sitemap += [f"  <url><loc>{u}</loc>" + (f"<lastmod>{d}</lastmod>" if d else "") + "</url>" for u, d in urls]
     sitemap.append("</urlset>")
     (ROOT / "sitemap.xml").write_text("\n".join(sitemap) + "\n", encoding="utf-8")
     print("sitemap.xml")
