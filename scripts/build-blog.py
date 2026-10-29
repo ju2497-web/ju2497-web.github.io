@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""docs/블로그-글-10편.md 원고에서 blog/ 페이지를 만든다.
+"""(2026-10-29부터 직접 실행하지 않는다. 블로그는 scripts/build-notes.py로 만든다.
+ 이 파일은 예전 면접 글 원고를 읽는 parse()만 build-notes.py에 빌려준다.)
+
+docs/블로그-글-10편.md 원고에서 blog/ 페이지를 만든다.
 
 사용: python3 scripts/build-blog.py            # blog/posts.json에 적힌 편을 모두 다시 생성
      python3 scripts/build-blog.py 3          # 3편을 오늘 날짜로 공개 목록에 추가하고 생성
