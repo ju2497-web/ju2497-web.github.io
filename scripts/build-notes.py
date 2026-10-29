@@ -46,6 +46,10 @@ def render(md):
         if not line.strip():
             i += 1
             continue
+        img = re.match(r"^!\[([^\]]*)\]\(([^)\s]+)\)\s*$", line)
+        if img:
+            alt, src = html.escape(img.group(1)), html.escape(img.group(2))
+            html_out.append(f'      <figure><img src="{src}" alt="{alt}" loading="lazy"><figcaption>{alt}</figcaption></figure>'); i += 1; continue
         if line.startswith("### "):
             html_out.append(f"      <h4>{inline(line[4:].strip())}</h4>"); i += 1; continue
         if line.startswith("## "):
@@ -73,7 +77,7 @@ def render(md):
             tag = "ol" if ordered else "ul"
             html_out.append(f"      <{tag}>" + "".join(f"<li>{inline(t)}</li>" for t in items) + f"</{tag}>"); continue
         buf = []
-        while i < len(lines) and lines[i].strip() and not re.match(r"^(#{2,3} |>|\||(\d+\.|-) )", lines[i]):
+        while i < len(lines) and lines[i].strip() and not re.match(r"^(#{2,3} |>|\||!\[|(\d+\.|-) )", lines[i]):
             buf.append(lines[i].strip()); i += 1
         html_out.append(f"      <p>{inline(' '.join(buf))}</p>")
     return "\n".join(html_out)
