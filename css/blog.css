@@ -30,3 +30,6 @@ main.post { max-width: 720px; }
 .post figure { margin: 1.2em 0 1.4em; }
 .post figure img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; display: block; }
 .post figcaption { color: var(--muted); font-size: .85rem; margin-top: 6px; text-align: center; }
+.post .subscribe { margin-top: 18px; padding: 16px; border-radius: 10px; background: rgba(0,0,0,.035); }
+.post .subscribe p { margin: 0 0 10px; font-size: .95rem; }
+.post .subscribe .btn { display: inline-block; padding: 9px 16px; border-radius: 8px; background: #143a63; color: #fff; text-decoration: none; font-weight: 700; }

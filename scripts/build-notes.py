@@ -17,6 +17,8 @@ SITE = "https://ju2497-web.github.io"
 NAME = "강교수가 직접 해 봤습니다"
 TAGLINE = "AI로 돈 벌기 · AI 활용 · 건강검진, 보건계열 현직 교수의 실험 기록"
 SIGNATURE = "보건계열 현직 교수 강교수가 직접 해 보고 씁니다."
+# 뉴스레터 구독 페이지 주소(스티비·메일리 등). 비어 있으면 구독 칸을 숨긴다.
+SUBSCRIBE_URL = ""
 KST = datetime.timezone(datetime.timedelta(hours=9))
 ICON = "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%A7%AA%3C/text%3E%3C/svg%3E"
 
@@ -135,6 +137,13 @@ FOOT = """  <footer class="foot">건강 관련 글은 일반 정보이며 진단
 """
 
 
+def subscribe_box():
+    if not SUBSCRIBE_URL:
+        return ""
+    return f"""      <aside class="subscribe"><p><strong>새 글을 메일로 받아 보세요.</strong> 월요일부터 토요일까지, 직접 해 본 것만 씁니다. 광고 메일은 보내지 않습니다.</p>
+      <a class="btn" href="{html.escape(SUBSCRIBE_URL)}" target="_blank" rel="noopener">무료 구독하기</a></aside>"""
+
+
 def post_page(p, prev_p, next_p):
     nav = []
     if prev_p:
@@ -148,6 +157,7 @@ def post_page(p, prev_p, next_p):
       <h2>{html.escape(p["title"])}</h2>
 {p["html"]}
       <aside class="sig"><p>{SIGNATURE}</p></aside>
+{subscribe_box()}
     </article>
     <nav class="postnav">{" ".join(nav)}</nav>
   </main>
