@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /coach-admin.html
+Disallow: /studio.html
+Disallow: /soomgo.html
+Disallow: /server/
+Disallow: /scripts/
+Disallow: /docs/
+Disallow: /data/
+
+Sitemap: https://ju2497-web.github.io/sitemap.xml
