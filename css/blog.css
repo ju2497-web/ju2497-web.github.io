@@ -33,3 +33,7 @@ main.post { max-width: 720px; }
 .post .subscribe { margin-top: 18px; padding: 16px; border-radius: 10px; background: rgba(0,0,0,.035); }
 .post .subscribe p { margin: 0 0 10px; font-size: .95rem; }
 .post .subscribe .btn { display: inline-block; padding: 9px 16px; border-radius: 8px; background: #143a63; color: #fff; text-decoration: none; font-weight: 700; }
+.post .related { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); }
+.post .related p { margin: 0 0 6px; font-size: .95rem; }
+.post .related ul { margin: 0; }
+.post .related li { font-size: .95rem; }

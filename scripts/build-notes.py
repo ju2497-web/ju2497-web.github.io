@@ -145,7 +145,18 @@ def subscribe_box():
       <a class="btn" href="{html.escape(SUBSCRIBE_URL)}" target="_blank" rel="noopener">무료 구독하기</a></aside>"""
 
 
-def post_page(p, prev_p, next_p):
+def related_box(p, posts, n=3):
+    """같은 갈래의 다른 글을 먼저, 모자라면 최근 글로 채운다. 새 글이 옛 글에서도 이어지도록(내부 링크)."""
+    others = [q for q in reversed(posts) if q["file"] != p["file"] and q["category"] != "입시·면접"]
+    pick = [q for q in others if q["category"] == p["category"]][:n]
+    pick += [q for q in others if q not in pick][: n - len(pick)]
+    if not pick:
+        return ""
+    items = "".join(f'<li><a href="{q["file"]}">{html.escape(q["title"])}</a></li>' for q in pick)
+    return f'      <aside class="related"><p><strong>같이 읽으면 좋은 글</strong></p><ul>{items}</ul></aside>'
+
+
+def post_page(p, prev_p, next_p, posts=()):
     nav = []
     if prev_p:
         nav.append(f'<a href="{prev_p["file"]}">← {html.escape(prev_p["title"])}</a>')
@@ -158,6 +169,7 @@ def post_page(p, prev_p, next_p):
       <h2>{html.escape(p["title"])}</h2>
 {p["html"]}
       <aside class="sig"><p>{SIGNATURE}</p></aside>
+{related_box(p, posts)}
 {subscribe_box()}
     </article>
     <nav class="postnav">{" ".join(nav)}</nav>
@@ -196,7 +208,7 @@ def main():
     for i, p in enumerate(posts):
         prev_p = posts[i - 1] if i > 0 else None
         next_p = posts[i + 1] if i + 1 < len(posts) else None
-        (OUT / p["file"]).write_text(post_page(p, prev_p, next_p), encoding="utf-8")
+        (OUT / p["file"]).write_text(post_page(p, prev_p, next_p, posts), encoding="utf-8")
         print(f"blog/{p['file']}  {p['title']}")
     items = "\n".join(f"""      <li class="card">
         <p class="meta">{html.escape(p["category"])} · {p["date"]}</p>
