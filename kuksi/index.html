@@ -840,7 +840,7 @@ function stats(){
     <h2>설정</h2><div class="card settings">
       <div class="setrow"><span>하루 목표</span><span class="seg" style="margin:0">${[10,20,40].map(g => `<button data-g="${g}" aria-selected="${(S.goal || 20) === g}">${g}문항</button>`).join('')}</span></div>
       <div class="setrow"><span>글자 크기</span><span class="seg" style="margin:0"><button data-fs="0" aria-selected="${!S.fs}">보통</button><button data-fs="1" aria-selected="${S.fs === 1}">크게</button><button data-fs="2" aria-selected="${S.fs === 2}">아주 크게</button></span></div>
-      ${SALE ? `<div class="setrow"><span>이용권<br><small class="lede">${UNLOCKED ? '전체 이용 중 · 코드 ' + CODE.slice(0, 4) + '-****-****' : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${UNLOCKED ? '' : '<button class="btn eosin" id="toBuy">코드 넣기</button>'}</div>` : ''}
+      ${SALE ? `<div class="setrow"><span>${PAID ? '이용권' : '이용 상태'}<br><small class="lede">${UNLOCKED ? '전체 이용 중 · 코드 ' + CODE.slice(0, 4) + '-****-****' : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${UNLOCKED ? '' : '<button class="btn eosin" id="toBuy">코드 넣기</button>'}</div>` : ''}
       <div class="setrow" ${SALE ? 'hidden' : ''}><span>체험판 화면 미리보기<br><small class="lede">학생이 무료로 보는 화면(과목별 첫 챕터 + 모의고사 1회)</small></span><span class="seg" style="margin:0"><button data-tr="0" aria-selected="${!S.trial}">전체</button><button data-tr="1" aria-selected="${!!S.trial}">체험판</button></span></div>
       <div class="setrow"><span>모든 풀이 기록 지우기</span><button class="btn" id="wipe">지우기</button></div><div id="confirm"></div>
     </div>`);
