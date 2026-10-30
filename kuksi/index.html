@@ -279,6 +279,12 @@ table.lockt tr.mk td{color:var(--hema);font-weight:600}
 .dots button.ok{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
 .dots button.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
 table.t.guide td:first-child{width:28%}
+/* 오류 신고 */
+.rpt{display:grid;gap:8px;border:1px solid var(--line);background:var(--sunk);border-radius:12px;padding:12px}
+.rchips{display:flex;flex-wrap:wrap;gap:6px}
+.rchip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13px}
+.rchip[aria-pressed="true"]{border-color:var(--eosin);background:var(--eosin-soft);color:var(--eosin);font-weight:600}
+.rpt textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px;resize:vertical}
 /* 목차 */
 .sumrow{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .sumrow div{padding:10px 6px;text-align:center;border-left:1px solid var(--line)}.sumrow div:first-child{border-left:0}
@@ -634,10 +640,26 @@ function linkHTML(q){
   const cross = ls.filter(x => x._part !== q._part).length;
   return `<section class="links"><h4>같은 개념 연계 문항 ${ls.length}${cross ? ` · 이론↔실기 ${cross}` : ''}</h4>${ls.slice(0, 5).map((x, i) => `<button class="lk" data-link="${i + 1}"><span class="pill ${x._part === 'practice' ? 'eo' : ''}">${x._part === 'theory' ? '이론' : '실기'}</span><span>${esc(qPlace(x))}<br><small>${esc(x.q.split('\n')[0].slice(0, 60))}</small></span></button>`).join('')}${ls.length > 5 ? `<p class="lede">외 ${ls.length - 5}문항 · 아무 문항이나 누르면 연계 문항 전체를 이어서 풉니다</p>` : ''}</section>`;
 }
+/* 문항 오류 신고: 앱 안에서 바로 교수님 휴대폰(ntfy 알림)으로 보낸다. 학생 이름 등 개인정보는 보내지 않는다 */
+const REPORT_TOPIC = 'kuksi-report-ssxgyqqchnj5';
 function reportQ(q){
-  const t = `[조직병리 문제은행 오류 신고]\n문항: ${q.id} (${qPlace(q)})\n발문: ${q.q.split('\n')[0].slice(0, 80)}\n내용: `;
-  if (navigator.share) navigator.share({text: t}).catch(() => {});
-  else navigator.clipboard.writeText(t).then(() => toast('신고 양식을 복사했습니다. 담당 교수님께 보내 주세요'), () => toast('문항 번호: ' + q.id));
+  const box = document.querySelector(`[data-report="${q.id}"]`).closest('.row');
+  if (box.nextElementSibling && box.nextElementSibling.classList.contains('rpt')) return;
+  const f = el(`<div class="rpt"><b>문항 오류 신고</b><p class="lede">${esc(qPlace(q))} · 교수님께 바로 전달됩니다.</p>
+    <div class="rchips">${['정답이 틀림', '해설이 틀림', '보기·발문 오류', '사진 문제', '오타', '기타'].map(r => `<button class="rchip" aria-pressed="false">${r}</button>`).join('')}</div>
+    <textarea id="rtxt" rows="2" maxlength="300" placeholder="무엇이 이상한지 한 줄로 적어 주세요(선택)"></textarea>
+    <div class="row" style="justify-content:flex-end"><button class="btn primary" id="rsend">보내기</button></div></div>`).firstElementChild;
+  box.after(f);
+  f.querySelectorAll('.rchip').forEach(c => c.onclick = () => c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') !== 'true'));
+  f.querySelector('#rsend').onclick = async e => {
+    const why = [...f.querySelectorAll('.rchip[aria-pressed="true"]')].map(c => c.textContent), txt = f.querySelector('#rtxt').value.trim();
+    if (!why.length && !txt) return toast('신고 이유를 하나 고르거나 적어 주세요');
+    const last = +(localStorage.getItem('kuksi-rpt-t') || 0); if (Date.now() - last < 20000) return toast('잠시 뒤에 다시 보내 주세요');
+    e.currentTarget.disabled = true;
+    const body = JSON.stringify({topic: REPORT_TOPIC, title: `오류 신고 ${q.id} · ${why.join(', ') || '기타'}`, message: `${qPlace(q)}\n발문: ${q.q.split('\n')[0].slice(0, 90)}\n정답: ${ansText(q)}${txt ? '\n내용: ' + txt : ''}`, tags: ['warning']});
+    try { const r = await fetch('https://ntfy.sh/', {method: 'POST', body}); if (!r.ok) throw 0; try { localStorage.setItem('kuksi-rpt-t', Date.now()); } catch (_) {} f.innerHTML = '<p class="lede"><b>교수님께 보냈습니다.</b> 확인 후 고쳐서 다시 올립니다.</p>'; }
+    catch (_) { e.currentTarget.disabled = false; toast('보내지 못했습니다. 인터넷 연결을 확인하고 다시 눌러 주세요'); }
+  };
 }
 function dock(prevDis, nextLabel, starOn){
   document.body.append(el(`<div class="dock"><div class="in"><button class="btn" id="dPrev" ${prevDis ? 'disabled' : ''}>이전</button><button class="starbtn" id="dStar" aria-pressed="${!!starOn}" aria-label="별표">★</button><button class="btn primary" id="dNext">${nextLabel}</button></div></div>`));
