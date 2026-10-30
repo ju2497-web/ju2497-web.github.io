@@ -51,7 +51,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background
 .brand{font-family:var(--f-display);font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px;flex:1}
 .brand i{display:inline-flex;gap:3px}.brand i::before,.brand i::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--hema)}.brand i::after{background:var(--eosin)}
 .trialpill{font-size:11.5px;font-weight:700;color:var(--eosin);background:var(--eosin-soft);border-radius:999px;padding:3px 9px}
-nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:8;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:4px max(8px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 nav.tabbar button{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11.5px;font-weight:600;color:var(--muted);min-height:48px}
 nav.tabbar svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 nav.tabbar button[aria-current="page"]{color:var(--hema)}
@@ -61,18 +61,18 @@ h2{font-size:15px;margin:24px 0 8px;display:flex;align-items:baseline;justify-co
 h2 small{font-weight:500;font-size:12.5px;color:var(--muted)}
 .lede{color:var(--muted);font-size:13.5px;margin:0}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
-.hero{margin-top:14px;border:0;color:#fff;background:linear-gradient(135deg,#2E3285 0%,#4B4FB0 62%,#8E3E78 120%);display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
-.hero .l{font-size:12.5px;opacity:.85}
-.hero .d{font-family:var(--f-display);font-weight:800;font-size:22px;line-height:1.35;margin-top:2px}
-.hero .r{grid-column:1/-1;display:flex;gap:16px;font-size:12.5px;flex-wrap:wrap;opacity:.95}
-.hero .r b{font-family:var(--f-mono);font-size:15px}
-.hero button.link{background:transparent;border:0;color:inherit;text-decoration:underline;text-underline-offset:3px;font-size:12px;opacity:.8;padding:0}
-.ring{position:relative;width:76px;height:76px}
-.ring svg{width:76px;height:76px;transform:rotate(-90deg)}
-.ring circle{fill:none;stroke-width:8}
-.ring .bg{stroke:rgba(255,255,255,.22)}.ring .fg{stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .4s}
-.ring .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-size:11px;line-height:1.15}
-.ring .c b{display:block;font-family:var(--f-mono);font-size:17px}
+
+
+
+
+
+
+
+
+
+
+
+
 .today{margin-top:10px;display:grid;gap:8px}
 .tile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:13px 14px;min-height:62px}
 .tile .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;font-size:18px}
@@ -81,13 +81,13 @@ h2 small{font-weight:500;font-size:12.5px;color:var(--muted)}
 .tile .n{font-family:var(--f-mono);font-size:15px;color:var(--muted)}
 .tile .arrow{color:var(--muted);font-size:18px}
 .ic.hema{background:var(--hema-soft);color:var(--hema)}.ic.eo{background:var(--eosin-soft);color:var(--eosin)}.ic.gold{background:var(--gold-soft);color:var(--gold)}.ic.ok{background:var(--ok-soft);color:var(--ok)}
-.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.subj{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0;overflow:hidden}
-.subj::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--sc)}
-.subj b{font-size:16px;display:flex;align-items:center;gap:6px}
-.subj .meta{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+
+
+
+
 .bar{display:block;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--sc,var(--ok));border-radius:3px}
-.medal{font-size:11px;font-weight:700;color:var(--gold);background:var(--gold-soft);border-radius:999px;padding:1px 7px;margin-left:auto}
+
 .seg{display:flex;gap:4px;background:var(--sunk);border-radius:999px;padding:3px;margin:14px 0 6px;width:max-content;max-width:100%;overflow-x:auto}
 .seg button{border:0;background:transparent;color:var(--muted);font-size:13.5px;font-weight:600;padding:6px 14px;border-radius:999px;white-space:nowrap}
 .seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
@@ -176,8 +176,8 @@ details.sum .card{margin-top:8px}
 .rnd .free{position:absolute;top:-7px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:700;background:var(--eosin);color:#fff;border-radius:999px;padding:0 6px}
 .score{font-family:var(--f-mono);font-size:46px;color:var(--hema);line-height:1.1}
 .celebrate{text-align:center;padding:22px 16px}
-.celebrate .medalbig{width:84px;height:84px;margin:0 auto 6px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:radial-gradient(circle at 35% 30%,#FFE79A,#E0A800 70%);box-shadow:0 6px 20px rgba(224,168,0,.35)}
-@media (prefers-reduced-motion:no-preference){.celebrate .medalbig{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{from{transform:scale(.4)}to{transform:none}}}
+
+@media (prefers-reduced-motion:no-preference){@keyframes pop{from{transform:scale(.4)}to{transform:none}}}
 table.sc{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums;margin-top:10px}
 table.sc th,table.sc td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
 table.sc .r{text-align:right}
@@ -201,23 +201,23 @@ dialog.zoom img{display:block;max-width:96vw;max-height:94vh;border-radius:8px}
 footer{margin-top:28px;font-size:12px;color:var(--muted)}
 input[type=date]{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 8px}
 /* 짝 맞추기 */
-.match{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.mcell{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:6px;min-height:96px;display:grid;place-items:center;text-align:center;font-weight:600;font-size:14px;transition:transform .12s,border-color .12s,opacity .3s}
-.mcell img{width:100%;height:110px;object-fit:cover;border-radius:10px;display:block}
-.mcell.pick{border-color:var(--hema);transform:scale(.97)}
-.mcell.bad{border-color:var(--bad);animation:shake .3s}
-.mcell.done{border-color:var(--ok);background:var(--ok-soft);opacity:.0;pointer-events:none}
+
+
+
+
+
+
 @keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-.gamebar{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:13px;color:var(--muted)}
-.gamebar b{font-family:var(--f-mono);font-size:18px;color:var(--ink)}
+
+
 /* 머리줄 기록 버튼 */
-.hbtn{display:flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px 5px 9px;font-size:12.5px;font-weight:600;color:var(--muted)}
-.hbtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
-.hbtn.on{color:var(--hema);border-color:var(--hema)}
+
+
+
 footer .link{background:none;border:0;padding:0;color:var(--hema);text-decoration:underline;text-underline-offset:3px;font-size:12px}
 /* 이 앱이 다른 점 */
-.why{position:relative;margin-top:12px;border-color:var(--hema-soft)}
-.why .x{position:absolute;top:8px;right:10px;border:0;background:transparent;font-size:22px;color:var(--muted);width:36px;height:36px}
+
+
 .why-h{font-family:var(--f-display);font-size:19px;margin:0 30px 6px 0;display:block;line-height:1.4;color:var(--hema)}
 .whyin .why-h{margin:0 0 6px;text-align:center}
 .why-lead{margin:0 0 12px;font-size:13.5px;color:var(--ink);line-height:1.6}
@@ -233,42 +233,68 @@ table.lockt .free{color:var(--eosin);font-weight:700}
 table.lockt tr.sum td{font-weight:700;border-top:2px solid var(--line)}
 table.lockt tr.mk td{color:var(--hema);font-weight:600}
 /* 게임 */
-.seg.segfull{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 1.4fr 1fr}.seg.segfull button{padding:6px 4px}
-.games{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.game{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:0;border-radius:18px;padding:14px;min-height:136px;color:#fff;overflow:hidden}
-.game .gi{font-size:26px;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.2);margin-bottom:4px}
-.game b{font-size:15.5px}
+
+
+
+
+
 .game span:last-child{font-size:12px;opacity:.9;line-height:1.45}
-.game.wide{grid-column:1/-1;min-height:0;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px}
-.game.wide .gi{grid-row:1/3;margin:0}
-.game:disabled{opacity:.4}
-.game:active:not(:disabled){transform:scale(.98)}
-.g1{background:linear-gradient(140deg,#3B3F9E,#6A4FB6)}
-.g2{background:linear-gradient(140deg,#B73A63,#E06B6B)}
-.g3{background:linear-gradient(140deg,#1F7A8C,#2FA58A)}
-.g4{background:linear-gradient(140deg,#7A4FB0,#B05AA8)}
-.g5{background:linear-gradient(140deg,#B57F00,#E0A21A)}
-.pairs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
-.pc{border:2px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 8px;min-height:64px;font-weight:600;font-size:14px;line-height:1.35;transition:transform .12s,border-color .12s,opacity .3s}
-.pc.a{background:var(--hema-soft);border-color:transparent;color:var(--hema)}
-.pc.pick{border-color:var(--eosin);transform:scale(.97)}
-.pc.bad{border-color:var(--bad);animation:shake .3s}
-.pc.done{opacity:0;pointer-events:none}
-.bcard{margin-top:10px}
-.bsent{font-size:calc(var(--fs) + 3px);font-weight:600;line-height:1.75;margin:14px 0 18px}
-.blank{display:inline-block;min-width:4.5em;border-bottom:3px solid var(--eosin);text-align:center;color:var(--eosin);padding:0 4px;margin:0 2px}
-.blank.ok{color:var(--ok);border-color:var(--ok);background:var(--ok-soft);border-radius:6px 6px 0 0}
-.blank.no{color:var(--bad);border-color:var(--bad);background:var(--bad-soft);border-radius:6px 6px 0 0}
-.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:11px 10px;font-size:14.5px;font-weight:600;min-height:50px;line-height:1.35}
-.chip.correct{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
-.chip.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
-.chip:disabled{cursor:default}
-.combo{font-weight:700;opacity:.35}.combo.on{opacity:1;color:var(--eosin)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 모의고사 나눠 풀기 */
 .parts{display:grid;gap:8px;margin-top:12px}
 .part .ic{font-family:var(--f-mono);font-size:15px;font-weight:600}
 .part.full .ic{background:var(--ok-soft);color:var(--ok)}
+/* 목차 */
+.sumrow{display:grid;grid-template-columns:repeat(4,1fr);margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.sumrow div{padding:10px 6px;text-align:center;border-left:1px solid var(--line)}.sumrow div:first-child{border-left:0}
+.sumrow b{display:block;font-family:var(--f-mono);font-size:17px;color:var(--hema)}.sumrow span{font-size:11.5px;color:var(--muted)}
+details.subjblk{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--sc);border-radius:12px;overflow:hidden}
+details.subjblk summary{list-style:none;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:baseline;padding:14px 14px 12px;cursor:pointer}
+details.subjblk summary::-webkit-details-marker{display:none}
+details.subjblk .sn{font-family:var(--f-display);font-size:18px;font-weight:800}
+details.subjblk .sm{font-size:12.5px;color:var(--muted);text-align:right}
+details.subjblk summary .bar{grid-column:1/-1;height:4px}
+details.subjblk summary::after{content:"챕터 목록 펼치기";grid-column:1/-1;font-size:11.5px;color:var(--muted)}
+details.subjblk[open] summary::after{content:"접기"}
+.parts2{padding:0 14px 14px}
+.parthd{display:flex;justify-content:space-between;align-items:baseline;font-weight:700;font-size:13.5px;color:var(--hema);margin:10px 0 4px;padding-bottom:4px;border-bottom:2px solid var(--hema-soft)}
+.parthd small{font-weight:500;color:var(--muted);font-size:12px}
+.toclist{display:grid}
+.tocrow{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 2px;width:100%}
+.tocrow:last-child{border-bottom:0}
+.tocrow .no{font-family:var(--f-mono);font-size:12.5px;color:var(--hema);font-weight:600}
+.tocrow .t{font-weight:600;font-size:14.5px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tocrow .sub{font-size:12px;color:var(--muted);font-weight:400}
+.tocrow .n{font-family:var(--f-mono);font-size:12.5px;color:var(--hema);text-align:right}.tocrow .n small{color:var(--muted)}
+.tocrow.locked{opacity:.55}
+.tocrow.extra .no{font-family:var(--f-body);font-size:11px;color:var(--eosin)}
+.why-l{margin:0;padding-left:20px;display:grid;gap:10px;font-size:13.5px;color:var(--muted);line-height:1.6}
+.why-l b{display:block;color:var(--ink);font-size:14px}
 /* 잠금 */
 .freebeta{margin-top:16px;background:var(--ok-soft);color:var(--ok);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.6}
 .codebox{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);text-align:left}
@@ -281,7 +307,7 @@ table.lockt tr.mk td{color:var(--hema);font-weight:600}
 .lock h2{justify-content:center;font-family:var(--f-display);font-size:20px;margin:8px 0 4px}
 .lock ul{text-align:left;margin:14px auto;max-width:340px;padding-left:20px;font-size:14px;line-height:1.8}
 .price{font-family:var(--f-mono);font-size:28px;font-weight:600;color:var(--eosin)}
-@media (max-width:420px){h1{font-size:20px}.subj{padding:12px}.hero .d{font-size:20px}}
+@media (max-width:420px){h1{font-size:20px}}
 @media (prefers-reduced-motion:no-preference){.qcard{animation:rise .16s ease-out}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
 </style>
 
@@ -301,14 +327,14 @@ const SUBJ_ORDER = ['P','H','T','C'];
 const SUBJ_NAME = {P:'병리학', H:'조직학', T:'조직검사학', C:'진단세포학'};
 const MOCK_SUBJ = ['병리학','조직학','진단조직학','진단세포학'];
 const PRICE = '9,900원', PAID = false; /* 2026년은 무료 시범 운영: 결제 없이 무료 이용 코드로 연다 */
-const WHY_TITLE = '조직병리, 이 앱 하나면 됩니다';
-const WHY_HTML = `<p class="why-lead">병리학·조직학·조직검사학·진단세포학 4과목과 모의고사 30회. 매일 조금씩, 게임하듯 풀다 보면 시험장에서 손이 먼저 답을 찾습니다.</p><ul class="why-l">
-  <li><span>🎯</span><div><b>나온 것만 나옵니다</b>국가시험에 한 번이라도 출제된 개념만 담았습니다. 안 나오는 건 과감히 뺐습니다.</div></li>
-  <li><span>🎮</span><div><b>공부가 게임처럼</b>사진 짝 맞추기, 개념 짝, 빈칸 채우기, 판독 카드. 한 판 1분, 지하철 한 정거장이면 끝납니다.</div></li>
-  <li><span>🔬</span><div><b>사진 보는 눈이 생깁니다</b>실기 사진을 보자마자 판독하고, 어디를 봐야 하는지 판독 포인트로 짚어 줍니다.</div></li>
-  <li><span>🔄</span><div><b>꼬아서 내도 맞힙니다</b>같은 개념을 거꾸로, 이론↔실기로 바꿔 물어 처음 보는 문제에도 흔들리지 않습니다.</div></li>
-  <li><span>🔥</span><div><b>매일 20문항, 습관이 됩니다</b>오늘의 목표 고리와 연속 학습일. 틀린 문제는 1·3·7일 뒤 알아서 다시 찾아옵니다.</div></li>
-  <li><span>🏅</span><div><b>100점이 될 때까지</b>틀린 것만 다시 풀어 챕터를 끝내면 마스터 메달. 메달이 쌓이는 만큼 범위가 정리됩니다.</div></li></ul>`;
+const WHY_TITLE = '문제은행 구성';
+const WHY_HTML = `<ol class="why-l">
+  <li><b>국가시험 출제 범위</b>국가시험 기출과 문항마다 대조하여, 출제 이력이 확인된 개념만 수록했습니다.</li>
+  <li><b>과목·챕터 체계</b>병리학·조직학·조직검사학·진단세포학을 이론과 실기로 나누고, 챕터마다 핵심정리와 문항을 두었습니다.</li>
+  <li><b>실기 사진 판독</b>실기 문항 사진마다 판독 포인트와 해설, 오답 분석을 붙였습니다.</li>
+  <li><b>다각도 출제</b>같은 개념을 정방향·역방향, 이론↔실기로 바꾸어 물어 변형 문항에 대비합니다.</li>
+  <li><b>오답 관리</b>오답은 다시 풀기와 1·3·7일 간격 복습으로 관리합니다.</li>
+  <li><b>모의고사 30회</b>실제 시험 순서로 구성하고, 과목별 정답률과 약점 챕터를 제시합니다.</li></ol>`;
 
 /* ---------- 판매본 잠금: 이용 코드로 전체 문항 키를 꺼낸다. 코드 없이는 전체 데이터를 읽을 수 없다 ---------- */
 let UNLOCKED = !SALE, MKEY = null, CODE = null;
@@ -341,7 +367,6 @@ function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) 
 const ymd = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 const today = () => ymd(new Date());
 const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return ymd(d); };
-function streak(){ let n = 0; const d = new Date(); if (!S.days[today()]) d.setDate(d.getDate() - 1); while (S.days[ymd(d)]) { n++; d.setDate(d.getDate() - 1); } return n; }
 /* 간격 복습: 틀리면 1일 뒤, 복습에서 맞히면 3일 → 7일 → 졸업 */
 const STEPS = [1, 3, 7];
 function record(q, c){
@@ -405,11 +430,10 @@ const distinctAns = items => new Set(items.map(akey)).size;
 
 /* ---------- 화면 이동 ---------- */
 const TABS = [
-  ['home','홈','<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>'],
-  ['subjects','과목','<path d="M4 5h7v14H4zM13 5h7v14h-7z"/>'],
-  ['play','게임','<rect x="3" y="7" width="18" height="11" rx="4"/><path d="M8 11v3M6.5 12.5h3"/><circle cx="15.5" cy="11.5" r=".6"/><circle cx="17" cy="14" r=".6"/>'],
+  ['home','목차','<path d="M5 5h14M5 10h14M5 15h9M5 20h6"/>'],
   ['mocks','모의고사','<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>'],
-  ['notes','복습','<path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v4h4"/>']];
+  ['notes','오답노트','<path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v4h4"/>'],
+  ['stats','기록','<path d="M5 20V10M12 20V4M19 20v-7"/>']];
 let tab = 'home', stack = [], cur = null;
 function renderTabs(){
   const n = dueList().length + wrongList().length;
@@ -418,9 +442,8 @@ function renderTabs(){
 }
 function header(title, sub){
   const top = document.getElementById('top');
-  if (!stack.length) top.innerHTML = `<div class="brand"><i></i>조직병리 국시</div>${TRIAL() ? '<span class="trialpill">체험판</span>' : ''}<button class="hbtn ${tab === 'stats' ? 'on' : ''}" id="hStats" aria-label="기록과 설정"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>기록</button>`;
+  if (!stack.length) top.innerHTML = `<div class="brand"><i></i>조직병리 국가시험 문제은행</div>${TRIAL() ? '<span class="trialpill">체험판</span>' : ''}`;
   else top.innerHTML = `<button class="back" aria-label="뒤로">‹</button><div class="title">${esc(title)}${sub ? `<small>${esc(sub)}</small>` : ''}</div>`;
-  const hs = top.querySelector('#hStats'); if (hs) hs.onclick = () => toTab('stats');
   const b = top.querySelector('.back'); if (b) b.onclick = () => { const p = stack.pop(); show(p.fn, p.title, p.sub, false); };
 }
 function show(fn, title, sub, push){
@@ -431,69 +454,54 @@ function show(fn, title, sub, push){
   $view.replaceChildren(); fn(); window.scrollTo(0, 0);
 }
 const go = (fn, title, sub) => show(fn, title, sub, true);
-const VIEWS = {home, subjects, play, mocks: mockList, notes, stats};
+const VIEWS = {home, mocks: mockList, notes, stats};
 const toTab = (k, fn) => { tab = k; stack = []; show(fn || VIEWS[k]); };
 
-/* ---------- 홈 ---------- */
+/* ---------- 목차 (과목 → 이론·실기 → 챕터) ---------- */
+const openSubj = {P: true};
+const partN = (c, pt) => DATA[c][pt].reduce((a, ch) => a + ch.items.length, 0);
 function home(){
-  const s = stat(ALLQ), todayN = S.days[today()] || 0, goal = S.goal || 20;
-  const due = dueList().length, w = wrongList().length, st = starList().length;
-  const R = 32, C = 2 * Math.PI * R, prog = Math.min(1, todayN / goal);
+  const s = stat(ALLQ), due = dueList().length, w = wrongList().length;
   const L = S.last && DATA[S.last.code] && DATA[S.last.code][S.last.part][S.last.ch];
   const f = el(`
-    <div class="card hero">
-      <div><div class="l">오늘의 학습</div>
-        <div class="d">${todayN >= goal ? '오늘 목표 달성! 🎉' : todayN ? `${goal - todayN}문항 남았어요` : `오늘 ${goal}문항 도전!`}</div></div>
-      <div class="ring" aria-label="오늘 목표 ${todayN}/${goal}"><svg viewBox="0 0 76 76"><circle class="bg" cx="38" cy="38" r="${R}"/><circle class="fg" cx="38" cy="38" r="${R}" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - prog)}"/></svg><div class="c"><span><b>${todayN}</b>/${goal}문항</span></div></div>
-      <div class="r"><span>🔥 연속 <b>${streak()}</b>일</span><span>🏅 마스터 <b>${masterCount()}</b>/${totalCh}챕터</span><span>정답률 <b>${s.done ? pct(s.ok, s.done) + '%' : '-'}</b></span></div>
-    </div>
-    ${SALE && TRIAL() ? `<button class="tile buybar" id="tBuy"><span class="ic eo">🔓</span><span class="t">체험판 사용 중<small>무료 이용 코드를 넣으면 전체 ${ALLQ.length.toLocaleString()}문항 + 모의고사 30회가 열립니다</small></span><span class="arrow">›</span></button>` : ''}
-    ${S.intro ? '' : `<div class="card why"><button class="x" id="whyX" aria-label="닫기">×</button><h2 class="why-h">${WHY_TITLE}</h2>${WHY_HTML}</div>`}
-    <h2>오늘 할 일</h2>
-    <div class="today">
-      ${due ? `<button class="tile" id="tDue"><span class="ic eo">↻</span><span class="t">오늘의 복습<small>틀렸던 문항이 다시 나올 날입니다</small></span><span class="n">${due}</span><span class="arrow">›</span></button>` : ''}
-      ${L ? `<button class="tile" id="tResume"><span class="ic hema">▶</span><span class="t">이어 풀기<small>${esc(SUBJ_NAME[S.last.code])} · ${esc(L.t)}</small></span><span class="arrow">›</span></button>` : ''}
-      <button class="tile" id="tRand"><span class="ic ok">⚡</span><span class="t">랜덤 20문항<small>네 과목에서 골고루</small></span><span class="arrow">›</span></button>
-      <button class="tile" id="tGame"><span class="ic gold">🎮</span><span class="t">쉬는 시간 3분 게임<small>사진 짝 · 개념 짝 · 빈칸 · 판독 카드 · 10문항</small></span><span class="arrow">›</span></button>
-      ${!S.mock[1] ? `<button class="tile" id="tDiag"><span class="ic eo">✎</span><span class="t">모의고사 1회로 실력 진단<small>${S.draft[1] ? '이어서 풀기 · ' : ''}12분씩 세 번에 나눠 풀어도 됩니다</small></span><span class="arrow">›</span></button>` : ''}
-    </div>
-    <h2>과목 <small>${s.done.toLocaleString()} / ${ALLQ.length.toLocaleString()} 풀이</small></h2>
-    <div class="subjects" id="subjs"></div>
-    <footer>보건계열 현직 교수가 집필·검수했습니다. 광고 없음 · 기록은 이 기기에만 저장됩니다. <button class="link" id="whyOpen">이 앱 소개</button></footer>`);
-  const box = f.getElementById('subjs');
-  SUBJ_ORDER.forEach(c => box.append(subjCard(c)));
+    <p class="lede" style="margin-top:14px">임상병리사 국가시험 조직병리 영역 · 4과목 ${ALLQ.length.toLocaleString()}문항 · 모의고사 ${DATA.M.length}회</p>
+    <div class="search"><input id="q" type="search" placeholder="문항·해설 검색 (예: Congo red, 화생)" aria-label="문항과 해설 검색"><button class="btn primary" id="go">검색</button></div>
+    <div class="sumrow"><div><b>${s.done.toLocaleString()}</b><span>풀이 / ${ALLQ.length.toLocaleString()}</span></div><div><b>${s.done ? pct(s.ok, s.done) + '%' : '-'}</b><span>정답률</span></div><div><b>${w}</b><span>오답</span></div><div><b>${due}</b><span>오늘 복습</span></div></div>
+    ${SALE && TRIAL() ? `<button class="tile buybar" id="tBuy"><span class="t">체험판: 각 과목 첫 챕터와 모의고사 1회<small>무료 이용 코드를 입력하면 전체 문항이 열립니다</small></span><span class="arrow">›</span></button>` : ''}
+    ${L ? `<button class="tile" id="tResume" style="margin-top:10px"><span class="t"><small>이어서 풀기</small>${esc(SUBJ_NAME[S.last.code])} ${S.last.part === 'theory' ? '이론' : '실기'} ${String(L.no).padStart(2, '0')} · ${esc(L.t)}</span><span class="arrow">›</span></button>` : ''}
+    <div id="toc"></div>
+    <footer>보건계열 현직 교수 집필·검수 · 광고 없음 · 풀이 기록은 이 기기에만 저장됩니다. <button class="link" id="whyOpen">문제은행 구성</button></footer>`);
   $view.append(f);
+  const toc = document.getElementById('toc');
+  SUBJ_ORDER.forEach(c => {
+    const x = stat(subjQ(c));
+    const d = el(`<details class="subjblk" style="--sc:var(--s-${c})" ${openSubj[c] ? 'open' : ''}><summary><span class="sn">${SUBJ_NAME[c]}</span><span class="sm">이론 ${DATA[c].theory.length}장 ${partN(c, 'theory')}문항 · 실기 ${DATA[c].practice.length}장 ${partN(c, 'practice')}문항</span><span class="bar"><i style="width:${pct(x.done, x.total)}%"></i></span></summary><div class="parts2"></div></details>`).firstElementChild;
+    d.addEventListener('toggle', () => { openSubj[c] = d.open; });
+    const box = d.querySelector('.parts2');
+    ['theory', 'practice'].forEach(pt => {
+      box.append(el(`<div class="parthd">${pt === 'theory' ? '이론' : '실기'}<small>${DATA[c][pt].length}장 · ${partN(c, pt)}문항</small></div>`));
+      const list = el('<div class="toclist"></div>').firstElementChild;
+      DATA[c][pt].forEach((ch, i) => list.append(chRow(c, pt, i)));
+      if (pt === 'practice') { const n = photoAll(c).length; if (n) { const b = el(`<button class="tocrow extra"><span class="no">사진</span><span class="t">실기 사진 판독 연습<span class="sub">사진 문항 ${n}개 중 무작위 20문항 · 연속 판독</span></span><span class="n">›</span></button>`).firstElementChild; b.onclick = () => startCards(c); list.append(b); } }
+      box.append(list);
+    });
+    if (DATA[c].final) { const b = el(`<button class="tocrow extra"><span class="no">점검</span><span class="t">${esc(DATA[c].final.t)}<span class="sub">시험 직전 과목 전체 요약</span></span><span class="n">›</span></button>`).firstElementChild; b.onclick = () => go(() => { if (TRIAL()) { $view.append(lockCard('최종 점검표는 전체 이용 코드로 열립니다.')); bindLock(); } else $view.append(summaryBlock(DATA[c].final)); }, SUBJ_NAME[c], '최종 점검표'); box.append(b); }
+    toc.append(d);
+  });
   const $ = id => document.getElementById(id);
-  if ($('tDue')) $('tDue').onclick = () => startRun(dueList(), '오늘의 복습');
-  if ($('tResume')) $('tResume').onclick = () => go(() => chapter(S.last.code, S.last.part, S.last.ch), SUBJ_NAME[S.last.code], S.last.part === 'theory' ? '이론' : '실기');
-  $('tRand').onclick = () => { const pool = ALLQ.filter(usable); startRun(shuffle(pool).slice(0, 20), '랜덤 20문항'); };
-  $('tGame').onclick = () => toTab('play');
+  const run = () => { const v = $('q').value.trim(); if (v) go(() => searchView(v), '검색', v); };
+  $('go').onclick = run; $('q').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+  if ($('tResume')) $('tResume').onclick = () => go(() => chapter(S.last.code, S.last.part, S.last.ch), SUBJ_NAME[S.last.code], (S.last.part === 'theory' ? '이론 ' : '실기 ') + String(L.no).padStart(2, '0'));
   if ($('tBuy')) $('tBuy').onclick = () => go(() => lockView(null), '전체 열기');
-  $('whyOpen').onclick = () => { S.intro = 0; save(); show(home); };
-  if ($('whyX')) $('whyX').onclick = () => { S.intro = 1; save(); show(home); };
-  if ($('tDiag')) $('tDiag').onclick = () => go(() => mockIntro(1), '모의고사 1회', '실력 진단');
+  $('whyOpen').onclick = () => go(() => $view.append(el(`<h1>${WHY_TITLE}</h1><div class="card" style="margin-top:12px">${WHY_HTML}</div>`)), WHY_TITLE);
 }
-function subjCard(c){
-  const items = subjQ(c), x = stat(items), mc = Object.keys(S.master).filter(k => k[0] === c).length;
-  const b = el(`<button class="subj" style="--sc:var(--s-${c})"><b>${SUBJ_NAME[c]}${mc ? `<span class="medal">🏅${mc}</span>` : ''}</b><span class="meta">${items.length}문항 · ${DATA[c].theory.length + DATA[c].practice.length}챕터</span><span class="bar"><i style="width:${pct(x.done, x.total)}%"></i></span><span class="meta">${pct(x.done, x.total)}% 진도 · 정답률 ${x.done ? pct(x.ok, x.done) + '%' : '-'}</span></button>`).firstElementChild;
-  b.onclick = () => go(() => subject(c), SUBJ_NAME[c]);
+function chRow(c, pt, i){
+  const ch = DATA[c][pt][i], x = stat(ch.items), m = isMastered(c, pt, i), lk = chLocked(c, pt, i);
+  const b = el(`<button class="tocrow ${lk ? 'locked' : ''}"><span class="no">${String(ch.no).padStart(2, '0')}</span>
+    <span class="t">${esc(ch.t)}<span class="sub">${ch.items.length}문항${ch.star ? ` · 중요도 ${'★'.repeat(ch.star)}` : ''}${lk ? ' · 잠김' : TRIAL() ? ' · 무료' : ''}${m ? ' · 전 문항 정답' : ''}</span></span>
+    <span class="n">${x.done ? `${pct(x.ok, x.done)}%<br><small>${x.done}/${x.total}</small>` : `<small>${x.total}</small>`}</span></button>`).firstElementChild;
+  b.onclick = () => go(() => lk ? lockView(ch.t) : chapter(c, pt, i), SUBJ_NAME[c], (pt === 'theory' ? '이론 ' : '실기 ') + String(ch.no).padStart(2, '0'));
   return b;
-}
-
-/* ---------- 과목 ---------- */
-function subjects(){
-  const f = el(`<h1>과목</h1>
-    <div class="search"><input id="q" type="search" placeholder="문제·해설 검색 (예: Congo red, 화생)" aria-label="문제와 해설 검색"><button class="btn primary" id="go">검색</button></div>
-    <div class="subjects" id="subjs" style="margin-top:14px"></div>
-    <h2>짧게 연습</h2>
-    <div class="today"><button class="tile" id="tGame"><span class="ic gold">🎮</span><span class="t">쉬는 시간 3분 게임<small>사진 짝 · 개념 짝 · 빈칸 · 판독 카드 · 10문항</small></span><span class="arrow">›</span></button></div>`);
-  const box = f.getElementById('subjs');
-  SUBJ_ORDER.forEach(c => box.append(subjCard(c)));
-  $view.append(f);
-  const run = () => { const v = document.getElementById('q').value.trim(); if (v) go(() => searchView(v), '검색', v); };
-  document.getElementById('go').onclick = run;
-  document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
-  document.getElementById('tGame').onclick = () => toTab('play');
 }
 function searchView(term){
   const t = term.toLowerCase();
@@ -502,29 +510,6 @@ function searchView(term){
   const wl = document.getElementById('wl');
   hits.slice(0, 150).forEach((q, i) => { const b = el(`<button class="wi"><span class="pill">${SUBJ_NAME[q._code]}</span><span>${esc(q.q.split('\n')[0])}<br><small>${q._part === 'theory' ? '이론' : '실기'} ${esc(q.no)}</small></span></button>`).firstElementChild; b.onclick = () => startRun(hits, '검색: ' + term, i); wl.append(b); });
   const a = document.getElementById('all'); if (a) a.onclick = () => startRun(hits, '검색: ' + term);
-}
-const subjTab = {};
-function subject(code){
-  const d = DATA[code], tb = subjTab[code] || 'theory';
-  const f = el(`<div class="seg" role="tablist">
-      <button role="tab" data-t="theory" aria-selected="${tb === 'theory'}">이론 ${d.theory.reduce((a, c) => a + c.items.length, 0)}</button>
-      <button role="tab" data-t="practice" aria-selected="${tb === 'practice'}">실기 ${d.practice.reduce((a, c) => a + c.items.length, 0)}</button>
-      ${d.final ? `<button role="tab" data-t="final" aria-selected="${tb === 'final'}">최종 점검표</button>` : ''}
-    </div><div id="pane"></div>`);
-  f.querySelectorAll('.seg button').forEach(b => b.onclick = () => { subjTab[code] = b.dataset.t; show(cur.fn, cur.title, cur.sub, false); });
-  $view.append(f);
-  const pane = document.getElementById('pane');
-  if (tb === 'final') { if (TRIAL()) { pane.append(lockCard('최종 점검표는 전체 이용 코드로 열립니다.')); bindLock(); } else pane.append(summaryBlock(d.final)); return; }
-  const list = el('<div class="chlist"></div>').firstElementChild;
-  d[tb].forEach((ch, i) => {
-    const x = stat(ch.items), m = isMastered(code, tb, i), lk = chLocked(code, tb, i);
-    const b = el(`<button class="ch ${m ? 'master' : ''} ${lk ? 'locked' : ''}"><span class="no">${m ? '🏅' : lk ? '🔒' : String(ch.no).padStart(2, '0')}</span>
-      <span class="t">${esc(ch.t)}<span class="sub">${ch.star ? `<span class="stars">${'★'.repeat(ch.star)}</span> · ` : ''}${ch.items.length}문항${!TRIAL() || lk ? '' : ' · 무료'}</span><span class="bar" style="--sc:var(--s-${code})"><i style="width:${pct(x.done, x.total)}%"></i></span></span>
-      <span class="n">${x.done}/${x.total}<br>${x.done ? pct(x.ok, x.done) + '%' : ''}</span></button>`).firstElementChild;
-    b.onclick = () => go(() => lk ? lockView(ch.t) : chapter(code, tb, i), SUBJ_NAME[code], (tb === 'theory' ? '이론 ' : '실기 ') + String(ch.no).padStart(2, '0'));
-    list.append(b);
-  });
-  pane.append(list);
 }
 function summaryBlock(ch){
   const f = el(`<div class="card">${ch.core ? `<div class="core">${esc(ch.core)}</div>` : ''}<div class="secs"></div>${ch.point ? `<div class="point"><b>출제 포인트</b> ${esc(ch.point)}</div>` : ''}</div>`);
@@ -542,16 +527,16 @@ function chapter(code, part, ci){
   const wrong = ch.items.filter(q => S.ans[q.id] && !S.ans[q.id].ok), fresh = ch.items.filter(q => !S.ans[q.id]), hot = ch.items.filter(q => q.tags.includes('빈출'));
   const hasSum = ch.core || ch.secs.length;
   const f = el(`<h1>${esc(ch.t)}</h1>
-    <p class="lede">${ch.items.length}문항 · 정답 개념 ${distinctAns(ch.items)}개를 여러 방향으로 묻습니다 · 정답률 ${x.done ? pct(x.ok, x.done) + '%' : '-'}</p>
-    ${m ? `<div class="mastery"><span class="big">🏅</span><span>챕터 마스터 · ${esc(S.master[chKey(code, part, ci)])} 100점 달성</span></div>` : ''}
+    <p class="lede">${SUBJ_NAME[code]} ${part === 'theory' ? '이론' : '실기'} ${String(ch.no).padStart(2, '0')} · ${ch.items.length}문항 · 정답 개념 ${distinctAns(ch.items)}개 · 정답률 ${x.done ? pct(x.ok, x.done) + '%' : '-'}</p>
+    ${m ? `<div class="mastery">전 문항 정답 완료 · ${esc(S.master[chKey(code, part, ci)])}</div>` : ''}
     <div class="modes">
-      <button class="mode main" data-m="mastery"><b>${wrong.length ? `틀린 ${wrong.length}문항부터 100점 도전` : x.done ? '처음부터 다시 풀기' : '100점 도전 시작'}</b><span>틀린 문항만 다시 나와 모두 맞히면 챕터 마스터</span></button>
+      <button class="mode main" data-m="mastery"><b>${wrong.length ? `오답 ${wrong.length}문항 다시 풀기` : '전체 문항 풀기'}</b><span>${wrong.length ? '모두 맞히면 챕터 완료로 표시됩니다' : `${ch.items.length}문항 · 즉시 채점과 해설`}</span></button>
       <button class="mode" data-m="fresh" ${fresh.length ? '' : 'disabled'}><b>안 푼 문항</b><span>${fresh.length}문항</span></button>
       <button class="mode" data-m="all"><b>처음부터 순서대로</b><span>${ch.items.length}문항</span></button>
       <button class="mode" data-m="shuffle"><b>섞어서 풀기</b><span>순서 무작위</span></button>
       <button class="mode" data-m="hot" ${hot.length ? '' : 'disabled'}><b>빈출만</b><span>${hot.length}문항</span></button>
     </div>
-    ${hasSum ? '<details class="sum"' + (x.done ? '' : ' open') + '><summary>핵심정리 · 주의·함정</summary><div id="sum"></div></details>' : ''}
+    ${hasSum ? '<details class="sum"' + (x.done ? '' : ' open') + '><summary>핵심정리 · 주의할 함정</summary><div id="sum"></div></details>' : ''}
     ${x.done ? '<div class="row" style="margin-top:16px"><button class="btn" id="reset">이 챕터 기록 지우기</button></div><div id="confirm"></div>' : ''}`);
   $view.append(f);
   if (hasSum) document.getElementById('sum').append(summaryBlock(ch));
@@ -560,7 +545,7 @@ function chapter(code, part, ci){
   $view.querySelectorAll('.mode').forEach(b => b.onclick = () => startRun(pools[b.dataset.m], ch.t, 0, chInfo));
   const rs = document.getElementById('reset');
   if (rs) rs.onclick = () => {
-    document.getElementById('confirm').replaceChildren(el('<div class="confirm">이 챕터의 풀이 기록을 지울까요? 별표와 마스터 배지는 남습니다. <button class="btn eosin" id="yes">지우기</button><button class="btn" id="no">취소</button></div>'));
+    document.getElementById('confirm').replaceChildren(el('<div class="confirm">이 챕터의 풀이 기록을 지울까요? 별표와 완료 표시는 남습니다. <button class="btn eosin" id="yes">지우기</button><button class="btn" id="no">취소</button></div>'));
     document.getElementById('yes').onclick = () => { ch.items.forEach(q => delete S.ans[q.id]); save(); show(cur.fn, cur.title, cur.sub, false); };
     document.getElementById('no').onclick = () => document.getElementById('confirm').replaceChildren();
   };
@@ -571,7 +556,7 @@ function lockCard(msg){
   const rows = SUBJ_ORDER.map(c => { const t = DATA[c].theory.reduce((a, ch) => a + ch.items.length, 0), p = DATA[c].practice.reduce((a, ch) => a + ch.items.length, 0), f = DATA[c].theory[0].items.length + DATA[c].practice[0].items.length; return `<tr><td>${SUBJ_NAME[c]}</td><td class="r">${t}</td><td class="r">${p}</td><td class="r">${(t + p).toLocaleString()}</td><td class="r free">${f}</td></tr>`; }).join('');
   const mt = DATA.M.reduce((a, r) => a + r.theory.length, 0), mp = DATA.M.reduce((a, r) => a + r.practice.length, 0), m1 = DATA.M[0].theory.length + DATA.M[0].practice.length;
   const tt = SUBJ_ORDER.reduce((a, c) => a + DATA[c].theory.reduce((x, ch) => x + ch.items.length, 0), 0), tp = ALLQ.length - tt;
-  return el(`<div class="card lock"><div class="ico">🔒</div><h2>${PAID ? '전체 이용권' : '전체 열기'}</h2><p class="lede">${esc(msg || '이 챕터는 전체 이용 코드로 열립니다.')}</p>
+  return el(`<div class="card lock"><h2>${PAID ? '전체 이용권' : '전체 열기'}</h2><p class="lede">${esc(msg || '이 챕터는 전체 이용 코드로 열립니다.')}</p>
     <div class="tblwrap"><table class="sc lockt"><tr><th>과목</th><th class="r">이론</th><th class="r">실기</th><th class="r">합계</th><th class="r free">무료</th></tr>${rows}
     <tr class="sum"><td>4과목</td><td class="r">${tt.toLocaleString()}</td><td class="r">${tp.toLocaleString()}</td><td class="r">${ALLQ.length.toLocaleString()}</td><td class="r free">${SUBJ_ORDER.reduce((a, c) => a + DATA[c].theory[0].items.length + DATA[c].practice[0].items.length, 0)}</td></tr>
     <tr class="mk"><td>모의고사 ${DATA.M.length}회</td><td class="r">${mt.toLocaleString()}</td><td class="r">${mp}</td><td class="r">${(mt + mp).toLocaleString()}</td><td class="r free">${m1}</td></tr></table></div>
@@ -619,7 +604,7 @@ function runner(){
   $view.append(el(`<div class="qtop"><span class="mono">${run.round > 1 ? run.round + '회차 · ' : ''}${idx + 1} / ${pool.length}</span><span class="pbar"><i style="width:${pct(idx + 1, pool.length)}%"></i></span><span>${SUBJ_NAME[q._code]} ${q._part === 'theory' ? '이론' : '실기'}</span></div>`));
   $view.append(el(qCardHTML(q, q.no, '')));
   const card = $view.querySelector('.qcard');
-  card.querySelectorAll('.opt').forEach(b => b.onclick = () => { const c = +b.dataset.i; record(q, c); run.seen.add(q.id); reveal(card, q, c); renderTabs(); if (S.days[today()] === (S.goal || 20)) toast('🎯 오늘 목표 달성!'); });
+  card.querySelectorAll('.opt').forEach(b => b.onclick = () => { const c = +b.dataset.i; record(q, c); run.seen.add(q.id); reveal(card, q, c); renderTabs(); });
   if (run.seen.has(q.id) && S.ans[q.id]) reveal(card, q, S.ans[q.id].c);
   fillImgs($view);
   dock(idx === 0, idx + 1 < pool.length ? '다음' : '결과 보기', S.star[q.id]);
@@ -639,7 +624,7 @@ function doneView(){
   }
   if (ci && (mastered || (!wrong.length && isMastered(ci.code, ci.part, ci.ci)))) {
     const ch = DATA[ci.code][ci.part][ci.ci];
-    $view.append(el(`<div class="card celebrate" style="margin-top:16px"><div class="medalbig">🏅</div><h1 style="margin:6px 0 2px">100점 · 챕터 마스터</h1><p class="lede">${esc(ch.t)}<br>정답 개념 ${distinctAns(ch.items)}개를 ${ch.items.length}문항, 여러 방향으로 모두 맞혔습니다.<br>틀렸던 문항은 며칠 뒤 '오늘의 복습'에 다시 나옵니다.</p>
+    $view.append(el(`<div class="card celebrate" style="margin-top:16px"><p class="lede">챕터 완료</p><h1 style="margin:6px 0 2px">전 문항 정답</h1><p class="lede">${esc(ch.t)}<br>정답 개념 ${distinctAns(ch.items)}개, ${ch.items.length}문항을 모두 맞혔습니다.<br>틀렸던 문항은 간격 복습(1·3·7일)으로 다시 출제됩니다.</p>
       <div class="row" style="justify-content:center;margin-top:16px"><button class="btn primary" id="next">다음 챕터</button><button class="btn" id="back">목록으로</button></div></div>`));
     const list = DATA[ci.code][ci.part], nx = ci.ci + 1;
     const nb = document.getElementById('next');
@@ -647,9 +632,9 @@ function doneView(){
     document.getElementById('back').onclick = () => { const p = stack.pop(); if (p) show(p.fn, p.title, p.sub, false); else show(home); };
     return;
   }
-  $view.append(el(`<div class="card celebrate" style="margin-top:16px"><p class="lede">${esc(run.title)}${run.round > 1 ? ` · ${run.round}회차` : ''}</p><div class="score">${solved.length ? pct(x.ok, solved.length) : 0}점</div>
-    <p class="lede">${solved.length}문항 중 ${x.ok}문항 정답${ci ? ` · 챕터 마스터까지 ${DATA[ci.code][ci.part][ci.ci].items.filter(q => !(S.ans[q.id] && S.ans[q.id].ok)).length}문항` : ''}</p>
-    <div class="row" style="justify-content:center;margin-top:14px">${wrong.length ? `<button class="btn eosin" id="retry">틀린 ${wrong.length}문항 다시 → 100점 도전</button>` : ''}<button class="btn" id="back">목록으로</button></div></div>`));
+  $view.append(el(`<div class="card celebrate" style="margin-top:16px"><p class="lede">${esc(run.title)}${run.round > 1 ? ` · ${run.round}회차` : ''}</p><div class="score">${solved.length ? pct(x.ok, solved.length) : 0}%</div>
+    <p class="lede">${solved.length}문항 중 ${x.ok}문항 정답${ci ? ` · 챕터 미완료 ${DATA[ci.code][ci.part][ci.ci].items.filter(q => !(S.ans[q.id] && S.ans[q.id].ok)).length}문항` : ''}</p>
+    <div class="row" style="justify-content:center;margin-top:14px">${wrong.length ? `<button class="btn eosin" id="retry">오답 ${wrong.length}문항 다시 풀기</button>` : ''}<button class="btn" id="back">목록으로</button></div></div>`));
   const rt = document.getElementById('retry');
   if (rt) rt.onclick = () => { const r = run.round + 1; run = {pool: wrong, title: run.title, idx: 0, seen: new Set(), chInfo: ci, round: r}; show(runner, cur.title, `${wrong.length}문항`, false); };
   document.getElementById('back').onclick = () => { const p = stack.pop(); if (p) show(p.fn, p.title, p.sub, false); else show(home); };
@@ -662,9 +647,9 @@ function notes(){
   const list = lists[noteSeg];
   const desc = {due: '틀린 문항은 1일 뒤, 복습에서 맞히면 3일 뒤, 7일 뒤에 다시 나옵니다. 오래 기억에 남게 하는 간격 복습입니다.', wrong: '틀린 문항이 자동으로 모입니다. 다시 풀어 맞히면 빠집니다.', star: '문제 화면 아래 ★를 누른 문항이 모입니다.'}[noteSeg];
   const empty = {due: '오늘 복습할 문항이 없습니다. 문제를 풀다 틀리면 내일 여기에 나옵니다.', wrong: '아직 틀린 문항이 없습니다.', star: '별표한 문항이 없습니다. 헷갈리는 문항에 ★를 눌러 두세요.'}[noteSeg];
-  const name = {due: '오늘의 복습', wrong: '오답 다시', star: '별표 문항'}[noteSeg];
-  const f = el(`<h1>복습</h1>
-    <div class="seg"><button data-s="due" aria-selected="${noteSeg === 'due'}">오늘의 복습 ${lists.due.length}</button><button data-s="wrong" aria-selected="${noteSeg === 'wrong'}">오답 ${lists.wrong.length}</button><button data-s="star" aria-selected="${noteSeg === 'star'}">별표 ${lists.star.length}</button></div>
+  const name = {due: '간격 복습', wrong: '오답 다시 풀기', star: '별표 문항'}[noteSeg];
+  const f = el(`<h1>오답노트</h1>
+    <div class="seg"><button data-s="due" aria-selected="${noteSeg === 'due'}">복습 예정 ${lists.due.length}</button><button data-s="wrong" aria-selected="${noteSeg === 'wrong'}">오답 ${lists.wrong.length}</button><button data-s="star" aria-selected="${noteSeg === 'star'}">별표 ${lists.star.length}</button></div>
     <p class="lede">${desc}</p>
     ${list.length ? `<div class="row" style="margin-top:12px"><button class="btn primary wide" id="all">${list.length}문항 풀기</button><button class="btn" id="sh">섞어서</button></div>` : `<div class="empty">${empty}</div>`}
     <div class="wl" id="wl"></div>`);
@@ -676,137 +661,10 @@ function notes(){
   const sh = document.getElementById('sh'); if (sh) sh.onclick = () => startRun(shuffle(list), name);
 }
 
-/* ---------- 사진 짝 맞추기 · 판독 카드 (문항의 사진과 그 문항의 정답만 사용) ---------- */
-const subjOk = q => S.ps === 'all' || q._code === S.ps;
-const photoAll = () => ALLQ.filter(q => q._part === 'practice' && q.img && q.img.length && usable(q) && subjOk(q));
-/* 개념 짝: 교재 '핵심' 줄의 "A = B" 문장을 그대로 짝으로 쓴다 */
-const PAIRS = (() => { const m = new Map(); ALLQ.forEach(q => (q.k || '').split(/\.\s+/).forEach(x => { x = x.trim().replace(/\.$/, ''); const p = x.split(' = '); if (p.length !== 2) return; const [a, b] = p.map(y => y.trim()); if (a.length < 2 || a.length > 18 || b.length < 2 || b.length > 18) return; if (!m.has(a + '=' + b)) m.set(a + '=' + b, {a, b, q}); })); return [...m.values()]; })();
-/* 빈칸: 그 문항의 '핵심' 문장에서 정답 낱말을 비우고, 보기는 그 문항의 보기를 그대로 쓴다 */
-const BLANKS = ALLQ.map(q => { if (Array.isArray(q.a) || !q.k) return null; const ans = q.o[q.a].trim(); if (ans.length < 2 || ans.length > 20 || q.o.some(o => o.length > 30)) return null; if (q.o.some((o, i) => i !== q.a && o.trim().length >= 2 && q.k.includes(o.trim()))) return null; const sent = q.k.split(/\.\s+/).map(x => x.trim().replace(/\.$/, '')).find(x => x.includes(ans)); if (!sent || sent.length < ans.length + 4) return null; return {q, ans, sent}; }).filter(Boolean);
-const QUICK = () => ALLQ.filter(q => usable(q) && subjOk(q) && !(q.img && q.img.length) && q.q.length <= 60 && q.o.every(o => o.length <= 24));
-const nkey = t => t.toLowerCase().replace(/[\s.,·()\[\]\-–_/'"]/g, '');
+/* ---------- 실기 사진 판독 연습 (실기 사진 문항을 해설 없이 연속으로) ---------- */
+const photoAll = c => ALLQ.filter(q => q._part === 'practice' && q.img && q.img.length && usable(q) && (!c || q._code === c));
 const PHOTO_N = new Set(ALLQ.flatMap(q => q.img || []).concat(DATA.M.flatMap(r => r.theory.concat(r.practice).flatMap(q => q.img || [])))).size;
-function play(){
-  const pp = photoAll().length, cp = PAIRS.filter(x => usable(x.q) && subjOk(x.q)).length, bp = BLANKS.filter(x => usable(x.q) && subjOk(x.q)).length, qp = QUICK().length;
-  const best = k => S.best[k + S.ps] ? ` · 최고 ${S.best[k + S.ps]}${k === 'b' ? '점' : '초'}` : '';
-  const f = el(`<h1>쉬는 시간 3분</h1><p class="lede">한 판 1~3분. 통학길, 쉬는 시간, 잠들기 전에 한 판씩 하다 보면 조직병리가 손에 붙습니다.</p>
-    <div class="seg segfull" id="ps">${['all', ...SUBJ_ORDER].map(c => `<button data-c="${c}" aria-selected="${S.ps === c}">${{all: '전체', P: '병리', H: '조직', T: '조직검사', C: '세포'}[c]}</button>`).join('')}</div>
-    <div class="games">
-      <button class="game g1" data-g="photo" ${pp < 8 ? 'disabled' : ''}><span class="gi">🔬</span><b>사진 짝 맞추기</b><span>사진 4장 ↔ 이름 4개 · 5판<br>약 1분${best('m')}</span></button>
-      <button class="game g2" data-g="pair" ${cp < 10 ? 'disabled' : ''}><span class="gi">🧩</span><b>개념 짝 맞추기</b><span>단어 앱처럼 왼쪽·오른쪽 잇기 · 4판<br>약 1분${best('c')}</span></button>
-      <button class="game g3" data-g="blank" ${bp < 10 ? 'disabled' : ''}><span class="gi">✏️</span><b>빈칸 채우기</b><span>핵심 한 줄의 빈칸 · 10문제<br>약 2분${best('b')}</span></button>
-      <button class="game g4" data-g="card" ${pp ? '' : 'disabled'}><span class="gi">▣</span><b>판독 카드</b><span>실기 사진만 연속 20장<br>약 3분</span></button>
-      <button class="game g5 wide" data-g="quick" ${qp < 10 ? 'disabled' : ''}><span class="gi">⚡</span><b>3분 10문항</b><span>지문이 짧은 문항만 골라 해설까지 · 오답은 복습에 쌓입니다</span></button>
-    </div>
-    <p class="lede" style="margin-top:12px">${S.ps === 'all' ? '네 과목' : SUBJ_NAME[S.ps]}: 사진 ${pp}장 · 개념 짝 ${cp}개 · 빈칸 ${bp}문장 · 짧은 문항 ${qp}개</p>`);
-  f.querySelectorAll('#ps button').forEach(b => b.onclick = () => { S.ps = b.dataset.c; save(); show(play); });
-  $view.append(f);
-  const sub = S.ps === 'all' ? '전체' : SUBJ_NAME[S.ps];
-  $view.querySelectorAll('.game').forEach(b => b.onclick = () => ({
-    photo: () => go(() => matchGame(), '사진 짝 맞추기', sub),
-    pair: () => go(pairGame, '개념 짝 맞추기', sub),
-    blank: () => go(blankGame, '빈칸 채우기', sub),
-    card: () => startCards(),
-    quick: () => startRun(shuffle(QUICK()).slice(0, 10), '3분 10문항')
-  })[b.dataset.g]());
-}
-function gameEnd(icon, big, line, again, extra){
-  $view.replaceChildren(el(`<div class="card celebrate" style="margin-top:16px">${icon ? `<div class="medalbig">${icon}</div>` : ''}<h1 style="margin:6px 0 2px">${big}</h1><p class="lede">${line}</p><div class="row" style="justify-content:center;margin-top:14px"><button class="btn primary" id="again">한 판 더</button>${extra ? extra.html : ''}<button class="btn" id="toPlay">게임 목록</button></div></div>`));
-  document.getElementById('again').onclick = again;
-  document.getElementById('toPlay').onclick = () => toTab('play');
-  if (extra) extra.bind();
-}
-function pairGame(){
-  const pool = shuffle(PAIRS.filter(x => usable(x.q) && subjOk(x.q))), st = {round: 0, rounds: 4, start: Date.now(), miss: 0, ok: 0};
-  $view.append(el(`<div class="gamebar"><span>판 <b id="gr">1</b>/4</span><span>틀림 <b id="gx">0</b></span><span><b id="gt">0.0</b>초</span></div><p class="lede" style="margin-top:6px">왼쪽 낱말을 누르고 짝이 되는 오른쪽을 누르세요.</p><div class="pairs" id="board"></div>`));
-  timer = setInterval(() => { const t = document.getElementById('gt'); if (t) t.textContent = ((Date.now() - st.start) / 1000).toFixed(1); }, 100);
-  let ptr = 0;
-  const deal = () => {
-    const picked = [], ua = new Set(), ub = new Set();
-    while (picked.length < 5 && ptr < pool.length * 2) { const x = pool[ptr++ % pool.length]; const a = nkey(x.a), b = nkey(x.b); if (ua.has(a) || ub.has(b) || ua.has(b) || ub.has(a)) continue; ua.add(a); ub.add(b); picked.push(x); }
-    const L = shuffle(picked), R = shuffle(picked), board = document.getElementById('board'); board.replaceChildren();
-    let sel = null, left = picked.length;
-    L.forEach((x, i) => {
-      [[x, 'a'], [R[i], 'b']].forEach(([y, side]) => {
-        const b = el(`<button class="pc ${side}">${esc(y[side])}</button>`).firstElementChild; b._x = y; b._s = side;
-        b.onclick = () => {
-          if (sel && sel._s === side) { sel.classList.remove('pick'); sel = null; }
-          if (!sel) { sel = b; b.classList.add('pick'); return; }
-          if (sel._x === b._x) { [sel, b].forEach(z => { z.classList.remove('pick'); z.classList.add('done'); z.disabled = true; }); sel = null; st.ok++; if (--left === 0) next(); }
-          else { st.miss++; document.getElementById('gx').textContent = st.miss; [sel, b].forEach(z => { z.classList.remove('pick'); z.classList.add('bad'); setTimeout(() => z.classList.remove('bad'), 320); }); sel = null; }
-        };
-        board.append(b);
-      });
-    });
-  };
-  const next = () => {
-    st.round++;
-    if (st.round < st.rounds) { document.getElementById('gr').textContent = st.round + 1; return setTimeout(deal, 250); }
-    stopTimer(); const sec = +((Date.now() - st.start) / 1000).toFixed(1), k = 'c' + S.ps, prev = S.best[k], rec = !prev || sec < prev; if (rec) S.best[k] = sec;
-    save();
-    gameEnd(rec ? '⏱' : '', `${sec}초${rec ? ' · 최고 기록!' : ''}`, `개념 ${st.ok}쌍 · 틀림 ${st.miss}번${prev && !rec ? ` · 최고 ${prev}초` : ''}`, () => show(pairGame, cur.title, cur.sub, false));
-  };
-  deal();
-}
-let blanks = null;
-function blankGame(){
-  if (!blanks || blanks.done) { const pool = shuffle(BLANKS.filter(x => usable(x.q) && subjOk(x.q))), seen = new Set(), pick = []; for (const x of pool) { if (seen.has(nkey(x.ans))) continue; seen.add(nkey(x.ans)); pick.push(x); if (pick.length === 10) break; } blanks = {pool: pick, i: 0, ok: 0, combo: 0, maxc: 0, wrong: [], done: false}; }
-  const B = blanks, x = B.pool[B.i], i = x.sent.indexOf(x.ans);
-  const sentHTML = esc(x.sent.slice(0, i)) + '<span class="blank" id="bl">　　　</span>' + esc(x.sent.slice(i + x.ans.length));
-  $view.append(el(`<div class="qtop"><span class="mono">${B.i + 1} / ${B.pool.length}</span><span class="pbar"><i style="width:${pct(B.i + 1, B.pool.length)}%"></i></span><span class="combo ${B.combo >= 2 ? 'on' : ''}">🔥 ${B.combo}연속</span></div>
-    <div class="card bcard"><div class="qhead"><span class="pill">${SUBJ_NAME[x.q._code]}</span><span>핵심 한 줄</span></div><div class="bsent">${sentHTML}</div>
-    <div class="chips">${shuffle(x.q.o.map((o, k) => ({o, k}))).map(c => `<button class="chip" data-i="${c.k}">${esc(c.o)}</button>`).join('')}</div><div id="bafter"></div></div>`));
-  $view.querySelectorAll('.chip').forEach(b => b.onclick = () => {
-    const c = +b.dataset.i, ok = c === x.q.a;
-    $view.querySelectorAll('.chip').forEach(z => { z.disabled = true; if (+z.dataset.i === x.q.a) z.classList.add('correct'); else if (z === b) z.classList.add('wrong'); });
-    const bl = document.getElementById('bl'); bl.textContent = x.ans; bl.classList.add(ok ? 'ok' : 'no');
-    S.days[today()] = (S.days[today()] || 0) + 1; save();
-    if (ok) { B.ok++; B.combo++; B.maxc = Math.max(B.maxc, B.combo); } else { B.combo = 0; B.wrong.push(x.q); }
-    const nx = () => { if (B.i + 1 < B.pool.length) { B.i++; show(blankGame, cur.title, cur.sub, false); } else blankEnd(); };
-    if (ok) { const at = cur; setTimeout(() => { if (cur === at) nx(); }, 650); }
-    else { document.getElementById('bafter').replaceChildren(el(`<p class="lede" style="margin-top:10px">원래 문항: ${esc(x.q.q.split('\n')[0])}</p><div class="row" style="margin-top:10px"><button class="btn primary wide" id="bn">다음</button></div>`)); document.getElementById('bn').onclick = nx; }
-  });
-}
-function blankEnd(){
-  const B = blanks; B.done = true; const k = 'b' + S.ps, prev = S.best[k] || 0, sc = B.ok * 10, rec = sc > prev; if (rec) { S.best[k] = sc; save(); }
-  gameEnd(sc === 100 ? '💯' : rec ? '⭐' : '', `${sc}점`, `${B.pool.length}문제 중 ${B.ok}개 · 최대 ${B.maxc}연속${rec && prev ? ' · 최고 기록!' : ''}`, () => show(blankGame, cur.title, cur.sub, false),
-    B.wrong.length ? {html: `<button class="btn eosin" id="bw">틀린 ${B.wrong.length}개 원래 문항으로</button>`, bind: () => document.getElementById('bw').onclick = () => startRun(B.wrong.slice(), '빈칸 오답 문항')} : null);
-}
-function matchGame(){
-  const pool = photoAll(), c = S.ps;
-  const st = {round: 0, rounds: 5, start: Date.now(), miss: 0};
-  $view.append(el(`<div class="gamebar"><span>판 <b id="gr">1</b>/5</span><span>틀림 <b id="gx">0</b></span><span><b id="gt">0.0</b>초</span></div><div class="match" id="board"></div>`));
-  timer = setInterval(() => { const t = document.getElementById('gt'); if (t) t.textContent = ((Date.now() - st.start) / 1000).toFixed(1); }, 100);
-  const deal = () => {
-    const picked = []; const used = new Set();
-    for (const q of shuffle(pool)) { const k = akey(q); if (!used.has(k)) { used.add(k); picked.push(q); } if (picked.length === 4) break; }
-    const cells = shuffle(picked.map(q => ({t: 'img', q})).concat(picked.map(q => ({t: 'txt', q}))));
-    const board = document.getElementById('board'); board.replaceChildren();
-    let sel = null, left = 4;
-    cells.forEach(cl => {
-      const b = el(`<button class="mcell">${cl.t === 'txt' ? esc(ansText(cl.q)) : '<span class="lede">…</span>'}</button>`).firstElementChild;
-      if (cl.t === 'img') imgSrc(cl.q.img[0]).then(src => { b.innerHTML = `<img alt="실기 사진" src="${src}">`; }).catch(() => {});
-      b.onclick = () => {
-        if (!sel) { sel = {b, cl}; b.classList.add('pick'); return; }
-        if (sel.b === b) { b.classList.remove('pick'); sel = null; return; }
-        if (sel.cl.t !== cl.t && sel.cl.q === cl.q) { [sel.b, b].forEach(x => { x.classList.remove('pick'); x.classList.add('done'); }); sel = null; if (--left === 0) next(); }
-        else { st.miss++; document.getElementById('gx').textContent = st.miss; [sel.b, b].forEach(x => { x.classList.remove('pick'); x.classList.add('bad'); setTimeout(() => x.classList.remove('bad'), 320); }); sel = null; }
-      };
-      board.append(b);
-    });
-  };
-  const next = () => {
-    st.round++;
-    if (st.round >= st.rounds) {
-      stopTimer(); const sec = +((Date.now() - st.start) / 1000).toFixed(1); const k = 'm' + c; const prev = S.best[k]; const rec = !prev || sec < prev; if (rec) { S.best[k] = sec; save(); }
-      gameEnd(rec ? '⏱' : '', `${sec}초${rec ? ' · 최고 기록!' : ''}`, `사진 20장 · 틀림 ${st.miss}번${prev && !rec ? ` · 최고 ${prev}초` : ''}`, () => show(matchGame, cur.title, cur.sub, false));
-      return;
-    }
-    document.getElementById('gr').textContent = st.round + 1; setTimeout(deal, 250);
-  };
-  deal();
-}
-function startCards(pool){ cards = {pool: pool || shuffle(photoAll()).slice(0, 20), i: 0, wrong: []}; go(cardRun, '판독 카드', S.ps === 'all' ? '전체' : SUBJ_NAME[S.ps]); }
+function startCards(c, pool){ cards = {pool: pool || shuffle(photoAll(c)).slice(0, 20), i: 0, wrong: [], c}; go(cardRun, '실기 사진 판독 연습', SUBJ_NAME[c]); }
 let cards = null;
 function cardRun(){
   const {pool, i} = cards, q = pool[i];
@@ -821,9 +679,9 @@ function cardRun(){
 }
 function cardDone(){
   const n = cards.pool.length, w = cards.wrong.length;
-  $view.append(el(`<div class="card celebrate" style="margin-top:16px"><div class="score">${n - w}/${n}</div><p class="lede">판독 카드${n - w === n ? ' · 모두 맞힘' : ''}</p><div class="row" style="justify-content:center;margin-top:14px">${w ? `<button class="btn eosin" id="rw">틀린 사진 ${w}장 해설과 다시</button>` : ''}<button class="btn" id="more">새 20장</button></div></div>`));
-  const rw = document.getElementById('rw'); if (rw) rw.onclick = () => startRun(cards.wrong, '판독 카드 오답');
-  document.getElementById('more').onclick = () => { stack.pop(); startCards(); };
+  $view.append(el(`<div class="card celebrate" style="margin-top:16px"><div class="score">${n - w}/${n}</div><p class="lede">${SUBJ_NAME[cards.c]} 실기 사진 판독 · 정답 ${n - w}문항</p><div class="row" style="justify-content:center;margin-top:14px">${w ? `<button class="btn eosin" id="rw">오답 ${w}문항 해설과 다시 풀기</button>` : ''}<button class="btn" id="more">새 20문항</button></div></div>`));
+  const rw = document.getElementById('rw'); if (rw) rw.onclick = () => startRun(cards.wrong, '사진 판독 오답');
+  document.getElementById('more').onclick = () => { stack.pop(); startCards(cards.c); };
 }
 
 /* ---------- 기록 ---------- */
@@ -833,12 +691,11 @@ function stats(){
   const weak = chs.filter(w => w.r < 1).sort((a, b) => a.r - b.r).slice(0, 5);
   const mk = Object.entries(S.mock).sort((a, b) => a[0] - b[0]);
   const f = el(`<h1>기록</h1>
-    <div class="today"><div class="tile"><span class="ic ok">✓</span><span class="t">푼 문항 ${s.done.toLocaleString()} · 정답률 ${s.done ? pct(s.ok, s.done) + '%' : '-'}<small>🔥 연속 ${streak()}일 · 🏅 마스터 ${masterCount()}/${totalCh}챕터</small></span></div></div>
+    <div class="sumrow"><div><b>${s.done.toLocaleString()}</b><span>풀이 문항</span></div><div><b>${s.done ? pct(s.ok, s.done) + '%' : '-'}</b><span>정답률</span></div><div><b>${masterCount()}/${totalCh}</b><span>완료 챕터</span></div><div><b>${Object.keys(S.days).length}</b><span>학습일</span></div></div>
     <h2>과목별 정답률</h2><div class="card" id="bySub"></div>
     <h2>약점 챕터 <small>3문항 이상 푼 챕터 중 정답률 낮은 순</small></h2><div id="weak"></div>
     <h2>모의고사 점수</h2><div class="card" id="trend"></div>
     <h2>설정</h2><div class="card settings">
-      <div class="setrow"><span>하루 목표</span><span class="seg" style="margin:0">${[10,20,40].map(g => `<button data-g="${g}" aria-selected="${(S.goal || 20) === g}">${g}문항</button>`).join('')}</span></div>
       <div class="setrow"><span>글자 크기</span><span class="seg" style="margin:0"><button data-fs="0" aria-selected="${!S.fs}">보통</button><button data-fs="1" aria-selected="${S.fs === 1}">크게</button><button data-fs="2" aria-selected="${S.fs === 2}">아주 크게</button></span></div>
       ${SALE ? `<div class="setrow"><span>${PAID ? '이용권' : '이용 상태'}<br><small class="lede">${UNLOCKED ? '전체 이용 중 · 코드 ' + CODE.slice(0, 4) + '-****-****' : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${UNLOCKED ? '' : '<button class="btn eosin" id="toBuy">코드 넣기</button>'}</div>` : ''}
       <div class="setrow" ${SALE ? 'hidden' : ''}><span>체험판 화면 미리보기<br><small class="lede">학생이 무료로 보는 화면(과목별 첫 챕터 + 모의고사 1회)</small></span><span class="seg" style="margin:0"><button data-tr="0" aria-selected="${!S.trial}">전체</button><button data-tr="1" aria-selected="${!!S.trial}">체험판</button></span></div>
@@ -853,12 +710,11 @@ function stats(){
   const tr = document.getElementById('trend');
   if (!mk.length) tr.append(el('<p class="lede">모의고사를 응시하면 회차별 점수가 막대로 쌓입니다.</p>'));
   else tr.append(el(`<div class="trend">${mk.map(([no, r]) => `<div style="height:${Math.max(4, pct(r.score, r.n || 46))}%"><span>${no}</span></div>`).join('')}</div><p class="lede">막대 높이 = 정답 비율 · 평균 ${Math.round(mk.reduce((a, [, r]) => a + pct(r.score, r.n || 46), 0) / mk.length)}%</p>`));
-  document.querySelectorAll('[data-g]').forEach(b => b.onclick = () => { S.goal = +b.dataset.g; save(); show(stats); });
   document.querySelectorAll('[data-fs]').forEach(b => b.onclick = () => { S.fs = +b.dataset.fs; save(); document.body.className = 'fs' + S.fs; show(stats); });
   const tb = document.getElementById('toBuy'); if (tb) tb.onclick = () => go(() => lockView(null), '전체 열기');
   document.querySelectorAll('[data-tr]').forEach(b => b.onclick = () => { S.trial = b.dataset.tr === '1'; save(); show(stats); toast(S.trial ? '체험판 화면입니다' : '전체 화면입니다'); });
   document.getElementById('wipe').onclick = () => {
-    document.getElementById('confirm').replaceChildren(el('<div class="confirm">풀이 기록, 오답, 복습 일정, 마스터, 모의고사 점수를 모두 지울까요? 별표는 남습니다. <button class="btn eosin" id="yes">모두 지우기</button><button class="btn" id="no">취소</button></div>'));
+    document.getElementById('confirm').replaceChildren(el('<div class="confirm">풀이 기록, 오답, 복습 일정, 완료 표시, 모의고사 점수를 모두 지울까요? 별표는 남습니다. <button class="btn eosin" id="yes">모두 지우기</button><button class="btn" id="no">취소</button></div>'));
     document.getElementById('yes').onclick = () => { Object.assign(S, {ans: {}, mock: {}, days: {}, last: null, master: {}, rev: {}, best: {}}); save(); show(stats); toast('기록을 지웠습니다'); };
     document.getElementById('no').onclick = () => document.getElementById('confirm').replaceChildren();
   };
@@ -871,7 +727,7 @@ function mockList(){
   const box = document.getElementById('rounds');
   DATA.M.forEach(r => {
     const rec = S.mock[r.no], n = r.theory.length + r.practice.length, lk = mockLocked(r.no), dr = S.draft[r.no];
-    const b = el(`<button class="rnd ${rec && !dr ? 'done' : ''} ${dr ? 'prog' : ''} ${lk ? 'locked' : ''}">${TRIAL() && isFreeMock(r.no) ? '<span class="free">무료</span>' : ''}<b>${lk ? '🔒' : r.no}</b><span>${S.draft[r.no] ? Object.keys(S.draft[r.no].ans).length + '/' + n + ' 중' : rec ? rec.score + '/' + n : n + '문항'}</span></button>`).firstElementChild;
+    const b = el(`<button class="rnd ${rec && !dr ? 'done' : ''} ${dr ? 'prog' : ''} ${lk ? 'locked' : ''}">${TRIAL() && isFreeMock(r.no) ? '<span class="free">무료</span>' : ''}<b>${r.no}</b><span>${lk ? '잠김' : S.draft[r.no] ? Object.keys(S.draft[r.no].ans).length + '/' + n + ' 중' : rec ? rec.score + '/' + n : n + '문항'}</span></button>`).firstElementChild;
     b.onclick = () => go(() => lk ? lockView('모의고사 ' + r.no + '회') : mockIntro(r.no), '모의고사 ' + r.no + '회');
     box.append(b);
   });
@@ -944,7 +800,7 @@ function mockResult(store){
     ${weakest && weakest.r < 1 ? `<button class="tile" id="weakGo" style="margin-top:10px"><span class="ic eo">!</span><span class="t">${esc(weakest.s)}부터 보강하세요<small>${SUBJ_NAME[MOCK2CODE[weakest.s]]} 챕터 목록으로 이동</small></span><span class="arrow">›</span></button>` : ''}
     <div class="seg" id="flt"><button data-f="wrong" aria-selected="true">틀린 문항</button><button data-f="all" aria-selected="false">전체 해설</button></div>
     <div id="rev"></div>`));
-  const wg = document.getElementById('weakGo'); if (wg) wg.onclick = () => { const c = MOCK2CODE[weakest.s]; go(() => subject(c), SUBJ_NAME[c]); };
+  const wg = document.getElementById('weakGo'); if (wg) wg.onclick = () => { const c = MOCK2CODE[weakest.s]; Object.keys(openSubj).forEach(k => delete openSubj[k]); openSubj[c] = true; toTab('home'); };
   const draw = flt => {
     const box = document.getElementById('rev'); box.replaceChildren();
     seq.forEach(x => { const c = mockState.ans[x.key], ok = c !== undefined && isOk(x.q, c); if (flt === 'wrong' && ok) return; const n = el(qCardHTML(x.q, x.part + ' ' + x.q.n + '번', x.q.s)); const card = n.firstElementChild; box.append(n); reveal(card, x.q, c === undefined ? -1 : c); });
