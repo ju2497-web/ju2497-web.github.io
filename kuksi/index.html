@@ -363,33 +363,42 @@ const WHY_HTML = `<ol class="why-l">
 <h3>활용법</h3><table class="t guide"><tr><td>문항 해설</td><td>정답, 해설, 오답 분석, 핵심 한 줄. 오답 분석은 헷갈리기 쉬운 보기와 다른 국시 문항으로 이어지는 보기를 골라 설명합니다.</td></tr><tr><td>실기 판독 포인트</td><td>사진에서 무엇을 보고 판단하는지 정리했습니다. 사진을 누르면 크게 볼 수 있습니다.</td></tr><tr><td>연계 문항</td><td>정답 개념이 같은 다른 문항(이론↔실기 포함)을 해설 아래에 묶었습니다.</td></tr><tr><td>빈출 표시</td><td>여러 차례 반복 출제된 핵심 개념 문항에 "빈출"을 붙였습니다.</td></tr><tr><td>권장 학습법</td><td>1회독: 핵심정리 → 문제 → 해설 순서로 정독 / 2회독: 오답노트와 빈출 문항 / 시험 직전: 과목별 최종 점검표와 핵심 한 줄</td></tr><tr><td>단축키(PC)</td><td>1~5 보기 선택, Enter·→ 다음, ← 이전</td></tr></table>`;
 
 /* ---------- 판매본 잠금: 이용 코드로 전체 문항 키를 꺼낸다. 코드 없이는 전체 데이터를 읽을 수 없다 ---------- */
-let UNLOCKED = !SALE, MKEY = null, CODE = null;
+let UNLOCKED = !SALE, KEYS = {}, CODES = [];
 const b64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
 const normCode = c => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-async function keyFromCode(code){
+const PACKS = ['P', 'H', 'C', 'T', 'M', 'I'];
+// 코드 하나 → 그 코드로 열리는 키 묶음 {P,H,C,T,M,I 중 일부}. 인터넷이 없으면 마지막으로 받은 잠금 묶음을 쓴다
+async function keysFromCode(code){
   code = normCode(code); if (code.length !== 12) return null;
-  // 인터넷이 없으면 마지막으로 받은 이 코드의 잠금 묶음을 쓴다(오프라인 결함 수정 2026-10-31)
-  let w = null;
-  try { const ks = await (await fetch('keys.json', {cache: 'no-store'})).json(); w = ks[code.slice(0, 4)] || null; if (w) { try { localStorage.setItem('kuksi-kw', JSON.stringify([code.slice(0, 4), w])); } catch (_) {} } else return null; }
-  catch (e) { try { const c = JSON.parse(localStorage.getItem('kuksi-kw') || 'null'); if (c && c[0] === code.slice(0, 4)) w = c[1]; } catch (_) {} }
+  const id = code.slice(0, 4); let w = null, kw = {};
+  try { kw = JSON.parse(localStorage.getItem('kuksi-kw2') || '{}') || {}; } catch (_) {}
+  try { const ks = await (await fetch('keys.json', {cache: 'no-store'})).json(); w = ks[id] || null; if (!w) return null; kw[id] = w; try { localStorage.setItem('kuksi-kw2', JSON.stringify(kw)); } catch (_) {} }
+  catch (e) { w = kw[id] || null; }
   if (!w) return null;
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
   const kek = await crypto.subtle.deriveKey({name: 'PBKDF2', salt: b64(w.s), iterations: 150000, hash: 'SHA-256'}, base, {name: 'AES-GCM', length: 256}, false, ['decrypt']);
-  try { const raw = await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64(w.iv)}, kek, b64(w.ct)); return await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']); } catch (e) { return null; }
+  let set; try { set = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64(w.iv)}, kek, b64(w.ct)))); } catch (e) { return null; }
+  const out = {}; for (const k of PACKS) if (set[k]) out[k] = await crypto.subtle.importKey('raw', b64(set[k]), 'AES-GCM', false, ['decrypt']);
+  return out;
 }
 async function decBin(url, key){ const buf = new Uint8Array(await (await fetch(url)).arrayBuffer()); return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: buf.slice(0, 12)}, key, buf.slice(12)))); }
+const savedCodes = () => { try { const a = JSON.parse(localStorage.getItem('kuksi-codes') || 'null'); if (Array.isArray(a)) return a; const c = localStorage.getItem('kuksi-code'); return c ? [c] : []; } catch (e) { return []; } };
 if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && SALE) navigator.serviceWorker.register('sw.js').catch(() => {});
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 if (SALE) {
   document.getElementById('view').innerHTML = '<div class="empty">불러오는 중…</div>';
-  try { const c = localStorage.getItem('kuksi-code'); if (c) { MKEY = await keyFromCode(c); if (MKEY) { DATA = await decBin('data.bin', MKEY); UNLOCKED = true; CODE = normCode(c); } } } catch (e) {}
+  for (const c of savedCodes()) { try { const k = await keysFromCode(c); if (k && Object.keys(k).length) { Object.assign(KEYS, k); CODES.push(normCode(c)); } } catch (e) {} }
+  for (const c of ['P', 'H', 'C', 'T']) if (KEYS[c]) { try { DATA[c] = await decBin(`data_${c}.bin`, KEYS[c]); } catch (e) { delete KEYS[c]; } }
+  if (KEYS.M) { try { const m = await decBin('data_M.bin', KEYS.M); DATA.M = m.M; DATA.SM = m.SM; } catch (e) { delete KEYS.M; } }
+  UNLOCKED = ['P', 'H', 'C', 'T', 'M'].some(k => KEYS[k]);
 }
 async function useCode(code, msgEl){
   if (msgEl) msgEl.textContent = '확인 중…';
-  let k = null; try { k = await keyFromCode(code); } catch (e) {}
-  if (!k) { if (msgEl) msgEl.textContent = '코드를 다시 확인해 주세요. 12자리(예: ABCD-EFGH-JKLM)입니다.'; return; }
-  try { localStorage.setItem('kuksi-code', normCode(code)); } catch (e) {}
-  if (msgEl) msgEl.textContent = '전체 문항을 엽니다…'; location.reload();
+  let k = null; try { k = await keysFromCode(code); } catch (e) {}
+  if (!k || !Object.keys(k).length) { if (msgEl) msgEl.textContent = '코드를 다시 확인해 주세요. 12자리(예: ABCD-EFGH-JKLM)입니다.'; return; }
+  const list = savedCodes().map(normCode); if (!list.includes(normCode(code))) list.push(normCode(code));
+  try { localStorage.setItem('kuksi-codes', JSON.stringify(list)); localStorage.removeItem('kuksi-code'); } catch (e) {}
+  if (msgEl) msgEl.textContent = '문항을 엽니다…'; location.reload();
 }
 /* ---------- 저장 (이 기기 브라우저에만) ---------- */
 const KEY = 'kuksi-bank-v1';
@@ -416,18 +425,21 @@ document.body.classList.add('fs' + (S.fs || 0));
 const isFreeCh = (code, part, ci) => ci === 0;
 const isFreeMock = no => no === 1 || (typeof no === 'string' && no.slice(1) === '1');
 const TRIAL = () => SALE ? !UNLOCKED : !!S.trial;
-const chLocked = (code, part, ci) => TRIAL() && !isFreeCh(code, part, ci);
-const mockLocked = no => TRIAL() && !isFreeMock(no);
+const OPEN = k => SALE ? !!KEYS[k] : !S.trial;   /* 과목(P·H·C·T)·모의고사(M)·사진(I) 묶음이 이 기기에서 열렸는가 */
+const FULL = () => ['P', 'H', 'C', 'T', 'M'].every(OPEN);
+const openedLabel = () => [...SUBJ_ORDER.filter(c => KEYS[c]).map(c => SUBJ_NAME[c]), ...(KEYS.M ? ['모의고사'] : [])].join(' · ');
+const chLocked = (code, part, ci) => !OPEN(code) && !isFreeCh(code, part, ci);
+const mockLocked = no => !OPEN('M') && !isFreeMock(no);
 /* 종합 모의고사는 번호(1~30), 과목별 모의고사는 'P3'처럼 과목 기호 + 회차 */
 const MK = no => typeof no === 'number' ? DATA.M[no - 1] : DATA.SM[no[0]][+no.slice(1) - 1];
 const mockName = no => typeof no === 'number' ? `제${no}회 모의고사` : `${SUBJ_NAME[no[0]]} 모의고사 ${no.slice(1)}회`;
 const SMN = () => DATA.SM ? SUBJ_ORDER.reduce((a, c) => a + (DATA.SM[c] || []).length, 0) : 0;
-const usable = q => !TRIAL() || isFreeCh(q._code, q._part, q._ch);
+const usable = q => OPEN(q._code) || isFreeCh(q._code, q._part, q._ch);
 
 /* ---------- 사진 ---------- */
 const packCache = {};
-const loadPack = p => packCache[p] || (packCache[p] = SALE && UNLOCKED ? decBin('img/' + p + '.bin', MKEY) : fetch('img/' + p + '.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }));
-const imgSrc = name => IMGIDX[name] ? loadPack(SALE && !UNLOCKED ? 'free_' + IMGIDX[name] : IMGIDX[name]).then(p => p[name] || Promise.reject()) : Promise.reject();
+const loadPack = p => packCache[p] || (packCache[p] = SALE && KEYS.I ? decBin('img/' + p + '.bin', KEYS.I) : fetch('img/' + p + '.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }));
+const imgSrc = name => IMGIDX[name] ? loadPack(SALE && !KEYS.I ? 'free_' + IMGIDX[name] : IMGIDX[name]).then(p => p[name] || Promise.reject()) : Promise.reject();
 function fillImgs(root){
   root.querySelectorAll('[data-img]').forEach(ph => {
     imgSrc(ph.dataset.img).then(src => {
@@ -513,7 +525,7 @@ function home(){
     <p class="lede" style="margin-top:14px">임상병리사 국가시험 조직병리 영역 · 4과목 ${ALLQ.length.toLocaleString()}문항 · 모의고사 ${DATA.M.length}회${SMN() ? ' · 과목별 모의고사 ' + SMN() + '회' : ''}</p>
     <div class="search"><input id="q" type="search" placeholder="문항·해설 검색 (예: Congo red, 화생)" aria-label="문항과 해설 검색"><button class="btn primary" id="go">검색</button></div>
     <div class="sumrow"><div><b>${s.done.toLocaleString()}</b><span>풀이 / ${ALLQ.length.toLocaleString()}</span></div><div><b>${s.done ? pct(s.ok, s.done) + '%' : '-'}</b><span>정답률</span></div><div><b>${w}</b><span>오답</span></div><div><b>${due}</b><span>오늘 복습</span></div></div>
-    ${SALE && TRIAL() ? `<button class="tile buybar" id="tBuy"><span class="t">체험판: 각 과목 첫 챕터와 모의고사 1회<small>무료 이용 코드를 입력하면 전체 문항이 열립니다</small></span><span class="arrow">›</span></button>` : ''}
+    ${SALE && !FULL() ? `<button class="tile buybar" id="tBuy"><span class="t">${UNLOCKED ? '열린 범위: ' + openedLabel() : '체험판: 각 과목 첫 챕터와 모의고사 1회'}<small>${UNLOCKED ? '다른 책이나 모의고사 이용권의 코드를 더 넣으면 함께 열립니다' : '책에 들어 있는 코드나 이용 코드를 넣으면 해당 범위가 열립니다'}</small></span><span class="arrow">›</span></button>` : ''}
     ${L ? `<button class="tile" id="tResume" style="margin-top:10px"><span class="t"><small>이어서 풀기</small>${esc(SUBJ_NAME[S.last.code])} ${S.last.part === 'theory' ? '이론' : '실기'} ${String(L.no).padStart(2, '0')} · ${esc(L.t)}</span><span class="arrow">›</span></button>` : ''}
     <div id="toc"></div>
     <footer>보건계열 현직 교수 집필·검수 · 광고 없음 · 풀이 기록은 이 기기에만 저장됩니다. <button class="link" id="whyOpen">문제은행 구성</button></footer>`);
@@ -531,7 +543,7 @@ function home(){
       if (pt === 'practice') { const n = photoAll(c).length; if (n) { const b = el(`<button class="tocrow extra"><span class="no">사진</span><span class="t">실기 사진 판독 연습<span class="sub">사진 문항 ${n}개 중 무작위 16문항 · 실기 시험 문항 수와 같음</span></span><span class="n">›</span></button>`).firstElementChild; b.onclick = () => startCards(c); list.append(b); } }
       box.append(list);
     });
-    if (DATA[c].final) { const b = el(`<button class="tocrow extra"><span class="no">점검</span><span class="t">${esc(DATA[c].final.t)}<span class="sub">시험 직전 과목 전체 요약</span></span><span class="n">›</span></button>`).firstElementChild; b.onclick = () => go(() => { if (TRIAL()) { $view.append(lockCard('최종 점검표는 전체 이용 코드로 열립니다.')); bindLock(); } else $view.append(summaryBlock(DATA[c].final)); }, SUBJ_NAME[c], '최종 점검표'); box.append(b); }
+    if (DATA[c].final) { const b = el(`<button class="tocrow extra"><span class="no">점검</span><span class="t">${esc(DATA[c].final.t)}<span class="sub">시험 직전 과목 전체 요약</span></span><span class="n">›</span></button>`).firstElementChild; b.onclick = () => go(() => { if (!OPEN(c)) { $view.append(lockCard(`${SUBJ_NAME[c]} 최종 점검표는 ${SUBJ_NAME[c]} 코드로 열립니다.`)); bindLock(); } else $view.append(summaryBlock(DATA[c].final)); }, SUBJ_NAME[c], '최종 점검표'); box.append(b); }
     toc.append(d);
   });
   const $ = id => document.getElementById(id);
@@ -603,8 +615,8 @@ function lockCard(msg){
   const mt = DATA.M.reduce((a, r) => a + r.theory.length, 0), mp = DATA.M.reduce((a, r) => a + r.practice.length, 0), m1 = DATA.M[0].theory.length + DATA.M[0].practice.length;
   const SMR = DATA.SM ? SUBJ_ORDER.flatMap(c => DATA.SM[c] || []) : [], smt = SMR.reduce((a, r) => a + r.theory.length, 0), smp = SMR.reduce((a, r) => a + r.practice.length, 0), sm1 = SUBJ_ORDER.reduce((a, c) => a + (DATA.SM && DATA.SM[c] ? DATA.SM[c][0].theory.length + DATA.SM[c][0].practice.length : 0), 0);
   const tt = SUBJ_ORDER.reduce((a, c) => a + DATA[c].theory.reduce((x, ch) => x + ch.items.length, 0), 0), tp = ALLQ.length - tt;
-  return el(`<div class="card lock"><h2>${PAID ? '전체 이용권' : '전체 열기'}</h2><p class="lede">${esc(msg || '이 챕터는 전체 이용 코드로 열립니다.')}</p>
-    ${SALE ? `<div class="codebox"><label for="codeIn">${PAID ? '이용 코드가 있나요?' : '무료 이용 코드 넣기'}</label><div class="search"><input id="codeIn" placeholder="ABCD-EFGH-JKLM" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn primary" id="codeGo">열기</button></div><p class="lede" id="codeMsg">12자리 코드를 넣으면 이 기기에서 전체가 열립니다.</p></div>` : ''}
+  return el(`<div class="card lock"><h2>${PAID ? '전체 이용권' : '전체 열기'}</h2><p class="lede">${esc(msg || '이 챕터는 해당 과목 코드로 열립니다.')}</p>
+    ${SALE ? `<div class="codebox"><label for="codeIn">${PAID ? '책 속 코드나 이용 코드가 있나요?' : '이용 코드 넣기'}</label><div class="search"><input id="codeIn" placeholder="ABCD-EFGH-JKLM" autocomplete="off" autocapitalize="characters" spellcheck="false"><button class="btn primary" id="codeGo">열기</button></div><p class="lede" id="codeMsg">12자리 코드를 넣으면 이 기기에서 그 코드의 범위가 열립니다. 책 코드는 그 과목 챕터 문항·실기 사진, 모의고사 이용권은 종합·과목별 모의고사, 세트 코드는 전부를 엽니다.${UNLOCKED ? ' 지금 열린 범위: ' + openedLabel() + '.' : ''}</p></div>` : ''}
     <div class="tblwrap"><table class="sc lockt"><tr><th>과목</th><th class="r">이론</th><th class="r">실기</th><th class="r">합계</th><th class="r free">무료</th></tr>${rows}
     <tr class="sum"><td>4과목</td><td class="r">${tt.toLocaleString()}</td><td class="r">${tp.toLocaleString()}</td><td class="r">${ALLQ.length.toLocaleString()}</td><td class="r free">${SUBJ_ORDER.reduce((a, c) => a + DATA[c].theory[0].items.length + DATA[c].practice[0].items.length, 0)}</td></tr>
     <tr class="mk"><td>모의고사 ${DATA.M.length}회</td><td class="r">${mt.toLocaleString()}</td><td class="r">${mp}</td><td class="r">${(mt + mp).toLocaleString()}</td><td class="r free">${m1}</td></tr>${SMN() ? `<tr class="mk"><td>과목별 모의고사 ${SMN()}회</td><td class="r">${smt.toLocaleString()}</td><td class="r">${smp}</td><td class="r">${(smt + smp).toLocaleString()}</td><td class="r free">${sm1}</td></tr>` : ''}</table></div>
@@ -618,7 +630,7 @@ function bindLock(){
   const go = document.getElementById('codeGo'); if (go) { const inp = document.getElementById('codeIn'); go.onclick = () => useCode(inp.value, document.getElementById('codeMsg')); inp.addEventListener('keydown', e => { if (e.key === 'Enter') go.click(); }); }
 }
 function lockView(title){
-  $view.append(lockCard(title ? `"${title}"은(는) 전체 이용 코드로 열립니다. 각 과목 첫 챕터와 모의고사 1회는 코드 없이 모든 기능을 쓸 수 있습니다.` : '무료 챕터(각 과목 이론·실기 첫 챕터)와 모의고사 1회는 지금 바로 모든 기능을 쓸 수 있습니다. 나머지는 무료 이용 코드로 열립니다.'));
+  $view.append(lockCard(title ? `"${title}"은(는) ${/모의고사/.test(title) ? '모의고사 이용권이나 세트 코드' : '그 과목 책 코드나 세트 코드'}로 열립니다. 각 과목 첫 챕터와 모의고사 1회는 코드 없이 모든 기능을 쓸 수 있습니다.` : '무료 챕터(각 과목 이론·실기 첫 챕터)와 모의고사 1회는 지금 바로 모든 기능을 쓸 수 있습니다. 나머지는 책 코드·모의고사 이용권·세트 코드로 열립니다.'));
   bindLock();
 }
 
@@ -787,7 +799,7 @@ function stats(){
     <h2>모의고사 점수</h2><div class="card" id="trend"></div>
     <h2>설정</h2><div class="card settings">
       <div class="setrow"><span>글자 크기</span><span class="seg" style="margin:0"><button data-fs="0" aria-selected="${!S.fs}">보통</button><button data-fs="1" aria-selected="${S.fs === 1}">크게</button><button data-fs="2" aria-selected="${S.fs === 2}">아주 크게</button></span></div>
-      ${SALE ? `<div class="setrow"><span>${PAID ? '이용권' : '이용 상태'}<br><small class="lede">${UNLOCKED ? '전체 이용 중 · 코드 ' + CODE.slice(0, 4) + '-****-****' : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${UNLOCKED ? '' : '<button class="btn eosin" id="toBuy">코드 넣기</button>'}</div>` : ''}
+      ${SALE ? `<div class="setrow"><span>${PAID ? '이용권' : '이용 상태'}<br><small class="lede">${UNLOCKED ? (FULL() ? '전체 이용 중' : '열린 범위: ' + openedLabel()) + ' · 코드 ' + CODES.map(c => c.slice(0, 4) + '-****').join(', ') : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${FULL() ? '' : `<button class="btn eosin" id="toBuy">${UNLOCKED ? '코드 추가' : '코드 넣기'}</button>`}</div>` : ''}
       <div class="setrow" ${SALE ? 'hidden' : ''}><span>체험판 화면 미리보기<br><small class="lede">학생이 무료로 보는 화면(과목별 첫 챕터 + 모의고사 1회)</small></span><span class="seg" style="margin:0"><button data-tr="0" aria-selected="${!S.trial}">전체</button><button data-tr="1" aria-selected="${!!S.trial}">체험판</button></span></div>
       <div class="setrow"><span>기록 백업<br><small class="lede">풀이 기록·오답·복습 일정·모의고사 점수를 파일로 내려받습니다. 휴대폰을 바꾸거나 기록이 지워졌을 때 불러오면 됩니다.</small></span><span class="row" style="margin:0;gap:6px;flex-wrap:nowrap"><button class="btn" id="bkOut">내보내기</button><button class="btn" id="bkIn">불러오기</button></span></div><input type="file" id="bkFile" accept=".json,application/json" hidden>
       <div class="setrow"><span>모든 풀이 기록 지우기</span><button class="btn" id="wipe">지우기</button></div><div id="confirm"></div>
@@ -841,7 +853,7 @@ function mockList(){
   (sub ? DATA.SM[mockTab].map((r, i) => mockTab + (i + 1)) : DATA.M.map(r => r.no)).forEach(no => {
     const r = MK(no), lab = typeof no === 'number' ? no : no.slice(1);
     const rec = S.mock[no], n = r.theory.length + r.practice.length, lk = mockLocked(no), dr = S.draft[no];
-    const b = el(`<button class="rnd ${rec && !dr ? 'done' : ''} ${dr ? 'prog' : ''} ${lk ? 'locked' : ''}">${TRIAL() && isFreeMock(no) ? '<span class="free">무료</span>' : ''}<b>${lab}</b><span>${lk ? '잠김' : dr ? Object.keys(dr.ans).length + '/' + n + ' 중' : rec ? rec.score + '/' + n : n + '문항'}</span></button>`).firstElementChild;
+    const b = el(`<button class="rnd ${rec && !dr ? 'done' : ''} ${dr ? 'prog' : ''} ${lk ? 'locked' : ''}">${SALE && !OPEN('M') && isFreeMock(no) ? '<span class="free">무료</span>' : ''}<b>${lab}</b><span>${lk ? '잠김' : dr ? Object.keys(dr.ans).length + '/' + n + ' 중' : rec ? rec.score + '/' + n : n + '문항'}</span></button>`).firstElementChild;
     b.onclick = () => go(() => lk ? lockView(mockName(no)) : mockIntro(no), mockName(no));
     box.append(b);
   });
