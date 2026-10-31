@@ -333,6 +333,7 @@ details.subjblk[open] summary::after{content:"접기"}
 .price{font-family:var(--f-mono);font-size:28px;font-weight:600;color:var(--eosin)}
 @media (max-width:420px){h1{font-size:20px}}
 @media (prefers-reduced-motion:no-preference){.qcard{animation:rise .16s ease-out}@keyframes rise{from{transform:translateY(4px)}to{transform:none}}}
+[hidden]{display:none!important}
 </style>
 
 <div class="wrap">
@@ -367,12 +368,18 @@ const b64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
 const normCode = c => String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 async function keyFromCode(code){
   code = normCode(code); if (code.length !== 12) return null;
-  const ks = await (await fetch('keys.json', {cache: 'no-store'})).json(), w = ks[code.slice(0, 4)]; if (!w) return null;
+  // 인터넷이 없으면 마지막으로 받은 이 코드의 잠금 묶음을 쓴다(오프라인 결함 수정 2026-10-31)
+  let w = null;
+  try { const ks = await (await fetch('keys.json', {cache: 'no-store'})).json(); w = ks[code.slice(0, 4)] || null; if (w) { try { localStorage.setItem('kuksi-kw', JSON.stringify([code.slice(0, 4), w])); } catch (_) {} } else return null; }
+  catch (e) { try { const c = JSON.parse(localStorage.getItem('kuksi-kw') || 'null'); if (c && c[0] === code.slice(0, 4)) w = c[1]; } catch (_) {} }
+  if (!w) return null;
   const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(code), 'PBKDF2', false, ['deriveKey']);
   const kek = await crypto.subtle.deriveKey({name: 'PBKDF2', salt: b64(w.s), iterations: 150000, hash: 'SHA-256'}, base, {name: 'AES-GCM', length: 256}, false, ['decrypt']);
   try { const raw = await crypto.subtle.decrypt({name: 'AES-GCM', iv: b64(w.iv)}, kek, b64(w.ct)); return await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']); } catch (e) { return null; }
 }
 async function decBin(url, key){ const buf = new Uint8Array(await (await fetch(url)).arrayBuffer()); return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name: 'AES-GCM', iv: buf.slice(0, 12)}, key, buf.slice(12)))); }
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost') && SALE) navigator.serviceWorker.register('sw.js').catch(() => {});
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
 if (SALE) {
   document.getElementById('view').innerHTML = '<div class="empty">불러오는 중…</div>';
   try { const c = localStorage.getItem('kuksi-code'); if (c) { MKEY = await keyFromCode(c); if (MKEY) { DATA = await decBin('data.bin', MKEY); UNLOCKED = true; CODE = normCode(c); } } } catch (e) {}
@@ -782,6 +789,7 @@ function stats(){
       <div class="setrow"><span>글자 크기</span><span class="seg" style="margin:0"><button data-fs="0" aria-selected="${!S.fs}">보통</button><button data-fs="1" aria-selected="${S.fs === 1}">크게</button><button data-fs="2" aria-selected="${S.fs === 2}">아주 크게</button></span></div>
       ${SALE ? `<div class="setrow"><span>${PAID ? '이용권' : '이용 상태'}<br><small class="lede">${UNLOCKED ? '전체 이용 중 · 코드 ' + CODE.slice(0, 4) + '-****-****' : '체험판 · 각 과목 첫 챕터와 모의고사 1회'}</small></span>${UNLOCKED ? '' : '<button class="btn eosin" id="toBuy">코드 넣기</button>'}</div>` : ''}
       <div class="setrow" ${SALE ? 'hidden' : ''}><span>체험판 화면 미리보기<br><small class="lede">학생이 무료로 보는 화면(과목별 첫 챕터 + 모의고사 1회)</small></span><span class="seg" style="margin:0"><button data-tr="0" aria-selected="${!S.trial}">전체</button><button data-tr="1" aria-selected="${!!S.trial}">체험판</button></span></div>
+      <div class="setrow"><span>기록 백업<br><small class="lede">풀이 기록·오답·복습 일정·모의고사 점수를 파일로 내려받습니다. 휴대폰을 바꾸거나 기록이 지워졌을 때 불러오면 됩니다.</small></span><span class="row" style="margin:0;gap:6px;flex-wrap:nowrap"><button class="btn" id="bkOut">내보내기</button><button class="btn" id="bkIn">불러오기</button></span></div><input type="file" id="bkFile" accept=".json,application/json" hidden>
       <div class="setrow"><span>모든 풀이 기록 지우기</span><button class="btn" id="wipe">지우기</button></div><div id="confirm"></div>
     </div>`);
   $view.append(f);
@@ -796,6 +804,23 @@ function stats(){
   document.querySelectorAll('[data-fs]').forEach(b => b.onclick = () => { S.fs = +b.dataset.fs; save(); document.body.className = 'fs' + S.fs; show(stats); });
   const tb = document.getElementById('toBuy'); if (tb) tb.onclick = () => go(() => lockView(null), '전체 열기');
   document.querySelectorAll('[data-tr]').forEach(b => b.onclick = () => { S.trial = b.dataset.tr === '1'; save(); show(stats); toast(S.trial ? '체험판 화면입니다' : '전체 화면입니다'); });
+  document.getElementById('bkOut').onclick = () => {
+    const d = new Date(), stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    const blob = new Blob([JSON.stringify({app: 'kuksi', v: 1, at: d.toISOString(), S})], {type: 'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `조직병리국시_기록_${stamp}.json`; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    S.bkAt = today(); save(); toast('기록 파일을 내려받았습니다');
+  };
+  const bf = document.getElementById('bkFile');
+  document.getElementById('bkIn').onclick = () => bf.click();
+  bf.onchange = async () => {
+    const f_ = bf.files[0]; if (!f_) return;
+    try { const v = JSON.parse(await f_.text()); if (v.app !== 'kuksi' || !v.S || !v.S.ans) throw 0;
+      document.getElementById('confirm').replaceChildren(el(`<div class="confirm">${esc(String(v.at || '').slice(0, 10))}에 내보낸 기록(${Object.keys(v.S.ans).length}문항 풀이)으로 바꿀까요? 지금 이 기기의 기록은 덮어씁니다. <button class="btn eosin" id="yes">불러오기</button><button class="btn" id="no">취소</button></div>`));
+      document.getElementById('yes').onclick = () => { S = Object.assign(S, v.S); save(); toast('기록을 불러왔습니다'); show(stats); };
+      document.getElementById('no').onclick = () => document.getElementById('confirm').replaceChildren();
+    } catch (e) { toast('이 앱의 기록 파일이 아닙니다'); }
+    bf.value = '';
+  };
   document.getElementById('wipe').onclick = () => {
     document.getElementById('confirm').replaceChildren(el('<div class="confirm">풀이 기록, 오답, 복습 일정, 완료 표시, 모의고사 점수를 모두 지울까요? 별표는 남습니다. <button class="btn eosin" id="yes">모두 지우기</button><button class="btn" id="no">취소</button></div>'));
     document.getElementById('yes').onclick = () => { Object.assign(S, {ans: {}, mock: {}, days: {}, last: null, master: {}, rev: {}, best: {}}); save(); show(stats); toast('기록을 지웠습니다'); };
