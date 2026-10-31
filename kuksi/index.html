@@ -527,6 +527,7 @@ function home(){
     <div class="sumrow"><div><b>${s.done.toLocaleString()}</b><span>풀이 / ${ALLQ.length.toLocaleString()}</span></div><div><b>${s.done ? pct(s.ok, s.done) + '%' : '-'}</b><span>정답률</span></div><div><b>${w}</b><span>오답</span></div><div><b>${due}</b><span>오늘 복습</span></div></div>
     ${SALE && !FULL() ? `<button class="tile buybar" id="tBuy"><span class="t">${UNLOCKED ? '열린 범위: ' + openedLabel() : '체험판: 각 과목 첫 챕터와 모의고사 1회'}<small>${UNLOCKED ? '다른 책이나 모의고사 이용권의 코드를 더 넣으면 함께 열립니다' : '책에 들어 있는 코드나 이용 코드를 넣으면 해당 범위가 열립니다'}</small></span><span class="arrow">›</span></button>` : ''}
     ${L ? `<button class="tile" id="tResume" style="margin-top:10px"><span class="t"><small>이어서 풀기</small>${esc(SUBJ_NAME[S.last.code])} ${S.last.part === 'theory' ? '이론' : '실기'} ${String(L.no).padStart(2, '0')} · ${esc(L.t)}</span><span class="arrow">›</span></button>` : ''}
+    <button class="tile" id="tMock" style="margin-top:10px"><span class="t"><small>실전 연습</small>모의고사 · 종합 ${DATA.M.length}회(이론 30·실기 16)${SMN() ? ` · 과목별 ${SMN()}회` : ''}</span><span class="arrow">›</span></button>
     <div id="toc"></div>
     <footer>보건계열 현직 교수 집필·검수 · 광고 없음 · 풀이 기록은 이 기기에만 저장됩니다. <button class="link" id="whyOpen">문제은행 구성</button></footer>`);
   $view.append(f);
@@ -551,6 +552,7 @@ function home(){
   $('go').onclick = run; $('q').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
   if ($('tResume')) $('tResume').onclick = () => go(() => chapter(S.last.code, S.last.part, S.last.ch), SUBJ_NAME[S.last.code], (S.last.part === 'theory' ? '이론 ' : '실기 ') + String(L.no).padStart(2, '0'));
   if ($('tBuy')) $('tBuy').onclick = () => go(() => lockView(null), '전체 열기');
+  if ($('tMock')) $('tMock').onclick = () => { toTab('mocks'); window.scrollTo(0, 0); };
   $('whyOpen').onclick = () => go(() => $view.append(el(`<h1>${WHY_TITLE}</h1><div class="card" style="margin-top:12px">${WHY_HTML}</div>`)), WHY_TITLE);
 }
 function chRow(c, pt, i){
