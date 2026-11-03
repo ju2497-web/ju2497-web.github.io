@@ -2,7 +2,7 @@
 window.LAB_CONFIG = {
   siteName: "작은 실험실",
   // GoatCounter 사이트 코드(https://www.goatcounter.com, 무료). 예: "mylab" → https://mylab.goatcounter.com
-  goatcounter: "",
+  goatcounter: "jiunlab",
   // Google 애널리틱스 4 측정 ID. 예: "G-XXXXXXXXXX"
   ga4: "",
 };
